@@ -1,3 +1,10 @@
+# ide
+.idea
+.vs
+
+# build
+/build
+
 # Logs
 logs
 *.log

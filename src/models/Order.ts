@@ -16,6 +16,7 @@ class Order {
     public orderInfo?: OrderInfo;
     public orderResult?: OrderResult;
     public subOrders?: string[];
+    public parentOrder?: string;
     public consumer?: string;
 
     constructor(address: string) {
@@ -54,6 +55,14 @@ class Order {
     public async getSubOrders(): Promise<string[]> {
         this.subOrders = await this.contract.methods.getSubOrders().call();
         return this.subOrders!;
+    }
+
+    /**
+     * Function for fetching parent order from blockchain
+     */
+    public async getParentOrder(): Promise<string> {
+        this.parentOrder = await this.contract.methods.getParentOrder().call();
+        return this.parentOrder!;
     }
 
     /**

@@ -91,7 +91,22 @@ class OrdersFactory {
 
         await this.contract.methods
             .createSubOrder(orderAddress, subOrderInfoArguments)
-            .send(createTransactionOptions());
+            .send(createTransactionOptions(transactionOptions));
+    }
+
+    /**
+     * Function for refilling order deposit
+     * @param orderAddress - address of order
+     * @param amount - amount of tokens to refilling
+     * @param transactionOptions - object what contains alternative action account or gas limit (optional)
+     */
+    public static async refillOrderDeposit(orderAddress: string, amount: number, transactionOptions?: TransactionOptions) {
+        this.checkInit();
+        checkIfActionAccountInitialized();
+
+        await this.contract.methods
+            .refillOrder(orderAddress, amount)
+            .send(createTransactionOptions(transactionOptions));
     }
 }
 

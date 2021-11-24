@@ -70,6 +70,58 @@ class Order {
     }
 
     /**
+     * Function for updating status of contract
+     */
+    public async cancelOrder(transactionOptions?: TransactionOptions) {
+        checkIfActionAccountInitialized();
+
+        await this.contract.methods
+            .cancelOrder()
+            .send(createTransactionOptions(transactionOptions));
+    }
+
+    /**
+     * Function for creating sub orders for current order
+     * @param subOrderInfo - order info for new subOrder
+     * @param transactionOptions - object what contains alternative action account or gas limit (optional)
+     * @returns Promise<void> - Does not return address of created contract!
+     */
+    public async createSubOrder(subOrderInfo: OrderInfo, transactionOptions?: TransactionOptions) {
+        checkIfActionAccountInitialized();
+
+        // Convert order info to array (used in blockchain)
+        const subOrderInfoArguments = _.at(subOrderInfo, OrderInfoArguments);
+
+        await this.contract.methods
+            .createSubOrder(subOrderInfoArguments)
+            .send(createTransactionOptions(transactionOptions));
+    }
+
+    /**
+     * Function for withdrawing profit from order
+     * @param transactionOptions - object what contains alternative action account or gas limit (optional)
+     */
+    public async withdrawProfit(transactionOptions?: TransactionOptions) {
+        checkIfActionAccountInitialized();
+
+        await this.contract.methods
+            .withdrawProfit()
+            .send(createTransactionOptions(transactionOptions));
+    }
+
+    /**
+     * Function for withdrawing change from order
+     * @param transactionOptions - object what contains alternative action account or gas limit (optional)
+     */
+    public async withdrawChange(transactionOptions?: TransactionOptions) {
+        checkIfActionAccountInitialized();
+
+        await this.contract.methods
+            .withdrawChange()
+            .send(createTransactionOptions(transactionOptions));
+    }
+
+    /**
      * Function for adding event listeners to contract events
      * @param callback - function for processing each order related with event
      * @return unsubscribe - function unsubscribing from event

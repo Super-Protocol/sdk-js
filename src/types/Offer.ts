@@ -6,22 +6,6 @@ export enum OfferType {
 }
 
 // Order of keys for this object in blockchain contract
-export const OfferRequirementArguments = ["guid", "isExist"];
-export type OfferRequirement = {
-    guid: string;
-    isExist: boolean;
-};
-
-// Order of keys for this object in blockchain contract
-export const OfferRequirementsArguments = ["Script", "Storage", "TeeOffer", "AdSegment"];
-export type OfferRequirements = {
-    Script: OfferRequirement;
-    Storage: OfferRequirement;
-    TeeOffer: OfferRequirement;
-    AdSegment: OfferRequirement;
-};
-
-// Order of keys for this object in blockchain contract
 export const OfferInfoArguments = [
     "name",
     "offerType",
@@ -30,7 +14,6 @@ export const OfferInfoArguments = [
     "holdSum",
     "price",
     "priceUnit",
-    "requirements",
     "properties",
     "maxDurationTimeMinutes",
     "inputFormat",
@@ -50,7 +33,6 @@ export type OfferInfo = {
     holdSum: number;
     price: number;
     priceUnit: number;
-    requirements: OfferRequirements;
     properties: string;
     maxDurationTimeMinutes: number;
     inputFormat: string;

@@ -46,10 +46,29 @@ class ProviderRegistry {
             .send(createTransactionOptions(transactionOptions));
     }
 
+    /**
+     * Refills security deposit for provider
+     * Call this function with provider authority account (in transactionOptions)
+     * @param amount - amount of additional tokens
+     * @param transactionOptions - object what contains alternative action account or gas limit (optional)
+     */
     public static async refillSecurityDeposit(amount: number, transactionOptions?: TransactionOptions): Promise<void> {
         this.checkInit();
         await this.contract.methods
             .refillSecurityDepo(amount)
+            .send(createTransactionOptions(transactionOptions));
+    }
+
+    /**
+     * Return security deposit for provider
+     * Call this function with provider authority account (in transactionOptions)
+     * @param amount - amount of tokens to return
+     * @param transactionOptions - object what contains alternative action account or gas limit (optional)
+     */
+    public static async returnSecurityDeposit(amount: number, transactionOptions?: TransactionOptions): Promise<void> {
+        this.checkInit();
+        await this.contract.methods
+            .returnSecurityDepo(amount)
             .send(createTransactionOptions(transactionOptions));
     }
 }

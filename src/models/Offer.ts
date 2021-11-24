@@ -4,8 +4,9 @@ import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
 import OfferJSON from "../contracts/Offer.json";
 import store from "../store";
-import { checkIfInitialized } from "../utils";
-import { OfferInfo, OfferInfoArguments, OfferRequirementArguments, OfferRequirementsArguments } from "../types/Offer";
+import {checkIfActionAccountInitialized, checkIfInitialized, createTransactionOptions} from "../utils";
+import { OfferInfo, OfferInfoArguments } from "../types/Offer";
+import {TransactionOptions} from "../types/Web3";
 
 class Offer {
     public address: string;
@@ -30,15 +31,8 @@ class Offer {
     public async getInfo(): Promise<OfferInfo> {
         let orderInfoParams = await this.contract.methods.getInfo().call();
 
-        // Deep converts blockchain array into object
+        // Converts blockchain array into object
         orderInfoParams = _.zipObject(OfferInfoArguments, orderInfoParams);
-        orderInfoParams.requirements = _.zipObject(OfferRequirementsArguments, orderInfoParams.requirements);
-        Object.keys(orderInfoParams.requirements).forEach((key) => {
-            orderInfoParams.requirements[key] = _.zipObject(
-                OfferRequirementArguments,
-                orderInfoParams.requirements[key]
-            );
-        });
 
         return (this.orderInfo = <OfferInfo>orderInfoParams);
     }
@@ -49,6 +43,18 @@ class Offer {
     public async getProvider(): Promise<string> {
         this.provider = await this.contract.methods.getProvider().call();
         return this.provider!;
+    }
+
+    /**
+     * Function for disabling offer
+     * @param transactionOptions - object what contains alternative action account or gas limit (optional)
+     */
+    public async disable(transactionOptions?: TransactionOptions) {
+        checkIfActionAccountInitialized();
+
+        await this.contract.methods
+            .disable()
+            .send(createTransactionOptions(transactionOptions));
     }
 }
 

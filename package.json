@@ -1,5 +1,5 @@
 {
-  "name": "sp-sdk-js",
+  "name": "@super-protocol/sp-sdk-js",
   "version": "0.0.4",
   "main": "build/index.js",
   "license": "MIT",
@@ -27,5 +27,6 @@
     "lodash": "^4.17.21",
     "pino": "^7.2.0",
     "web3": "^1.6.0"
-  }
+  },
+  "repository": "git://github.com/Super-Protocol/sp-sdk-js.git"
 }

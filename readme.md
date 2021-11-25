@@ -3,7 +3,7 @@
 ## Installation
 
 ```
-yarn add github:Super-Protocol/sp-sdk-js#v0.0.1
+yarn add github:Super-Protocol/sp-sdk-js#v0.0.4
 ```
 
 Replace `v0.0.1` to current version (can be found in package.json file)

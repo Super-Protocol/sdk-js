@@ -1,20 +1,29 @@
 {
   "name": "sp-sdk-js",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "main": "build/index.js",
   "license": "MIT",
-  "files": ["build/**/*"],
+  "files": [
+    "build/**/*"
+  ],
   "scripts": {
     "prettier": "prettier --tab-width 4 --print-width 120 --write ./src/**/* ./src/**",
     "build": "rm -rf ./build && tsc",
+    "test": "jest",
     "prepare": "npm run build"
   },
   "devDependencies": {
+    "@types/eccrypto": "^1.1.3",
+    "@types/jest": "^27.0.3",
     "@types/lodash": "^4.14.176",
+    "jest": "^27.3.1",
     "prettier": "^2.4.1",
+    "ts-jest": "^27.0.7",
     "typescript": "^4.4.4"
   },
   "dependencies": {
+    "eccrypto": "^1.1.6",
+    "hybrid-crypto-js": "^0.2.4",
     "lodash": "^4.17.21",
     "pino": "^7.2.0",
     "web3": "^1.6.0"

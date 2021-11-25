@@ -2,6 +2,9 @@ import BlockchainConnector from "./BlockchainConnector";
 export default BlockchainConnector;
 export * from "./BlockchainConnector";
 
+export { default as Crypto } from "./Crypto";
+export * from "./Crypto";
+
 export { default as OrdersFactory } from "./staticModels/OrdersFactory";
 export * from "./staticModels/OrdersFactory";
 

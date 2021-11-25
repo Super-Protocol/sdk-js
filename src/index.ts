@@ -5,6 +5,9 @@ export * from "./BlockchainConnector";
 export { default as Crypto } from "./Crypto";
 export * from "./Crypto";
 
+export { default as TIIGenerator } from "./TIIGenerator";
+export * from "./TIIGenerator";
+
 export { default as OrdersFactory } from "./staticModels/OrdersFactory";
 export * from "./staticModels/OrdersFactory";
 

@@ -4,9 +4,9 @@ import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
 import OfferJSON from "../contracts/Offer.json";
 import store from "../store";
-import {checkIfActionAccountInitialized, checkIfInitialized, createTransactionOptions} from "../utils";
+import { checkIfActionAccountInitialized, checkIfInitialized, createTransactionOptions } from "../utils";
 import { OfferInfo, OfferInfoArguments } from "../types/Offer";
-import {TransactionOptions} from "../types/Web3";
+import { TransactionOptions } from "../types/Web3";
 
 class Offer {
     public address: string;
@@ -52,9 +52,7 @@ class Offer {
     public async disable(transactionOptions?: TransactionOptions) {
         checkIfActionAccountInitialized();
 
-        await this.contract.methods
-            .disable()
-            .send(createTransactionOptions(transactionOptions));
+        await this.contract.methods.disable().send(createTransactionOptions(transactionOptions));
     }
 }
 

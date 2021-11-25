@@ -3,10 +3,10 @@ import { Contract } from "web3-eth-contract";
 import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
 import OrdersFactoryJSON from "../contracts/OrdersFactory.json";
-import {checkIfActionAccountInitialized, checkIfInitialized, createTransactionOptions} from "../utils";
+import { checkIfActionAccountInitialized, checkIfInitialized, createTransactionOptions } from "../utils";
 import { OrderInfo, OrderInfoArguments } from "../types/Order";
 import _ from "lodash";
-import {ContractEvent, TransactionOptions} from "../types/Web3";
+import { ContractEvent, TransactionOptions } from "../types/Web3";
 
 class OrdersFactory {
     public static address: string;
@@ -70,9 +70,7 @@ class OrdersFactory {
         // Convert order info to array (used in blockchain)
         const subOrderInfoArguments = _.at(orderInfo, OrderInfoArguments);
 
-        await this.contract.methods
-            .create(subOrderInfoArguments)
-            .send(createTransactionOptions(transactionOptions));
+        await this.contract.methods.create(subOrderInfoArguments).send(createTransactionOptions(transactionOptions));
     }
 
     /**
@@ -82,7 +80,11 @@ class OrdersFactory {
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      * @returns Promise<void> - Does not return address of created contract!
      */
-    public static async createSubOrder(orderAddress: string, subOrderInfo: OrderInfo, transactionOptions?: TransactionOptions) {
+    public static async createSubOrder(
+        orderAddress: string,
+        subOrderInfo: OrderInfo,
+        transactionOptions?: TransactionOptions
+    ) {
         this.checkInit();
         checkIfActionAccountInitialized();
 
@@ -100,7 +102,11 @@ class OrdersFactory {
      * @param amount - amount of tokens to refilling
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
-    public static async refillOrderDeposit(orderAddress: string, amount: number, transactionOptions?: TransactionOptions) {
+    public static async refillOrderDeposit(
+        orderAddress: string,
+        amount: number,
+        transactionOptions?: TransactionOptions
+    ) {
         this.checkInit();
         checkIfActionAccountInitialized();
 

@@ -3,8 +3,8 @@ import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
 import SuperproTokenJSON from "../contracts/SuperproToken.json";
 import store from "../store";
-import {checkIfActionAccountInitialized, checkIfInitialized, createTransactionOptions} from "../utils";
-import {TransactionOptions} from "../types/Web3";
+import { checkIfActionAccountInitialized, checkIfInitialized, createTransactionOptions } from "../utils";
+import { TransactionOptions } from "../types/Web3";
 
 class SuperproToken {
     public static address: string;
@@ -36,13 +36,15 @@ class SuperproToken {
      * @param amount - number of tokens to be approved
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
-    public static async approve(address: string, amount: number, transactionOptions?: TransactionOptions): Promise<void> {
+    public static async approve(
+        address: string,
+        amount: number,
+        transactionOptions?: TransactionOptions
+    ): Promise<void> {
         this.checkInit();
         checkIfActionAccountInitialized();
 
-        await this.contract.methods
-            .approve(address, amount)
-            .send(createTransactionOptions(transactionOptions));
+        await this.contract.methods.approve(address, amount).send(createTransactionOptions(transactionOptions));
     }
 }
 

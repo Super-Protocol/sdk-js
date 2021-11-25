@@ -3,9 +3,9 @@ import { Contract } from "web3-eth-contract";
 import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
 import VotingJSON from "../contracts/Voting.json";
-import {checkIfActionAccountInitialized, checkIfInitialized, createTransactionOptions} from "../utils";
-import {ContractName, ParamName} from "../types/Superpro";
-import {TransactionOptions} from "../types/Web3";
+import { checkIfActionAccountInitialized, checkIfInitialized, createTransactionOptions } from "../utils";
+import { ContractName, ParamName } from "../types/Superpro";
+import { TransactionOptions } from "../types/Web3";
 
 class Voting {
     public static address: string;
@@ -31,7 +31,11 @@ class Voting {
      * @param newAddress - address of new contract
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
-    public static async createBallotForAddressUpdate (contractName: ContractName, newAddress: string, transactionOptions?: TransactionOptions) {
+    public static async createBallotForAddressUpdate(
+        contractName: ContractName,
+        newAddress: string,
+        transactionOptions?: TransactionOptions
+    ) {
         this.checkInit();
         checkIfActionAccountInitialized();
 
@@ -46,7 +50,11 @@ class Voting {
      * @param newValue - data of new provider
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
-    public static async createBallotForParamUpdate (paramName: ParamName, newValue: number, transactionOptions?: TransactionOptions) {
+    public static async createBallotForParamUpdate(
+        paramName: ParamName,
+        newValue: number,
+        transactionOptions?: TransactionOptions
+    ) {
         this.checkInit();
         checkIfActionAccountInitialized();
 

@@ -4,6 +4,7 @@ import store from "./store";
 import { defaultBlockchainUrl } from "./constants";
 import { checkIfInitialized } from "./utils";
 import { ContractName } from "./types/Superpro";
+import { Transaction } from "./types/Web3";
 
 import TeeOffersFactory from "./staticModels/TeeOffersFactory";
 import OffersFactory from "./staticModels/OffersFactory";
@@ -13,6 +14,7 @@ import ProviderRegistry from "./staticModels/ProviderRegistry";
 import Staking from "./staticModels/Staking";
 import SuperproToken from "./staticModels/SuperproToken";
 import Voting from "./staticModels/Voting";
+import { add } from "lodash";
 
 class BlockchainConnector {
     private static logger = rootLogger.child({ className: "BlockchainConnector" });
@@ -58,6 +60,52 @@ class BlockchainConnector {
         if (!store.actionAccount) store.actionAccount = actionAccount;
         if (!this.defaultActionAccount) this.defaultActionAccount = actionAccount;
         return actionAccount;
+    }
+
+    /**
+     * Fetch transactions for specific addresses starting with specific block until last block
+     * @param addresses - array of addresses to fetch transactions (from this addresses and to this addresses)
+     * @param startBlock - number of block to start fetching transactions (if empty fetch only for last block)
+     * @returns Promise<{
+     *   transactionsByAddress, - found transactions sorted by addresses
+     *   lastBlock, - number of last fetched block (can be used to start fetching from this block next time)
+     * }>
+     */
+    public static async getTransactions(addresses: string[], startBlock?: number) {
+        const endBlock = await store.web3!.eth.getBlockNumber();
+
+        if (!startBlock) startBlock = endBlock;
+
+        const blocksNumbersToFetch: number[][] = [[]];
+        let activeStep = blocksNumbersToFetch[0];
+        for (let i = startBlock; i <= endBlock; i++) {
+            activeStep.push(i);
+
+            if (activeStep.length >= 500) {
+                blocksNumbersToFetch.push([]);
+                activeStep = blocksNumbersToFetch[blocksNumbersToFetch.length - 1];
+            }
+        }
+
+        const transactionsByAddress: { [key: string]: { input: Transaction[]; output: Transaction[] } } = {};
+        addresses.forEach((address) => (transactionsByAddress[address] = { input: [], output: [] }));
+
+        for (let i = 0; i < blocksNumbersToFetch.length; i++) {
+            await Promise.all(
+                blocksNumbersToFetch[i].map(async (blockNumber) => {
+                    const block = await store.web3!.eth.getBlock(blockNumber, true);
+
+                    block.transactions.forEach((transaction) => {
+                        if (addresses.includes(transaction.from))
+                            transactionsByAddress[transaction.from].output.push(transaction);
+                        if (transaction.to && addresses.includes(transaction.to))
+                            transactionsByAddress[transaction.to].input.push(transaction);
+                    });
+                })
+            );
+        }
+
+        return { transactionsByAddress, lastBlock: endBlock };
     }
 }
 

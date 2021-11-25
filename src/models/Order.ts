@@ -2,11 +2,11 @@ import { OrderInfo, OrderInfoArguments, OrderResult, OrderResultArguments, Order
 import { Contract } from "web3-eth-contract";
 import _ from "lodash";
 import rootLogger from "../logger";
-import {ContractEvent, TransactionOptions} from "../types/Web3";
+import { ContractEvent, TransactionOptions } from "../types/Web3";
 import { AbiItem } from "web3-utils";
 import OrderJSON from "../contracts/Order.json";
 import store from "../store";
-import {checkIfActionAccountInitialized, checkIfInitialized, createTransactionOptions} from "../utils";
+import { checkIfActionAccountInitialized, checkIfInitialized, createTransactionOptions } from "../utils";
 
 class Order {
     public address: string;
@@ -71,9 +71,7 @@ class Order {
     public async updateStatus(status: OrderStatus, price: number, transactionOptions?: TransactionOptions) {
         checkIfActionAccountInitialized();
 
-        await this.contract.methods
-            .updateStatus(status, price)
-            .send(createTransactionOptions(transactionOptions));
+        await this.contract.methods.updateStatus(status, price).send(createTransactionOptions(transactionOptions));
 
         if (this.orderInfo) this.orderInfo.status = status;
     }
@@ -84,9 +82,7 @@ class Order {
     public async cancelOrder(transactionOptions?: TransactionOptions) {
         checkIfActionAccountInitialized();
 
-        await this.contract.methods
-            .cancelOrder()
-            .send(createTransactionOptions(transactionOptions));
+        await this.contract.methods.cancelOrder().send(createTransactionOptions(transactionOptions));
     }
 
     /**
@@ -113,9 +109,7 @@ class Order {
     public async withdrawProfit(transactionOptions?: TransactionOptions) {
         checkIfActionAccountInitialized();
 
-        await this.contract.methods
-            .withdrawProfit()
-            .send(createTransactionOptions(transactionOptions));
+        await this.contract.methods.withdrawProfit().send(createTransactionOptions(transactionOptions));
     }
 
     /**
@@ -125,9 +119,7 @@ class Order {
     public async withdrawChange(transactionOptions?: TransactionOptions) {
         checkIfActionAccountInitialized();
 
-        await this.contract.methods
-            .withdrawChange()
-            .send(createTransactionOptions(transactionOptions));
+        await this.contract.methods.withdrawChange().send(createTransactionOptions(transactionOptions));
     }
 
     /**

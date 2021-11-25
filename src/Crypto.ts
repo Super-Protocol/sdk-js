@@ -1,6 +1,6 @@
 import eccrypto from "eccrypto";
 // @ts-ignore hybrid-crypto-js doesn't have types
-import {Crypt} from 'hybrid-crypto-js';
+import { Crypt } from "hybrid-crypto-js";
 
 class Crypto {
     /**
@@ -14,8 +14,8 @@ class Crypto {
         switch (algorithm) {
             case "RSA-Hybrid":
                 const crypt = new Crypt({
-                    aesStandard: 'AES-GCM',
-                    rsaStandard: 'RSA-OAEP',
+                    aesStandard: "AES-GCM",
+                    rsaStandard: "RSA-OAEP",
                 });
 
                 return crypt.encrypt(publicKey, data);
@@ -45,8 +45,8 @@ class Crypto {
         switch (algorithm) {
             case "RSA-Hybrid":
                 const crypt = new Crypt({
-                    aesStandard: 'AES-GCM',
-                    rsaStandard: 'RSA-OAEP',
+                    aesStandard: "AES-GCM",
+                    rsaStandard: "RSA-OAEP",
                 });
 
                 try {

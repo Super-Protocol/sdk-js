@@ -15,7 +15,10 @@ class Superpro {
      */
     private static checkInit() {
         if (this.contract) return;
-        if (!this.address || !store.web3) throw new Error("BlockchainConnector is not initialized, needs to run 'await BlockchainConnector.init(CONFIG)' first");
+        if (!this.address || !store.web3)
+            throw new Error(
+                "BlockchainConnector is not initialized, needs to run 'await BlockchainConnector.init(CONFIG)' first"
+            );
 
         this.contract = new store.web3!.eth.Contract(<AbiItem[]>SuperproJSON.abi, this.address);
         this.logger = rootLogger.child({ className: "Superpro", address: this.address });
@@ -29,7 +32,7 @@ class Superpro {
         try {
             return await this.contract.methods.getAddress(name).call();
         } catch (e) {
-            throw new Error('Error: fetching contracts addresses error');
+            throw new Error("Error: fetching contracts addresses error");
         }
     }
 }

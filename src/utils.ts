@@ -1,5 +1,5 @@
 import store from "./store";
-import {TransactionOptions} from "./types/Web3";
+import { TransactionOptions } from "./types/Web3";
 
 /**
  * Function for checking if BlockchainConnector initialized (required for get and set methods)
@@ -7,7 +7,9 @@ import {TransactionOptions} from "./types/Web3";
  */
 export const checkIfInitialized = () => {
     if (!store.isInitialized)
-        throw new Error("BlockchainConnector is not initialized, needs to run 'await BlockchainConnector.init(CONFIG)' first");
+        throw new Error(
+            "BlockchainConnector is not initialized, needs to run 'await BlockchainConnector.init(CONFIG)' first"
+        );
 };
 
 /**

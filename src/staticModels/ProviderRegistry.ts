@@ -3,9 +3,9 @@ import { Contract } from "web3-eth-contract";
 import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
 import ProviderRegistryJSON from "../contracts/ProviderRegistry.json";
-import {checkIfInitialized, createTransactionOptions} from "../utils";
+import { checkIfInitialized, createTransactionOptions } from "../utils";
 import { ProviderInfo } from "../types/Provider";
-import {TransactionOptions} from "../types/Web3";
+import { TransactionOptions } from "../types/Web3";
 
 class ProviderRegistry {
     public static address: string;
@@ -39,11 +39,12 @@ class ProviderRegistry {
      * @param providerInfo - data of new provider
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
-    public static async registerProvider(providerInfo: ProviderInfo, transactionOptions?: TransactionOptions): Promise<void> {
+    public static async registerProvider(
+        providerInfo: ProviderInfo,
+        transactionOptions?: TransactionOptions
+    ): Promise<void> {
         this.checkInit();
-        await this.contract.methods
-            .register(providerInfo)
-            .send(createTransactionOptions(transactionOptions));
+        await this.contract.methods.register(providerInfo).send(createTransactionOptions(transactionOptions));
     }
 
     /**
@@ -54,9 +55,7 @@ class ProviderRegistry {
      */
     public static async refillSecurityDeposit(amount: number, transactionOptions?: TransactionOptions): Promise<void> {
         this.checkInit();
-        await this.contract.methods
-            .refillSecurityDepo(amount)
-            .send(createTransactionOptions(transactionOptions));
+        await this.contract.methods.refillSecurityDepo(amount).send(createTransactionOptions(transactionOptions));
     }
 
     /**
@@ -67,9 +66,7 @@ class ProviderRegistry {
      */
     public static async returnSecurityDeposit(amount: number, transactionOptions?: TransactionOptions): Promise<void> {
         this.checkInit();
-        await this.contract.methods
-            .returnSecurityDepo(amount)
-            .send(createTransactionOptions(transactionOptions));
+        await this.contract.methods.returnSecurityDepo(amount).send(createTransactionOptions(transactionOptions));
     }
 }
 

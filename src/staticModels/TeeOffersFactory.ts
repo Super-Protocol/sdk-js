@@ -3,10 +3,10 @@ import { Contract } from "web3-eth-contract";
 import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
 import TeeOffersFactoryJSON from "../contracts/TeeOffersFactory.json";
-import {checkIfActionAccountInitialized, checkIfInitialized, createTransactionOptions} from "../utils";
-import {TransactionOptions} from "../types/Web3";
+import { checkIfActionAccountInitialized, checkIfInitialized, createTransactionOptions } from "../utils";
+import { TransactionOptions } from "../types/Web3";
 import _ from "lodash";
-import {TeeOfferInfo, TeeOfferInfoArguments} from "../types/TeeOffer";
+import { TeeOfferInfo, TeeOfferInfoArguments } from "../types/TeeOffer";
 
 class OffersFactory {
     public static address: string;
@@ -41,7 +41,11 @@ class OffersFactory {
      * @param teeOfferInfo - data of new TEE offer
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
-    public static async createTeeOffer(providerAuthorityAccount: string, teeOfferInfo: TeeOfferInfo, transactionOptions?: TransactionOptions): Promise<void> {
+    public static async createTeeOffer(
+        providerAuthorityAccount: string,
+        teeOfferInfo: TeeOfferInfo,
+        transactionOptions?: TransactionOptions
+    ): Promise<void> {
         this.checkInit();
         checkIfActionAccountInitialized();
 

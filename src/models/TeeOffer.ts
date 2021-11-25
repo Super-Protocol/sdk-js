@@ -15,6 +15,7 @@ class TeeOffer {
     public orderInfo?: TeeOfferInfo;
     public provider?: string;
     public disabledAfter?: number;
+    public tcb?: string;
 
     constructor(address: string) {
         checkIfInitialized();
@@ -47,6 +48,14 @@ class TeeOffer {
     public async getDisabledAfter(): Promise<number> {
         this.disabledAfter = await this.contract.methods.getDisalbedAfter().call();
         return this.disabledAfter!;
+    }
+
+    /**
+     * Function for fetching tcb provider from blockchain
+     */
+    public async getTcb(): Promise<string> {
+        this.tcb = await this.contract.methods.getTcb().call();
+        return this.tcb!;
     }
 }
 

@@ -4,8 +4,9 @@ import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
 import TeeOfferJSON from "../contracts/TeeOffer.json";
 import store from "../store";
-import { checkIfInitialized } from "../utils";
+import { checkIfActionAccountInitialized, checkIfInitialized, createTransactionOptions } from "../utils";
 import { TeeOfferInfo, TeeOfferInfoArguments } from "../types/TeeOffer";
+import { TransactionOptions } from "../types/Web3";
 
 class TeeOffer {
     public address: string;
@@ -56,6 +57,27 @@ class TeeOffer {
     public async getTcb(): Promise<string> {
         this.tcb = await this.contract.methods.getTcb().call();
         return this.tcb!;
+    }
+
+    /**
+     * Function for fetching TLB provider from blockchain
+     */
+    public async getTlb(): Promise<string> {
+        const tlb: string = await this.contract.methods.getTlb().call();
+        if (this.orderInfo) this.orderInfo.tlb = tlb;
+        return tlb;
+    }
+
+    /**
+     * Updates TLB in order info
+     * @param tlb - new TLB
+     * @param transactionOptions - object what contains alternative action account or gas limit (optional)
+     */
+    public async addTlb(tlb: string, transactionOptions?: TransactionOptions): Promise<void> {
+        checkIfActionAccountInitialized();
+
+        await this.contract.methods.addTlb(tlb).send(createTransactionOptions(transactionOptions));
+        if (this.orderInfo) this.orderInfo.tlb = tlb;
     }
 }
 

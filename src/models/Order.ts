@@ -1,4 +1,12 @@
-import { OrderInfo, OrderInfoArguments, OrderResult, OrderResultArguments, OrderStatus } from "../types/Order";
+import {
+    OrderArgs,
+    OrderArgsArguments,
+    OrderInfo,
+    OrderInfoArguments,
+    OrderResult,
+    OrderResultArguments,
+    OrderStatus,
+} from "../types/Order";
 import { Contract } from "web3-eth-contract";
 import _ from "lodash";
 import rootLogger from "../logger";
@@ -33,7 +41,13 @@ class Order {
      */
     public async getOrderInfo(): Promise<OrderInfo> {
         const orderInfoParams = await this.contract.methods.getOrderInfo().call();
-        return (this.orderInfo = <OrderInfo>_.zipObject(OrderInfoArguments, orderInfoParams));
+
+        // Deep convert arrays (used in blockchain) to order info
+        this.orderInfo = <OrderInfo>_.zipObject(OrderInfoArguments, orderInfoParams);
+        // @ts-ignore
+        this.orderInfo.args = <OrderArgs>_.zipObject(OrderArgsArguments, this.orderInfo.args);
+
+        return this.orderInfo;
     }
 
     public async getConsumer(): Promise<string> {
@@ -94,8 +108,11 @@ class Order {
     public async createSubOrder(subOrderInfo: OrderInfo, transactionOptions?: TransactionOptions) {
         checkIfActionAccountInitialized();
 
-        // Convert order info to array (used in blockchain)
-        const subOrderInfoArguments = _.at(subOrderInfo, OrderInfoArguments);
+        let subOrderInfoArguments = JSON.parse(JSON.stringify(subOrderInfo));
+
+        // Deep convert order info to array (used in blockchain)
+        subOrderInfoArguments.args = _.at(subOrderInfoArguments.args, OrderArgsArguments);
+        subOrderInfoArguments = _.at(subOrderInfoArguments, OrderInfoArguments);
 
         await this.contract.methods
             .createSubOrder(subOrderInfoArguments)

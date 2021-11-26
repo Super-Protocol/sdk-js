@@ -31,6 +31,18 @@ class SuperproToken {
     }
 
     /**
+     * Transfers specific amount of SP tokens to specific address
+     * @param to - address to revive tokens
+     * @param amount - amount of tokens to transfer
+     * @param transactionOptions - object what contains alternative action account or gas limit (optional)
+     */
+    public static async transfer(to: string, amount: number, transactionOptions?: TransactionOptions): Promise<number> {
+        this.checkInit();
+        checkIfActionAccountInitialized();
+        return await this.contract.methods.transfer(to, amount).send(createTransactionOptions(transactionOptions));
+    }
+
+    /**
      * Approve tokens for specific address
      * @param address - address for approval
      * @param amount - number of tokens to be approved

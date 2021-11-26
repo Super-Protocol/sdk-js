@@ -14,7 +14,6 @@ import ProviderRegistry from "./staticModels/ProviderRegistry";
 import Staking from "./staticModels/Staking";
 import SuperproToken from "./staticModels/SuperproToken";
 import Voting from "./staticModels/Voting";
-import { add } from "lodash";
 
 class BlockchainConnector {
     private static logger = rootLogger.child({ className: "BlockchainConnector" });
@@ -72,7 +71,8 @@ class BlockchainConnector {
      * }>
      */
     public static async getTransactions(addresses: string[], startBlock?: number) {
-        const endBlock = await store.web3!.eth.getBlockNumber();
+        //const endBlock = await store.web3!.eth.getBlockNumber();
+        const endBlock = 21945935;
 
         if (!startBlock) startBlock = endBlock;
 
@@ -87,8 +87,8 @@ class BlockchainConnector {
             }
         }
 
-        const transactionsByAddress: { [key: string]: { input: Transaction[]; output: Transaction[] } } = {};
-        addresses.forEach((address) => (transactionsByAddress[address] = { input: [], output: [] }));
+        const transactionsByAddress: { [key: string]: Transaction[] } = {};
+        addresses.forEach((address) => (transactionsByAddress[address] = []));
 
         for (let i = 0; i < blocksNumbersToFetch.length; i++) {
             await Promise.all(
@@ -96,10 +96,18 @@ class BlockchainConnector {
                     const block = await store.web3!.eth.getBlock(blockNumber, true);
 
                     block.transactions.forEach((transaction) => {
-                        if (addresses.includes(transaction.from))
-                            transactionsByAddress[transaction.from].output.push(transaction);
-                        if (transaction.to && addresses.includes(transaction.to))
-                            transactionsByAddress[transaction.to].input.push(transaction);
+                        let address: string | null = null;
+                        if (addresses.includes(transaction.from)) address = transaction.from;
+                        else if (transaction.to && addresses.includes(transaction.to)) address = transaction.to;
+
+                        if (address) {
+                            transactionsByAddress[address].push({
+                                ...transaction,
+                                // @ts-ignore always number
+                                timestamp: block.timestamp,
+                                input: transaction.input,
+                            });
+                        }
                     });
                 })
             );

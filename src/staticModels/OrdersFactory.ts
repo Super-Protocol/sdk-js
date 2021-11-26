@@ -4,7 +4,7 @@ import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
 import OrdersFactoryJSON from "../contracts/OrdersFactory.json";
 import { checkIfActionAccountInitialized, checkIfInitialized, createTransactionOptions } from "../utils";
-import { OrderInfo, OrderInfoArguments } from "../types/Order";
+import { OrderArgsArguments, OrderInfo, OrderInfoArguments } from "../types/Order";
 import _ from "lodash";
 import { ContractEvent, TransactionOptions } from "../types/Web3";
 
@@ -67,33 +67,13 @@ class OrdersFactory {
         this.checkInit();
         checkIfActionAccountInitialized();
 
-        // Convert order info to array (used in blockchain)
-        const subOrderInfoArguments = _.at(orderInfo, OrderInfoArguments);
+        let orderInfoArguments = JSON.parse(JSON.stringify(orderInfo));
 
-        await this.contract.methods.create(subOrderInfoArguments).send(createTransactionOptions(transactionOptions));
-    }
+        // Deep convert order info to array (used in blockchain)
+        orderInfoArguments.args = _.at(orderInfoArguments.args, OrderArgsArguments);
+        orderInfoArguments = _.at(orderInfoArguments, OrderInfoArguments);
 
-    /**
-     * Function for creating sub orders
-     * @param orderAddress - address of parent order
-     * @param subOrderInfo - order info for new subOrder
-     * @param transactionOptions - object what contains alternative action account or gas limit (optional)
-     * @returns Promise<void> - Does not return address of created contract!
-     */
-    public static async createSubOrder(
-        orderAddress: string,
-        subOrderInfo: OrderInfo,
-        transactionOptions?: TransactionOptions
-    ) {
-        this.checkInit();
-        checkIfActionAccountInitialized();
-
-        // Convert order info to array (used in blockchain)
-        const subOrderInfoArguments = _.at(subOrderInfo, OrderInfoArguments);
-
-        await this.contract.methods
-            .createSubOrder(orderAddress, subOrderInfoArguments)
-            .send(createTransactionOptions(transactionOptions));
+        await this.contract.methods.create(orderInfoArguments).send(createTransactionOptions(transactionOptions));
     }
 
     /**

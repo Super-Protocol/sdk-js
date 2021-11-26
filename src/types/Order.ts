@@ -8,6 +8,13 @@ export enum OrderStatus {
     AwaitingPayment = "6", // FIXME: there is no status AwaitingPayment in blockchain yet
 }
 
+export const OrderArgsArguments = ["slots", "inputOffers", "selectedOffers"];
+export type OrderArgs = {
+    slots: number;
+    inputOffers: string[];
+    selectedOffers: string[];
+};
+
 // Order of keys for this object in blockchain contract
 export const OrderInfoArguments = [
     "offer",
@@ -16,6 +23,7 @@ export const OrderInfoArguments = [
     "encryptedRequirements",
     "encryptedArgs",
     "status",
+    "args",
 ];
 export type OrderInfo = {
     offer: string;
@@ -24,6 +32,7 @@ export type OrderInfo = {
     encryptedRequirements: string;
     encryptedArgs: string;
     status: OrderStatus;
+    args: OrderArgs;
 };
 
 // Order of keys for this object in blockchain contract

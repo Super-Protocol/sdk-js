@@ -20,4 +20,5 @@ export type Transaction = {
     gasPrice: string;
     gas: number;
     input: string;
+    timestamp: number;
 };

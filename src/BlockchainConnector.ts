@@ -102,8 +102,7 @@ class BlockchainConnector {
                         if (address) {
                             transactionsByAddress[address].push({
                                 ...transaction,
-                                // @ts-ignore always number
-                                timestamp: block.timestamp,
+                                timestamp: +block.timestamp * 1000,
                                 input: transaction.input,
                             });
                         }

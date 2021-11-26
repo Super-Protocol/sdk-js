@@ -71,8 +71,7 @@ class BlockchainConnector {
      * }>
      */
     public static async getTransactions(addresses: string[], startBlock?: number) {
-        //const endBlock = await store.web3!.eth.getBlockNumber();
-        const endBlock = 21945935;
+        const endBlock = await store.web3!.eth.getBlockNumber();
 
         if (!startBlock) startBlock = endBlock;
 

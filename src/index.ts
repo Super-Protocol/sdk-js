@@ -26,6 +26,9 @@ export * from "./staticModels/Voting";
 export { default as SuperproToken } from "./staticModels/SuperproToken";
 export * from "./staticModels/SuperproToken";
 
+export { default as Superpro } from "./staticModels/Superpro";
+export * from "./staticModels/Superpro";
+
 export { default as Order } from "./models/Order";
 export * from "./models/Order";
 

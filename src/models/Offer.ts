@@ -54,6 +54,16 @@ class Offer {
 
         await this.contract.methods.disable().send(createTransactionOptions(transactionOptions));
     }
+
+    /**
+     * Function for enabling offer
+     * @param transactionOptions - object what contains alternative action account or gas limit (optional)
+     */
+    public async enable(transactionOptions?: TransactionOptions) {
+        checkIfActionAccountInitialized();
+
+        await this.contract.methods.enable().send(createTransactionOptions(transactionOptions));
+    }
 }
 
 export default Offer;

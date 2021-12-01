@@ -100,6 +100,15 @@ class Order {
     }
 
     /**
+     * Starts suspended order
+     */
+    public async start(transactionOptions?: TransactionOptions) {
+        checkIfActionAccountInitialized();
+
+        await this.contract.methods.start().send(createTransactionOptions(transactionOptions));
+    }
+
+    /**
      * Function for creating sub orders for current order
      * @param subOrderInfo - order info for new subOrder
      * @param blocking - is sub order blocking

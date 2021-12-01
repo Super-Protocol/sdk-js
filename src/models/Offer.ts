@@ -15,6 +15,7 @@ class Offer {
 
     public orderInfo?: OfferInfo;
     public provider?: string;
+    public providerAuthority?: string;
 
     constructor(address: string) {
         checkIfInitialized();
@@ -45,6 +46,13 @@ class Offer {
         return this.provider!;
     }
 
+    /**
+     * Function for fetching TEE offer provider authority account from blockchain
+     */
+    public async getProviderAuthority(): Promise<string> {
+        this.providerAuthority = await this.contract.methods.getProviderAuthority().call();
+        return this.providerAuthority!;
+    }
     /**
      * Function for disabling offer
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)

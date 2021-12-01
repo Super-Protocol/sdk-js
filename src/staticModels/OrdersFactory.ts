@@ -60,10 +60,11 @@ class OrdersFactory {
     /**
      * Function for creating orders
      * @param orderInfo - order info for new order
-     * @returns Promise<void> - Does not return address of created contract!
+     * @param suspended - is orders suspended
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
+     * @returns Promise<void> - Does not return address of created contract!
      */
-    public static async createOrder(orderInfo: OrderInfo, transactionOptions?: TransactionOptions) {
+    public static async createOrder(orderInfo: OrderInfo, suspended: boolean, transactionOptions?: TransactionOptions) {
         this.checkInit();
         checkIfActionAccountInitialized();
 
@@ -73,7 +74,7 @@ class OrdersFactory {
         orderInfoArguments.args = _.at(orderInfoArguments.args, OrderArgsArguments);
         orderInfoArguments = _.at(orderInfoArguments, OrderInfoArguments);
 
-        await this.contract.methods.create(orderInfoArguments).send(createTransactionOptions(transactionOptions));
+        await this.contract.methods.create(orderInfoArguments, suspended).send(createTransactionOptions(transactionOptions));
     }
 
     /**

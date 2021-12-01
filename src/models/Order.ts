@@ -102,10 +102,11 @@ class Order {
     /**
      * Function for creating sub orders for current order
      * @param subOrderInfo - order info for new subOrder
+     * @param blocking - is sub order blocking
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      * @returns Promise<void> - Does not return address of created contract!
      */
-    public async createSubOrder(subOrderInfo: OrderInfo, transactionOptions?: TransactionOptions) {
+    public async createSubOrder(subOrderInfo: OrderInfo, blocking: boolean, transactionOptions?: TransactionOptions) {
         checkIfActionAccountInitialized();
 
         let subOrderInfoArguments = JSON.parse(JSON.stringify(subOrderInfo));
@@ -115,7 +116,7 @@ class Order {
         subOrderInfoArguments = _.at(subOrderInfoArguments, OrderInfoArguments);
 
         await this.contract.methods
-            .createSubOrder(subOrderInfoArguments)
+            .createSubOrder(subOrderInfoArguments, blocking)
             .send(createTransactionOptions(transactionOptions));
     }
 

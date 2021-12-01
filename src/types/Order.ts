@@ -5,7 +5,9 @@ export enum OrderStatus {
     Canceled = "3",
     Done = "4",
     Error = "5",
-    AwaitingPayment = "6", // FIXME: there is no status AwaitingPayment in blockchain yet
+    Blocked = "6",
+    Suspended = "7",
+    AwaitingPayment = "8",
 }
 
 export const OrderArgsArguments = ["slots", "inputOffers", "selectedOffers"];

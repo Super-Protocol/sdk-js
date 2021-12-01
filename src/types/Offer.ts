@@ -1,19 +1,24 @@
 export enum OfferType {
     TeeOffer = "0",
     Storage = "1",
-    Script = "2",
-    AdSegment = "3",
+    Solution = "2",
+    Data = "3",
+}
+
+export enum OfferGroup {
+    Input = "0",
+    Output = "1",
 }
 
 // Order of keys for this object in blockchain contract
 export const OfferInfoArguments = [
     "name",
+    "group",
     "offerType",
     "cancelable",
     "description",
     "holdSum",
-    "price",
-    "priceUnit",
+    "restrictions",
     "properties",
     "maxDurationTimeMinutes",
     "inputFormat",
@@ -27,12 +32,12 @@ export const OfferInfoArguments = [
 ];
 export type OfferInfo = {
     name: string;
+    group: OfferGroup;
     offerType: OfferType;
     cancelable: boolean;
     description: string;
     holdSum: number;
-    price: number;
-    priceUnit: number;
+    restrictions: string[];
     properties: string;
     maxDurationTimeMinutes: number;
     inputFormat: string;

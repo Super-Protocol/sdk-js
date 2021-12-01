@@ -1,22 +1,22 @@
 import { CryptoAlgorithm, TeeOfferInfo } from '.';
 import Crypto from './Crypto';
-import Offer from './models/Offer';
 import Order from './models/Order';
 import TeeOffer from './models/TeeOffer';
-import { OfferInfo } from './types/Offer';
 import { OrderInfo } from './types/Order';
 
 const tlbMock = {
     argsPublicKeyAlgo: 'RSA-Hybrid',
-    argsPublicKey: '',
+    argsPublicKey: `-----BEGIN PUBLIC KEY-----
+MIGeMA0GCSqGSIb3DQEBAQUAA4GMADCBiAKBgG0Bpb0BMgdCnKvuAJKB9qGDwXok
+ta0sGrExwQFMTmW48r2hM28YSWkyJ+tLiF+4K44vO8p0z93IOjauBflvGhrf2jOk
+cN9k8eGLMcfOAw5v9/ajo53ZtQtTRaai0UyL6r9Qys1hXBmUeH8I5DawqUuxiSnN
+de/ESZiSbtIiaUWbAgMBAAE=
+-----END PUBLIC KEY-----`,
 };
 
 class TIIGenerator {
-    public static async generate(url: string, args: any, solutionHashes: string[], encryptionKey: string, orderId: string): Promise<string> {
+    public static async generate(orderId: string, url: string, solutionHashes: string[], args: any, encryptionKey: string,  encryptionKeyAlgo: string): Promise<string> {
         const order: Order = new Order(orderId);
-        const orderInfo: OrderInfo = await order.getOrderInfo();
-
-        const offer: Offer = new Offer(orderInfo.offer);
 
         const parentOrderAddress: string = await order.getParentOrder();
         const parentOrder: Order = new Order(parentOrderAddress);
@@ -30,8 +30,9 @@ class TIIGenerator {
 
         const tri: TeeRunInfo = {
             solutionHashes,
-            encryptionKey,
             args,
+            encryptionKey,
+            encryptionKeyAlgo,
         };
 
         return JSON.stringify({
@@ -55,8 +56,9 @@ class TIIGenerator {
 
 export type TeeRunInfo = {
     solutionHashes: string[];
-    encryptionKey: string;
     args: any;
+    encryptionKey: string;
+    encryptionKeyAlgo: string;
 };
 
 export default TIIGenerator;

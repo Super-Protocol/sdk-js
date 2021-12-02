@@ -35,6 +35,14 @@ class ProviderRegistry {
     }
 
     /**
+     * Fetch provider address by provider authority account
+     */
+    public static async get(providerAuthority: string): Promise<string> {
+        this.checkInit();
+        return await this.contract.methods.get(providerAuthority).call();
+    }
+
+    /**
      * Reg new provider
      * @param providerInfo - data of new provider
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)

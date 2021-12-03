@@ -1,18 +1,13 @@
-import { CryptoAlgorithm, TeeOfferInfo } from '.';
-import Crypto from './Crypto';
+import { TLBlockDeserializeResultType, TLBlockSerializerV1 } from '@super-protocol/tee-lib';
+import { readFileSync } from 'fs';
+
+import { Offer, OfferInfo, TeeOfferInfo } from '.';
+import Crypto, { CryptoAlgorithm } from './Crypto';
 import Order from './models/Order';
 import TeeOffer from './models/TeeOffer';
 import { OrderInfo } from './types/Order';
 
-const tlbMock = {
-    argsPublicKeyAlgo: 'RSA-Hybrid',
-    argsPublicKey: `-----BEGIN PUBLIC KEY-----
-MIGeMA0GCSqGSIb3DQEBAQUAA4GMADCBiAKBgG0Bpb0BMgdCnKvuAJKB9qGDwXok
-ta0sGrExwQFMTmW48r2hM28YSWkyJ+tLiF+4K44vO8p0z93IOjauBflvGhrf2jOk
-cN9k8eGLMcfOAw5v9/ajo53ZtQtTRaai0UyL6r9Qys1hXBmUeH8I5DawqUuxiSnN
-de/ESZiSbtIiaUWbAgMBAAE=
------END PUBLIC KEY-----`,
-};
+const tlbMock = Buffer.from(readFileSync(__dirname + '/__mock__/tlb.b64').toString(), 'base64');
 
 class TIIGenerator {
     public static async generate(orderId: string, url: string, solutionHashes: string[], args: any, encryptionKey: string,  encryptionKeyAlgo: string): Promise<string> {
@@ -24,8 +19,17 @@ class TIIGenerator {
 
         const teeOffer: TeeOffer = new TeeOffer(parentOrderInfo.offer);
         const teeOfferInfo: TeeOfferInfo = await teeOffer.getInfo();
-        
-        // TODO: get real tlb from teeOffer
+
+        // TODO: get real tlb
+        const tlb: TLBlockDeserializeResultType = new TLBlockSerializerV1().deserializeTlb(tlbMock);
+
+        // TODO: uncomment when offerInfo.hash is ready
+        // const solutionHashes: string[] = await Promise.all(parentOrderInfo.args.inputOffers.map(async (offerAddress: string) => {
+        //     const offer: Offer = new Offer(offerAddress);
+        //     const offerInfo: OfferInfo = await offer.getInfo();
+        //     return offerInfo.hash;
+        // }));
+
         // TODO: check env with SP-149
 
         const tri: TeeRunInfo = {
@@ -37,7 +41,7 @@ class TIIGenerator {
 
         return JSON.stringify({
             url: await Crypto.encrypt(teeOfferInfo.argsPublicKeyAlgo as CryptoAlgorithm, url, teeOfferInfo.argsPublicKey),
-            tri: await Crypto.encrypt(tlbMock.argsPublicKeyAlgo as CryptoAlgorithm, JSON.stringify(tri), tlbMock.argsPublicKey),
+            tri: await Crypto.encrypt('ECIES', JSON.stringify(tri), tlb.data.teePubKeyData.toString('hex')),
         });
     }
 

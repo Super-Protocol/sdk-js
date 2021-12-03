@@ -22,6 +22,7 @@
     "typescript": "^4.4.4"
   },
   "dependencies": {
+    "@super-protocol/tee-lib": "^0.1.0",
     "eccrypto": "^1.1.6",
     "hybrid-crypto-js": "^0.2.4",
     "lodash": "^4.17.21",

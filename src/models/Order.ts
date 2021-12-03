@@ -109,6 +109,22 @@ class Order {
     }
 
     /**
+     * Completes order
+     */
+    public async complete(
+        status: OrderStatus,
+        encryptedResult?: string,
+        encryptedError?: string,
+        transactionOptions?: TransactionOptions
+    ) {
+        checkIfActionAccountInitialized();
+
+        await this.contract.methods
+            .complete(status, encryptedResult, encryptedError)
+            .send(createTransactionOptions(transactionOptions));
+    }
+
+    /**
      * Function for creating sub orders for current order
      * @param subOrderInfo - order info for new subOrder
      * @param blocking - is sub order blocking

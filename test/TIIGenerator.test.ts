@@ -8,7 +8,7 @@ const argsPublicKey =
 
 const tii = JSON.stringify({
     "url":"{\"iv\":\"tNiH58S8m1BbM+C4GMPrhQ==\",\"ephemPublicKey\":\"BJK8eU5zN6xFfAjACwDbrVR6HqsDS1i+gJ59FIaA8fGi3OpMpIEyLCTUJqvkLCaEowuZNdU4/NFX1WZJvnzzFbc=\",\"ciphertext\":\"fXZThnssqLWG19gNhvcDrg==\",\"mac\":\"nU27vLAymmzv/gEc83G7drz6AJEeycHFLX66z3UqMng=\"}",
-    "tri":"{\"v\":\"hybrid-crypto-js_0.2.4\",\"iv\":\"NDVlylaXKYz5K5oGTKTVqjISl6HGJMGNXWMIgwxq/sM=\",\"keys\":{\"86:e7:6f:c5:d0:d9:9f:85:c9:a5:20:18:5e:28:0b:3d:a0:fc:7e:fa\":\"EUlcGYIvAz47cbAn6WTIzHHHUFTE9dMpOcgcqevOSLaaDEcLTJMqOPgEjyb34ILhvXrvBmewH17YX/fvY1n4fGUsMfDlRKgtCuKNEHI+8UG+meu4y1/7Qghs9oI38mDc8TF3b6lTWR2rXCTzEF+ai9K6CXFkGk3dbN4iaNhumIM=\"},\"cipher\":\"NEwfNj5DLU080Rw63OLTVpE030tbwOKyqLKpKlXc4VThzhGzqKacvYdyk6xV/FjoVUAY52R4JAh15cut+sl0DDe/BYzq93fBkkdb3Wnp16z33PLgeFdVgUAET5AHCCLe\",\"tag\":\"lzNG6FYA2ybQYnZKAcM/yg==\"}"
+    "tri":"{\"iv\":\"xXPS60JRRY8ZMIaTA+gBTA==\",\"ephemPublicKey\":\"BFLisfCUXvHTUyY2pOmO9t/ZXJoTouTkxp/rauB0Y5H9ZmNbwp1tLzZKp3lqiwu500U53MQLpsjujFynb/q5E+k=\",\"ciphertext\":\"D0edcGUkw3rJZE3JUQjSQZcWz/UwLwU+/XsD/CoqCauXjsH9B6wB1hHVJ5GZuUVOL7xTxpOHPOD3GLHRnltnSVyLzU+/auNOon9eKXxTKDD+m8/MRojg80KZ288Y+1Tm\",\"mac\":\"GREKOybYpxOxuKbFnL3EhXwSLj0mDESrrWEXedOR630=\"}"
 });
 
 
@@ -46,22 +46,10 @@ describe("TIIGenerator", () => {
 
         expect(typeof tii).toBe('string');
 
-        console.log(tii);
-
         const tiiObj = JSON.parse(tii);
 
         expect(tiiObj).toHaveProperty('url');
         expect(tiiObj).toHaveProperty('tri');
-    });
-
-    test("get TRI", async () => {
-        const tri = await TIIGenerator.getTRI(tii,argsPrivateKey, argsPublicKeyAlgo);
-
-        expect(tri).toHaveProperty('solutionHashes');
-        expect(tri).toHaveProperty('args');
-        expect(tri).toHaveProperty('encryptionKey');
-        expect(tri).toHaveProperty('encryptionKeyAlgo');
-        expect(tri.encryptionKeyAlgo).toBe(argsPublicKeyAlgo);
     });
 
     test("get url", async () => {

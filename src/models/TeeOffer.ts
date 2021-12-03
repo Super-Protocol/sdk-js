@@ -7,6 +7,7 @@ import store from "../store";
 import { checkIfActionAccountInitialized, checkIfInitialized, createTransactionOptions } from "../utils";
 import { TeeOfferInfo, TeeOfferInfoArguments } from "../types/TeeOffer";
 import { TransactionOptions } from "../types/Web3";
+import {OfferType} from "../types/Offer";
 
 class TeeOffer {
     public address: string;
@@ -14,6 +15,7 @@ class TeeOffer {
     private logger: typeof rootLogger;
 
     public orderInfo?: TeeOfferInfo;
+    public type?: OfferType;
     public provider?: string;
     public disabledAfter?: number;
     public tcb?: string;
@@ -41,6 +43,14 @@ class TeeOffer {
     public async getProvider(): Promise<string> {
         this.provider = await this.contract.methods.getProvider().call();
         return this.provider!;
+    }
+
+    /**
+     * Fetch offer type from blockchain (works for TEE and Value offers)
+     */
+    public async getOfferType(): Promise<OfferType> {
+        this.type = await this.contract.methods.getOfferType().call();
+        return this.type!;
     }
 
     /**

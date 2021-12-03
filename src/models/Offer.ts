@@ -5,7 +5,7 @@ import { AbiItem } from "web3-utils";
 import OfferJSON from "../contracts/Offer.json";
 import store from "../store";
 import { checkIfActionAccountInitialized, checkIfInitialized, createTransactionOptions } from "../utils";
-import { OfferInfo, OfferInfoArguments } from "../types/Offer";
+import {OfferInfo, OfferInfoArguments, OfferType} from "../types/Offer";
 import { TransactionOptions } from "../types/Web3";
 
 class Offer {
@@ -15,6 +15,7 @@ class Offer {
 
     public orderInfo?: OfferInfo;
     public provider?: string;
+    public type?: OfferType;
     public providerAuthority?: string;
 
     constructor(address: string) {
@@ -39,11 +40,19 @@ class Offer {
     }
 
     /**
-     * Function for fetching offer provider from blockchain
+     * Function for fetching offer provider from blockchain (works for TEE and Value offers)
      */
     public async getProvider(): Promise<string> {
         this.provider = await this.contract.methods.getProvider().call();
         return this.provider!;
+    }
+
+    /**
+     * Fetch offer type from blockchain (works for TEE and Value offers)
+     */
+    public async getOfferType(): Promise<OfferType> {
+        this.type = await this.contract.methods.getOfferType().call();
+        return this.type!;
     }
 
     /**

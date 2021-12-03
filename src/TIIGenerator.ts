@@ -7,7 +7,7 @@ import Order from './models/Order';
 import TeeOffer from './models/TeeOffer';
 import { OrderInfo } from './types/Order';
 
-const tlbMock = Buffer.from(readFileSync(__dirname + '/__mock__/tlb.b64').toString(), 'base64');
+const tlbMock = Buffer.from(readFileSync(__dirname + '/__mocks__/tlb.b64').toString(), 'base64');
 
 class TIIGenerator {
     public static async generate(orderId: string, url: string, solutionHashes: string[], args: any, encryptionKey: string,  encryptionKeyAlgo: string): Promise<string> {

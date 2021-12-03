@@ -679,6 +679,11 @@
     "@types/yargs" "^16.0.0"
     chalk "^4.0.0"
 
+"@msgpack/msgpack@^2.7.1":
+  version "2.7.1"
+  resolved "https://registry.npmjs.org/@msgpack/msgpack/-/msgpack-2.7.1.tgz#f01954baadc502f3c82e9c3f72c740ce65eae1cc"
+  integrity sha512-ApwiSL2c9ObewdOE/sqt788P1C5lomBOHyO8nUBCr4ofErBCnYQ003NtJ8lS9OQZc11ximkbmgAZJjB8y6cCdA==
+
 "@sindresorhus/is@^0.14.0":
   version "0.14.0"
   resolved "https://registry.yarnpkg.com/@sindresorhus/is/-/is-0.14.0.tgz#9fb3a3cf3132328151f353de4632e01e52102bea"
@@ -697,6 +702,14 @@
   integrity sha512-OAPJUAtgeINhh/TAlUID4QTs53Njm7xzddaVlEs/SXwgtiD1tW22zAB/W1wdqfrpmikgaWQ9Fw6Ws+hsiRm5Vg==
   dependencies:
     "@sinonjs/commons" "^1.7.0"
+
+"@super-protocol/tee-lib@^0.1.0":
+  version "0.1.0"
+  resolved "https://npm.pkg.github.com/download/@super-protocol/tee-lib/0.1.0/cda3c8560d18814b5601b5335fb5caceb26092f175cb24071620e536df10fe41#eacbd3cef339b7e40efb47f4c94e5f3e726102fe"
+  integrity sha512-AIcEFwYqDaePxAvt1TrQbykPEn4EzGZXnYYMBZO2UMCMt+BLf3alCMLIln8cK0sSd1A5rsrgZm9zu6cs4EYMRw==
+  dependencies:
+    "@msgpack/msgpack" "^2.7.1"
+    gzip-js "^0.3.2"
 
 "@szmarczak/http-timer@^1.1.2":
   version "1.1.2"
@@ -1549,6 +1562,11 @@ crc-32@^1.2.0:
     exit-on-epipe "~1.0.1"
     printj "~1.1.0"
 
+"crc32@>= 0.2.2":
+  version "0.2.2"
+  resolved "https://registry.npmjs.org/crc32/-/crc32-0.2.2.tgz#7ad220d6ffdcd119f9fc127a7772cacea390a4ba"
+  integrity sha1-etIg1v/c0Rn5/BJ6d3LKzqOQpLo=
+
 create-ecdh@^4.0.0:
   version "4.0.4"
   resolved "https://registry.yarnpkg.com/create-ecdh/-/create-ecdh-4.0.4.tgz#d6e7f4bffa66736085a0762fd3a632684dabcc4e"
@@ -1704,6 +1722,11 @@ define-properties@^1.1.3:
   integrity sha512-3MqfYKj2lLzdMSf8ZIZE/V+Zuy+BgD6f164e8K2w7dgnpKArBDerGYpM46IYYcjnkdPNMjPk9A6VFB8+3SKlXQ==
   dependencies:
     object-keys "^1.0.12"
+
+"deflate-js@>= 0.2.2":
+  version "0.2.3"
+  resolved "https://registry.npmjs.org/deflate-js/-/deflate-js-0.2.3.tgz#f85abb58ebc5151a306147473d57c3e4f7e4426b"
+  integrity sha1-+Fq7WOvFFRowYUdHPVfD5PfkQms=
 
 delayed-stream@~1.0.0:
   version "1.0.0"
@@ -2413,6 +2436,14 @@ graceful-fs@^4.1.2, graceful-fs@^4.1.6, graceful-fs@^4.2.4:
   version "4.2.8"
   resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.2.8.tgz#e412b8d33f5e006593cbd3cee6df9f2cebbe802a"
   integrity sha512-qkIilPUYcNhJpd33n0GBXTB1MMPp14TxEsEs0pTrsSVucApsYzW5V+Q8Qxhik6KU3evy+qkAAowTByymK0avdg==
+
+gzip-js@^0.3.2:
+  version "0.3.2"
+  resolved "https://registry.npmjs.org/gzip-js/-/gzip-js-0.3.2.tgz#23117efeeb28cf385248deff0dffad894836d96b"
+  integrity sha1-IxF+/usozzhSSN7/Df+tiUg22Ws=
+  dependencies:
+    crc32 ">= 0.2.2"
+    deflate-js ">= 0.2.2"
 
 har-schema@^2.0.0:
   version "2.0.0"

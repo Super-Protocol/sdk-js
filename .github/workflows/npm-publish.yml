@@ -15,9 +15,13 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: 14
-      - run: yarn
+          registry-url: https://npm.pkg.github.com/
+          scope: super-protocol
+          always-auth: true
+      - run: yarn --frozen-lock --ignore-scripts
         env:
-          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN_GH }}
+      - run: yarn run prepare --if-present
       - run: npm test
 
   publish-gpr:
@@ -32,9 +36,12 @@ jobs:
         with:
           node-version: 14
           registry-url: https://npm.pkg.github.com/
-      - run: yarn
+          scope: super-protocol
+          always-auth: true
+      - run: yarn --frozen-lock --ignore-scripts
         env:
-          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN_GH }}
+      - run: yarn run prepare --if-present
       - run: npm publish
         env:
-          NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

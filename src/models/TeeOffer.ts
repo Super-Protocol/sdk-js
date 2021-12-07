@@ -7,7 +7,7 @@ import store from "../store";
 import { checkIfActionAccountInitialized, checkIfInitialized, createTransactionOptions } from "../utils";
 import { TeeOfferInfo, TeeOfferInfoArguments } from "../types/TeeOffer";
 import { TransactionOptions } from "../types/Web3";
-import {OfferType} from "../types/Offer";
+import { OfferType } from "../types/Offer";
 
 class TeeOffer {
     public address: string;

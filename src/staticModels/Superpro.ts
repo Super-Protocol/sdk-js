@@ -3,7 +3,7 @@ import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
 import SuperproJSON from "../contracts/Superpro.json";
 import store from "../store";
-import {ContractName, ParamName} from "../types/Superpro";
+import { ContractName, ParamName } from "../types/Superpro";
 
 class Superpro {
     public static address: string;
@@ -41,7 +41,7 @@ class Superpro {
      */
     public static async getParam(name: ParamName): Promise<number> {
         this.checkInit();
-        return +await this.contract.methods.getParam(name).call();
+        return +(await this.contract.methods.getParam(name).call());
     }
 }
 

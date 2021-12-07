@@ -1,16 +1,27 @@
-import { TLBlockDeserializeResultType, TLBlockSerializerV1 } from '@super-protocol/tee-lib';
-import { readFileSync } from 'fs';
+import { TLBlockDeserializeResultType, TLBlockSerializerV1 } from "@super-protocol/tee-lib";
+import { readFileSync } from "fs";
 
-import { Offer, OfferInfo, TeeOfferInfo } from '.';
-import Crypto, { CryptoAlgorithm } from './Crypto';
-import Order from './models/Order';
-import TeeOffer from './models/TeeOffer';
-import { OrderInfo } from './types/Order';
+import { TeeOfferInfo } from ".";
+import Crypto, { CryptoAlgorithm } from "./Crypto";
+import Order from "./models/Order";
+import TeeOffer from "./models/TeeOffer";
+import { OrderInfo } from "./types/Order";
 
-const tlbMock = Buffer.from(readFileSync(__dirname + '/__mocks__/tlb.b64').toString(), 'base64');
+// TODO: make it async
+let tlbMock: Buffer | undefined;
+try {
+    tlbMock = Buffer.from(readFileSync(__dirname + "/__mocks__/tlb.b64").toString(), "base64");
+} catch (e) {}
 
 class TIIGenerator {
-    public static async generate(orderId: string, url: string, solutionHashes: string[], args: any, encryptionKey: string,  encryptionKeyAlgo: string): Promise<string> {
+    public static async generate(
+        orderId: string,
+        url: string,
+        solutionHashes: string[],
+        args: any,
+        encryptionKey: string,
+        encryptionKeyAlgo: string
+    ): Promise<string> {
         const order: Order = new Order(orderId);
 
         const parentOrderAddress: string = await order.getParentOrder();
@@ -21,6 +32,7 @@ class TIIGenerator {
         const teeOfferInfo: TeeOfferInfo = await teeOffer.getInfo();
 
         // TODO: get real tlb
+        if (!tlbMock) throw new Error("TLB not found");
         const tlb: TLBlockDeserializeResultType = new TLBlockSerializerV1().deserializeTlb(tlbMock);
 
         // TODO: uncomment when offerInfo.hash is ready
@@ -40,8 +52,12 @@ class TIIGenerator {
         };
 
         return JSON.stringify({
-            url: await Crypto.encrypt(teeOfferInfo.argsPublicKeyAlgo as CryptoAlgorithm, url, teeOfferInfo.argsPublicKey),
-            tri: await Crypto.encrypt('ECIES', JSON.stringify(tri), tlb.data.teePubKeyData.toString('hex')),
+            url: await Crypto.encrypt(
+                teeOfferInfo.argsPublicKeyAlgo as CryptoAlgorithm,
+                url,
+                teeOfferInfo.argsPublicKey
+            ),
+            tri: await Crypto.encrypt("ECIES", JSON.stringify(tri), tlb.data.teePubKeyData.toString("hex")),
         });
     }
 

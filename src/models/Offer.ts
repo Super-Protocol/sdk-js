@@ -81,6 +81,16 @@ class Offer {
 
         await this.contract.methods.enable().send(createTransactionOptions(transactionOptions));
     }
+
+    /**
+     * Checks if offer (offerAddress) satisfies restrictions in this offer
+     * @param offerAddress - address of offer what needs to be checked
+     */
+    public async checkRestrictionsFor(offerAddress: string) {
+        checkIfActionAccountInitialized();
+
+        return await this.contract.methods.checkRestrictionsFor(offerAddress).call();
+    }
 }
 
 export default Offer;

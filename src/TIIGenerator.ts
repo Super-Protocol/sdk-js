@@ -28,14 +28,17 @@ class TIIGenerator {
         // TODO: get real tlb
         const tlb: TLBlockDeserializeResultType = new TLBlockSerializerV1().deserializeTlb(tlbMock);
 
-        const solutionHashes: SolutionHash[] = await Promise.all(parentOrderInfo.args.inputOffers.map(
-            async (offerAddress: string): Promise<SolutionHash> => {
+        const solutionHashes: SolutionHash[] = [];
+        await Promise.all(parentOrderInfo.args.inputOffers.map(
+            async (offerAddress: string): Promise<void> => {
                 const offer: Offer = new Offer(offerAddress);
                 const offerInfo: OfferInfo = await offer.getInfo();
-                return {
-                    hash: offerInfo.hash,
-                    hashAlgo: offerInfo.hashAlgo,
-                };
+                if (offerInfo.hash && offerInfo.hashAlgo) {
+                    solutionHashes.push({
+                        hash: offerInfo.hash,
+                        hashAlgo: offerInfo.hashAlgo,
+                    });
+                }
             }
         ));
 

@@ -1,4 +1,4 @@
-import { OrderInfo, TeeOfferInfo } from '../src';
+import { OfferInfo, OrderInfo, TeeOfferInfo } from '../src';
 import TIIGenerator from '../src/TIIGenerator';
 
 const argsPublicKeyAlgo = 'ECIES';
@@ -25,7 +25,23 @@ jest.mock('../src/models/Order', () => {
         async getOrderInfo() {
             return {
                 offer: '',
+                args: {
+                    inputOffers: ['offer'],
+                },
             } as OrderInfo;
+        },
+    };
+  });
+});
+
+jest.mock('../src/models/Offer', () => {
+  return jest.fn().mockImplementation(() => {
+    return {
+        async getInfo() {
+            return {
+                hash: '875e64e17e414b21b4a029bf88ff2ba0',
+                hashAlgo: 'MD5',
+            } as OfferInfo;
         },
     };
   });
@@ -47,25 +63,25 @@ jest.mock('../src/models/TeeOffer', () => {
 describe('TIIGenerator', () => {
     describe('generate', () => {
         test('generate TII', async () => {
-            const tii = await TIIGenerator.generate('order', '/url', [], {}, 'encriptionKey', argsPublicKeyAlgo);
-    
+            const tii = await TIIGenerator.generate('order', '/url', {}, 'encriptionKey', argsPublicKeyAlgo);
+
             expect(typeof tii).toBe('string');
-    
+
             const tiiObj = JSON.parse(tii);
-    
+
             expect(tiiObj).toHaveProperty('url');
             expect(tiiObj).toHaveProperty('tri');
         });
 
         test('fail for no Order', async () => {
             expect(
-                TIIGenerator.generate('badOrder', '/url', [], {}, 'encriptionKey', argsPublicKeyAlgo)
+                TIIGenerator.generate('badOrder', '/url', {}, 'encriptionKey', argsPublicKeyAlgo)
             ).rejects.toThrowError();
         });
 
         test('fail for no parent Order', async () => {
             expect(
-                TIIGenerator.generate('teeOrder', '/url', [], {}, 'encriptionKey', argsPublicKeyAlgo)
+                TIIGenerator.generate('teeOrder', '/url', {}, 'encriptionKey', argsPublicKeyAlgo)
             ).rejects.toThrowError();
         });
     });
@@ -73,7 +89,7 @@ describe('TIIGenerator', () => {
     describe('getTRI', () => {
         test('get TRI', async () => {
             const tri = await TIIGenerator.getTRI(tii,argsPrivateKey, argsPublicKeyAlgo);
-    
+
             expect(tri).toHaveProperty('solutionHashes');
             expect(tri).toHaveProperty('args');
             expect(tri).toHaveProperty('encryptionKey');

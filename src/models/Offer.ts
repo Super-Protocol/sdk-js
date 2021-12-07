@@ -5,7 +5,7 @@ import { AbiItem } from "web3-utils";
 import OfferJSON from "../contracts/Offer.json";
 import store from "../store";
 import { checkIfActionAccountInitialized, checkIfInitialized, createTransactionOptions } from "../utils";
-import {OfferInfo, OfferInfoArguments, OfferType} from "../types/Offer";
+import { OfferInfo, OfferInfoArguments, OfferType } from "../types/Offer";
 import { TransactionOptions } from "../types/Web3";
 
 class Offer {

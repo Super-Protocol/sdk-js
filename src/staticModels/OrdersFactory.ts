@@ -74,7 +74,9 @@ class OrdersFactory {
         orderInfoArguments.args = _.at(orderInfoArguments.args, OrderArgsArguments);
         orderInfoArguments = _.at(orderInfoArguments, OrderInfoArguments);
 
-        await this.contract.methods.create(orderInfoArguments, suspended).send(createTransactionOptions(transactionOptions));
+        await this.contract.methods
+            .create(orderInfoArguments, suspended)
+            .send(createTransactionOptions(transactionOptions));
     }
 
     /**

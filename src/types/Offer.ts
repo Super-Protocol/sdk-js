@@ -29,6 +29,9 @@ export const OfferInfoArguments = [
     "argsPublicKeyAlgo",
     "resultUrl",
     "disabledAfter",
+    "linkage",
+    "hash",
+    "hashAlgo",
 ];
 export type OfferInfo = {
     name: string;
@@ -48,7 +51,7 @@ export type OfferInfo = {
     argsPublicKeyAlgo: string;
     resultUrl: string;
     disabledAfter: number;
+    linkage: string;
     hash: string;
     hashAlgo: string;
-    linkage: string;
 };

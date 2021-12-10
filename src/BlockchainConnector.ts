@@ -14,6 +14,9 @@ import ProviderRegistry from "./staticModels/ProviderRegistry";
 import Staking from "./staticModels/Staking";
 import SuperproToken from "./staticModels/SuperproToken";
 import Voting from "./staticModels/Voting";
+import Consensus from "./staticModels/Consensus";
+import LastBlocks from "./staticModels/LastBlocks";
+import Suspicious from "./staticModels/Suspicious";
 
 class BlockchainConnector {
     private static logger = rootLogger.child({ className: "BlockchainConnector" });
@@ -39,6 +42,9 @@ class BlockchainConnector {
             { name: ContractName.Staking, model: Staking },
             { name: ContractName.Token, model: SuperproToken },
             { name: ContractName.Voting, model: Voting },
+            { name: ContractName.Consensus, model: Consensus },
+            { name: ContractName.Suspicious, model: Suspicious },
+            { name: ContractName.LastBlocks, model: LastBlocks },
         ];
         await Promise.all(
             addressesToFetch.map(async ({ name, model }) => {

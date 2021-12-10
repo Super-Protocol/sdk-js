@@ -48,4 +48,7 @@ export type OfferInfo = {
     argsPublicKeyAlgo: string;
     resultUrl: string;
     disabledAfter: number;
+    hash: string;
+    hashAlgo: string;
+    linkage: string;
 };

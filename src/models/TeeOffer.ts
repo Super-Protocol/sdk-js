@@ -14,7 +14,8 @@ class TeeOffer {
     private contract: Contract;
     private logger: typeof rootLogger;
 
-    public orderInfo?: TeeOfferInfo;
+    public violationRate?: number;
+    public offerInfo?: TeeOfferInfo;
     public type?: OfferType;
     public provider?: string;
     public disabledAfter?: number;
@@ -33,8 +34,8 @@ class TeeOffer {
      * Function for fetching TEE offer info from blockchain
      */
     public async getInfo(): Promise<TeeOfferInfo> {
-        let teeOrderInfoParams = await this.contract.methods.getInfo().call();
-        return (this.orderInfo = <TeeOfferInfo>_.zipObject(TeeOfferInfoArguments, teeOrderInfoParams));
+        let teeOfferInfoParams = await this.contract.methods.getInfo().call();
+        return (this.offerInfo = <TeeOfferInfo>_.zipObject(TeeOfferInfoArguments, teeOfferInfoParams));
     }
 
     /**
@@ -74,8 +75,16 @@ class TeeOffer {
      */
     public async getTlb(): Promise<string> {
         const tlb: string = await this.contract.methods.getTlb().call();
-        if (this.orderInfo) this.orderInfo.tlb = tlb;
+        if (this.offerInfo) this.offerInfo.tlb = tlb;
         return tlb;
+    }
+
+    /**
+     * Function for fetching violationRate for this TEE offer
+     */
+    public async getViolationRate(): Promise<number> {
+        this.violationRate = await this.contract.methods.getViolationRate().call();
+        return this.violationRate!;
     }
 
     /**
@@ -87,7 +96,7 @@ class TeeOffer {
         checkIfActionAccountInitialized();
 
         await this.contract.methods.addTlb(tlb).send(createTransactionOptions(transactionOptions));
-        if (this.orderInfo) this.orderInfo.tlb = tlb;
+        if (this.offerInfo) this.offerInfo.tlb = tlb;
     }
 
     /**

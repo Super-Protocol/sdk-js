@@ -13,6 +13,7 @@ class Provider {
     private logger: typeof rootLogger;
 
     public providerInfo?: ProviderInfo;
+    public violationRate?: number;
     public authority?: string;
     public valueOffers?: string[];
     public teeOffers?: string[];
@@ -56,6 +57,14 @@ class Provider {
     public async getTeeOffers(): Promise<string[]> {
         this.teeOffers = await this.contract.methods.getTeeOffers().call();
         return this.teeOffers!;
+    }
+
+    /**
+     * Function for fetching violationRate for this provider
+     */
+    public async getViolationRate(): Promise<number> {
+        this.violationRate = await this.contract.methods.getViolationRate().call();
+        return this.violationRate!;
     }
 }
 

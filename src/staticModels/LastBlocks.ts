@@ -3,7 +3,7 @@ import { Contract } from "web3-eth-contract";
 import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
 import LastBlocksJSON from "../contracts/LastBlocks.json";
-import { checkIfInitialized, createTransactionOptions } from "../utils";
+import { checkIfInitialized, createTransactionOptions, checkIfActionAccountInitialized } from "../utils";
 import { TransactionOptions } from "../types/Web3";
 
 class LastBlocks {
@@ -28,8 +28,9 @@ class LastBlocks {
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
     public static async getRandomL1(tcbAddress: string, transactionOptions?: TransactionOptions): Promise<void> {
-        LastBlocks.checkInit();
-        return await LastBlocks.contract.methods
+        this.checkInit();
+        checkIfActionAccountInitialized();
+        return await this.contract.methods
             .getRandomL1(tcbAddress)
             .send(createTransactionOptions(transactionOptions));
     }
@@ -38,17 +39,17 @@ class LastBlocks {
      * Function for fetching TCB last blocks list
      */
     public static async listAll(): Promise<string[]> {
-        LastBlocks.checkInit();
-        return await LastBlocks.contract.methods.listAll().call();
+        this.checkInit();
+        return await this.contract.methods.listAll().call();
     }
 
     /**
      * Function for fetching TCB last blocks list size
      */
     public static async count(): Promise<string[]> {
-        LastBlocks.checkInit();
+        this.checkInit();
         //TODO: update after append LastBlocksTable.count()
-        return (await LastBlocks.contract.methods.listAll().call()).length;
+        return (await this.contract.methods.listAll().call()).length;
     }
 }
 

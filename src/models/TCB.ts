@@ -4,7 +4,7 @@ import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
 import TcbJSON from "../contracts/TCB.json";
 import store from "../store";
-import { UsedData, StoredData, UtilityData, LType, LStatus } from "../types/TcbData";
+import { UsedData, StoredData, LType, LStatus } from "../types/TcbData";
 import { checkIfActionAccountInitialized, checkIfInitialized, createTransactionOptions } from "../utils";
 import { TransactionOptions } from "../types/Web3";
 import Suspicious from "../staticModels/Suspicious";
@@ -15,7 +15,12 @@ class TCB {
     private contract: Contract;
     private logger: typeof rootLogger;
 
-    public utilData?: UtilityData;
+    public L1?: string[];
+    public L2?: string[];
+    public L1_statusess?: LStatus[];
+    public L2_statusess?: LStatus[];
+    public positive?: number;
+    public negative?: number;
     public usedData?: UsedData;
     public storedData?: StoredData;
 
@@ -50,36 +55,32 @@ class TCB {
      * Function for fetching list of TCBs from LastBlocksTable formed for veirifying
      */
     public async getL1(): Promise<string[]> {
-        const L1 = await this.contract.methods.getL1().call();
-        if (this.utilData) this.utilData.L1 = L1;
-        return L1!;
+        this.L1 = await this.contract.methods.getL1().call();
+        return this.L1!;
     }
 
     /**
      * Function for fetching list of TCBs from SuspiciousBlocksTable formed for veirifying
      */
     public async getL2(): Promise<string[]> {
-        const L2 = await this.contract.methods.getL2().call();
-        if (this.utilData) this.utilData.L2 = L2;
-        return L2;
+        this.L2 = await this.contract.methods.getL2().call();
+        return this.L2!;
     }
 
     /**
      * Function for fetching the given marks for recruited TCBs from the LastBlocksTable
      */
-    public async getL1Marks(): Promise<boolean[]> {
-        const L1_statusess = await this.contract.methods.getL1Marks().call();
-        if (this.utilData) this.utilData.L1_statusess = L1_statusess;
-        return L1_statusess!;
+    public async getL1Marks(): Promise<LStatus[]> {
+        this.L1_statusess = await this.contract.methods.getL1Marks().call();
+        return this.L1_statusess!;
     }
 
     /**
      * Function for fetching the given marks for recruited TCBs from the SuspiciousBlocksTable
      */
-    public async getL2Marks(): Promise<boolean[]> {
-        const L2_statusess = await this.contract.methods.getL2Marks().call();
-        if (this.utilData) this.utilData.L2_statusess = L2_statusess;
-        return L2_statusess;
+    public async getL2Marks(): Promise<LStatus[]> {
+        this.L2_statusess = await this.contract.methods.getL2Marks().call();
+        return this.L2_statusess!;
     }
 
     //TODO:
@@ -110,10 +111,8 @@ class TCB {
      */
     public async getOwnMarks(): Promise<{ positive: number; negative: number }> {
         const [positive, negative] = await this.contract.methods.getOwnMarks().call();
-        if (this.utilData) {
-            this.utilData.positive = positive;
-            this.utilData.negative = negative;
-        }
+        this.positive = positive;
+        this.negative = negative;
         return { positive, negative };
     }
 

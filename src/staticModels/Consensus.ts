@@ -142,6 +142,7 @@ class Consensus {
      * @param teeOfferAddress
      * */
     public static async getInitedTcb(teeOfferAddress: string): Promise<string> {
+        this.checkInit();
         const tcbAddress = await this.contract.methods.getInitedTcb(teeOfferAddress).call();
         return tcbAddress!;
     }

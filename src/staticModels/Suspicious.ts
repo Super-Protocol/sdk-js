@@ -4,7 +4,7 @@ import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
 import SuspiciousJSON from "../contracts/Suspicious.json";
 import { TransactionOptions } from "../types/Web3";
-import { checkIfInitialized, createTransactionOptions } from "../utils";
+import { checkIfInitialized, createTransactionOptions, checkIfActionAccountInitialized } from "../utils";
 
 class Suspicious {
     public static address: string;
@@ -33,8 +33,9 @@ class Suspicious {
         max: number,
         transactionOptions?: TransactionOptions
     ): Promise<void> {
-        Suspicious.checkInit();
-        return await Suspicious.contract.methods
+        this.checkInit();
+        checkIfActionAccountInitialized();
+        return await this.contract.methods
             .getRandomL2(tcbAddress, max)
             .send(createTransactionOptions(transactionOptions));
     }
@@ -43,16 +44,16 @@ class Suspicious {
      * Function for fetching TCB suspect list
      */
     public static async listAll(): Promise<string[]> {
-        Suspicious.checkInit();
-        return await Suspicious.contract.methods.listAll().call();
+        this.checkInit();
+        return await this.contract.methods.listAll().call();
     }
 
     /**
      * Function for fetching TCB suspect list size
      */
     public static async count(): Promise<string[]> {
-        Suspicious.checkInit();
-        return await Suspicious.contract.methods.count().call();
+        this.checkInit();
+        return await this.contract.methods.count().call();
     }
 }
 

@@ -13,7 +13,7 @@ class Offer {
     private contract: Contract;
     private logger: typeof rootLogger;
 
-    public orderInfo?: OfferInfo;
+    public offerInfo?: OfferInfo;
     public provider?: string;
     public type?: OfferType;
     public providerAuthority?: string;
@@ -36,7 +36,7 @@ class Offer {
         // Converts blockchain array into object
         orderInfoParams = _.zipObject(OfferInfoArguments, orderInfoParams);
 
-        return (this.orderInfo = <OfferInfo>orderInfoParams);
+        return (this.offerInfo = <OfferInfo>orderInfoParams);
     }
 
     /**
@@ -83,13 +83,23 @@ class Offer {
     }
 
     /**
-     * Checks if offer (offerAddress) satisfies restrictions in this offer
+     * Checks if offer (offerAddress) match restrictions in this offer
      * @param offerAddress - address of offer what needs to be checked
      */
-    public async checkRestrictionsFor(offerAddress: string) {
+    public async isRestrictionsPermitThatOffer(offerAddress: string) {
         checkIfActionAccountInitialized();
 
-        return await this.contract.methods.checkRestrictionsFor(offerAddress).call();
+        return await this.contract.methods.isRestrictionsPermitThatOffer(offerAddress).call();
+    }
+
+    /**
+     * Checks if this offer contains restrictions of a certain type
+     * @param type - address of offer what needs to be checked
+     */
+    public async isRestrictedByOfferType(type: OfferType) {
+        checkIfActionAccountInitialized();
+
+        return await this.contract.methods.isRestrictedByOfferType(type).call();
     }
 }
 

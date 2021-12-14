@@ -100,6 +100,52 @@ class TeeOffer {
     }
 
     /**
+     * Updates name in order info
+     * @param name - new name
+     * @param transactionOptions - object what contains alternative action account or gas limit (optional)
+     */
+    public async setName(name: string, transactionOptions?: TransactionOptions): Promise<void> {
+        checkIfActionAccountInitialized();
+
+        await this.contract.methods.setName(name).send(createTransactionOptions(transactionOptions));
+        if (this.offerInfo) this.offerInfo.name = name;
+    }
+
+    /**
+     * Updates description in order info
+     * @param description - new description
+     * @param transactionOptions - object what contains alternative action account or gas limit (optional)
+     */
+    public async setDescription(description: string, transactionOptions?: TransactionOptions): Promise<void> {
+        checkIfActionAccountInitialized();
+
+        await this.contract.methods.setDescription(description).send(createTransactionOptions(transactionOptions));
+        if (this.offerInfo) this.offerInfo.description = description;
+    }
+
+    /**
+     * Updates argsPublicKey and argsPublicKeyAlgo in order info
+     * @param argsPublicKey - new argsPublicKey
+     * @param argsPublicKeyAlgo - new argsPublicKeyAlgo
+     * @param transactionOptions - object what contains alternative action account or gas limit (optional)
+     */
+    public async setKeys(
+        argsPublicKey: string,
+        argsPublicKeyAlgo: string,
+        transactionOptions?: TransactionOptions
+    ): Promise<void> {
+        checkIfActionAccountInitialized();
+
+        await this.contract.methods
+            .setKeys(argsPublicKey, argsPublicKeyAlgo)
+            .send(createTransactionOptions(transactionOptions));
+        if (this.offerInfo) {
+            this.offerInfo.argsPublicKey = argsPublicKey;
+            this.offerInfo.argsPublicKeyAlgo = argsPublicKeyAlgo;
+        }
+    }
+
+    /**
      * Function for disabling TEE offer
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */

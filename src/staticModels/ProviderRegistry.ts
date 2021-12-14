@@ -3,7 +3,7 @@ import { Contract } from "web3-eth-contract";
 import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
 import ProviderRegistryJSON from "../contracts/ProviderRegistry.json";
-import { checkIfInitialized, createTransactionOptions } from "../utils";
+import { checkIfInitialized, createTransactionOptions, checkIfActionAccountInitialized } from "../utils";
 import { ProviderInfo } from "../types/Provider";
 import { TransactionOptions } from "../types/Web3";
 
@@ -43,6 +43,14 @@ class ProviderRegistry {
     }
 
     /**
+     * Fetch provider security deposit by provider authority account
+     */
+    public static async getSecurityDeposit(providerAuthority: string): Promise<number> {
+        this.checkInit();
+        return +(await this.contract.methods.getSecurityDeposit(providerAuthority).call());
+    }
+
+    /**
      * Reg new provider
      * @param providerInfo - data of new provider
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
@@ -52,6 +60,7 @@ class ProviderRegistry {
         transactionOptions?: TransactionOptions
     ): Promise<void> {
         this.checkInit();
+        checkIfActionAccountInitialized();
         await this.contract.methods.register(providerInfo).send(createTransactionOptions(transactionOptions));
     }
 
@@ -63,6 +72,7 @@ class ProviderRegistry {
      */
     public static async refillSecurityDeposit(amount: number, transactionOptions?: TransactionOptions): Promise<void> {
         this.checkInit();
+        checkIfActionAccountInitialized();
         await this.contract.methods.refillSecurityDepo(amount).send(createTransactionOptions(transactionOptions));
     }
 
@@ -74,6 +84,7 @@ class ProviderRegistry {
      */
     public static async returnSecurityDeposit(amount: number, transactionOptions?: TransactionOptions): Promise<void> {
         this.checkInit();
+        checkIfActionAccountInitialized();
         await this.contract.methods.returnSecurityDepo(amount).send(createTransactionOptions(transactionOptions));
     }
 }

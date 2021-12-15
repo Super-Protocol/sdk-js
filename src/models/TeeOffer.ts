@@ -20,6 +20,8 @@ class TeeOffer {
     public provider?: string;
     public disabledAfter?: number;
     public tcb?: string;
+    public tlbAddedTime?: number;
+    public tcbAddedTime?: number;
 
     constructor(address: string) {
         checkIfInitialized();
@@ -77,6 +79,22 @@ class TeeOffer {
         const tlb: string = await this.contract.methods.getTlb().call();
         if (this.offerInfo) this.offerInfo.tlb = tlb;
         return tlb;
+    }
+
+    /**
+     * Function for fetching last TLB addition time for this TEE offer
+     */
+    public async getLastTlbAddedTime(): Promise<number> {
+        this.tlbAddedTime = await this.contract.methods.getLastTlbAddedTime().call();
+        return this.tlbAddedTime!;
+    }
+
+    /**
+     * Function for fetching last TCB addition time for this TEE offer
+     */
+    public async getLastTcbAddedTime(): Promise<number> {
+        this.tcbAddedTime = await this.contract.methods.getLastTcbAddedTime().call();
+        return this.tcbAddedTime!;
     }
 
     /**

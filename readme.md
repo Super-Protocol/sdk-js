@@ -19,12 +19,13 @@ This repo doesn't have code to test new functionality during development, so you
     ```
     yarn
     ```
-2. Create yarn link:
+1. Follow instructions to setup Decentralized Cloud Storage providers: [StorJ](https://github.com/storj-thirdparty/uplink-nodejs)
+1. Create yarn link:
 
     ```
     yarn link
     ```
-3. Connect yarn link to test repository:
+1. Connect yarn link to test repository:
 
    IMPORTANT: run this command in test repository (where you plan to use this module)
    ```

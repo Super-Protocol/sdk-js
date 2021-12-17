@@ -33,3 +33,7 @@ export const createTransactionOptions = (options?: TransactionOptions) => {
     if (!options.gas) options.gas = store.gasLimit;
     return options;
 };
+
+export const isNodeJS = () => {
+    return typeof process === "object";
+};

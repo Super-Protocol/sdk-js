@@ -9,7 +9,7 @@ export { default as TIIGenerator } from "./TIIGenerator";
 export * from "./TIIGenerator";
 
 export { default as Consensus } from "./staticModels/Consensus";
-export * from "./staticModels/Consensus";
+export * from "./staticModels/Consensus"; 
 
 export { default as LastBlocks } from "./staticModels/LastBlocks";
 export * from "./staticModels/LastBlocks";
@@ -67,3 +67,10 @@ export * from "./types/Staking";
 export * from "./types/Ballot";
 export * from "./types/Superpro";
 export * from "./types/TcbData";
+
+export { default as RemoteObject } from "./types/storage/RemoteObject";
+export { default as StorageType } from "./types/storage/StorageType";
+
+export { default as getStorageProvider } from "./providers/storage/getStorageProvider";
+export { default as IStorageProvider } from "./providers/storage/IStorageProvider";
+export { default as StorjStorageProvider } from "./providers/storage/StorjStorageProvider";

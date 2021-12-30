@@ -32,7 +32,7 @@ class Superpro {
         try {
             return await this.contract.methods.getAddress(name).call();
         } catch (e) {
-            throw new Error("Error: fetching contracts addresses error");
+            throw new Error("Error: fetching contracts addresses error: " + e);
         }
     }
 

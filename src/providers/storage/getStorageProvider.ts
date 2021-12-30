@@ -1,11 +1,12 @@
-import StorageType from "../../types/storage/StorageType";
+import { StorageType } from "@super-protocol/sp-dto-js";
+import StorageAccess from "../../types/storage/StorageAccess";
 import IStorageProvider from "./IStorageProvider";
 import StorjStorageProvider from "./StorjStorageProvider";
 
-export default (data: any): IStorageProvider => {
-    let key = data.storageType as StorageType;
+export default (storageAccess: StorageAccess): IStorageProvider => {
+    let key = storageAccess.storageType as StorageType;
     switch (key) {
         case StorageType.StorJ:
-            return new StorjStorageProvider(data);
+            return new StorjStorageProvider(storageAccess.credentials);
     }
 };

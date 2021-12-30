@@ -687,6 +687,11 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
+"@super-protocol/sp-dto-js@^0.0.3":
+  version "0.0.3"
+  resolved "https://npm.pkg.github.com/download/@super-protocol/sp-dto-js/0.0.3/3022d36fa10446e299b32e0c48efaa359d189624b1555c9a5fba674407a4a84d#834f57509f96c800655bfe7ca662f501312fd48e"
+  integrity sha512-8CJQRhvRNE5rSHmjsMd3x6zSya8koWWMenB5laEm7Co9U//JPRsdn/TRf1jYoWY2wsiDT3jfQpL3Yq1x2UxnfA==
+
 "@super-protocol/tee-lib@^0.1.0":
   version "0.1.1"
   resolved "https://npm.pkg.github.com/download/@super-protocol/tee-lib/0.1.1/87c23be9f4151a227a0d6f223437f4cec12c74bd335e88d326c2d616973a6a54#d851882ab1e222501eeed37d9f6207f15b8fd9ba"

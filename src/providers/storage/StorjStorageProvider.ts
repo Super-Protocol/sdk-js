@@ -2,10 +2,10 @@ import { promises as fs } from "fs";
 import { AccessResultStruct as Access } from "uplink-nodejs/access";
 import { ProjectResultStruct as Project } from "uplink-nodejs/project";
 import { Buffer } from "buffer";
-import RemoteObject from "../../types/storage/RemoteObject";
 import IStorageProvider from "./IStorageProvider";
 import Offer from "../../models/Offer";
 import { isNodeJS } from "../../utils";
+import StorageObject from "../../types/storage/StorageObject";
 
 export default class StorJStorageProvider implements IStorageProvider {
     static UPLOAD_BUFFER_SIZE: number = 4194304; // 4 mb
@@ -98,7 +98,7 @@ export default class StorJStorageProvider implements IStorageProvider {
         await project.deleteObject(this.storageName, remotePath);
     }
 
-    async listObjects(storagePath: string): Promise<RemoteObject[]> {
+    async listObjects(storagePath: string): Promise<StorageObject[]> {
         const storj = await this.lazyStorj();
 
         let options = new storj.ListObjectsOptions(undefined, undefined, false, true, true);
@@ -107,7 +107,13 @@ export default class StorJStorageProvider implements IStorageProvider {
         let result = [];
         for (let key in Object.keys(objects)) {
             let value = objects[key];
-            result.push(this.toRemoteObjectInfo(value));
+            result.push({
+                name: value.key,
+                size: value.system.content_length,
+                isFolder: value.is_prefix == 1,
+                childrenCount: value.custom.count,
+                createdAt: new Date(value.system.created * 1000), // TODO: check timezone
+            });
         }
         return result;
     }
@@ -117,19 +123,6 @@ export default class StorJStorageProvider implements IStorageProvider {
         let objectInfo = await project.statObject(this.storageName, remotePath);
         return objectInfo.system.content_length;
     }
-
-    private toRemoteObjectInfo(obj: any): RemoteObject {
-        let res = new RemoteObject(
-            obj.key,
-            obj.system.content_length,
-            obj.is_prefix == 1,
-            obj.custom.count,
-            new Date(obj.system.created * 1000) // TODO: check timezone
-        );
-
-        return res;
-    }
-
     private async lazyStorj(): Promise<any> {
         if (typeof this._storj == "undefined") {
             this._storj = await require("uplink-nodejs");

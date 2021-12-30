@@ -1,9 +1,19 @@
 import BlockchainConnector from "./BlockchainConnector";
+import IFileCrypto from "./fileCrypto/IFileCrypto";
+import { isNodeJS } from "./utils";
+
 export default BlockchainConnector;
 export * from "./BlockchainConnector";
 
 export { default as Crypto } from "./Crypto";
 export * from "./Crypto";
+
+export * from "./fileCrypto/IFileCrypto";
+
+// Example of a constructor type definition: https://github.com/angular/angular/blob/6.1.6/packages/core/src/type.ts#L25
+export const FileCrypto: new () => IFileCrypto = isNodeJS()
+    ? require("./fileCrypto/NodeJSFileCrypto")
+    : null;
 
 export { default as TIIGenerator } from "./TIIGenerator";
 export * from "./TIIGenerator";
@@ -68,9 +78,9 @@ export * from "./types/Ballot";
 export * from "./types/Superpro";
 export * from "./types/TcbData";
 
-export { default as RemoteObject } from "./types/storage/RemoteObject";
-export { default as StorageType } from "./types/storage/StorageType";
+export { default as StorageFileAccess } from "./types/storage/StorageFileAccess";
+export { default as StorageObject } from "./types/storage/StorageObject";
+export { default as StorageAccess } from "./types/storage/StorageAccess";
 
 export { default as getStorageProvider } from "./providers/storage/getStorageProvider";
 export { default as IStorageProvider } from "./providers/storage/IStorageProvider";
-export { default as StorjStorageProvider } from "./providers/storage/StorjStorageProvider";

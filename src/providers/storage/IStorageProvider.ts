@@ -1,5 +1,5 @@
 import Offer from "../../models/Offer";
-import RemoteObject from "../../types/storage/RemoteObject";
+import StorageObject from "../../types/storage/StorageObject";
 
 export default interface IStorageProvider {
     uploadFile(
@@ -13,7 +13,7 @@ export default interface IStorageProvider {
         progressListener?: (total: number, current: number) => void
     ): Promise<void>;
     deleteFile(remotePath: string): Promise<void>;
-    listObjects(storagePath: string): Promise<RemoteObject[]>;
+    listObjects(remotePath: string): Promise<StorageObject[]>;
     getSize(remotePath: string): Promise<number>;
     calculateStorageDepostit(offer: Offer, sizeMb: number, hours: number): Promise<number>;
 }

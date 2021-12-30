@@ -22,6 +22,7 @@
     "typescript": "^4.4.4"
   },
   "dependencies": {
+    "@super-protocol/sp-dto-js": "^0.0.3",
     "@super-protocol/tee-lib": "^0.1.0",
     "eccrypto": "^1.1.6",
     "hybrid-crypto-js": "^0.2.4",

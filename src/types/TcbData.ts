@@ -9,14 +9,9 @@ export enum LType {
     L2 = "1",
 }
 
-export type UsedData = {
+export type PublicData = {
     teeOffer: string;
     deviceID: string;
     benchmark: number;
     properties: string;
-};
-
-export type StoredData = {
-    teeReport: string;
-    teeSignature: string;
 };

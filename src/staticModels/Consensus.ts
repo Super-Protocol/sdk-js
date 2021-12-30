@@ -8,7 +8,7 @@ import LastBlocks from "./LastBlocks";
 import Suspicious from "./Suspicious";
 import { checkIfActionAccountInitialized, checkIfInitialized, createTransactionOptions } from "../utils";
 import { zeroAddress } from "../constants";
-import { UsedData, StoredData, LType, LStatus } from "../types/TcbData";
+import { PublicData, LType, LStatus } from "../types/TcbData";
 import _ from "lodash";
 import { TransactionOptions } from "../types/Web3";
 
@@ -87,7 +87,7 @@ class Consensus {
         teeOfferAddress: string,
         L1: LStatus[],
         L2: LStatus[],
-        tcbData: { used: UsedData; stored: StoredData },
+        tcbData: { publicData: PublicData; quote: string },
         transactionOptions?: TransactionOptions
     ): Promise<void> {
         this.checkInit();
@@ -98,8 +98,7 @@ class Consensus {
         if (!(await this.LEnough(tcb))) logger.error("L is not enough to complite TCB");
 
         // Can be upgraded to completion of TCB
-        await tcb.addUsedData(tcbData.used, transactionOptions);
-        await tcb.addStoredData(tcbData.stored, transactionOptions);
+        await tcb.addData(tcbData.publicData, tcbData.quote, transactionOptions);
 
         await tcb.addMarks(LType.L1, L1, transactionOptions);
         await tcb.addMarks(LType.L2, L2, transactionOptions);

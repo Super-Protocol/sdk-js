@@ -4,7 +4,7 @@ import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
 import TcbJSON from "../contracts/TCB.json";
 import store from "../store";
-import { UsedData, StoredData, LType, LStatus } from "../types/TcbData";
+import { PublicData, LType, LStatus } from "../types/TcbData";
 import { checkIfActionAccountInitialized, checkIfInitialized, createTransactionOptions } from "../utils";
 import { TransactionOptions } from "../types/Web3";
 import Suspicious from "../staticModels/Suspicious";
@@ -21,8 +21,8 @@ class TCB {
     public L2_statusess?: LStatus[];
     public positive?: number;
     public negative?: number;
-    public usedData?: UsedData;
-    public storedData?: StoredData;
+    public publicData?: PublicData;
+    public quote?: string;
 
     constructor(address: string) {
         checkIfInitialized();
@@ -83,27 +83,17 @@ class TCB {
         return this.L2_statusess!;
     }
 
-    //TODO:
     /**
      * Add processed TCB data to smart-contract
      * @param used - struct of 'processed' data
+     * @param quote - data generated from Enclave
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
-    public async addUsedData(used: UsedData, transactionOptions?: TransactionOptions) {
+    public async addData(used: PublicData, quote: string, transactionOptions?: TransactionOptions) {
         checkIfActionAccountInitialized();
         await this.contract.methods
-            .addUsedData(used.benchmark, used.properties, used.deviceID)
+            .addData(used.benchmark, used.properties, used.deviceID, quote)
             .send(createTransactionOptions(transactionOptions));
-    }
-
-    /**
-     * Add only stored TCB data to smart-contract
-     * @param stored - struct of 'only stored' data
-     * @param transactionOptions - object what contains alternative action account or gas limit (optional)
-     */
-    public async addStoredData(stored: StoredData, transactionOptions?: TransactionOptions) {
-        checkIfActionAccountInitialized();
-        await this.contract.methods.addStoredData(stored).send(createTransactionOptions(transactionOptions));
     }
 
     /**
@@ -119,17 +109,17 @@ class TCB {
     /**
      * Function for fetching used TCB data
      */
-    public async getUsedData(): Promise<UsedData> {
-        this.usedData = await this.contract.methods.getUsedData().call();
-        return this.usedData!;
+    public async getPublicData(): Promise<PublicData> {
+        this.publicData = await this.contract.methods.getUsedData().call();
+        return this.publicData!;
     }
 
     /**
      * Function for fetching stored TCB data
      */
-    public async getStoredData(): Promise<StoredData> {
-        this.storedData = await this.contract.methods.getStoredData().call();
-        return this.storedData!;
+    public async getQuote(): Promise<string> {
+        this.quote = await this.contract.methods.getQuote().call();
+        return this.quote!;
     }
 
     /**

@@ -19,20 +19,14 @@ export default class StorJStorageProvider implements IStorageProvider {
 
     constructor(credentials: any) {
         if (!isNodeJS()) {
-            throw Error(
-                "StorageProvider: StorJ is supported only in the node.js execution environment"
-            );
+            throw Error("StorageProvider: StorJ is supported only in the node.js execution environment");
         }
 
         this.storageName = credentials.storageId;
         this.accessToken = credentials.token;
     }
 
-    async calculateStorageDepostit(
-        offer: Offer,
-        sizeMb: number,
-        hours: number
-    ): Promise<number> {
+    async calculateStorageDepostit(offer: Offer, sizeMb: number, hours: number): Promise<number> {
         let offerInfo = await offer.getInfo();
         let properties = JSON.parse(offerInfo.properties);
         return properties.priceMbPerHour * sizeMb * hours;
@@ -47,11 +41,7 @@ export default class StorJStorageProvider implements IStorageProvider {
 
         let options = new storj.UploadOptions();
         let project = await this.lazyProject();
-        let uploader = await project.uploadObject(
-            this.storageName,
-            remotePath,
-            options
-        );
+        let uploader = await project.uploadObject(this.storageName, remotePath, options);
 
         let file = await fs.open(localPath, "r");
         let contentLength = (await file.stat()).size;
@@ -59,11 +49,8 @@ export default class StorJStorageProvider implements IStorageProvider {
 
         while (totalWritten < contentLength) {
             let remaining = contentLength - totalWritten;
-            let buffer = Buffer.alloc(
-                Math.min(remaining, StorJStorageProvider.UPLOAD_BUFFER_SIZE)
-            );
-            let bytesRead = (await file.read(buffer, 0, buffer.length))
-                .bytesRead;
+            let buffer = Buffer.alloc(Math.min(remaining, StorJStorageProvider.UPLOAD_BUFFER_SIZE));
+            let bytesRead = (await file.read(buffer, 0, buffer.length)).bytesRead;
             await uploader.write(buffer, bytesRead);
             totalWritten += bytesRead;
             if (typeof progressListener != "undefined") {
@@ -85,23 +72,15 @@ export default class StorJStorageProvider implements IStorageProvider {
         let contentLength = await this.getSize(remotePath);
         let project = await this.lazyProject();
         let options = new storj.DownloadOptions(0, contentLength);
-        let downloader = await project.downloadObject(
-            this.storageName,
-            remotePath,
-            options
-        );
+        let downloader = await project.downloadObject(this.storageName, remotePath, options);
 
         let file = await fs.open(localPath, "w");
         let totalWritten = 0;
 
         while (totalWritten < contentLength) {
             let remaining = contentLength - totalWritten;
-            let buffer = Buffer.alloc(
-                Math.min(remaining, StorJStorageProvider.DOWNLOAD_BUFFER_SIZE)
-            );
-            let bytesRead = (
-                (await downloader.read(buffer, buffer.length)) as any
-            ).bytes_read;
+            let buffer = Buffer.alloc(Math.min(remaining, StorJStorageProvider.DOWNLOAD_BUFFER_SIZE));
+            let bytesRead = ((await downloader.read(buffer, buffer.length)) as any).bytes_read;
             await file.write(buffer, 0, bytesRead);
             totalWritten += bytesRead;
 
@@ -122,18 +101,9 @@ export default class StorJStorageProvider implements IStorageProvider {
     async listObjects(storagePath: string): Promise<RemoteObject[]> {
         const storj = await this.lazyStorj();
 
-        let options = new storj.ListObjectsOptions(
-            undefined,
-            undefined,
-            false,
-            true,
-            true
-        );
+        let options = new storj.ListObjectsOptions(undefined, undefined, false, true, true);
         let project = await this.lazyProject();
-        let objects = await project.listObjects(
-            `${this.storageName}${storagePath}`,
-            options
-        );
+        let objects = await project.listObjects(`${this.storageName}${storagePath}`, options);
         let result = [];
         for (let key in Object.keys(objects)) {
             let value = objects[key];

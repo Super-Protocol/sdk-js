@@ -15,6 +15,7 @@ class TeeOffer {
     private logger: typeof rootLogger;
 
     public violationRate?: number;
+    public totalLocked?: number;
     public offerInfo?: TeeOfferInfo;
     public type?: OfferType;
     public provider?: string;
@@ -103,6 +104,14 @@ class TeeOffer {
     public async getViolationRate(): Promise<number> {
         this.violationRate = await this.contract.methods.getViolationRate().call();
         return this.violationRate!;
+    }
+
+    /**
+     * Function for fetching amount of total locked tokens
+     */
+    public async getTotalLocked(): Promise<number> {
+        this.totalLocked = await this.contract.methods.getTotalLocked().call();
+        return this.totalLocked!;
     }
 
     /**

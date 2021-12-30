@@ -9,7 +9,7 @@ export { default as TIIGenerator } from "./TIIGenerator";
 export * from "./TIIGenerator";
 
 export { default as Consensus } from "./staticModels/Consensus";
-export * from "./staticModels/Consensus"; 
+export * from "./staticModels/Consensus";
 
 export { default as LastBlocks } from "./staticModels/LastBlocks";
 export * from "./staticModels/LastBlocks";

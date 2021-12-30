@@ -4,7 +4,7 @@ import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
 import OffersFactoryJSON from "../contracts/OffersFactory.json";
 import { checkIfActionAccountInitialized, checkIfInitialized, createTransactionOptions } from "../utils";
-import { OfferInfo, OfferInfoArguments } from "../types/Offer";
+import { OfferInfo, OfferInfoArguments, OfferRestrictionsArguments } from "../types/Offer";
 import _ from "lodash";
 import { TransactionOptions } from "../types/Web3";
 
@@ -50,8 +50,11 @@ class OffersFactory {
         this.checkInit();
         checkIfActionAccountInitialized();
 
+        let offerInfoParams = JSON.parse(JSON.stringify(offerInfo));
+
         // Converts offer info to array of arrays (used in blockchain)
-        const offerInfoParams = _.at(offerInfo, OfferInfoArguments);
+        offerInfoParams.restrictions = _.at(offerInfoParams.restrictions, OfferRestrictionsArguments);
+        offerInfoParams = _.at(offerInfo, OfferInfoArguments);
 
         await this.contract.methods
             .create(providerAuthorityAccount, offerInfoParams)

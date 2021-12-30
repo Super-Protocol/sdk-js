@@ -11,6 +11,13 @@ export enum OfferGroup {
 }
 
 // Order of keys for this object in blockchain contract
+export const OfferRestrictionsArguments = ["offers", "types"];
+export type OfferRestrictions = {
+    offers: string[];
+    types: OfferType[];
+};
+
+// Order of keys for this object in blockchain contract
 export const OfferInfoArguments = [
     "name",
     "group",
@@ -40,7 +47,7 @@ export type OfferInfo = {
     cancelable: boolean;
     description: string;
     holdSum: number;
-    restrictions: string[];
+    restrictions: OfferRestrictions;
     properties: string;
     maxDurationTimeMinutes: number;
     inputFormat: string;

@@ -8,7 +8,7 @@ import LastBlocks from "./LastBlocks";
 import Suspicious from "./Suspicious";
 import { checkIfActionAccountInitialized, checkIfInitialized, createTransactionOptions } from "../utils";
 import { zeroAddress } from "../constants";
-import { PublicData, LType, LStatus } from "../types/TcbData";
+import { PublicData, LType } from "../types/TcbData";
 import _ from "lodash";
 import { TransactionOptions } from "../types/Web3";
 
@@ -85,8 +85,8 @@ class Consensus {
      */
     public static async addTCB(
         teeOfferAddress: string,
-        L1: LStatus[],
-        L2: LStatus[],
+        L1: number[],
+        L2: number[],
         tcbData: { publicData: PublicData; quote: string },
         transactionOptions?: TransactionOptions
     ): Promise<void> {

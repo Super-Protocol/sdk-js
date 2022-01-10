@@ -4,7 +4,7 @@ import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
 import TcbJSON from "../contracts/TCB.json";
 import store from "../store";
-import { PublicData, LType, LStatus } from "../types/TcbData";
+import { PublicData, LType } from "../types/TcbData";
 import { checkIfActionAccountInitialized, checkIfInitialized, createTransactionOptions } from "../utils";
 import { TransactionOptions } from "../types/Web3";
 import Suspicious from "../staticModels/Suspicious";
@@ -17,8 +17,8 @@ class TCB {
 
     public L1?: string[];
     public L2?: string[];
-    public L1_statusess?: LStatus[];
-    public L2_statusess?: LStatus[];
+    public L1_statusess?: number[];
+    public L2_statusess?: number[];
     public positive?: number;
     public negative?: number;
     public publicData?: PublicData;
@@ -70,7 +70,7 @@ class TCB {
     /**
      * Function for fetching the given marks for recruited TCBs from the LastBlocksTable
      */
-    public async getL1Marks(): Promise<LStatus[]> {
+    public async getL1Marks(): Promise<number[]> {
         this.L1_statusess = await this.contract.methods.getL1Marks().call();
         return this.L1_statusess!;
     }
@@ -78,7 +78,7 @@ class TCB {
     /**
      * Function for fetching the given marks for recruited TCBs from the SuspiciousBlocksTable
      */
-    public async getL2Marks(): Promise<LStatus[]> {
+    public async getL2Marks(): Promise<number[]> {
         this.L2_statusess = await this.contract.methods.getL2Marks().call();
         return this.L2_statusess!;
     }
@@ -128,7 +128,7 @@ class TCB {
      * @param marks - list of marks
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
-    public async addMarks(lType: LType, marks: LStatus[], transactionOptions?: TransactionOptions): Promise<void> {
+    public async addMarks(lType: LType, marks: number[], transactionOptions?: TransactionOptions): Promise<void> {
         checkIfActionAccountInitialized();
 
         if (marks.length > 0) {

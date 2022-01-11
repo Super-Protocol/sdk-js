@@ -44,10 +44,10 @@ class LastBlocks {
     /**
      * Function for fetching TCB last blocks list size
      */
-    public static async count(): Promise<string[]> {
+    public static async count(): Promise<number> {
         this.checkInit();
-        //TODO: update after append LastBlocksTable.count()
-        return (await this.contract.methods.listAll().call()).length;
+        
+        return await this.contract.methods.count().call();
     }
 }
 

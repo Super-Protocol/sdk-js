@@ -9,3 +9,9 @@ export type PublicData = {
     benchmark: number;
     properties: string;
 };
+
+export type TcbEpochInfo = {
+    index: number;
+    valid: boolean;
+    reparation: boolean;
+};

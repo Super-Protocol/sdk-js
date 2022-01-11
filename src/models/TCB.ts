@@ -4,7 +4,7 @@ import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
 import TcbJSON from "../contracts/TCB.json";
 import store from "../store";
-import { PublicData, LType } from "../types/TcbData";
+import { PublicData, LType, TcbEpochInfo } from "../types/TcbData";
 import { checkIfActionAccountInitialized, checkIfInitialized, createTransactionOptions } from "../utils";
 import { TransactionOptions } from "../types/Web3";
 import Suspicious from "../staticModels/Suspicious";
@@ -19,6 +19,7 @@ class TCB {
     public L2?: string[];
     public L1_statusess?: number[];
     public L2_statusess?: number[];
+    public epoch?: TcbEpochInfo;
     public positive?: number;
     public negative?: number;
     public publicData?: PublicData;
@@ -94,6 +95,11 @@ class TCB {
         await this.contract.methods
             .addData(used.benchmark, used.properties, used.deviceID, quote)
             .send(createTransactionOptions(transactionOptions));
+    }
+
+    public async getEpochInfo(): Promise<TcbEpochInfo> {
+        this.epoch = await this.contract.methods.getEpochInfo().call();
+        return this.epoch!;
     }
 
     /**

@@ -1,5 +1,5 @@
 import fs from "fs";
-import crypto from "node:crypto";
+import crypto from "crypto";
 import { once } from "events";
 import { default as IFileCrypto } from "./IFileCrypto";
 import {

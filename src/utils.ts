@@ -35,5 +35,6 @@ export const createTransactionOptions = (options?: TransactionOptions) => {
 };
 
 export const isNodeJS = () => {
-    return typeof process === "object";
+    // @ts-ignore
+    return typeof window === 'undefined';
 };

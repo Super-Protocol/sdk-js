@@ -100,7 +100,7 @@ class NodeJSFileCrypto implements IFileCrypto {
         const writer = fs.createWriteStream(outputFilepath);
         const dcp = crypto.createDecipheriv(
             fileAlgorithm as crypto.CipherGCMTypes,
-            info.key,
+            Buffer.from(info.key, info.encoding),
             iv
         );
         dcp.setAuthTag(Buffer.from(info.mac, info.encoding));

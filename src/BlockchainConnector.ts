@@ -31,6 +31,7 @@ class BlockchainConnector {
     public static async init(config: Config) {
         store.web3 = new Web3(config?.blockchainUrl || defaultBlockchainUrl);
         if (config?.gasLimit) store.gasLimit = config.gasLimit;
+        if (config?.gasPrice) store.gasPrice = config.gasPrice;
 
         Superpro.address = config.contractAddress;
 
@@ -125,6 +126,7 @@ export type Config = {
     contractAddress: string;
     blockchainUrl?: string;
     gasLimit?: number;
+    gasPrice?: string;
 };
 
 export default BlockchainConnector;

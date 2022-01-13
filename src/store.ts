@@ -1,11 +1,12 @@
 import Web3 from "web3";
-import { defaultGasLimit } from "./constants";
+import { defaultGasLimit, defaultGasPrice } from "./constants";
 
 export type Store = {
     isInitialized: boolean;
     web3?: Web3;
     actionAccount?: string;
     gasLimit: number;
+    gasPrice: string;
 };
 
 const store: Store = {
@@ -13,6 +14,7 @@ const store: Store = {
     web3: undefined,
     actionAccount: undefined,
     gasLimit: defaultGasLimit,
+    gasPrice: defaultGasPrice,
 };
 
 export default store;

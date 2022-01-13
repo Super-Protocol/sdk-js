@@ -6,6 +6,7 @@ export type ContractEvent = {
 export type TransactionOptions = {
     from?: string;
     gas?: number;
+    gasPrice?: string;
 };
 
 export type Transaction = {

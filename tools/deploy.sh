@@ -12,9 +12,12 @@ goto_app() {
 }
 
 install_node() {
+    if ! [ -x "$(command -v curl)" ]; then
+        sudo apt install curl
+    fi
     echo "Installing NodeJS 16.x"
     sudo curl -o- https://deb.nodesource.com/setup_16.x | sudo bash && \
-        sudo apt install nodejs build-essential -y && \
+        sudo apt install nodejs git build-essential -y && \
         sudo npm install -g yarn pm2
 }
 
@@ -60,7 +63,6 @@ install() {
     # TODO: uncomment then tags will be available
     # TAG=$(git tag -n1)
     # git checkout "$TAG"
-    rm .npmrc
     yarn install && \
         yarn build && \
         echo "Please edit config at \"$APP_PATH/.env\" and then run app using \"$0 run\""

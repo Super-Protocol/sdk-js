@@ -17,6 +17,7 @@ import Voting from "./staticModels/Voting";
 import Consensus from "./staticModels/Consensus";
 import LastBlocks from "./staticModels/LastBlocks";
 import Suspicious from "./staticModels/Suspicious";
+import Epochs from "./staticModels/Epochs";
 
 class BlockchainConnector {
     private static logger = rootLogger.child({ className: "BlockchainConnector" });
@@ -46,6 +47,7 @@ class BlockchainConnector {
             { name: ContractName.Consensus, model: Consensus },
             { name: ContractName.Suspicious, model: Suspicious },
             { name: ContractName.LastBlocks, model: LastBlocks },
+            { name: ContractName.Epochs, model: Epochs },
         ];
         await Promise.all(
             addressesToFetch.map(async ({ name, model }) => {

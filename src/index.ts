@@ -51,6 +51,9 @@ export * from "./staticModels/SuperproToken";
 export { default as Superpro } from "./staticModels/Superpro";
 export * from "./staticModels/Superpro";
 
+export { default as Epochs } from "./staticModels/Epochs";
+export * from "./staticModels/Epochs";
+
 export { default as Order } from "./models/Order";
 export * from "./models/Order";
 
@@ -70,6 +73,7 @@ export { default as TCB } from "./models/TCB";
 export * from "./models/TCB";
 
 export * from "./types/Offer";
+export * from "./types/Epoch";
 export * from "./types/Order";
 export * from "./types/TeeOffer";
 export * from "./types/Provider";

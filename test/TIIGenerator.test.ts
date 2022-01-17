@@ -11,18 +11,33 @@ import {
 const fileEncryptionAlgo = CryptoAlgorithm.AES;
 const key = "345";
 
-const argsPublicKeyAlgo = "ECIES";
+const argsPublicKeyAlgo = CryptoAlgorithm.ECIES;
 const argsPrivateKey =
-    "e96e82fa66724817ec14a8e2bb7b8e5ec165070775bd70cbf102470dd1a5cf9b";
+    "6W6C+mZySBfsFKjiu3uOXsFlBwd1vXDL8QJHDdGlz5s=";
 const argsPrivateKeyIncorrect =
-    "290ff4d20071c88a60c81ef709bc5a762ed366224a229ca4ac230e53f1524644";
+    "KQ/00gBxyIpgyB73Cbxadi7TZiJKIpykrCMOU/FSRkQ=";
 const argsPublicKey =
-    "04795681c5a781c1b118ca32ff1beb8b9a98d1a79d744b7924c9d0a6c3594126db7753827cf2ce9cb0dad09e678687c0fbfefc0db05d069a3683a5de0cf4066560";
+    "BHlWgcWngcGxGMoy/xvri5qY0aeddEt5JMnQpsNZQSbbd1OCfPLOnLDa0J5nhofA+/78DbBdBpo2g6XeDPQGZWA=";
 
 const tii = JSON.stringify({
-    encryptedResource:
-        '{"iv":"REqqjKIdx9ytnjk71I/4eg==","ephemPublicKey":"BL0I9Ti7GLp1XPP4cc0qQkdI2Vs/DyL6GbNbiLZjxYmUnNdtL9+ieTVU/XWfm8ARoy3h5eqcisdf9rKl0ZhrWyU=","ciphertext":"YG65UaQYBsBKcjTZd75LLTbLIkjYKn8x+3xS4cw1OWIEw2aZS2MqeH8zaPaI8+O/FXraNScBGzK0VxO3Vn60rsF9f3OCrrYnI+qsQU2fEbrekZMBDR8uXGjZApWGKUTn+FutCSIk5T0hi9l4pTg/rw==","mac":"iM+7WOP3UrQ4ghWkC5aVisqiLUBWyuRAfem/JnP1whA="}',
-    tri: '{"iv":"SqBK++mjTrrtvX2s32csTg==","ephemPublicKey":"BMCk3HeI7e7cTn7L1Lorx7JR13v5FXiITM50EBfPNyNrUNUyscaJ9eMqJx02uOeGuQWVYPP15SzhrXLlPnS7LCY=","ciphertext":"JmJ8VlsvwFAlh6QwyLSM8+KhcGCjKeWuG+nfOtA7/znEWgL407mDlY9fPU7Wwdu5BVf5ttG7+0QWNy7pQmRRBkxXqfhfj6hmz+1o0/c9hj+Nn4ryTB+zfM2eAga/pfxxkezC18GMdSMFoiB6LfIkbGKxHhPs/hWX2niOlCa+QQY=","mac":"JvaaxIKN8XaeFDBG+7lWrTAQikPOZIw2JtTUtzoNTEU="}',
+    encryptedResource: {
+        key: 'BHlWgcWngcGxGMoy/xvri5qY0aeddEt5JMnQpsNZQSbbd1OCfPLOnLDa0J5nhofA+/78DbBdBpo2g6XeDPQGZWA=',
+        iv: 'e2Cp6uVK8wCoZNKzGIMpYQ==',
+        ephemPublicKey: 'BPBoD/AafUCu5WbFMzkwqR53ygHEoYPeRcYsXGYK6nkuXMsRggmbd9B8pgo6bbaQFzbCW4kyLPyP1MPgjvbKKgo=',
+        mac: 'kzRH+Qgeih2V2RTRrikWQEGPRgcHwvpsPZyqmLwbh80=',
+        encoding: 'base64',
+        algo: 'ECIES',
+        ciphertext: 'Z9fyGL8xkIUeR9zxw9UGvn988fIhbDPy7pqRv5vlQs7dK8SFzHGR2QdmK4zovw2PsyRnfaybJi/BQV8MPmqFil/xBHlLPRxvKsosux8WqKzEGIauyJEke8dUQes6qdPLHMBOB6LfQkhFyk1akLXvSQ=='
+    },
+    tri: {
+        key: 'BHlWgcWngcGxGMoy/xvri5qY0aeddEt5JMnQpsNZQSbbd1OCfPLOnLDa0J5nhofA+/78DbBdBpo2g6XeDPQGZWA=',
+        iv: 'F+57GgUONXqvaiHN6yM5cg==',
+        ephemPublicKey: 'BMtORnAIFortwlLIU9GBeWPoRA65tavpKGPqm4rJIlBlaSD9eCqIUXPXmAaxQxVdX2OGy7Rv1KS2sfSaYua20ac=',
+        mac: '5aasrr1PNS5bV50Htyonqf9XLl0y8xReWa9HKEumF+0=',
+        encoding: 'base64',
+        algo: 'ECIES',
+        ciphertext: 'o9wTrXjWP7ra8RG+17WiDphUlIEVcoiB8lsXJ0gpLXZL0MfLA6J1R35nMIoQaAiDN5Fiu99OU4lh7IGuZULWlkNvAAZYaJMr43SNbGKvlXbUmx1cAfKmNpce62i3tYqN/mp8LFfjpP+xlBhNFG+WvWWZUpNIk6ndYwUHuTaUspg='
+    }
 });
 
 jest.mock("../src/models/Order", () => {
@@ -111,6 +126,7 @@ describe("TIIGenerator", () => {
                 }
             );
 
+            console.log(JSON.parse(tii));
             expect(typeof tii).toBe("string");
 
             const tiiObj = JSON.parse(tii);
@@ -179,8 +195,7 @@ describe("TIIGenerator", () => {
         test("get TRI", async () => {
             const tri = await TIIGenerator.getTRI(
                 tii,
-                argsPrivateKey,
-                argsPublicKeyAlgo
+                argsPrivateKey
             );
 
             expect(tri).toHaveProperty("solutionHashes");
@@ -199,7 +214,6 @@ describe("TIIGenerator", () => {
                 TIIGenerator.getTRI(
                     tii,
                     argsPrivateKeyIncorrect,
-                    argsPublicKeyAlgo
                 )
             ).rejects.toThrowError();
         });
@@ -210,7 +224,6 @@ describe("TIIGenerator", () => {
             const resource = await TIIGenerator.getResource(
                 tii,
                 argsPrivateKey,
-                argsPublicKeyAlgo
             );
 
             expect(resource).toEqual(resource);
@@ -221,7 +234,6 @@ describe("TIIGenerator", () => {
                 TIIGenerator.getResource(
                     tii,
                     argsPrivateKeyIncorrect,
-                    argsPublicKeyAlgo
                 )
             ).rejects.toThrowError();
         });

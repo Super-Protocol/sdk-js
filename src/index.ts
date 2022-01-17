@@ -5,8 +5,7 @@ import { isNodeJS } from "./utils";
 export default BlockchainConnector;
 export * from "./BlockchainConnector";
 
-export { default as Crypto } from "./Crypto";
-export * from "./Crypto";
+export { default as Crypto } from "./crypto";
 
 export * from "./fileCrypto/IFileCrypto";
 

@@ -195,7 +195,7 @@ describe("TIIGenerator", () => {
         test("get TRI", async () => {
             const tri = await TIIGenerator.getTRI(
                 tii,
-                argsPrivateKey
+                Buffer.from(argsPrivateKey, 'base64')
             );
 
             expect(tri).toHaveProperty("solutionHashes");
@@ -213,7 +213,7 @@ describe("TIIGenerator", () => {
             expect(
                 TIIGenerator.getTRI(
                     tii,
-                    argsPrivateKeyIncorrect,
+                    Buffer.from(argsPrivateKeyIncorrect, 'base64'),
                 )
             ).rejects.toThrowError();
         });
@@ -223,7 +223,7 @@ describe("TIIGenerator", () => {
         test("get resource", async () => {
             const resource = await TIIGenerator.getResource(
                 tii,
-                argsPrivateKey,
+                Buffer.from(argsPrivateKey, 'base64'),
             );
 
             expect(resource).toEqual(resource);
@@ -233,7 +233,7 @@ describe("TIIGenerator", () => {
             expect(
                 TIIGenerator.getResource(
                     tii,
-                    argsPrivateKeyIncorrect,
+                    Buffer.from(argsPrivateKeyIncorrect, 'base64'),
                 )
             ).rejects.toThrowError();
         });

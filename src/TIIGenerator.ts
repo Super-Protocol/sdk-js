@@ -86,7 +86,7 @@ class TIIGenerator {
         );
     }
 
-    public static async getTRI(tii: string, key: string, decryptionKey: Buffer): Promise<TeeRunInfo> {
+    public static async getTRI(tii: string, decryptionKey: Buffer): Promise<TeeRunInfo> {
         const tiiObj = JSON.parse(tii);
         tiiObj.tri.key = decryptionKey.toString(tiiObj.tri.encoding);
         const tri: string = await Crypto.decrypt(tiiObj.tri as Encryption);

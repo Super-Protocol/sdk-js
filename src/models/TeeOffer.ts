@@ -61,7 +61,7 @@ class TeeOffer {
      * Function for fetching offer provider from blockchain
      */
     public async getDisabledAfter(): Promise<number> {
-        this.disabledAfter = await this.contract.methods.getDisalbedAfter().call();
+        this.disabledAfter = +await this.contract.methods.getDisabledAfter().call();
         return this.disabledAfter!;
     }
 

@@ -15,6 +15,7 @@ import { AbiItem } from "web3-utils";
 import OrderJSON from "../contracts/Order.json";
 import store from "../store";
 import { checkIfActionAccountInitialized, checkIfInitialized, createTransactionOptions } from "../utils";
+import { Origins, OriginsArguments } from "../types/Origins";
 
 class Order {
     public address: string;
@@ -26,6 +27,7 @@ class Order {
     public subOrders?: string[];
     public parentOrder?: string;
     public consumer?: string;
+    public origins?: Origins;
 
     constructor(address: string) {
         checkIfInitialized();
@@ -77,6 +79,22 @@ class Order {
     public async getParentOrder(): Promise<string> {
         this.parentOrder = await this.contract.methods.getParentOrder().call();
         return this.parentOrder!;
+    }
+
+    /**
+     * Fetch new Origins (createdDate, createdBy, modifiedDate and modifiedBy)
+     */
+    public async getOrigins(): Promise<Origins> {
+        let origins = await this.contract.methods.getOrigins().call();
+
+        // Converts blockchain array into object
+        origins = _.zipObject(OriginsArguments, origins);
+
+        // Convert blockchain time seconds to js time milliseconds
+        origins.createdDate = +origins.createdDate * 1000;
+        origins.modifiedDate = +origins.modifiedDate * 1000;
+
+        return this.origins = origins;
     }
 
     /**

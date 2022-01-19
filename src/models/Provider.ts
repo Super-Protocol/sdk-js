@@ -6,6 +6,7 @@ import ProviderJSON from "../contracts/Provider.json";
 import store from "../store";
 import { checkIfInitialized } from "../utils";
 import { ProviderInfo, ProviderInfoArguments } from "../types/Provider";
+import { Origins, OriginsArguments } from "../types/Origins";
 
 class Provider {
     public address: string;
@@ -17,6 +18,7 @@ class Provider {
     public authority?: string;
     public valueOffers?: string[];
     public teeOffers?: string[];
+    public origins?: Origins;
 
     constructor(address: string) {
         checkIfInitialized();
@@ -65,6 +67,22 @@ class Provider {
     public async getViolationRate(): Promise<number> {
         this.violationRate = await this.contract.methods.getViolationRate().call();
         return this.violationRate!;
+    }
+
+    /**
+     * Fetch new Origins (createdDate, createdBy, modifiedDate and modifiedBy)
+     */
+    public async getOrigins(): Promise<Origins> {
+        let origins = await this.contract.methods.getOrigins().call();
+
+        // Converts blockchain array into object
+        origins = _.zipObject(OriginsArguments, origins);
+
+        // Convert blockchain time seconds to js time milliseconds
+        origins.createdDate = +origins.createdDate * 1000;
+        origins.modifiedDate = +origins.modifiedDate * 1000;
+
+        return this.origins = origins;
     }
 }
 

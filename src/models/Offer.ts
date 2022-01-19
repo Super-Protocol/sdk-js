@@ -7,6 +7,7 @@ import store from "../store";
 import { checkIfActionAccountInitialized, checkIfInitialized, createTransactionOptions } from "../utils";
 import { OfferInfo, OfferInfoArguments, OfferType } from "../types/Offer";
 import { TransactionOptions } from "../types/Web3";
+import { Origins, OriginsArguments } from "../types/Origins";
 
 class Offer {
     public address: string;
@@ -17,6 +18,7 @@ class Offer {
     public provider?: string;
     public type?: OfferType;
     public providerAuthority?: string;
+    public origins?: Origins;
 
     constructor(address: string) {
         checkIfInitialized();
@@ -62,6 +64,24 @@ class Offer {
         this.providerAuthority = await this.contract.methods.getProviderAuthority().call();
         return this.providerAuthority!;
     }
+
+    /**
+     * Fetch new Origins (createdDate, createdBy, modifiedDate and modifiedBy)
+     */
+    public async getOrigins(): Promise<Origins> {
+        let origins = await this.contract.methods.getOrigins().call();
+
+        // Converts blockchain array into object
+        origins = _.zipObject(OriginsArguments, origins);
+
+        // Convert blockchain time seconds to js time milliseconds
+        origins.createdDate = +origins.createdDate * 1000;
+        origins.modifiedDate = +origins.modifiedDate * 1000;
+
+        return this.origins = origins;
+    }
+
+
     /**
      * Function for disabling offer
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)

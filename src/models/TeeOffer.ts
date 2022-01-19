@@ -8,6 +8,7 @@ import { checkIfActionAccountInitialized, checkIfInitialized, createTransactionO
 import { TeeOfferInfo, TeeOfferInfoArguments } from "../types/TeeOffer";
 import { TransactionOptions } from "../types/Web3";
 import { OfferType } from "../types/Offer";
+import { Origins, OriginsArguments } from "../types/Origins";
 
 class TeeOffer {
     public address: string;
@@ -23,6 +24,7 @@ class TeeOffer {
     public tcb?: string;
     public tlbAddedTime?: number;
     public tcbAddedTime?: number;
+    public origins?: Origins;
 
     constructor(address: string) {
         checkIfInitialized();
@@ -112,6 +114,22 @@ class TeeOffer {
     public async getTotalLocked(): Promise<number> {
         this.totalLocked = await this.contract.methods.getTotalLocked().call();
         return this.totalLocked!;
+    }
+
+    /**
+     * Fetch new Origins (createdDate, createdBy, modifiedDate and modifiedBy)
+     */
+    public async getOrigins(): Promise<Origins> {
+        let origins = await this.contract.methods.getOrigins().call();
+
+        // Converts blockchain array into object
+        origins = _.zipObject(OriginsArguments, origins);
+
+        // Convert blockchain time seconds to js time milliseconds
+        origins.createdDate = +origins.createdDate * 1000;
+        origins.modifiedDate = +origins.modifiedDate * 1000;
+
+        return this.origins = origins;
     }
 
     /**

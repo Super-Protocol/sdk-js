@@ -71,7 +71,8 @@ class NodeJSFileCrypto implements IFileCrypto {
             encoding: encoding,
             key: key,
             iv: iv.toString(encoding),
-            authTag: cph.getAuthTag().toString(encoding),
+            mac: cph.getAuthTag().toString(encoding),
+            cipher: fileAlgorithm,
         } as Encryption;
     }
 
@@ -88,18 +89,13 @@ class NodeJSFileCrypto implements IFileCrypto {
         encryption: Encryption,
         progressListener?: (total: number, current: number) => void
     ): Promise<void> {
-        const fileAlgorithm = getFileAlgorithm(encryption.algo);
-        if (typeof fileAlgorithm == "undefined") {
-            throw Error(`Algorithm ${fileAlgorithm} is not supported`);
-        }
-
         const info = encryption as AESEncryption;
         const iv = Buffer.from(info.iv, info.encoding);
 
         const reader = fs.createReadStream(inputFilepath);
         const writer = fs.createWriteStream(outputFilepath);
         const dcp = crypto.createDecipheriv(
-            fileAlgorithm as crypto.CipherGCMTypes,
+            encryption.cipher as crypto.CipherGCMTypes,
             Buffer.from(info.key, info.encoding),
             iv
         );

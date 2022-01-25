@@ -4,6 +4,7 @@ import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
 import ProviderRegistryJSON from "../contracts/ProviderRegistry.json";
 import { checkIfInitialized, createTransactionOptions, checkIfActionAccountInitialized } from "../utils";
+import { formatBytes32String } from 'ethers/lib/utils';
 import { ProviderInfo } from "../types/Provider";
 import { TransactionOptions } from "../types/Web3";
 
@@ -57,11 +58,12 @@ class ProviderRegistry {
      */
     public static async registerProvider(
         providerInfo: ProviderInfo,
+        externalId = formatBytes32String('default'),
         transactionOptions?: TransactionOptions
     ): Promise<void> {
         this.checkInit();
         checkIfActionAccountInitialized();
-        await this.contract.methods.register(providerInfo).send(createTransactionOptions(transactionOptions));
+        await this.contract.methods.register(providerInfo, externalId).send(createTransactionOptions(transactionOptions));
     }
 
     /**

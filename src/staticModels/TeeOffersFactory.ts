@@ -4,6 +4,7 @@ import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
 import TeeOffersFactoryJSON from "../contracts/TeeOffersFactory.json";
 import { checkIfActionAccountInitialized, checkIfInitialized, createTransactionOptions } from "../utils";
+import { formatBytes32String } from 'ethers/lib/utils';
 import { TransactionOptions } from "../types/Web3";
 import _ from "lodash";
 import { TeeOfferInfo, TeeOfferInfoArguments } from "../types/TeeOffer";
@@ -44,6 +45,7 @@ class OffersFactory {
     public static async createTeeOffer(
         providerAuthorityAccount: string,
         teeOfferInfo: TeeOfferInfo,
+        externalId = formatBytes32String('default'),
         transactionOptions?: TransactionOptions
     ): Promise<void> {
         this.checkInit();
@@ -53,7 +55,7 @@ class OffersFactory {
         let teeOfferInfoParams = _.at(teeOfferInfo, TeeOfferInfoArguments);
 
         await this.contract.methods
-            .create(providerAuthorityAccount, teeOfferInfoParams)
+            .create(providerAuthorityAccount, teeOfferInfoParams, externalId)
             .send(createTransactionOptions(transactionOptions));
     }
 }

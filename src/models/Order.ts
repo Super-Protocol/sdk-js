@@ -15,6 +15,7 @@ import { AbiItem } from "web3-utils";
 import OrderJSON from "../contracts/Order.json";
 import store from "../store";
 import { checkIfActionAccountInitialized, checkIfInitialized, createTransactionOptions } from "../utils";
+import { formatBytes32String } from 'ethers/lib/utils';
 import { Origins, OriginsArguments } from "../types/Origins";
 
 class Order {
@@ -149,7 +150,7 @@ class Order {
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      * @returns Promise<void> - Does not return address of created contract!
      */
-    public async createSubOrder(subOrderInfo: OrderInfo, blocking: boolean, transactionOptions?: TransactionOptions) {
+    public async createSubOrder(subOrderInfo: OrderInfo, blocking: boolean, externalId = formatBytes32String('default'), transactionOptions?: TransactionOptions) {
         checkIfActionAccountInitialized();
 
         let subOrderInfoArguments = JSON.parse(JSON.stringify(subOrderInfo));
@@ -159,7 +160,7 @@ class Order {
         subOrderInfoArguments = _.at(subOrderInfoArguments, OrderInfoArguments);
 
         await this.contract.methods
-            .createSubOrder(subOrderInfoArguments, blocking)
+            .createSubOrder(subOrderInfoArguments, blocking, externalId)
             .send(createTransactionOptions(transactionOptions));
     }
 

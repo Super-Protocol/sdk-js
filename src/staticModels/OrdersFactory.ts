@@ -4,6 +4,7 @@ import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
 import OrdersFactoryJSON from "../contracts/OrdersFactory.json";
 import { checkIfActionAccountInitialized, checkIfInitialized, createTransactionOptions } from "../utils";
+import { formatBytes32String } from 'ethers/lib/utils';
 import { OrderArgsArguments, OrderInfo, OrderInfoArguments } from "../types/Order";
 import _ from "lodash";
 import { ContractEvent, TransactionOptions } from "../types/Web3";
@@ -73,7 +74,7 @@ class OrdersFactory {
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      * @returns Promise<void> - Does not return address of created contract!
      */
-    public static async createOrder(orderInfo: OrderInfo, suspended: boolean, transactionOptions?: TransactionOptions) {
+    public static async createOrder(orderInfo: OrderInfo, suspended: boolean, externalId = formatBytes32String('default'), transactionOptions?: TransactionOptions) {
         this.checkInit();
         checkIfActionAccountInitialized();
 
@@ -84,7 +85,7 @@ class OrdersFactory {
         orderInfoArguments = _.at(orderInfoArguments, OrderInfoArguments);
 
         await this.contract.methods
-            .create(orderInfoArguments, suspended)
+            .create(orderInfoArguments, suspended, externalId)
             .send(createTransactionOptions(transactionOptions));
     }
 

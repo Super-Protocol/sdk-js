@@ -5,6 +5,7 @@ import { AbiItem } from "web3-utils";
 import OffersFactoryJSON from "../contracts/OffersFactory.json";
 import { checkIfActionAccountInitialized, checkIfInitialized, createTransactionOptions } from "../utils";
 import { OfferInfo, OfferInfoArguments, OfferRestrictionsArguments } from "../types/Offer";
+import { formatBytes32String } from 'ethers/lib/utils';
 import _ from "lodash";
 import { TransactionOptions } from "../types/Web3";
 
@@ -45,6 +46,7 @@ class OffersFactory {
     public static async createOffer(
         providerAuthorityAccount: string,
         offerInfo: OfferInfo,
+        externalId = formatBytes32String('default'),
         transactionOptions?: TransactionOptions
     ): Promise<void> {
         this.checkInit();
@@ -57,7 +59,7 @@ class OffersFactory {
         offerInfoParams = _.at(offerInfo, OfferInfoArguments);
 
         await this.contract.methods
-            .create(providerAuthorityAccount, offerInfoParams)
+            .create(providerAuthorityAccount, offerInfoParams, externalId)
             .send(createTransactionOptions(transactionOptions));
     }
 }

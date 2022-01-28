@@ -9,6 +9,7 @@ import { checkIfActionAccountInitialized, checkIfInitialized, createTransactionO
 import { TransactionOptions } from "../types/Web3";
 import Suspicious from "../staticModels/Suspicious";
 import LastBlocks from "../staticModels/LastBlocks";
+import { formatBytes32String } from 'ethers/lib/utils';
 
 class TCB {
     public address: string;
@@ -93,7 +94,7 @@ class TCB {
     public async addData(used: PublicData, quote: string, transactionOptions?: TransactionOptions) {
         checkIfActionAccountInitialized();
         await this.contract.methods
-            .addData(used.benchmark, used.properties, used.deviceID, quote)
+            .addData(used.benchmark, used.properties, formatBytes32String(used.deviceID), quote)
             .send(createTransactionOptions(transactionOptions));
     }
 

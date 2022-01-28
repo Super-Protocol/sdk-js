@@ -132,8 +132,8 @@ class Order {
      */
     public async complete(
         status: OrderStatus,
-        encryptedResult?: string,
-        encryptedError?: string,
+        encryptedResult: string = "",
+        encryptedError: string = "",
         transactionOptions?: TransactionOptions
     ) {
         checkIfActionAccountInitialized();

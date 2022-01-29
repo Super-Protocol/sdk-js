@@ -91,10 +91,13 @@ class TCB {
      * @param quote - data generated from Enclave
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
-    public async addData(used: PublicData, quote: string, transactionOptions?: TransactionOptions) {
+    public async addData(pb: PublicData, quote: string, transactionOptions?: TransactionOptions) {
         checkIfActionAccountInitialized();
+
+        const fromattedDeviceId = formatBytes32String((Buffer.from(pb.deviceID, 'hex')).toString('base64'));
+
         await this.contract.methods
-            .addData(used.benchmark, used.properties, formatBytes32String(used.deviceID), quote)
+            .addData(pb.benchmark, pb.properties, fromattedDeviceId, quote)
             .send(createTransactionOptions(transactionOptions));
     }
 
@@ -118,6 +121,11 @@ class TCB {
      */
     public async getPublicData(): Promise<PublicData> {
         this.publicData = await this.contract.methods.getUsedData().call();
+
+        const { deviceID } = this.publicData!;
+        const formattedDeviceId = (Buffer.from(deviceID, 'base64')).toString('hex');
+        this.publicData!.deviceID = formattedDeviceId;
+
         return this.publicData!;
     }
 

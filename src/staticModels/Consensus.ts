@@ -7,7 +7,7 @@ import TCB from "../models/TCB";
 import LastBlocks from "./LastBlocks";
 import Suspicious from "./Suspicious";
 import { checkIfActionAccountInitialized, checkIfInitialized, createTransactionOptions } from "../utils";
-import { zeroAddress } from "../constants";
+import { zeroAddress, ONE_DAY } from "../constants";
 import { PublicData, LType } from "../types/TcbData";
 import _ from "lodash";
 import { TransactionOptions } from "../types/Web3";
@@ -57,10 +57,13 @@ class Consensus {
         checkIfActionAccountInitialized();
 
         const alreadyInited = await this.getInitedTcb(teeOfferAddress);
+        const tcbTimeInited = await this.getTimeInited(teeOfferAddress);
+        const tcbTimeLimit = ONE_DAY + Math.floor(Date.now()/1000);
+
         const tcb =
-            alreadyInited === zeroAddress
-                ? await this.initTcb(teeOfferAddress, transactionOptions)
-                : new TCB(alreadyInited);
+            (alreadyInited !== zeroAddress && tcbTimeInited < tcbTimeLimit)
+                ? new TCB(alreadyInited)
+                : await this.initTcb(teeOfferAddress, transactionOptions);
 
         if (!(await this.LEnough(tcb))) {
             // counted how many L2 are missing to complete TCB
@@ -144,6 +147,16 @@ class Consensus {
         this.checkInit();
         const tcbAddress = await this.contract.methods.getInitedTcb(teeOfferAddress).call();
         return tcbAddress!;
+    }
+
+    /**
+     * Function return last inited TCB of TEE offer
+     * @param teeOfferAddress
+     * */
+    public static async getTimeInited(teeOfferAddress: string): Promise<number> {
+        this.checkInit();
+        const tcbTimeInited = +(await this.contract.methods.getTimeInited(teeOfferAddress).call());
+        return tcbTimeInited!;
     }
 }
 

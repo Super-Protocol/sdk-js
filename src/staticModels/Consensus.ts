@@ -6,7 +6,7 @@ import ConsensusJSON from "../contracts/Consensus.json";
 import TCB from "../models/TCB";
 import LastBlocks from "./LastBlocks";
 import Suspicious from "./Suspicious";
-import { checkIfActionAccountInitialized, checkIfInitialized, createTransactionOptions } from "../utils";
+import { checkIfActionAccountInitialized, checkIfInitialized, createTransactionOptions, getTimestamp } from "../utils";
 import { zeroAddress, ONE_DAY } from "../constants";
 import { PublicData, LType } from "../types/TcbData";
 import _ from "lodash";
@@ -58,10 +58,9 @@ class Consensus {
 
         const alreadyInited = await this.getInitedTcb(teeOfferAddress);
         const tcbTimeInited = await this.getTimeInited(teeOfferAddress);
-        const tcbTimeLimit = ONE_DAY + Math.floor(Date.now()/1000);
+        const timestamp = await getTimestamp();
 
-        const tcb =
-            (alreadyInited !== zeroAddress && tcbTimeInited < tcbTimeLimit)
+        const tcb = (tcbTimeInited !== 0 && (tcbTimeInited + ONE_DAY) > timestamp)
                 ? new TCB(alreadyInited)
                 : await this.initTcb(teeOfferAddress, transactionOptions);
 

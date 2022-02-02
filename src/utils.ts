@@ -39,3 +39,9 @@ export const isNodeJS = () => {
     // @ts-ignore
     return typeof window === 'undefined';
 };
+
+export const getTimestamp = async () => {
+    const endBlockIndex = await store.web3!.eth.getBlockNumber();
+    const block = await store.web3!.eth.getBlock(endBlockIndex, true);
+    return block.timestamp;
+}

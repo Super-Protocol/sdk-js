@@ -23,7 +23,6 @@ class TCB {
     public epoch?: TcbEpochInfo;
     public positive?: number;
     public negative?: number;
-    public publicData?: PublicData;
     public quote?: string;
 
     constructor(address: string) {
@@ -120,13 +119,13 @@ class TCB {
      * Function for fetching used TCB data
      */
     public async getPublicData(): Promise<PublicData> {
-        this.publicData = await this.contract.methods.getPublicData().call();
+        let publicData = await this.contract.methods.getPublicData().call();
 
-        const { deviceID } = this.publicData!;
+        const { deviceID } = publicData;
         const formattedDeviceId = (Buffer.from(deviceID, 'base64')).toString('hex');
-        this.publicData!.deviceID = formattedDeviceId;
+        publicData.deviceID = formattedDeviceId;
 
-        return this.publicData!;
+        return publicData;
     }
 
     /**

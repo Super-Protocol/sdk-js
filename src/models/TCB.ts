@@ -9,7 +9,7 @@ import { checkIfActionAccountInitialized, checkIfInitialized, createTransactionO
 import { TransactionOptions } from "../types/Web3";
 import Suspicious from "../staticModels/Suspicious";
 import LastBlocks from "../staticModels/LastBlocks";
-import { formatBytes32String } from 'ethers/lib/utils';
+import { formatBytes32String, parseBytes32String } from 'ethers/lib/utils';
 
 class TCB {
     public address: string;
@@ -122,7 +122,7 @@ class TCB {
         let publicData: PublicData = await this.contract.methods.getPublicData().call();
 
         const { deviceID } = publicData;
-        const formattedDeviceId = (Buffer.from(deviceID, 'base64')).toString('hex');
+        const formattedDeviceId = (Buffer.from(parseBytes32String(deviceID), 'base64')).toString('hex');
 
         return {
             teeOffer: publicData.teeOffer,

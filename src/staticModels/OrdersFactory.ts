@@ -74,7 +74,13 @@ class OrdersFactory {
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      * @returns Promise<void> - Does not return address of created contract!
      */
-    public static async createOrder(orderInfo: OrderInfo, suspended: boolean, externalId = formatBytes32String('default'), transactionOptions?: TransactionOptions) {
+    public static async createOrder(
+        orderInfo: OrderInfo,
+        holdDeposit = 0,
+        suspended = false,
+        externalId = formatBytes32String('default'),
+        transactionOptions?: TransactionOptions
+    ) {
         this.checkInit();
         checkIfActionAccountInitialized();
 
@@ -85,7 +91,7 @@ class OrdersFactory {
         orderInfoArguments = _.at(orderInfoArguments, OrderInfoArguments);
 
         await this.contract.methods
-            .create(orderInfoArguments, suspended, externalId)
+            .create(orderInfoArguments, holdDeposit, suspended, externalId)
             .send(createTransactionOptions(transactionOptions));
     }
 

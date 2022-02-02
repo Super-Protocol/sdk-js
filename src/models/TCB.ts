@@ -119,13 +119,17 @@ class TCB {
      * Function for fetching used TCB data
      */
     public async getPublicData(): Promise<PublicData> {
-        let publicData = await this.contract.methods.getPublicData().call();
+        let publicData: PublicData = await this.contract.methods.getPublicData().call();
 
         const { deviceID } = publicData;
         const formattedDeviceId = (Buffer.from(deviceID, 'base64')).toString('hex');
-        publicData.deviceID = formattedDeviceId;
 
-        return publicData;
+        return {
+            teeOffer: publicData.teeOffer,
+            deviceID: formattedDeviceId,
+            benchmark: publicData.benchmark,
+            properties: publicData.properties,
+        };
     }
 
     /**

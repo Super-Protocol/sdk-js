@@ -6,6 +6,7 @@ import {
     Encryption,
     RSAHybridEncryption,
 } from "@super-protocol/sp-dto-js";
+import fs from "fs";
 import AES from "./nodejs/AES";
 import ECIES from "./nodejs/ECIES";
 import RSAHybrid from "./universal/RSA-Hybrid";
@@ -41,6 +42,35 @@ class Crypto {
     }
 
     /**
+     * Encrypts data stream
+     * @param inputStream - path to file that will be encrypted
+     * @param outputStream - place where it will be saved
+     * @param algorithm - file encryption algorithm
+     * @param key – key that will be used to encrypt data
+     * @return Promise<Encryption> - encryption info
+     */
+    public static async encryptStream(
+        inputStream: fs.ReadStream,
+        outputStream: fs.WriteStream,
+        algorithm: CryptoAlgorithm,
+        encoding: Encoding,
+        key: string
+    ): Promise<Encryption> {
+        switch (algorithm) {
+            case CryptoAlgorithm.AES:
+                return await AES.encryptStream(
+                    inputStream,
+                    outputStream,
+                    algorithm,
+                    encoding,
+                    key
+                );
+            default:
+                throw Error(`${algorithm} algorithm not supported`);
+        }
+    }
+
+    /**
      * Used to decrypt data from blockchain
      * @param encryption - object what contains encrypted data, key and spec to decryption
      * @return Promise<string> - decrypted string
@@ -54,8 +84,33 @@ class Crypto {
                 return await ECIES.decrypt(encryption as ECIESEncryption);
 
             case CryptoAlgorithm.RSAHybrid:
-                return await RSAHybrid.decrypt(encryption as RSAHybridEncryption);
+                return await RSAHybrid.decrypt(
+                    encryption as RSAHybridEncryption
+                );
 
+            default:
+                throw Error(`${encryption.algo} algorithm not supported`);
+        }
+    }
+
+    /**
+     * Decrypts data stream
+     * @param inputStream - stream with data to decrypt
+     * @param outputStream - stream where the decrypted data will be written
+     * @param encryption – encryption info
+     */
+    public static async decryptStream(
+        inputStream: fs.ReadStream,
+        outputStream: fs.WriteStream,
+        encryption: Encryption
+    ): Promise<void> {
+        switch (encryption.algo) {
+            case CryptoAlgorithm.AES:
+                return await AES.decryptStream(
+                    inputStream,
+                    outputStream,
+                    encryption
+                );
             default:
                 throw Error(`${encryption.algo} algorithm not supported`);
         }

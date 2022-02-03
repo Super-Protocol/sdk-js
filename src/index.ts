@@ -1,18 +1,9 @@
 import BlockchainConnector from "./BlockchainConnector";
-import IFileCrypto from "./fileCrypto/IFileCrypto";
-import { isNodeJS } from "./utils";
 
 export default BlockchainConnector;
 export * from "./BlockchainConnector";
 
 export { default as Crypto } from "./crypto";
-
-export * from "./fileCrypto/IFileCrypto";
-
-// Example of a constructor type definition: https://github.com/angular/angular/blob/6.1.6/packages/core/src/type.ts#L25
-export const FileCrypto: new () => IFileCrypto = isNodeJS()
-    ? require("./fileCrypto/NodeJSFileCrypto")
-    : null;
 
 export { default as TIIGenerator } from "./TIIGenerator";
 export * from "./TIIGenerator";

@@ -3,8 +3,8 @@ import { Contract } from "web3-eth-contract";
 import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
 import EpochsJSON from "../contracts/Epochs.json";
-import { checkIfInitialized } from "../utils";
-import { Epoch } from "../types/Epoch";
+import { checkIfInitialized, tupleToObject } from "../utils";
+import { Epoch, EpochStructure } from "../types/Epoch";
 
 class Epochs {
     public static address: string;
@@ -28,7 +28,8 @@ class Epochs {
      public static async getEpoch(index: number): Promise<Epoch> {
         this.checkInit();
 
-        return await this.contract.methods.getEpoch(index).call();
+        const epoch = await this.contract.methods.getEpoch(index).call();
+        return tupleToObject(epoch, EpochStructure);
     }
 
     /**
@@ -37,7 +38,7 @@ class Epochs {
     public static async count(): Promise<number> {
         this.checkInit();
 
-        return await this.contract.methods.count().call();
+        return +await this.contract.methods.count().call();
     }
 }
 

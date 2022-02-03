@@ -1,22 +1,25 @@
 import {
-    OrderArgs,
-    OrderArgsArguments,
     OrderInfo,
-    OrderInfoArguments,
+    OrderInfoStructure,
     OrderResult,
-    OrderResultArguments,
+    OrderResultStructure,
     OrderStatus,
 } from "../types/Order";
 import { Contract } from "web3-eth-contract";
-import _ from "lodash";
 import rootLogger from "../logger";
 import { ContractEvent, TransactionOptions } from "../types/Web3";
 import { AbiItem } from "web3-utils";
 import OrderJSON from "../contracts/Order.json";
 import store from "../store";
-import { checkIfActionAccountInitialized, checkIfInitialized, createTransactionOptions } from "../utils";
+import {
+    checkIfActionAccountInitialized,
+    checkIfInitialized,
+    createTransactionOptions,
+    objectToTuple,
+    tupleToObject
+} from "../utils";
+import { Origins, OriginsStructure } from "../types/Origins";
 import { formatBytes32String } from 'ethers/lib/utils';
-import { Origins, OriginsArguments } from "../types/Origins";
 
 class Order {
     public address: string;
@@ -44,13 +47,7 @@ class Order {
      */
     public async getOrderInfo(): Promise<OrderInfo> {
         const orderInfoParams = await this.contract.methods.getOrderInfo().call();
-
-        // Deep convert arrays (used in blockchain) to order info
-        this.orderInfo = <OrderInfo>_.zipObject(OrderInfoArguments, orderInfoParams);
-        // @ts-ignore
-        this.orderInfo.args = <OrderArgs>_.zipObject(OrderArgsArguments, this.orderInfo.args);
-
-        return this.orderInfo;
+        return this.orderInfo = tupleToObject(orderInfoParams, OrderInfoStructure);
     }
 
     public async getConsumer(): Promise<string> {
@@ -63,7 +60,7 @@ class Order {
      */
     public async getOrderResult(): Promise<OrderResult> {
         const orderResultParams = await this.contract.methods.getOrderResult().call();
-        return (this.orderResult = <OrderResult>_.zipObject(OrderResultArguments, orderResultParams));
+        return this.orderResult = tupleToObject(orderResultParams, OrderResultStructure);
     }
 
     /**
@@ -89,7 +86,7 @@ class Order {
         let origins = await this.contract.methods.getOrigins().call();
 
         // Converts blockchain array into object
-        origins = _.zipObject(OriginsArguments, origins);
+        origins = tupleToObject(origins, OriginsStructure);
 
         // Convert blockchain time seconds to js time milliseconds
         origins.createdDate = +origins.createdDate * 1000;
@@ -150,15 +147,15 @@ class Order {
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      * @returns Promise<void> - Does not return address of created contract!
      */
-    public async createSubOrder(subOrderInfo: OrderInfo, blocking: boolean, externalId = formatBytes32String('default'), transactionOptions?: TransactionOptions) {
+    public async createSubOrder(
+        subOrderInfo: OrderInfo,
+        blocking: boolean,
+        externalId = formatBytes32String('default'),
+        transactionOptions?: TransactionOptions
+    ) {
         checkIfActionAccountInitialized();
 
-        let subOrderInfoArguments = JSON.parse(JSON.stringify(subOrderInfo));
-
-        // Deep convert order info to array (used in blockchain)
-        subOrderInfoArguments.args = _.at(subOrderInfoArguments.args, OrderArgsArguments);
-        subOrderInfoArguments = _.at(subOrderInfoArguments, OrderInfoArguments);
-
+        let subOrderInfoArguments = objectToTuple(subOrderInfo, OrderInfoStructure);
         await this.contract.methods
             .createSubOrder(subOrderInfoArguments, blocking, externalId)
             .send(createTransactionOptions(transactionOptions));

@@ -1,4 +1,4 @@
-import { ContractName } from "./Superpro";
+import { ContractName, ParamName } from "./Superpro";
 
 export enum ModifyRequestType {
     NewContractAddress = "0",
@@ -16,45 +16,48 @@ export enum BallotStateReason {
     MajorityDecision = "1",
 }
 
-// Order of keys for this object in blockchain contract
-export const ModifyRequestArguments = [
-    "requestType",
-    "contractName",
-    "newContractAddress",
-    "paramName",
-    "newParamValue",
-];
+// Order of keys and type conversion functions for this object in blockchain contract
+export const ModifyRequestStructure = {
+    requestType: ModifyRequestType,
+    contractName: ContractName,
+    newContractAddress: String,
+    paramName: ParamName,
+    newParamValue: Number,
+};
 export type ModifyRequest = {
     requestType: ModifyRequestType;
     contractName: ContractName;
-    newContractAddress: number;
-    paramName: number;
+    newContractAddress: string;
+    paramName: ParamName;
     newParamValue: number;
 };
 
-// Order of keys for this object in blockchain contract
-export const VoterInfoArguments = ["voter", "yes"];
+// Order of keys and type conversion functions for this object in blockchain contract
+export const VoterInfoStructure = {
+    voter: String,
+    yes: Number,
+};
 export type VoterInfo = {
     voter: string;
     yes: boolean;
 };
 
-// Order of keys for this object in blockchain contract
-export const BallotInfoArguments = [
-    "issuer",
-    "depositAmount",
-    "openDate",
-    "closeDate",
-    "execDate",
-    "request",
-    "state",
-    "reason",
-    "totalHoldedVotes",
-    "quorum",
-    "yes",
-    "no",
-    "voters",
-];
+// Order of keys and type conversion functions for this object in blockchain contract
+export const BallotInfoStructure = {
+    issuer: String,
+    depositAmount: Number,
+    openDate: Number,
+    closeDate: Number,
+    execDate: Number,
+    request: ModifyRequestStructure,
+    state: BallotState,
+    reason: BallotStateReason,
+    totalHoldedVotes: Number,
+    quorum: Number,
+    yes: Number,
+    no: Number,
+    voters: [VoterInfoStructure],
+};
 export type BallotInfo = {
     issuer: string;
     depositAmount: number;

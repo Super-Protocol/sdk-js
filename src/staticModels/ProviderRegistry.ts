@@ -3,9 +3,14 @@ import { Contract } from "web3-eth-contract";
 import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
 import ProviderRegistryJSON from "../contracts/ProviderRegistry.json";
-import { checkIfInitialized, createTransactionOptions, checkIfActionAccountInitialized } from "../utils";
+import {
+    checkIfInitialized,
+    createTransactionOptions,
+    checkIfActionAccountInitialized,
+    objectToTuple
+} from "../utils";
+import {ProviderInfo, ProviderInfoStructure} from "../types/Provider";
 import { formatBytes32String } from 'ethers/lib/utils';
-import { ProviderInfo } from "../types/Provider";
 import { TransactionOptions } from "../types/Web3";
 
 class ProviderRegistry {
@@ -63,7 +68,9 @@ class ProviderRegistry {
     ): Promise<void> {
         this.checkInit();
         checkIfActionAccountInitialized();
-        await this.contract.methods.register(providerInfo, externalId).send(createTransactionOptions(transactionOptions));
+
+        const providerInfoParams = objectToTuple(providerInfo, ProviderInfoStructure);
+        await this.contract.methods.register(providerInfoParams, externalId).send(createTransactionOptions(transactionOptions));
     }
 
     /**

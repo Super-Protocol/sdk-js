@@ -1,11 +1,10 @@
 import { Contract } from "web3-eth-contract";
-import _ from "lodash";
 import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
 import TcbJSON from "../contracts/TCB.json";
 import store from "../store";
-import { PublicData, LType, TcbEpochInfo } from "../types/TcbData";
-import { checkIfActionAccountInitialized, checkIfInitialized, createTransactionOptions } from "../utils";
+import { PublicData, LType, TcbEpochInfo, PublicDataStructure, TcbEpochInfoStructure } from "../types/TcbData";
+import {checkIfActionAccountInitialized, checkIfInitialized, createTransactionOptions, tupleToObject} from "../utils";
 import { TransactionOptions } from "../types/Web3";
 import Suspicious from "../staticModels/Suspicious";
 import LastBlocks from "../staticModels/LastBlocks";
@@ -101,8 +100,8 @@ class TCB {
     }
 
     public async getEpochInfo(): Promise<TcbEpochInfo> {
-        this.epoch = await this.contract.methods.getEpochInfo().call();
-        return this.epoch!;
+        const epoch = await this.contract.methods.getEpochInfo().call();
+        return this.epoch = tupleToObject(epoch, TcbEpochInfoStructure);
     }
 
     /**
@@ -119,17 +118,12 @@ class TCB {
      * Function for fetching used TCB data
      */
     public async getPublicData(): Promise<PublicData> {
-        let publicData: PublicData = await this.contract.methods.getPublicData().call();
+        let publicDataParams = await this.contract.methods.getPublicData().call();
 
-        const { deviceID } = publicData;
-        const formattedDeviceId = (Buffer.from(parseBytes32String(deviceID), 'base64')).toString('hex');
+        const publicData: PublicData = tupleToObject(publicDataParams, PublicDataStructure);
+        publicData.deviceID = (Buffer.from(parseBytes32String(publicData.deviceID), 'base64')).toString('hex');
 
-        return {
-            teeOffer: publicData.teeOffer,
-            deviceID: formattedDeviceId,
-            benchmark: publicData.benchmark,
-            properties: publicData.properties,
-        };
+        return publicData;
     }
 
     /**

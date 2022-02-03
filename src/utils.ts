@@ -1,5 +1,6 @@
 import store from "./store";
 import { TransactionOptions } from "./types/Web3";
+import {isArray} from "lodash";
 
 /**
  * Function for checking if BlockchainConnector initialized (required for get and set methods)
@@ -38,6 +39,75 @@ export const createTransactionOptions = (options?: TransactionOptions) => {
 export const isNodeJS = () => {
     // @ts-ignore
     return typeof window === 'undefined';
+};
+
+type FormatFunctions = {
+    $obj?: ((value: unknown) => unknown),
+    $tuple?: ((value: unknown) => unknown)
+};
+
+type FormatItem = Format | Object | ((value: unknown) => unknown) | null | FormatFunctions;
+
+type Format = FormatItem[] | {
+    [key: string]: FormatItem;
+};
+
+export const tupleToObject = <T>(data: unknown[], format: Format): T => {
+    const processItem = (dataItem: unknown, formatItem: FormatItem) => {
+        if ((formatItem as FormatFunctions)?.$obj) {
+            return (formatItem as FormatFunctions).$obj!(dataItem);
+        } else if (typeof formatItem === 'function') {
+            return (formatItem as Function)(dataItem);
+        } else if (typeof formatItem === 'object' && typeof dataItem === 'object') {
+            return tupleToObject(dataItem as unknown[], formatItem as Format);
+        } else {
+            return dataItem;
+        }
+    };
+
+    if (isArray(format)) {
+        const result = data.map((dataItem, index) => {
+            const formatItem = index < format.length ? format[index] : format[format.length - 1];
+            return processItem(dataItem, formatItem);
+        });
+
+        return result as unknown as T;
+    } else {
+        const result: {[key: string]: unknown} = {};
+
+        Object.keys(format).forEach((key, index) => {
+            const formatItem = format[key];
+            const dataItem = data[index];
+            result[key] = processItem(dataItem, formatItem);
+        });
+
+        return result as unknown as T;
+    }
+};
+
+export const objectToTuple = (data: unknown, format: Format): unknown[] => {
+    const processItem = (dataItem: unknown, formatItem: FormatItem) => {
+        if ((formatItem as FormatFunctions)?.$tuple) {
+            return (formatItem as FormatFunctions).$tuple!(dataItem);
+        } else if (typeof formatItem === 'object' && typeof dataItem === 'object') {
+            return objectToTuple(dataItem, formatItem as Format);
+        } else {
+            return dataItem;
+        }
+    };
+
+    if (isArray(format)) {
+        return (data as unknown[]).map((dataItem, index) => {
+            const formatItem = index < format.length ? format[index] : format[format.length - 1];
+            return processItem(dataItem, formatItem);
+        });
+    } else {
+        return Object.keys(format).map(key => {
+            const dataItem = (data as {[key: string]: unknown})[key];
+            const formatItem = format[key];
+            return processItem(dataItem, formatItem);
+        });
+    }
 };
 
 export const getTimestamp = async () => {

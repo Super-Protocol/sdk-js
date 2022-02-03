@@ -3,10 +3,14 @@ import { Contract } from "web3-eth-contract";
 import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
 import OffersFactoryJSON from "../contracts/OffersFactory.json";
-import { checkIfActionAccountInitialized, checkIfInitialized, createTransactionOptions } from "../utils";
-import { OfferInfo, OfferInfoArguments, OfferRestrictionsArguments } from "../types/Offer";
+import {
+    checkIfActionAccountInitialized,
+    checkIfInitialized,
+    createTransactionOptions,
+    objectToTuple,
+} from "../utils";
+import { OfferInfo, OfferInfoStructure } from "../types/Offer";
 import { formatBytes32String } from 'ethers/lib/utils';
-import _ from "lodash";
 import { TransactionOptions } from "../types/Web3";
 
 class OffersFactory {
@@ -52,12 +56,7 @@ class OffersFactory {
         this.checkInit();
         checkIfActionAccountInitialized();
 
-        let offerInfoParams = JSON.parse(JSON.stringify(offerInfo));
-
-        // Converts offer info to array of arrays (used in blockchain)
-        offerInfoParams.restrictions = _.at(offerInfoParams.restrictions, OfferRestrictionsArguments);
-        offerInfoParams = _.at(offerInfo, OfferInfoArguments);
-
+        const offerInfoParams = objectToTuple(offerInfo, OfferInfoStructure);
         await this.contract.methods
             .create(providerAuthorityAccount, offerInfoParams, externalId)
             .send(createTransactionOptions(transactionOptions));

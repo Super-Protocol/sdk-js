@@ -7,9 +7,8 @@ import TCB from "../models/TCB";
 import LastBlocks from "./LastBlocks";
 import Suspicious from "./Suspicious";
 import { checkIfActionAccountInitialized, checkIfInitialized, createTransactionOptions, getTimestamp } from "../utils";
-import { zeroAddress, ONE_DAY } from "../constants";
+import { ONE_DAY } from "../constants";
 import { PublicData, LType } from "../types/TcbData";
-import _ from "lodash";
 import { TransactionOptions } from "../types/Web3";
 
 class Consensus {
@@ -47,6 +46,7 @@ class Consensus {
     /**
      * Function initialize TCB and returns two lists of anothers' TCB addresses for their checking
      * @param teeOfferAddress
+     * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      * @returns two lists of anothers' TCB addresses for their checking
      */
     public static async getListsForVerification(
@@ -83,7 +83,8 @@ class Consensus {
      * @param teeOfferAddress - TCB's device offer, as key
      * @param L1 - marks of LastBlocks
      * @param L2 - marks of SuspiciousBlocks
-     * @param TcbData - TEE generated
+     * @param tcbData - TEE generated
+     * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
     public static async addTCB(
         teeOfferAddress: string,

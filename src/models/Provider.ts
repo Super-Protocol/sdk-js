@@ -1,12 +1,11 @@
 import { Contract } from "web3-eth-contract";
-import _ from "lodash";
 import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
 import ProviderJSON from "../contracts/Provider.json";
 import store from "../store";
-import { checkIfInitialized } from "../utils";
-import { ProviderInfo, ProviderInfoArguments } from "../types/Provider";
-import { Origins, OriginsArguments } from "../types/Origins";
+import {checkIfInitialized, tupleToObject} from "../utils";
+import { ProviderInfo, ProviderInfoStructure } from "../types/Provider";
+import { Origins, OriginsStructure } from "../types/Origins";
 
 class Provider {
     public address: string;
@@ -34,7 +33,7 @@ class Provider {
      */
     public async getInfo(): Promise<ProviderInfo> {
         let providerInfoParams = await this.contract.methods.getInfo().call();
-        return (this.providerInfo = <ProviderInfo>_.zipObject(ProviderInfoArguments, providerInfoParams));
+        return this.providerInfo = tupleToObject(providerInfoParams, ProviderInfoStructure);
     }
 
     /**
@@ -76,7 +75,7 @@ class Provider {
         let origins = await this.contract.methods.getOrigins().call();
 
         // Converts blockchain array into object
-        origins = _.zipObject(OriginsArguments, origins);
+        origins = tupleToObject(origins, OriginsStructure);
 
         // Convert blockchain time seconds to js time milliseconds
         origins.createdDate = +origins.createdDate * 1000;

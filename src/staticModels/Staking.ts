@@ -3,8 +3,8 @@ import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
 import StakingJSON from "../contracts/Staking.json";
 import store from "../store";
-import { checkIfActionAccountInitialized, checkIfInitialized, createTransactionOptions } from "../utils";
-import { LockInfo, LockInfoArguments, StakeInfo, StakeInfoArguments } from "../types/Staking";
+import {checkIfActionAccountInitialized, checkIfInitialized, createTransactionOptions, tupleToObject} from "../utils";
+import { LockInfo, LockInfoStructure, StakeInfo, StakeInfoStructure } from "../types/Staking";
 import { ContractName } from "../types/Superpro";
 import { Contract } from "web3-eth-contract";
 import { TransactionOptions } from "../types/Web3";
@@ -32,7 +32,7 @@ class Staking {
         this.checkInit();
 
         const stakeInfoParams = await this.contract.methods.getStakeInfo(ownerAddress).call();
-        return <StakeInfo>_.zipObject(StakeInfoArguments, stakeInfoParams);
+        return tupleToObject(stakeInfoParams, StakeInfoStructure);
     }
 
     /**
@@ -41,8 +41,8 @@ class Staking {
     public static async getLockInfo(ownerAddress: string, contractName: ContractName): Promise<LockInfo> {
         this.checkInit();
 
-        const stakeInfoParams = await this.contract.methods.getLockInfo(ownerAddress, contractName).call();
-        return <LockInfo>_.zipObject(LockInfoArguments, stakeInfoParams);
+        const lockInfoParams = await this.contract.methods.getLockInfo(ownerAddress, contractName).call();
+        return tupleToObject(lockInfoParams, LockInfoStructure);
     }
 
     /**

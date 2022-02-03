@@ -10,36 +10,39 @@ export enum OfferGroup {
     Output = "1",
 }
 
-// Order of keys for this object in blockchain contract
-export const OfferRestrictionsArguments = ["offers", "types"];
+// Order of keys and type conversion functions for this object in blockchain contract
+export const OfferRestrictionsStructure = {
+    offers: [String],
+    types: [OfferType],
+};
 export type OfferRestrictions = {
     offers: string[];
     types: OfferType[];
 };
 
-// Order of keys for this object in blockchain contract
-export const OfferInfoArguments = [
-    "name",
-    "group",
-    "offerType",
-    "cancelable",
-    "description",
-    "holdSum",
-    "restrictions",
-    "properties",
-    "maxDurationTimeMinutes",
-    "inputFormat",
-    "outputFormat",
-    "allowedArgs",
-    "allowedAccounts",
-    "argsPublicKey",
-    "argsPublicKeyAlgo",
-    "resultUrl",
-    "disabledAfter",
-    "linkage",
-    "hash",
-    "hashAlgo",
-];
+// Order of keys and type conversion functions for this object in blockchain contract
+export const OfferInfoStructure = {
+    name: String,
+    group: OfferGroup,
+    offerType: OfferType,
+    cancelable: Boolean,
+    description: String,
+    holdSum: Number,
+    restrictions: OfferRestrictionsStructure,
+    properties: String,
+    maxDurationTimeMinutes: Number,
+    inputFormat: String,
+    outputFormat: String,
+    allowedArgs: String,
+    allowedAccounts: [String],
+    argsPublicKey: String,
+    argsPublicKeyAlgo: String,
+    resultUrl: String,
+    disabledAfter: Number,
+    linkage: String,
+    hash: String,
+    hashAlgo: String,
+};
 export type OfferInfo = {
     name: string;
     group: OfferGroup;

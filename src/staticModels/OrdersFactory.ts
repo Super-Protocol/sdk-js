@@ -3,10 +3,14 @@ import { Contract } from "web3-eth-contract";
 import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
 import OrdersFactoryJSON from "../contracts/OrdersFactory.json";
-import { checkIfActionAccountInitialized, checkIfInitialized, createTransactionOptions } from "../utils";
+import {
+    checkIfActionAccountInitialized,
+    checkIfInitialized,
+    createTransactionOptions,
+    objectToTuple
+} from "../utils";
+import { OrderInfo, OrderInfoStructure } from "../types/Order";
 import { formatBytes32String } from 'ethers/lib/utils';
-import { OrderArgsArguments, OrderInfo, OrderInfoArguments } from "../types/Order";
-import _ from "lodash";
 import { ContractEvent, TransactionOptions } from "../types/Web3";
 
 class OrdersFactory {
@@ -84,12 +88,8 @@ class OrdersFactory {
         this.checkInit();
         checkIfActionAccountInitialized();
 
-        let orderInfoArguments = JSON.parse(JSON.stringify(orderInfo));
 
-        // Deep convert order info to array (used in blockchain)
-        orderInfoArguments.args = _.at(orderInfoArguments.args, OrderArgsArguments);
-        orderInfoArguments = _.at(orderInfoArguments, OrderInfoArguments);
-
+        const orderInfoArguments = objectToTuple(orderInfo, OrderInfoStructure);
         await this.contract.methods
             .create(orderInfoArguments, holdDeposit, suspended, externalId)
             .send(createTransactionOptions(transactionOptions));

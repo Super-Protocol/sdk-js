@@ -1,16 +1,16 @@
-// Order of keys for this object in blockchain contract
-export const TeeOfferInfoArguments = [
-    "name",
-    "description",
-    "teeType",
-    "slots",
-    "minTimeMinutes",
-    "properties",
-    "tcb",
-    "tlb",
-    "argsPublicKey",
-    "argsPublicKeyAlgo",
-];
+// Order of keys and type conversion functions for this object in blockchain contract
+export const TeeOfferInfoStructure = {
+    name: String,
+    description: String,
+    teeType: String,
+    slots: Number,
+    minTimeMinutes: Number,
+    properties: String,
+    tcb: String,
+    tlb: String,
+    argsPublicKey: String,
+    argsPublicKeyAlgo: String,
+};
 export type TeeOfferInfo = {
     name: string;
     description: string;

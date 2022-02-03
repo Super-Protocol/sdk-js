@@ -1,14 +1,13 @@
 import { Contract } from "web3-eth-contract";
-import _ from "lodash";
 import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
 import TeeOfferJSON from "../contracts/TeeOffer.json";
 import store from "../store";
-import { checkIfActionAccountInitialized, checkIfInitialized, createTransactionOptions } from "../utils";
-import { TeeOfferInfo, TeeOfferInfoArguments } from "../types/TeeOffer";
+import {checkIfActionAccountInitialized, checkIfInitialized, createTransactionOptions, tupleToObject} from "../utils";
+import { TeeOfferInfo, TeeOfferInfoStructure } from "../types/TeeOffer";
 import { TransactionOptions } from "../types/Web3";
 import { OfferType } from "../types/Offer";
-import { Origins, OriginsArguments } from "../types/Origins";
+import { Origins, OriginsStructure } from "../types/Origins";
 
 class TeeOffer {
     public address: string;
@@ -40,7 +39,7 @@ class TeeOffer {
      */
     public async getInfo(): Promise<TeeOfferInfo> {
         let teeOfferInfoParams = await this.contract.methods.getInfo().call();
-        return (this.offerInfo = <TeeOfferInfo>_.zipObject(TeeOfferInfoArguments, teeOfferInfoParams));
+        return this.offerInfo = tupleToObject(teeOfferInfoParams, TeeOfferInfoStructure);
     }
 
     /**
@@ -123,7 +122,7 @@ class TeeOffer {
         let origins = await this.contract.methods.getOrigins().call();
 
         // Converts blockchain array into object
-        origins = _.zipObject(OriginsArguments, origins);
+        origins = tupleToObject(origins, OriginsStructure);
 
         // Convert blockchain time seconds to js time milliseconds
         origins.createdDate = +origins.createdDate * 1000;

@@ -1,13 +1,12 @@
 import { Contract } from "web3-eth-contract";
-import _ from "lodash";
 import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
 import OfferJSON from "../contracts/Offer.json";
 import store from "../store";
-import { checkIfActionAccountInitialized, checkIfInitialized, createTransactionOptions } from "../utils";
-import { OfferInfo, OfferInfoArguments, OfferType } from "../types/Offer";
+import {checkIfActionAccountInitialized, checkIfInitialized, createTransactionOptions, tupleToObject} from "../utils";
+import { OfferInfo, OfferInfoStructure, OfferType } from "../types/Offer";
 import { TransactionOptions } from "../types/Web3";
-import { Origins, OriginsArguments } from "../types/Origins";
+import { Origins, OriginsStructure } from "../types/Origins";
 
 class Offer {
     public address: string;
@@ -34,11 +33,7 @@ class Offer {
      */
     public async getInfo(): Promise<OfferInfo> {
         let orderInfoParams = await this.contract.methods.getInfo().call();
-
-        // Converts blockchain array into object
-        orderInfoParams = _.zipObject(OfferInfoArguments, orderInfoParams);
-
-        return (this.offerInfo = <OfferInfo>orderInfoParams);
+        return (this.offerInfo = tupleToObject(orderInfoParams, OfferInfoStructure));
     }
 
     /**
@@ -72,7 +67,7 @@ class Offer {
         let origins = await this.contract.methods.getOrigins().call();
 
         // Converts blockchain array into object
-        origins = _.zipObject(OriginsArguments, origins);
+        origins = tupleToObject(origins, OriginsStructure);
 
         // Convert blockchain time seconds to js time milliseconds
         origins.createdDate = +origins.createdDate * 1000;

@@ -1,5 +1,10 @@
-// Order of keys for this object in blockchain contract
-export const StakeInfoArguments = ["startDate", "amount", "profit", "totalLocked"];
+// Order of keys and type conversion functions for this object in blockchain contract
+export const StakeInfoStructure = {
+    startDate: Number,
+    amount: Number,
+    profit: Number,
+    totalLocked: Number,
+};
 export type StakeInfo = {
     startDate: number;
     amount: number;
@@ -7,8 +12,12 @@ export type StakeInfo = {
     totalLocked: number;
 };
 
-// Order of keys for this object in blockchain contract
-export const LockInfoArguments = ["fromDate", "toDate", "amount"];
+// Order of keys and type conversion functions for this object in blockchain contract
+export const LockInfoStructure = {
+    fromDate: Number,
+    toDate: Number,
+    amount: Number,
+};
 export type LockInfo = {
     fromDate: number;
     toDate: number;

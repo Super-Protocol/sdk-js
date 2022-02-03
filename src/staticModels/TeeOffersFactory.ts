@@ -3,11 +3,15 @@ import { Contract } from "web3-eth-contract";
 import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
 import TeeOffersFactoryJSON from "../contracts/TeeOffersFactory.json";
-import { checkIfActionAccountInitialized, checkIfInitialized, createTransactionOptions } from "../utils";
+import {
+    checkIfActionAccountInitialized,
+    checkIfInitialized,
+    createTransactionOptions,
+    objectToTuple
+} from "../utils";
 import { formatBytes32String } from 'ethers/lib/utils';
 import { TransactionOptions } from "../types/Web3";
-import _ from "lodash";
-import { TeeOfferInfo, TeeOfferInfoArguments } from "../types/TeeOffer";
+import { TeeOfferInfo, TeeOfferInfoStructure } from "../types/TeeOffer";
 
 class OffersFactory {
     public static address: string;
@@ -52,8 +56,7 @@ class OffersFactory {
         checkIfActionAccountInitialized();
 
         // Converts offer info to array of arrays (used in blockchain)
-        let teeOfferInfoParams = _.at(teeOfferInfo, TeeOfferInfoArguments);
-
+        let teeOfferInfoParams = objectToTuple(teeOfferInfo, TeeOfferInfoStructure)
         await this.contract.methods
             .create(providerAuthorityAccount, teeOfferInfoParams, externalId)
             .send(createTransactionOptions(transactionOptions));

@@ -10,23 +10,28 @@ export enum OrderStatus {
     AwaitingPayment = "8",
 }
 
-export const OrderArgsArguments = ["slots", "inputOffers", "selectedOffers"];
+// Order of keys and type conversion functions for this object in blockchain contract
+export const OrderArgsStructure = {
+    slots: Number,
+    inputOffers: [String],
+    selectedOffers: [String],
+};
 export type OrderArgs = {
     slots: number;
     inputOffers: string[];
     selectedOffers: string[];
 };
 
-// Order of keys for this object in blockchain contract
-export const OrderInfoArguments = [
-    "offer",
-    "resultPublicKey",
-    "resultPublicKeyAlgo",
-    "encryptedRequirements",
-    "encryptedArgs",
-    "status",
-    "args",
-];
+// Order of keys and type conversion functions for this object in blockchain contract
+export const OrderInfoStructure = {
+    offer: String,
+    resultPublicKey: String,
+    resultPublicKeyAlgo: String,
+    encryptedRequirements: String,
+    encryptedArgs: String,
+    status: OrderStatus,
+    args: OrderArgsStructure,
+};
 export type OrderInfo = {
     offer: string;
     resultPublicKey: string;
@@ -37,8 +42,12 @@ export type OrderInfo = {
     args: OrderArgs;
 };
 
-// Order of keys for this object in blockchain contract
-export const OrderResultArguments = ["encryptedResult", "encryptedError", "orderPrice"];
+// Order of keys and type conversion functions for this object in blockchain contract
+export const OrderResultStructure = {
+    encryptedResult: String,
+    encryptedError: String,
+    orderPrice: Number,
+};
 export type OrderResult = {
     encryptedResult: string;
     encryptedError: string;

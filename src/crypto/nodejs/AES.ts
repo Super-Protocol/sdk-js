@@ -11,7 +11,7 @@ import {
     randomBytes,
 } from "crypto";
 import fs from "fs";
-import { pipeline } from "stream/promises";
+import { once } from "events";
 
 class AES {
     public static async encrypt(
@@ -60,7 +60,8 @@ class AES {
         const iv = randomBytes(16);
         const cph = createCipheriv(cipherName, Buffer.from(key, encoding), iv);
 
-        await pipeline(inputStream, cph, outputStream);
+        inputStream.pipe(cph).pipe(outputStream);
+        await once(outputStream, "finish");
 
         return {
             algo: algorithm,
@@ -114,7 +115,8 @@ class AES {
         );
         dcp.setAuthTag(Buffer.from(info.mac, info.encoding));
 
-        await pipeline(inputStream, dcp, outputStream);
+        inputStream.pipe(dcp).pipe(outputStream);
+        await once(outputStream, "finish");
     }
 }
 

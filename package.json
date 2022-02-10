@@ -1,6 +1,6 @@
 {
   "name": "@super-protocol/sp-sdk-js",
-  "version": "0.0.59",
+  "version": "0.0.60",
   "main": "build/index.js",
   "license": "MIT",
   "files": [
@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "@super-protocol/sp-dto-js": "0.0.5",
-    "@super-protocol/tee-lib": "^0.1.0",
+    "@super-protocol/tee-lib": "^0.1.2",
     "eccrypto": "^1.1.6",
     "ethers": "^5.5.3",
     "hybrid-crypto-js": "^0.2.4",

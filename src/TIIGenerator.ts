@@ -1,4 +1,4 @@
-import { TLBlockDeserializeResultType, TLBlockSerializerV1 } from "@super-protocol/tee-lib";
+import { TLBlockSerializerV1, TLBlockUnserializeResultType } from "@super-protocol/tee-lib";
 
 import { Offer, OfferInfo, TeeOfferInfo } from ".";
 import Crypto from "./crypto";
@@ -19,8 +19,8 @@ class TIIGenerator {
         const teeOfferInfo: TeeOfferInfo = await teeOffer.getInfo();
 
         // TODO: get real tlb
-        const tlb: TLBlockDeserializeResultType =
-            new TLBlockSerializerV1().deserializeTlb(
+        const tlb: TLBlockUnserializeResultType =
+            new TLBlockSerializerV1().unserializeTlb(
                 Buffer.from(teeOfferInfo.tlb, "base64")
             );
 

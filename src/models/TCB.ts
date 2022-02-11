@@ -83,6 +83,21 @@ class TCB {
         return this.L2_statusess!;
     }
 
+
+    /**
+     * Function for fetching TCB status
+     */
+    public async getTcbStatus(): Promise<number> {
+        return await this.contract.methods.getTcbStatus().call();
+    }
+
+    /**
+     * Function for fetching calimed amount of TCB reward
+     */
+    public async getPaidAmount(): Promise<number> {
+        return await this.contract.methods.getPaidAmount().call();
+    }
+
     /**
      * Add processed TCB data to smart-contract
      * @param used - struct of 'processed' data

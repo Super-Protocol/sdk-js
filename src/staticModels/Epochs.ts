@@ -3,8 +3,9 @@ import { Contract } from "web3-eth-contract";
 import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
 import EpochsJSON from "../contracts/Epochs.json";
-import { checkIfInitialized, tupleToObject } from "../utils";
+import { checkIfInitialized, tupleToObject, createTransactionOptions } from "../utils";
 import { Epoch, EpochStructure } from "../types/Epoch";
+import { TransactionOptions } from "../types/Web3";
 
 class Epochs {
     public static address: string;
@@ -25,11 +26,20 @@ class Epochs {
     /**
      * Function for fetching epoch info by index
      */
-     public static async getEpoch(index: number): Promise<Epoch> {
+    public static async getEpoch(index: number): Promise<Epoch> {
         this.checkInit();
 
         const epoch = await this.contract.methods.getEpoch(index).call();
         return tupleToObject(epoch, EpochStructure);
+    }
+
+    /**
+     * Function for fetching TCB reward by epoch
+     */
+    public static async getReward(tcbAddress: string): Promise<number> {
+        this.checkInit();
+
+        return await this.contract.methods.getReward(tcbAddress).call();
     }
 
     /**

@@ -9,6 +9,7 @@ import { TransactionOptions } from "../types/Web3";
 import Suspicious from "../staticModels/Suspicious";
 import LastBlocks from "../staticModels/LastBlocks";
 import { formatBytes32String, parseBytes32String } from 'ethers/lib/utils';
+import { TcbStatus } from "./../types/Epoch";
 
 class TCB {
     public address: string;
@@ -87,7 +88,7 @@ class TCB {
     /**
      * Function for fetching TCB status
      */
-    public async getTcbStatus(): Promise<number> {
+    public async getTcbStatus(): Promise<TcbStatus> {
         return await this.contract.methods.getTcbStatus().call();
     }
 

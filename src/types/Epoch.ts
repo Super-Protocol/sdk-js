@@ -15,3 +15,8 @@ export type Epoch = {
     reparation: number;
     reparationBenchmark: number;
 };
+export enum TcbStatus {
+    Inited = "0",
+    Completed = "1",
+    Banned = "2",
+}

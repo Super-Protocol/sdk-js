@@ -1,0 +1,63 @@
+{
+    "env": {
+        "node": true,
+        "es2021": true
+    },
+    "extends": [
+        "eslint:recommended",
+        "plugin:@typescript-eslint/recommended",
+        "plugin:prettier/recommended",
+        "plugin:@typescript-eslint/recommended"
+    ],
+    "globals": {
+        "Atomics": "readonly",
+        "SharedArrayBuffer": "readonly"
+    },
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+        "project": ["./tsconfig.json"]
+    },
+    "plugins": [
+        "@typescript-eslint",
+        "eslint-plugin-tsdoc"
+    ],
+    "rules": {
+        "@typescript-eslint/no-var-requires": ["off"],
+        "@typescript-eslint/no-unused-vars": ["off"],
+        "@typescript-eslint/interface-name-prefix": ["off"],
+        "@typescript-eslint/no-empty-function": ["warn"],
+        "comma-dangle": [
+            "error",
+            {
+                "arrays": "always-multiline",
+                "objects": "always-multiline",
+                "imports": "always-multiline",
+                "exports": "always-multiline",
+                "functions": "always-multiline"
+            }
+        ],
+        "tsdoc/syntax": "error",
+        "linebreak-style": [
+            "error",
+            "unix"
+        ],
+        "newline-before-return": "warn",
+        "no-cond-assign": "error",
+        "no-console": "warn",
+        "no-mixed-operators": "warn",
+        "no-constant-condition": [
+            "error", {
+                "checkLoops": false
+            }],
+        "no-extra-boolean-cast": "off",
+        "no-multiple-empty-lines": ["error", {
+            "max": 1,
+            "maxEOF": 0
+        }],
+        "object-curly-spacing": ["error", "always"],
+        "object-property-newline": ["error", {
+            "allowAllPropertiesOnSameLine": false
+        }],
+        "semi": ["error", "always"]
+    }
+}

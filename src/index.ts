@@ -71,6 +71,7 @@ export * from "./types/Staking";
 export * from "./types/Ballot";
 export * from "./types/Superpro";
 export * from "./types/TcbData";
+export * from "./types/Origins";
 
 export { default as StorageFileAccess } from "./types/storage/StorageFileAccess";
 export { default as StorageObject } from "./types/storage/StorageObject";

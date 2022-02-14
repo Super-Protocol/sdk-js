@@ -112,3 +112,6 @@ dist
 
 # MacOS
 .DS_Store
+
+# docs
+auto-docs

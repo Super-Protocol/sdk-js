@@ -16,9 +16,14 @@ class Consensus {
     private static contract: Contract;
     private static logger: typeof rootLogger;
 
-    public static LEnough = async (tcb: TCB) => {
+    public static LEnough = async (tcb: TCB): Promise<boolean> => {
         return +(await tcb.needL1toCompleted()) === 0 && +(await tcb.needL2toCompleted()) === 0;
     };
+    public static isEnoughMarksAdded = async (lType: LType, tcb: TCB): Promise<boolean> => {
+        return lType == LType.L1 
+                ? (await tcb.getL1()).length == (await tcb.getL1Marks()).length
+                : (await tcb.getL2()).length == (await tcb.getL2Marks()).length;
+    }
     public static offers?: string[];
 
     /**
@@ -103,11 +108,11 @@ class Consensus {
         // Can be upgraded to completion of TCB
         await tcb.addData(tcbData.publicData, tcbData.quote, transactionOptions);
 
-        if (+(await tcb.needL1toCompleted()) !== 0) {
+        if (!(await this.isEnoughMarksAdded(LType.L1, tcb))) {
             await tcb.addMarks(LType.L1, L1, transactionOptions);
         }
 
-        if (+(await tcb.needL2toCompleted()) !== 0) {
+        if (!(await this.isEnoughMarksAdded(LType.L2, tcb))) {
             await tcb.addMarks(LType.L2, L2, transactionOptions);
         }
 

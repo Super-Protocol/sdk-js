@@ -103,8 +103,13 @@ class Consensus {
         // Can be upgraded to completion of TCB
         await tcb.addData(tcbData.publicData, tcbData.quote, transactionOptions);
 
-        await tcb.addMarks(LType.L1, L1, transactionOptions);
-        await tcb.addMarks(LType.L2, L2, transactionOptions);
+        if (+(await tcb.needL1toCompleted()) !== 0) {
+            await tcb.addMarks(LType.L1, L1, transactionOptions);
+        }
+
+        if (+(await tcb.needL2toCompleted()) !== 0) {
+            await tcb.addMarks(LType.L2, L2, transactionOptions);
+        }
 
         await this.addToSupply(tcb.address, transactionOptions);
     }

@@ -19,11 +19,6 @@ class Consensus {
     public static LEnough = async (tcb: TCB): Promise<boolean> => {
         return +(await tcb.needL1toCompleted()) === 0 && +(await tcb.needL2toCompleted()) === 0;
     };
-    public static isEnoughMarksAdded = async (lType: LType, tcb: TCB): Promise<boolean> => {
-        return lType == LType.L1 
-                ? (await tcb.getL1()).length == (await tcb.getL1Marks()).length
-                : (await tcb.getL2()).length == (await tcb.getL2Marks()).length;
-    }
     public static offers?: string[];
 
     /**
@@ -46,6 +41,39 @@ class Consensus {
 
     private static async addToSupply(tcbAddress: string, transactionOptions?: TransactionOptions) {
         await this.contract.methods.addToSupply(tcbAddress).send(createTransactionOptions(transactionOptions));
+    }
+
+    private static async addMarks(
+        L1Marks: number[],
+        L2Marks: number[],
+        tcb: TCB,
+        transactionOptions?: TransactionOptions,
+    ): Promise<void> {
+        const logger = this.logger.child({ method: "addTcbMarks" });
+
+        const needAddMarks = async (lType: LType): Promise<number> => {
+            return lType == LType.L1 
+                    ? (await tcb.getL1()).length - (await tcb.getL1Marks()).length
+                    : (await tcb.getL2()).length - (await tcb.getL2Marks()).length;
+        };
+        const addAdjustedMarks = async (diff: number, marks: number[], lType: LType) => {
+            if (diff > marks.length) {
+                logger.error("Invalid L marks count");
+                return;
+            };
+            if (diff > 0) {
+                const adjustedMarks = marks.slice(diff * (-1));
+                await tcb.addMarks(lType, adjustedMarks, transactionOptions);
+            };
+            // diff == 0, it's ok - do nothing
+            // diff < 0, it can’t be, bcs this case verified in the blockchain
+        };
+
+        const l1MarksDiff = await needAddMarks(LType.L1);
+        const l2MarksDiff = await needAddMarks(LType.L2);
+
+        await addAdjustedMarks(l1MarksDiff, L1Marks, LType.L1);
+        await addAdjustedMarks(l2MarksDiff, L2Marks, LType.L2);
     }
 
     /**
@@ -86,15 +114,15 @@ class Consensus {
     /**
      * Add data to TeeConfirmationBlock and push it to Consensus
      * @param teeOfferAddress - TCB's device offer, as key
-     * @param L1 - marks of LastBlocks
-     * @param L2 - marks of SuspiciousBlocks
+     * @param L1Marks - marks of LastBlocks
+     * @param L2Marks - marks of SuspiciousBlocks
      * @param tcbData - TEE generated
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
     public static async addTCB(
         teeOfferAddress: string,
-        L1: number[],
-        L2: number[],
+        L1Marks: number[],
+        L2Marks: number[],
         tcbData: { publicData: PublicData; quote: string },
         transactionOptions?: TransactionOptions
     ): Promise<void> {
@@ -107,14 +135,8 @@ class Consensus {
 
         // Can be upgraded to completion of TCB
         await tcb.addData(tcbData.publicData, tcbData.quote, transactionOptions);
-
-        if (!(await this.isEnoughMarksAdded(LType.L1, tcb))) {
-            await tcb.addMarks(LType.L1, L1, transactionOptions);
-        }
-
-        if (!(await this.isEnoughMarksAdded(LType.L2, tcb))) {
-            await tcb.addMarks(LType.L2, L2, transactionOptions);
-        }
+ 
+        await this.addMarks(L1Marks, L2Marks, tcb, transactionOptions);
 
         await this.addToSupply(tcb.address, transactionOptions);
     }

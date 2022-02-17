@@ -11,7 +11,7 @@ import {
 } from "../utils";
 import { OfferInfo, OfferInfoStructure } from "../types/Offer";
 import { formatBytes32String } from 'ethers/lib/utils';
-import { TransactionOptions } from "../types/Web3";
+import { ContractEvent, TransactionOptions } from "../types/Web3";
 
 class OffersFactory {
     public static address: string;
@@ -61,6 +61,30 @@ class OffersFactory {
             .create(providerAuthorityAccount, offerInfoParams, externalId)
             .send(createTransactionOptions(transactionOptions));
     }
+
+    /**
+     * Function for adding event listeners on offer created event in offers factory contract
+     * @param callback - function for processing created offer
+     * @return unsubscribe - unsubscribe function from event
+     */
+    public static onOfferCreated(callback: onOfferCreatedCallback): () => void {
+        this.checkInit();
+        const logger = this.logger.child({ method: "onOfferCreated" });
+
+        let subscription = this.contract.events
+            .OfferCreated()
+            .on("data", async (event: ContractEvent) => {
+                callback(<string>event.returnValues.newOfferAddress);
+            })
+            .on("error", (error: Error, receipt: string) => {
+                if (receipt) return; // Used to avoid logging of transaction rejected
+                logger.warn(error);
+            });
+
+        return () => subscription.unsubscribe();
+    }
 }
+
+export type onOfferCreatedCallback = (address: string) => void;
 
 export default OffersFactory;

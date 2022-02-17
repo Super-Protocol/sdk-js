@@ -11,7 +11,7 @@ import {
 } from "../utils";
 import {ProviderInfo, ProviderInfoStructure} from "../types/Provider";
 import { formatBytes32String } from 'ethers/lib/utils';
-import { TransactionOptions } from "../types/Web3";
+import { ContractEvent, TransactionOptions } from "../types/Web3";
 
 class ProviderRegistry {
     public static address: string;
@@ -96,6 +96,30 @@ class ProviderRegistry {
         checkIfActionAccountInitialized();
         await this.contract.methods.returnSecurityDepo(amount).send(createTransactionOptions(transactionOptions));
     }
+
+    /**
+     * Function for adding event listeners on provider registered event in provider registry
+     * @param callback - function for processing new provider
+     * @return unsubscribe - unsubscribe function from event
+     */
+    public static onProviderRegistered(callback: onProviderRegisteredCallback): () => void {
+        this.checkInit();
+        const logger = this.logger.child({ method: "onTeeOfferCreated" });
+
+        let subscription = this.contract.events
+            .ProviderRegistred()
+            .on("data", async (event: ContractEvent) => {
+                callback(<string>event.returnValues.providerInfo);
+            })
+            .on("error", (error: Error, receipt: string) => {
+                if (receipt) return; // Used to avoid logging of transaction rejected
+                logger.warn(error);
+            });
+
+        return () => subscription.unsubscribe();
+    }
 }
+
+export type onProviderRegisteredCallback = (address: string) => void;
 
 export default ProviderRegistry;

@@ -170,22 +170,19 @@ class TeeOffer {
     /**
      * Updates argsPublicKey and argsPublicKeyAlgo in order info
      * @param argsPublicKey - new argsPublicKey
-     * @param argsPublicKeyAlgo - new argsPublicKeyAlgo
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
     public async setKeys(
         argsPublicKey: string,
-        argsPublicKeyAlgo: string,
         transactionOptions?: TransactionOptions
     ): Promise<void> {
         checkIfActionAccountInitialized();
 
         await this.contract.methods
-            .setKeys(argsPublicKey, argsPublicKeyAlgo)
+            .setKeys(argsPublicKey)
             .send(createTransactionOptions(transactionOptions));
         if (this.offerInfo) {
             this.offerInfo.argsPublicKey = argsPublicKey;
-            this.offerInfo.argsPublicKeyAlgo = argsPublicKeyAlgo;
         }
     }
 

@@ -26,7 +26,6 @@ export type OrderArgs = {
 export const OrderInfoStructure = {
     offer: String,
     resultPublicKey: String,
-    resultPublicKeyAlgo: String,
     encryptedRequirements: String,
     encryptedArgs: String,
     status: OrderStatus,
@@ -35,7 +34,6 @@ export const OrderInfoStructure = {
 export type OrderInfo = {
     offer: string;
     resultPublicKey: string;
-    resultPublicKeyAlgo: string;
     encryptedRequirements: string;
     encryptedArgs: string;
     status: OrderStatus;

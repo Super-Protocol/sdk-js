@@ -1,21 +1,24 @@
 import {
-    AESEncryption,
-    AESEncryptionWithMac,
-    Cipher,
     CryptoAlgorithm,
-    Encryption,
+    ARIAEncryption,
+    ARIAEncryptionWithMac,
+    Encoding,
+    Cipher, Encryption,
 } from "@super-protocol/sp-dto-js";
-import {ReadStream, WriteStream} from "fs";
+import {
+    ReadStream,
+    WriteStream,
+} from "fs";
 
 import NativeCrypto from './NativeCrypto';
 
-class AES {
+class ARIA {
     public static async encrypt(
         content: string,
-        encryption: Encryption
-    ): Promise<AESEncryption> {
+        encryption: Encryption,
+    ): Promise<ARIAEncryption> {
         if (!encryption.key) throw Error('Encryption key is not provided');
-        encryption.cipher = encryption.cipher || Cipher.AES_256_GCM;
+        encryption.cipher = encryption.cipher || Cipher.ARIA_256_GCM;
 
         const keyBuffer = Buffer.from(encryption.key, encryption.encoding);
 
@@ -26,9 +29,9 @@ class AES {
         );
 
         return {
-            algo: CryptoAlgorithm.AES,
+            algo: CryptoAlgorithm.ARIA,
             encoding: encryption.encoding,
-            cipher: encryption.cipher as AESEncryptionWithMac['cipher'],
+            cipher: encryption.cipher as ARIAEncryptionWithMac['cipher'],
             ciphertext: encrypted.ciphertext,
             iv: encrypted.iv!,
             mac: encrypted.mac!,
@@ -47,9 +50,9 @@ class AES {
         inputStream: ReadStream,
         outputStream: WriteStream,
         encryption: Encryption,
-    ): Promise<AESEncryption> {
+    ): Promise<ARIAEncryption> {
         if (!encryption.key) throw Error('Encryption key is not provided');
-        encryption.cipher = encryption.cipher || Cipher.AES_256_GCM;
+        encryption.cipher = encryption.cipher || Cipher.ARIA_256_GCM;
 
         const keyBuffer = Buffer.from(encryption.key, encryption.encoding);
 
@@ -61,16 +64,15 @@ class AES {
         );
 
         return {
-            algo: encryption.algo,
+            algo: CryptoAlgorithm.ARIA,
             encoding: encryption.encoding,
-            cipher: encryption.cipher as AESEncryptionWithMac['cipher'],
-            ciphertext: encrypted.ciphertext,
+            cipher: encryption.cipher as ARIAEncryptionWithMac['cipher'],
             iv: encrypted.iv!,
             mac: encrypted.mac!,
         };
     }
 
-    public static async decrypt(encryption: AESEncryption): Promise<string> {
+    public static async decrypt(encryption: ARIAEncryption): Promise<string> {
         if (!encryption.key) throw Error('Decryption key is not provided');
 
         const key = Buffer.from(encryption.key, encryption.encoding);
@@ -78,8 +80,8 @@ class AES {
             iv: Buffer.from(encryption.iv, encryption.encoding),
         };
 
-        if ((encryption as AESEncryptionWithMac).mac) {
-            params.mac = Buffer.from((encryption as AESEncryptionWithMac).mac, encryption.encoding);
+        if ((encryption as ARIAEncryptionWithMac).mac) {
+            params.mac = Buffer.from((encryption as ARIAEncryptionWithMac).mac, encryption.encoding);
         }
 
         return await NativeCrypto.decrypt(
@@ -100,7 +102,7 @@ class AES {
     public static async decryptStream(
         inputStream: ReadStream,
         outputStream: WriteStream,
-        encryption: AESEncryption,
+        encryption: ARIAEncryption,
     ): Promise<void> {
         if (!encryption.key) throw Error('Decryption key is not provided');
 
@@ -109,8 +111,8 @@ class AES {
             iv: Buffer.from(encryption.iv, encryption.encoding),
         };
 
-        if ((encryption as AESEncryptionWithMac).mac) {
-            params.mac = Buffer.from((encryption as AESEncryptionWithMac).mac, encryption.encoding);
+        if ((encryption as ARIAEncryptionWithMac).mac) {
+            params.mac = Buffer.from((encryption as ARIAEncryptionWithMac).mac, encryption.encoding);
         }
 
         await NativeCrypto.decryptStream(
@@ -123,4 +125,4 @@ class AES {
     }
 }
 
-export default AES;
+export default ARIA;

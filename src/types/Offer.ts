@@ -36,12 +36,10 @@ export const OfferInfoStructure = {
     allowedArgs: String,
     allowedAccounts: [String],
     argsPublicKey: String,
-    argsPublicKeyAlgo: String,
     resultUrl: String,
     disabledAfter: Number,
     linkage: String,
     hash: String,
-    hashAlgo: String,
 };
 export type OfferInfo = {
     name: string;
@@ -58,10 +56,8 @@ export type OfferInfo = {
     allowedArgs: string;
     allowedAccounts: string[];
     argsPublicKey: string;
-    argsPublicKeyAlgo: string;
     resultUrl: string;
     disabledAfter: number;
     linkage: string;
     hash: string;
-    hashAlgo: string;
 };

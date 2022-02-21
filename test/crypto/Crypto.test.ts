@@ -1,5 +1,5 @@
 import Crypto from "../../src/crypto";
-import {CryptoAlgorithm} from "@super-protocol/sp-dto-js";
+import { CryptoAlgorithm, Encoding } from "@super-protocol/sp-dto-js";
 
 const rsaPrivateKey = `-----BEGIN RSA PRIVATE KEY-----
 MIICWwIBAAKBgG0Bpb0BMgdCnKvuAJKB9qGDwXokta0sGrExwQFMTmW48r2hM28Y
@@ -50,10 +50,15 @@ const aesKeyIncorrect = 'lzAkEIqprIYuR3p5CqkLi+6keblQH5+AyFywj+eJlww=';
 
 const data = "I am a secret data!";
 
-describe("OrdersController", () => {
+describe("Crypto", () => {
     describe("RSA-Hybrid", () => {
         test("correct", async () => {
-            const encrypted = await Crypto.encrypt(CryptoAlgorithm.RSAHybrid, data, rsaPublicKey);
+            const encrypted = await Crypto.encrypt(data, {
+                algo: CryptoAlgorithm.RSAHybrid,
+                key: rsaPublicKey,
+                encoding: Encoding.base64,
+            });
+
             encrypted.key = rsaPrivateKey;
             const decrypted = await Crypto.decrypt(encrypted);
 
@@ -62,7 +67,11 @@ describe("OrdersController", () => {
         });
 
         test("incorrect data", async () => {
-            let encrypted = await Crypto.encrypt(CryptoAlgorithm.RSAHybrid, data, rsaPublicKey);
+            const encrypted = await Crypto.encrypt(data, {
+                algo: CryptoAlgorithm.RSAHybrid,
+                key: rsaPublicKey,
+                encoding: Encoding.base64,
+            });
 
             // Replace center of encrypted content to random characters
             let ciphertext = encrypted.ciphertext!;
@@ -74,7 +83,11 @@ describe("OrdersController", () => {
         });
 
         test("incorrect keys", async () => {
-            const encrypted = await Crypto.encrypt(CryptoAlgorithm.RSAHybrid, data, rsaPublicKey);
+            const encrypted = await Crypto.encrypt(data, {
+                algo: CryptoAlgorithm.RSAHybrid,
+                key: rsaPublicKey,
+                encoding: Encoding.base64,
+            });
 
             encrypted.key = rsaPrivateKeyIncorrect;
             await expect(Crypto.decrypt(encrypted)).rejects.toThrowError();
@@ -83,7 +96,12 @@ describe("OrdersController", () => {
 
     describe("ECIES", () => {
         test("correct", async () => {
-            const encrypted = await Crypto.encrypt(CryptoAlgorithm.ECIES, data, eccPublicKey);
+            const encrypted = await Crypto.encrypt(data, {
+                algo: CryptoAlgorithm.ECIES,
+                key: eccPublicKey,
+                encoding: Encoding.base64,
+            });
+
             encrypted.key = eccPrivateKey;
             const decrypted = await Crypto.decrypt(encrypted);
 
@@ -92,7 +110,11 @@ describe("OrdersController", () => {
         });
 
         test("incorrect data", async () => {
-            let encrypted = await Crypto.encrypt(CryptoAlgorithm.ECIES, data, eccPublicKey);
+            const encrypted = await Crypto.encrypt(data, {
+                algo: CryptoAlgorithm.ECIES,
+                key: eccPublicKey,
+                encoding: Encoding.base64,
+            });
 
             // Replace center of encrypted content to random characters
             let ciphertext = encrypted.ciphertext!;
@@ -104,7 +126,11 @@ describe("OrdersController", () => {
         });
 
         test("incorrect keys", async () => {
-            const encrypted = await Crypto.encrypt(CryptoAlgorithm.ECIES, data, eccPublicKey);
+            const encrypted = await Crypto.encrypt(data, {
+                algo: CryptoAlgorithm.ECIES,
+                key: eccPublicKey,
+                encoding: Encoding.base64,
+            });
 
             encrypted.key = eccPrivateKeyIncorrect;
             await expect(Crypto.decrypt(encrypted)).rejects.toThrowError();
@@ -113,7 +139,13 @@ describe("OrdersController", () => {
 
     describe("AES", () => {
         test("correct", async () => {
-            const encrypted = await Crypto.encrypt(CryptoAlgorithm.AES, data, aesKey);
+            const encrypted = await Crypto.encrypt(data, {
+                algo: CryptoAlgorithm.AES,
+                key: aesKey,
+                encoding: Encoding.base64,
+            });
+
+            encrypted.key = aesKey;
             const decrypted = await Crypto.decrypt(encrypted);
 
             expect(decrypted).toEqual(data);
@@ -121,18 +153,27 @@ describe("OrdersController", () => {
         });
 
         test("incorrect data", async () => {
-            let encrypted = await Crypto.encrypt(CryptoAlgorithm.AES, data, aesKey);
+            const encrypted = await Crypto.encrypt(data, {
+                algo: CryptoAlgorithm.AES,
+                key: aesKey,
+                encoding: Encoding.base64,
+            });
 
             // Replace center of encrypted content to random characters
             let ciphertext = encrypted.ciphertext!;
             const replacePosition = ciphertext.length / 2;
             encrypted.ciphertext = ciphertext.substring(0, replacePosition) + 'oRHAW7' + ciphertext.substring(replacePosition + 6);
 
+            encrypted.key = aesKey;
             await expect(Crypto.decrypt(encrypted)).rejects.toThrowError();
         });
 
         test("incorrect keys", async () => {
-            const encrypted = await Crypto.encrypt(CryptoAlgorithm.AES, data, aesKey);
+            const encrypted = await Crypto.encrypt(data, {
+                algo: CryptoAlgorithm.AES,
+                key: aesKey,
+                encoding: Encoding.base64,
+            });
 
             encrypted.key = aesKeyIncorrect;
             await expect(Crypto.decrypt(encrypted)).rejects.toThrowError();

@@ -52,7 +52,7 @@ class Consensus {
         const logger = this.logger.child({ method: "addTcbMarks" });
 
         const needAddMarks = async (lType: LType): Promise<number> => {
-            return lType == LType.L1 
+            return lType == LType.L1
                     ? (await tcb.getL1()).length - (await tcb.getL1Marks()).length
                     : (await tcb.getL2()).length - (await tcb.getL2Marks()).length;
         };
@@ -60,11 +60,11 @@ class Consensus {
             if (diff > marks.length) {
                 logger.error("Invalid L marks count");
                 return;
-            };
+            }
             if (diff > 0) {
                 const adjustedMarks = marks.slice(diff * (-1));
                 await tcb.addMarks(lType, adjustedMarks, transactionOptions);
-            };
+            }
             // diff == 0, it's ok - do nothing
             // diff < 0, it can’t be, bcs this case verified in the blockchain
         };
@@ -135,7 +135,7 @@ class Consensus {
 
         // Can be upgraded to completion of TCB
         await tcb.addData(tcbData.publicData, tcbData.quote, transactionOptions);
- 
+
         await this.addMarks(L1Marks, L2Marks, tcb, transactionOptions);
 
         await this.addToSupply(tcb.address, transactionOptions);

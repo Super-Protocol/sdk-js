@@ -5,12 +5,18 @@ import Crypto from "./crypto";
 import Order from "./models/Order";
 import TeeOffer from "./models/TeeOffer";
 import { OrderInfo } from "./types/Order";
-import { CryptoAlgorithm, Encryption, Resource, UrlResource } from "@super-protocol/sp-dto-js";
+import {
+    CryptoAlgorithm,
+    Encoding,
+    Encryption,
+    Resource,
+    UrlResource
+} from "@super-protocol/sp-dto-js";
 
 class TIIGenerator {
     public static async generateByOffer(
         offerId: string,
-        solutionHashes: SolutionHash[],
+        solutionHashes: string[],
         resource: Resource,
         args: any,
         encryption: Encryption
@@ -34,14 +40,16 @@ class TIIGenerator {
 
         return JSON.stringify({
             encryptedResource: await Crypto.encrypt(
-                teeOfferInfo.argsPublicKeyAlgo as CryptoAlgorithm,
                 JSON.stringify(resource),
-                teeOfferInfo.argsPublicKey
+                JSON.parse(teeOfferInfo.argsPublicKey) as Encryption,
             ),
             tri: await Crypto.encrypt(
-                CryptoAlgorithm.ECIES,
                 JSON.stringify(tri),
-                tlb.data.teePubKeyData.toString("base64")
+                {
+                    algo: CryptoAlgorithm.ECIES,
+                    key: tlb.data.teePubKeyData.toString("base64"),
+                    encoding: Encoding.base64,
+                },
             ),
         });
     }
@@ -58,17 +66,14 @@ class TIIGenerator {
         const parentOrder: Order = new Order(parentOrderAddress);
         const parentOrderInfo: OrderInfo = await parentOrder.getOrderInfo();
 
-        const solutionHashes: SolutionHash[] = [];
+        const solutionHashes: string[] = [];
         await Promise.all(
             parentOrderInfo.args.inputOffers.map(
                 async (offerAddress: string): Promise<void> => {
                     const offer: Offer = new Offer(offerAddress);
                     const offerInfo: OfferInfo = await offer.getInfo();
-                    if (offerInfo.hash && offerInfo.hashAlgo) {
-                        solutionHashes.push({
-                            hash: offerInfo.hash,
-                            hashAlgo: offerInfo.hashAlgo,
-                        });
+                    if (offerInfo.hash) {
+                        solutionHashes.push(offerInfo.hash);
                     }
                 }
             )
@@ -103,13 +108,8 @@ class TIIGenerator {
     }
 }
 
-export type SolutionHash = {
-    hash: string;
-    hashAlgo: string;
-};
-
 export type TeeRunInfo = {
-    solutionHashes: SolutionHash[];
+    solutionHashes: string[];
     args: any;
     encryption: Encryption;
 };

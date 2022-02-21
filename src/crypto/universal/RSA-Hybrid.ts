@@ -1,13 +1,11 @@
-import { CryptoAlgorithm, Encoding, RSAHybridEncryption } from "@super-protocol/sp-dto-js";
+import {Cipher, CryptoAlgorithm, Encryption, RSAHybridEncryption} from "@super-protocol/sp-dto-js";
 // @ts-ignore hybrid-crypto-js doesn't have types
 import { Crypt } from "hybrid-crypto-js";
 
 class RSAHybrid {
     public static async encrypt(
-        publicKey: string,
         content: string,
-        // FIXME: Add changing encoding (currently lib support only one encoding): SP-385
-        encoding: Encoding = Encoding.base64
+        encryption: Encryption
     ): Promise<RSAHybridEncryption> {
         const cipherName = {
             aesStandard: "AES-GCM",
@@ -16,16 +14,16 @@ class RSAHybrid {
 
         const crypt = new Crypt(cipherName);
 
-        const encrypted = JSON.parse(crypt.encrypt(publicKey, content));
+        const encrypted = JSON.parse(crypt.encrypt(encryption.key, content));
         return {
-            key: publicKey,
             algo: CryptoAlgorithm.RSAHybrid,
-            encoding,
-            cipher: JSON.stringify(cipherName),
+            // FIXME: Add changing encoding (currently lib support only one encoding): SP-385
+            encoding: encryption.encoding,
+            cipher: JSON.stringify(cipherName) as Cipher,
             keys: JSON.stringify(encrypted.keys),
             iv: encrypted.iv,
             mac: encrypted.tag,
-            ciphertext: encrypted.cipher,
+            ciphertext: encrypted.cipher, // Lib returns ciphertext as cipher
         };
     }
 

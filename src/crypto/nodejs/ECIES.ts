@@ -1,25 +1,27 @@
-import { CryptoAlgorithm, ECIESEncryption, Encoding } from "@super-protocol/sp-dto-js";
+import {CryptoAlgorithm, ECIESEncryption, Encryption} from "@super-protocol/sp-dto-js";
 import eccrypto from "eccrypto";
 
 class ECIES {
     public static async encrypt(
-        publicKey: string,
         content: string,
-        encoding: Encoding = Encoding.base64
+        encryption: Encryption,
     ): Promise<ECIESEncryption> {
-        const result = await eccrypto.encrypt(Buffer.from(publicKey, encoding), Buffer.from(content, "binary"));
+        if (!encryption.key) throw Error('Encryption key is not provided');
+
+        const result = await eccrypto.encrypt(Buffer.from(encryption.key, encryption.encoding), Buffer.from(content, "binary"));
         return {
-            key: publicKey,
-            iv: result.iv.toString(encoding),
-            ephemPublicKey: result.ephemPublicKey.toString(encoding),
-            mac: result.mac.toString(encoding),
-            encoding,
+            iv: result.iv.toString(encryption.encoding),
+            ephemPublicKey: result.ephemPublicKey.toString(encryption.encoding),
+            mac: result.mac.toString(encryption.encoding),
+            encoding: encryption.encoding,
             algo: CryptoAlgorithm.ECIES,
-            ciphertext: result.ciphertext.toString(encoding),
+            ciphertext: result.ciphertext.toString(encryption.encoding),
         };
     }
 
     public static async decrypt(encryption: ECIESEncryption): Promise<string> {
+        if (!encryption.key) throw Error('Decryption key is not provided');
+
         const encryptedObject = {
             iv: Buffer.from(encryption.iv, encryption.encoding),
             ephemPublicKey: Buffer.from(encryption.ephemPublicKey, encryption.encoding),

@@ -71,6 +71,14 @@ class BlockchainConnector {
     }
 
     /**
+     * Returns balance of blockchain platform tokens in wei
+     */
+    public static async getBalance(address: string): Promise<string> {
+        checkIfInitialized();
+        return await store.web3!.eth.getBalance( address );
+    }
+
+    /**
      * Fetch transactions for specific addresses starting with specific block until last block
      * @param addresses - array of addresses to fetch transactions (from this addresses and to this addresses)
      * @param startBlock - number of block to start fetching transactions (if empty fetch only for last block)

@@ -30,7 +30,26 @@ class BlockchainConnector {
      * Needs to run this function before using blockchain connector
      */
     public static async init(config: Config) {
-        store.web3 = new Web3(config?.blockchainUrl || defaultBlockchainUrl);
+        const url = config?.blockchainUrl || defaultBlockchainUrl;
+
+        if (/^(ws)|(wss)/.test(url)) {
+            const provider = new Web3.providers.WebsocketProvider(
+                url,
+                {
+                    reconnect: {
+                        auto: true,
+                        delay: 5000, // ms
+                        maxAttempts: 5,
+                        onTimeout: false
+                    },
+                },
+            );
+            store.web3 = new Web3(provider);
+        } else {
+            const provider = new Web3.providers.HttpProvider(url);
+            store.web3 = new Web3(provider);
+        }
+
         if (config?.gasLimit) store.gasLimit = config.gasLimit;
         if (config?.gasPrice) store.gasPrice = config.gasPrice;
 

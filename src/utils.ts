@@ -25,6 +25,16 @@ export const checkIfActionAccountInitialized = () => {
 };
 
 /**
+ * Updates gas price determined by the last few blocks median
+ */
+export const updateGasPrice = async (): Promise<void> => {
+    if (!store.web3) {
+        throw new Error("web3 is undefined, needs to run 'await BlockchainConnector.init(CONFIG)' first");
+    }
+    store.gasPrice = await store.web3.eth.getGasPrice();
+}
+
+/**
  * Merge transaction options from arguments and from store
  * Used in all set methods
  */

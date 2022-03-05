@@ -9,10 +9,8 @@ import {
     createDecipheriv,
     Cipher,
     CipherGCMOptions,
-    CipherInfo,
     Decipher,
     DecipherGCM,
-    getCipherInfo,
     randomBytes, CipherGCM,
 } from 'crypto';
 import { once } from "events";
@@ -26,19 +24,81 @@ import {
  *
  */
 class NativeCrypto {
-    public static readonly isCCM = (cipher: string): boolean => getCipherInfo(cipher)?.mode === 'ccm' || cipher === 'chacha20-poly1305';
-    public static readonly isGCM = (cipher: string): boolean => getCipherInfo(cipher)?.mode === 'gcm';
-    public static readonly isOCB = (cipher: string): boolean => getCipherInfo(cipher)?.mode === 'ocb';
-    public static readonly isECB = (cipher: string): boolean => getCipherInfo(cipher)?.mode === 'ecb';
-    public static readonly isRC4 = (cipher: string): boolean => /^rc4/.test(cipher);
+    /**
+     * Here would be better to check cipher type using
+     * ```
+     * getCipherInfo(cipher)!.mode === 'mode'
+     * ```
+     * but it doesn't work in browser
+     */
+    public static readonly isCCM = (cipher: string): boolean => /ccm/i.test(cipher) || cipher === 'chacha20-poly1305';
+    public static readonly isGCM = (cipher: string): boolean => /gcm/i.test(cipher);
+    public static readonly isOCB = (cipher: string): boolean => /ocb/i.test(cipher);
+    public static readonly isECB = (cipher: string): boolean => /ecb/i.test(cipher) || cipher === 'des-ede' || cipher === 'des-ede3';
+    public static readonly isRC4 = (cipher: string): boolean => /^rc4/i.test(cipher);
+
+    /**
+     * Here would be better to check cipher type using
+     * ```
+     * getCipherInfo(cipher)!.keyLength
+     * ```
+     * but it doesn't work in browser
+     */
+    public static getKeyLength(cipher: string): number {
+        if (/256\-xts/.test(cipher)) {
+            return 64;
+        }
+        if (
+            /256|128\-xts|chacha20/.test(cipher)
+            && cipher !== 'aes-128-cbc-hmac-sha256'
+        ) {
+            return 32;
+        }
+        if (
+            /192|des\-ede3|desx|des3$/.test(cipher) ||
+            cipher === 'id-smime-alg-cms3deswrap'
+        ) {
+            return 24;
+        }
+        if (/128|des\-ede/.test(cipher)) {
+            return 16;
+        }
+        if (/64|des/.test(cipher)) {
+            return 8;
+        }
+        if (/40/.test(cipher)) {
+            return 5;
+        }
+        return 16;
+    }
+
+    /**
+     * Here would be better to check cipher type using
+     * ```
+     * getCipherInfo(cipher)!.ivLength
+     * ```
+     * but it doesn't work in browser
+     */
+    public static getIVLength(cipher: string): number {
+        if (this.isCCM(cipher) || this.isGCM(cipher) || this.isOCB(cipher)) {
+            return 12;
+        }
+        if (/wrap\-pad/.test(cipher)) {
+            return 4;
+        }
+        if (/wrap|cast|des|bf|blowfish|idea|rc2/.test(cipher)) {
+            return 8;
+        }
+        return 16;
+    }
 
     public static createKey(cipher: string): Buffer {
-        const info: CipherInfo | undefined = getCipherInfo(cipher);
-        return randomBytes(info?.keyLength ?? 16);
+        const length: number = this.getKeyLength(cipher);
+        return randomBytes(length);
     }
     public static createIV(cipher: string): Buffer {
-        const info: CipherInfo | undefined = getCipherInfo(cipher);
-        return randomBytes(info?.ivLength ?? 16);
+        const length: number = this.getIVLength(cipher);
+        return randomBytes(length);
     }
 
     public static createCipher(cipher: string, key: Buffer, iv: Buffer): Cipher {

@@ -112,7 +112,7 @@ class TCB {
 
         await this.contract.methods
             .addData(pb.benchmark, pb.properties, fromattedDeviceId, quote)
-            .send(createTransactionOptions(transactionOptions));
+            .send(await createTransactionOptions(transactionOptions));
     }
 
     public async getEpochInfo(): Promise<TcbEpochInfo> {
@@ -160,7 +160,7 @@ class TCB {
         checkIfActionAccountInitialized();
 
         if (marks.length > 0) {
-            await this.contract.methods.addMarks(lType, marks).send(createTransactionOptions(transactionOptions));
+            await this.contract.methods.addMarks(lType, marks).send(await createTransactionOptions(transactionOptions));
         } // else nothing
     }
 }

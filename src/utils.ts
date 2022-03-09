@@ -27,22 +27,25 @@ export const checkIfActionAccountInitialized = () => {
 /**
  * Updates gas price determined by the last few blocks median
  */
-export const updateGasPrice = async (): Promise<void> => {
+export const getGasPrice = async (): Promise<string> => {
     if (!store.web3) {
         throw new Error("web3 is undefined, needs to run 'await BlockchainConnector.init(CONFIG)' first");
     }
-    store.gasPrice = await store.web3.eth.getGasPrice();
-}
+    const gasPrice = await store.web3.eth.getGasPrice();
+
+    return gasPrice;
+};
 
 /**
  * Merge transaction options from arguments and from store
  * Used in all set methods
  */
-export const createTransactionOptions = (options?: TransactionOptions) => {
+export const createTransactionOptions = async (options?: TransactionOptions) => {
+    const gasPrice = await getGasPrice();
     if (!options) options = {};
     if (!options.from) options.from = store.actionAccount;
     if (!options.gas) options.gas = store.gasLimit;
-    if (!options.gasPrice) options.gasPrice = store.gasPrice;
+    if (!options.gasPrice) options.gasPrice = gasPrice;
     return options;
 };
 

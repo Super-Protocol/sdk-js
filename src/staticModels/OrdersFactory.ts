@@ -92,7 +92,7 @@ class OrdersFactory {
         const orderInfoArguments = objectToTuple(orderInfo, OrderInfoStructure);
         await this.contract.methods
             .create(orderInfoArguments, holdDeposit, suspended, externalId)
-            .send(createTransactionOptions(transactionOptions));
+            .send(await createTransactionOptions(transactionOptions));
     }
 
     /**
@@ -111,7 +111,7 @@ class OrdersFactory {
 
         await this.contract.methods
             .refillOrder(orderAddress, amount)
-            .send(createTransactionOptions(transactionOptions));
+            .send(await createTransactionOptions(transactionOptions));
     }
 }
 

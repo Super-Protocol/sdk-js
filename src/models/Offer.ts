@@ -84,7 +84,7 @@ class Offer {
     public async disable(transactionOptions?: TransactionOptions) {
         checkIfActionAccountInitialized();
 
-        await this.contract.methods.disable().send(createTransactionOptions(transactionOptions));
+        await this.contract.methods.disable().send(await createTransactionOptions(transactionOptions));
     }
 
     /**
@@ -94,7 +94,7 @@ class Offer {
     public async enable(transactionOptions?: TransactionOptions) {
         checkIfActionAccountInitialized();
 
-        await this.contract.methods.enable().send(createTransactionOptions(transactionOptions));
+        await this.contract.methods.enable().send(await createTransactionOptions(transactionOptions));
     }
 
     /**

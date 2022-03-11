@@ -30,6 +30,8 @@ class BlockchainConnector {
      * Needs to run this function before using blockchain connector
      */
     public static async init(config: Config) {
+        if (store.isInitialized) return;
+
         const url = config?.blockchainUrl || defaultBlockchainUrl;
 
         if (/^(ws)|(wss)/.test(url)) {

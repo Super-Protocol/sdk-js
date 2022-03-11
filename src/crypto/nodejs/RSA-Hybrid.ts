@@ -9,13 +9,15 @@ import {
     CipherGCM,
     DecipherGCM,
     JsonWebKey,
+    KeyObject,
     publicEncrypt,
     privateDecrypt,
     randomBytes,
 } from "crypto";
 
-const getPublicKeyFingerprint = (key: JsonWebKey) => {
-    const buffer = Buffer.concat([Buffer.from("ssh-rsa"), Buffer.from(key.e || ""), Buffer.from(key.n || "")]);
+const getKeyFingerprint = (key: KeyObject): string => {
+    const jsonKey: JsonWebKey = key.export({ format: "jwk" });
+    const buffer = Buffer.concat([Buffer.from("ssh-rsa"), Buffer.from(jsonKey.e || ""), Buffer.from(jsonKey.n || "")]);
     const hex = createHash("md5").update(buffer).digest("hex");
 
     return hex.match(/.{2}/g)!.join(":");
@@ -44,7 +46,7 @@ class RSAHybrid {
             },
             Buffer.from(aesKey),
         );
-        const keyFingerprint = getPublicKeyFingerprint(publicKey.export({ format: "jwk" }));
+        const keyFingerprint = getKeyFingerprint(publicKey);
 
         let ciphertext: string = cipher.update(content, "binary", encryption.encoding);
         ciphertext += cipher.final(encryption.encoding);
@@ -73,7 +75,7 @@ class RSAHybrid {
             format: "pem",
         });
 
-        const keyFingerprint = getPublicKeyFingerprint(privateKey.export({ format: "jwk" }));
+        const keyFingerprint = getKeyFingerprint(privateKey);
 
         const encryptedKey = JSON.parse(encryption.keys)[keyFingerprint];
         const aesKey = privateDecrypt(

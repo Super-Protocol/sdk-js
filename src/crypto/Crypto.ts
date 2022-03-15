@@ -10,7 +10,7 @@ import fs from "fs";
 import AES from "./nodejs/AES";
 import ARIA from "./nodejs/ARIA";
 import ECIES from "./nodejs/ECIES";
-import RSAHybrid from "./universal/RSA-Hybrid";
+import RSAHybrid from "./nodejs/RSA-Hybrid";
 
 class Crypto {
     /**

@@ -1,6 +1,6 @@
 import store from "./store";
 import { TransactionOptions } from "./types/Web3";
-import {isArray} from "lodash";
+import { isArray } from "lodash";
 
 /**
  * Function for checking if BlockchainConnector initialized (required for get and set methods)
@@ -127,4 +127,4 @@ export const getTimestamp = async () => {
     const endBlockIndex = await store.web3!.eth.getBlockNumber();
     const block = await store.web3!.eth.getBlock(endBlockIndex, true);
     return block.timestamp;
-}
+};

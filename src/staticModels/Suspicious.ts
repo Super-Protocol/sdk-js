@@ -37,7 +37,7 @@ class Suspicious {
         checkIfActionAccountInitialized();
         return await this.contract.methods
             .getRandomL2(tcbAddress, max)
-            .send(createTransactionOptions(transactionOptions));
+            .send(await createTransactionOptions(transactionOptions));
     }
 
     /**

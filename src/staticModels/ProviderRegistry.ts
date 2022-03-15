@@ -70,7 +70,9 @@ class ProviderRegistry {
         checkIfActionAccountInitialized();
 
         const providerInfoParams = objectToTuple(providerInfo, ProviderInfoStructure);
-        await this.contract.methods.register(providerInfoParams, externalId).send(createTransactionOptions(transactionOptions));
+        await this.contract.methods
+            .register(providerInfoParams, externalId)
+            .send(await createTransactionOptions(transactionOptions));
     }
 
     /**
@@ -82,7 +84,7 @@ class ProviderRegistry {
     public static async refillSecurityDeposit(amount: number, transactionOptions?: TransactionOptions): Promise<void> {
         this.checkInit();
         checkIfActionAccountInitialized();
-        await this.contract.methods.refillSecurityDepo(amount).send(createTransactionOptions(transactionOptions));
+        await this.contract.methods.refillSecurityDepo(amount).send(await createTransactionOptions(transactionOptions));
     }
 
     /**
@@ -94,7 +96,7 @@ class ProviderRegistry {
     public static async returnSecurityDeposit(amount: number, transactionOptions?: TransactionOptions): Promise<void> {
         this.checkInit();
         checkIfActionAccountInitialized();
-        await this.contract.methods.returnSecurityDepo(amount).send(createTransactionOptions(transactionOptions));
+        await this.contract.methods.returnSecurityDepo(amount).send(await createTransactionOptions(transactionOptions));
     }
 
     /**

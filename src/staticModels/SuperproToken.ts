@@ -39,7 +39,7 @@ class SuperproToken {
     public static async transfer(to: string, amount: number, transactionOptions?: TransactionOptions): Promise<number> {
         this.checkInit();
         checkIfActionAccountInitialized();
-        return await this.contract.methods.transfer(to, amount).send(createTransactionOptions(transactionOptions));
+        return await this.contract.methods.transfer(to, amount).send(await createTransactionOptions(transactionOptions));
     }
 
     /**
@@ -56,7 +56,7 @@ class SuperproToken {
         this.checkInit();
         checkIfActionAccountInitialized();
 
-        await this.contract.methods.approve(address, amount).send(createTransactionOptions(transactionOptions));
+        await this.contract.methods.approve(address, amount).send(await createTransactionOptions(transactionOptions));
     }
 }
 

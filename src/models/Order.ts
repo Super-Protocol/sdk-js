@@ -101,7 +101,9 @@ class Order {
     public async updateStatus(status: OrderStatus, price: number, transactionOptions?: TransactionOptions) {
         checkIfActionAccountInitialized();
 
-        await this.contract.methods.updateStatus(status, price).send(createTransactionOptions(transactionOptions));
+        await this.contract.methods
+            .updateStatus(status, price)
+            .send(await createTransactionOptions(transactionOptions));
 
         if (this.orderInfo) this.orderInfo.status = status;
     }
@@ -112,7 +114,7 @@ class Order {
     public async cancelOrder(transactionOptions?: TransactionOptions) {
         checkIfActionAccountInitialized();
 
-        await this.contract.methods.cancelOrder().send(createTransactionOptions(transactionOptions));
+        await this.contract.methods.cancelOrder().send(await createTransactionOptions(transactionOptions));
     }
 
     /**
@@ -121,7 +123,7 @@ class Order {
     public async start(transactionOptions?: TransactionOptions) {
         checkIfActionAccountInitialized();
 
-        await this.contract.methods.start().send(createTransactionOptions(transactionOptions));
+        await this.contract.methods.start().send(await createTransactionOptions(transactionOptions));
     }
 
     /**
@@ -137,7 +139,7 @@ class Order {
 
         await this.contract.methods
             .complete(status, encryptedResult, encryptedError)
-            .send(createTransactionOptions(transactionOptions));
+            .send(await createTransactionOptions(transactionOptions));
     }
 
     /**
@@ -158,7 +160,7 @@ class Order {
         let subOrderInfoArguments = objectToTuple(subOrderInfo, OrderInfoStructure);
         await this.contract.methods
             .createSubOrder(subOrderInfoArguments, blocking, externalId)
-            .send(createTransactionOptions(transactionOptions));
+            .send(await createTransactionOptions(transactionOptions));
     }
 
     /**
@@ -168,7 +170,7 @@ class Order {
     public async withdrawProfit(transactionOptions?: TransactionOptions) {
         checkIfActionAccountInitialized();
 
-        await this.contract.methods.withdrawProfit().send(createTransactionOptions(transactionOptions));
+        await this.contract.methods.withdrawProfit().send(await createTransactionOptions(transactionOptions));
     }
 
     /**
@@ -178,7 +180,7 @@ class Order {
     public async withdrawChange(transactionOptions?: TransactionOptions) {
         checkIfActionAccountInitialized();
 
-        await this.contract.methods.withdrawChange().send(createTransactionOptions(transactionOptions));
+        await this.contract.methods.withdrawChange().send(await createTransactionOptions(transactionOptions));
     }
 
     /**

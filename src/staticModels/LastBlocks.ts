@@ -30,7 +30,10 @@ class LastBlocks {
     public static async getRandomL1(tcbAddress: string, transactionOptions?: TransactionOptions): Promise<void> {
         this.checkInit();
         checkIfActionAccountInitialized();
-        return await this.contract.methods.getRandomL1(tcbAddress).send(createTransactionOptions(transactionOptions));
+
+        return await this.contract.methods
+            .getRandomL1(tcbAddress)
+            .send(await createTransactionOptions(transactionOptions));
     }
 
     /**
@@ -46,7 +49,7 @@ class LastBlocks {
      */
     public static async count(): Promise<number> {
         this.checkInit();
-        
+
         return await this.contract.methods.count().call();
     }
 }

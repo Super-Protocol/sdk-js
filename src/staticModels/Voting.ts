@@ -41,7 +41,7 @@ class Voting {
 
         await this.contract.methods
             .createBallotForAddressUpdate(contractName, newAddress)
-            .send(createTransactionOptions(transactionOptions));
+            .send(await createTransactionOptions(transactionOptions));
     }
 
     /**
@@ -60,7 +60,7 @@ class Voting {
 
         await this.contract.methods
             .createBallotForParamUpdate(paramName, newValue)
-            .send(createTransactionOptions(transactionOptions));
+            .send(await createTransactionOptions(transactionOptions));
     }
 
     /**

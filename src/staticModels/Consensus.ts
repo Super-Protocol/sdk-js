@@ -33,14 +33,14 @@ class Consensus {
     }
 
     private static async initTcb(teeOfferAddress: string, transactionOptions?: TransactionOptions): Promise<TCB> {
-        await this.contract.methods.initTcb(teeOfferAddress).send(createTransactionOptions(transactionOptions));
+        await this.contract.methods.initTcb(teeOfferAddress).send(await createTransactionOptions(transactionOptions));
 
         const tcbAddress = await this.getInitedTcb(teeOfferAddress);
         return new TCB(tcbAddress);
     }
 
     private static async addToSupply(tcbAddress: string, transactionOptions?: TransactionOptions) {
-        await this.contract.methods.addToSupply(tcbAddress).send(createTransactionOptions(transactionOptions));
+        await this.contract.methods.addToSupply(tcbAddress).send(await createTransactionOptions(transactionOptions));
     }
 
     private static async addMarks(
@@ -149,7 +149,7 @@ class Consensus {
     public static async claimRewards(tcbAddress: string, transactionOptions?: TransactionOptions): Promise<void> {
         this.checkInit();
 
-        await this.contract.methods.claimRewards(tcbAddress).send(createTransactionOptions(transactionOptions));
+        await this.contract.methods.claimRewards(tcbAddress).send(await createTransactionOptions(transactionOptions));
     }
 
     /**
@@ -168,7 +168,7 @@ class Consensus {
 
         await this.contract.methods
             .unlockRewards(tcbAddress, unlockAmount)
-            .send(createTransactionOptions(transactionOptions));
+            .send(await createTransactionOptions(transactionOptions));
     }
 
     /**

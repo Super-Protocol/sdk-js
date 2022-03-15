@@ -139,7 +139,7 @@ class TeeOffer {
     public async addTlb(tlb: string, transactionOptions?: TransactionOptions): Promise<void> {
         checkIfActionAccountInitialized();
 
-        await this.contract.methods.addTlb(tlb).send(createTransactionOptions(transactionOptions));
+        await this.contract.methods.addTlb(tlb).send(await createTransactionOptions(transactionOptions));
         if (this.offerInfo) this.offerInfo.tlb = tlb;
     }
 
@@ -151,7 +151,7 @@ class TeeOffer {
     public async setName(name: string, transactionOptions?: TransactionOptions): Promise<void> {
         checkIfActionAccountInitialized();
 
-        await this.contract.methods.setName(name).send(createTransactionOptions(transactionOptions));
+        await this.contract.methods.setName(name).send(await createTransactionOptions(transactionOptions));
         if (this.offerInfo) this.offerInfo.name = name;
     }
 
@@ -163,7 +163,7 @@ class TeeOffer {
     public async setDescription(description: string, transactionOptions?: TransactionOptions): Promise<void> {
         checkIfActionAccountInitialized();
 
-        await this.contract.methods.setDescription(description).send(createTransactionOptions(transactionOptions));
+        await this.contract.methods.setDescription(description).send(await createTransactionOptions(transactionOptions));
         if (this.offerInfo) this.offerInfo.description = description;
     }
 
@@ -180,7 +180,7 @@ class TeeOffer {
 
         await this.contract.methods
             .setKeys(argsPublicKey)
-            .send(createTransactionOptions(transactionOptions));
+            .send(await createTransactionOptions(transactionOptions));
         if (this.offerInfo) {
             this.offerInfo.argsPublicKey = argsPublicKey;
         }
@@ -193,7 +193,7 @@ class TeeOffer {
     public async disable(transactionOptions?: TransactionOptions) {
         checkIfActionAccountInitialized();
 
-        await this.contract.methods.disable().send(createTransactionOptions(transactionOptions));
+        await this.contract.methods.disable().send(await createTransactionOptions(transactionOptions));
     }
 
     /**
@@ -203,7 +203,7 @@ class TeeOffer {
     public async enable(transactionOptions?: TransactionOptions) {
         checkIfActionAccountInitialized();
 
-        await this.contract.methods.enable().send(createTransactionOptions(transactionOptions));
+        await this.contract.methods.enable().send(await createTransactionOptions(transactionOptions));
     }
 }
 

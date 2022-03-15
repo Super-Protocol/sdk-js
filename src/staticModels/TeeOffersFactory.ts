@@ -59,7 +59,7 @@ class OffersFactory {
         let teeOfferInfoParams = objectToTuple(teeOfferInfo, TeeOfferInfoStructure)
         await this.contract.methods
             .create(providerAuthorityAccount, teeOfferInfoParams, externalId)
-            .send(createTransactionOptions(transactionOptions));
+            .send(await createTransactionOptions(transactionOptions));
     }
 
     /**

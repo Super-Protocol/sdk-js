@@ -14,12 +14,17 @@ class SuperproToken {
     /**
      * Checks if contract has been initialized, if not - initialize contract
      */
-    private static checkInit() {
-        if (this.contract) return;
+    private static checkInit(transactionOptions?: TransactionOptions) {
+        if (transactionOptions?.web3) {
+            checkIfInitialized();
+            return new transactionOptions.web3.eth.Contract(<AbiItem[]>SuperproTokenJSON.abi, this.address);
+        }
+
+        if (this.contract) return this.contract;
         checkIfInitialized();
 
-        this.contract = new store.web3!.eth.Contract(<AbiItem[]>SuperproTokenJSON.abi, this.address);
         this.logger = rootLogger.child({ className: "SuperproToken", address: this.address });
+        return this.contract = new store.web3!.eth.Contract(<AbiItem[]>SuperproTokenJSON.abi, this.address);
     }
 
     /**
@@ -37,9 +42,9 @@ class SuperproToken {
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
     public static async transfer(to: string, amount: number, transactionOptions?: TransactionOptions): Promise<number> {
-        this.checkInit();
+        const contract = this.checkInit(transactionOptions);
         checkIfActionAccountInitialized();
-        return await this.contract.methods.transfer(to, amount).send(await createTransactionOptions(transactionOptions));
+        return await contract.methods.transfer(to, amount).send(await createTransactionOptions(transactionOptions));
     }
 
     /**
@@ -53,10 +58,10 @@ class SuperproToken {
         amount: number,
         transactionOptions?: TransactionOptions
     ): Promise<void> {
-        this.checkInit();
+        const contract = this.checkInit(transactionOptions);
         checkIfActionAccountInitialized();
 
-        await this.contract.methods.approve(address, amount).send(await createTransactionOptions(transactionOptions));
+        await contract.methods.approve(address, amount).send(await createTransactionOptions(transactionOptions));
     }
 }
 

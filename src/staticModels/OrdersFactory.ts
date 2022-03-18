@@ -23,12 +23,17 @@ class OrdersFactory {
     /**
      * Checks if contract has been initialized, if not - initialize contract
      */
-    private static checkInit() {
-        if (this.contract) return;
+    private static checkInit(transactionOptions?: TransactionOptions) {
+        if (transactionOptions?.web3) {
+            checkIfInitialized();
+            return new transactionOptions.web3.eth.Contract(<AbiItem[]>OrdersFactoryJSON.abi, this.address);
+        }
+
+        if (this.contract) return this.contract;
         checkIfInitialized();
 
-        this.contract = new store.web3!.eth.Contract(<AbiItem[]>OrdersFactoryJSON.abi, this.address);
         this.logger = rootLogger.child({ className: "OrdersFactory", address: this.address });
+        return this.contract = new store.web3!.eth.Contract(<AbiItem[]>OrdersFactoryJSON.abi, this.address);
     }
 
     /**
@@ -85,12 +90,12 @@ class OrdersFactory {
         externalId = formatBytes32String('default'),
         transactionOptions?: TransactionOptions
     ) {
-        this.checkInit();
+        const contract = this.checkInit(transactionOptions);
         checkIfActionAccountInitialized();
 
 
         const orderInfoArguments = objectToTuple(orderInfo, OrderInfoStructure);
-        await this.contract.methods
+        await contract.methods
             .create(orderInfoArguments, holdDeposit, suspended, externalId)
             .send(await createTransactionOptions(transactionOptions));
     }
@@ -106,10 +111,10 @@ class OrdersFactory {
         amount: number,
         transactionOptions?: TransactionOptions
     ) {
-        this.checkInit();
+        const contract = this.checkInit(transactionOptions);
         checkIfActionAccountInitialized();
 
-        await this.contract.methods
+        await contract.methods
             .refillOrder(orderAddress, amount)
             .send(await createTransactionOptions(transactionOptions));
     }

@@ -24,12 +24,17 @@ class Consensus {
     /**
      * Checks if contract has been initialized, if not - initialize contract
      */
-    private static checkInit() {
-        if (this.contract) return;
+    private static checkInit(transactionOptions?: TransactionOptions) {
+        if (transactionOptions?.web3) {
+            checkIfInitialized();
+            return new transactionOptions.web3.eth.Contract(<AbiItem[]>ConsensusJSON.abi, this.address);
+        }
+
+        if (this.contract) return this.contract;
         checkIfInitialized();
 
-        this.contract = new store.web3!.eth.Contract(<AbiItem[]>ConsensusJSON.abi, this.address);
         this.logger = rootLogger.child({ className: "Consensus", address: this.address });
+        return this.contract = new store.web3!.eth.Contract(<AbiItem[]>ConsensusJSON.abi, this.address);
     }
 
     private static async initTcb(teeOfferAddress: string, transactionOptions?: TransactionOptions): Promise<TCB> {
@@ -147,9 +152,10 @@ class Consensus {
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
     public static async claimRewards(tcbAddress: string, transactionOptions?: TransactionOptions): Promise<void> {
-        this.checkInit();
+        const contract = this.checkInit(transactionOptions);
+        checkIfActionAccountInitialized();
 
-        await this.contract.methods.claimRewards(tcbAddress).send(await createTransactionOptions(transactionOptions));
+        await contract.methods.claimRewards(tcbAddress).send(await createTransactionOptions(transactionOptions));
     }
 
     /**
@@ -163,10 +169,10 @@ class Consensus {
         unlockAmount: number,
         transactionOptions?: TransactionOptions
     ): Promise<void> {
-        this.checkInit();
+        const contract = this.checkInit(transactionOptions);
         checkIfActionAccountInitialized();
 
-        await this.contract.methods
+        await contract.methods
             .unlockRewards(tcbAddress, unlockAmount)
             .send(await createTransactionOptions(transactionOptions));
     }

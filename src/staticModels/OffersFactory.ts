@@ -23,12 +23,17 @@ class OffersFactory {
     /**
      * Checks if contract has been initialized, if not - initialize contract
      */
-    private static checkInit() {
-        if (this.contract) return;
+    private static checkInit(transactionOptions?: TransactionOptions) {
+        if (transactionOptions?.web3) {
+            checkIfInitialized();
+            return new transactionOptions.web3.eth.Contract(<AbiItem[]>OffersFactoryJSON.abi, this.address);
+        }
+
+        if (this.contract) return this.contract;
         checkIfInitialized();
 
-        this.contract = new store.web3!.eth.Contract(<AbiItem[]>OffersFactoryJSON.abi, this.address);
         this.logger = rootLogger.child({ className: "OffersFactory", address: this.address });
+        return this.contract = new store.web3!.eth.Contract(<AbiItem[]>OffersFactoryJSON.abi, this.address);
     }
 
     /**
@@ -53,11 +58,11 @@ class OffersFactory {
         externalId = formatBytes32String('default'),
         transactionOptions?: TransactionOptions
     ): Promise<void> {
-        this.checkInit();
+        const contract = this.checkInit(transactionOptions);
         checkIfActionAccountInitialized();
 
         const offerInfoParams = objectToTuple(offerInfo, OfferInfoStructure);
-        await this.contract.methods
+        await contract.methods
             .create(providerAuthorityAccount, offerInfoParams, externalId)
             .send(await createTransactionOptions(transactionOptions));
     }

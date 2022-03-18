@@ -14,12 +14,17 @@ class Suspicious {
     /**
      * Checks if contract has been initialized, if not - initialize contract
      */
-    private static checkInit() {
-        if (this.contract) return;
+    private static checkInit(transactionOptions?: TransactionOptions) {
+        if (transactionOptions?.web3) {
+            checkIfInitialized();
+            return new transactionOptions.web3.eth.Contract(<AbiItem[]>SuspiciousJSON.abi, this.address);
+        }
+
+        if (this.contract) return this.contract;
         checkIfInitialized();
 
-        this.contract = new store.web3!.eth.Contract(<AbiItem[]>SuspiciousJSON.abi, this.address);
         this.logger = rootLogger.child({ className: "Suspicious", address: this.address });
+        return this.contract = new store.web3!.eth.Contract(<AbiItem[]>SuspiciousJSON.abi, this.address);
     }
 
     /**
@@ -33,9 +38,9 @@ class Suspicious {
         max: number,
         transactionOptions?: TransactionOptions
     ): Promise<void> {
-        this.checkInit();
+        const contract = this.checkInit(transactionOptions);
         checkIfActionAccountInitialized();
-        return await this.contract.methods
+        return await contract.methods
             .getRandomL2(tcbAddress, max)
             .send(await createTransactionOptions(transactionOptions));
     }

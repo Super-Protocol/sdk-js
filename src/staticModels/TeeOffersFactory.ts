@@ -23,12 +23,17 @@ class OffersFactory {
     /**
      * Checks if contract has been initialized, if not - initialize contract
      */
-    private static checkInit() {
-        if (this.contract) return;
+    private static checkInit(transactionOptions?: TransactionOptions) {
+        if (transactionOptions?.web3) {
+            checkIfInitialized();
+            return new transactionOptions.web3.eth.Contract(<AbiItem[]>TeeOffersFactoryJSON.abi, this.address);
+        }
+
+        if (this.contract) return this.contract;
         checkIfInitialized();
 
-        this.contract = new store.web3!.eth.Contract(<AbiItem[]>TeeOffersFactoryJSON.abi, this.address);
-        this.logger = rootLogger.child({ className: "TeeOffersFactory", address: this.address });
+        this.logger = rootLogger.child({ className: "OffersFactory", address: this.address });
+        return this.contract = new store.web3!.eth.Contract(<AbiItem[]>TeeOffersFactoryJSON.abi, this.address);
     }
 
     /**
@@ -52,12 +57,12 @@ class OffersFactory {
         externalId = formatBytes32String('default'),
         transactionOptions?: TransactionOptions
     ): Promise<void> {
-        this.checkInit();
+        const contract = this.checkInit(transactionOptions);
         checkIfActionAccountInitialized();
 
         // Converts offer info to array of arrays (used in blockchain)
         let teeOfferInfoParams = objectToTuple(teeOfferInfo, TeeOfferInfoStructure)
-        await this.contract.methods
+        await contract.methods
             .create(providerAuthorityAccount, teeOfferInfoParams, externalId)
             .send(await createTransactionOptions(transactionOptions));
     }

@@ -17,12 +17,17 @@ class Voting {
     /**
      * Checks if contract has been initialized, if not - initialize contract
      */
-    private static checkInit() {
-        if (this.contract) return;
+    private static checkInit(transactionOptions?: TransactionOptions) {
+        if (transactionOptions?.web3) {
+            checkIfInitialized();
+            return new transactionOptions.web3.eth.Contract(<AbiItem[]>VotingJSON.abi, this.address);
+        }
+
+        if (this.contract) return this.contract;
         checkIfInitialized();
 
-        this.contract = new store.web3!.eth.Contract(<AbiItem[]>VotingJSON.abi, this.address);
         this.logger = rootLogger.child({ className: "Voting", address: this.address });
+        return this.contract = new store.web3!.eth.Contract(<AbiItem[]>VotingJSON.abi, this.address);
     }
 
     /**
@@ -36,10 +41,10 @@ class Voting {
         newAddress: string,
         transactionOptions?: TransactionOptions
     ) {
-        this.checkInit();
+        const contract = this.checkInit(transactionOptions);
         checkIfActionAccountInitialized();
 
-        await this.contract.methods
+        await contract.methods
             .createBallotForAddressUpdate(contractName, newAddress)
             .send(await createTransactionOptions(transactionOptions));
     }
@@ -55,10 +60,10 @@ class Voting {
         newValue: number,
         transactionOptions?: TransactionOptions
     ) {
-        this.checkInit();
+        const contract = this.checkInit(transactionOptions);
         checkIfActionAccountInitialized();
 
-        await this.contract.methods
+        await contract.methods
             .createBallotForParamUpdate(paramName, newValue)
             .send(await createTransactionOptions(transactionOptions));
     }

@@ -1,4 +1,3 @@
-import _ from "lodash";
 import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
 import StakingJSON from "../contracts/Staking.json";
@@ -17,12 +16,17 @@ class Staking {
     /**
      * Checks if contract has been initialized, if not - initialize contract
      */
-    private static checkInit() {
-        if (this.contract) return;
+    private static checkInit(transactionOptions?: TransactionOptions) {
+        if (transactionOptions?.web3) {
+            checkIfInitialized();
+            return new transactionOptions.web3.eth.Contract(<AbiItem[]>StakingJSON.abi, this.address);
+        }
+
+        if (this.contract) return this.contract;
         checkIfInitialized();
 
-        this.contract = new store.web3!.eth.Contract(<AbiItem[]>StakingJSON.abi, this.address);
         this.logger = rootLogger.child({ className: "Staking", address: this.address });
+        return this.contract = new store.web3!.eth.Contract(<AbiItem[]>StakingJSON.abi, this.address);
     }
 
     /**
@@ -51,9 +55,9 @@ class Staking {
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
     public static async stake(amount: number, transactionOptions?: TransactionOptions): Promise<void> {
-        this.checkInit();
+        const contract = this.checkInit(transactionOptions);
         checkIfActionAccountInitialized();
-        await this.contract.methods.stake(amount).send(await createTransactionOptions(transactionOptions));
+        await contract.methods.stake(amount).send(await createTransactionOptions(transactionOptions));
     }
 }
 

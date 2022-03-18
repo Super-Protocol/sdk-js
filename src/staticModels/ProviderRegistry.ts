@@ -23,12 +23,17 @@ class ProviderRegistry {
     /**
      * Checks if contract has been initialized, if not - initialize contract
      */
-    private static checkInit() {
-        if (this.contract) return;
+    private static checkInit(transactionOptions?: TransactionOptions) {
+        if (transactionOptions?.web3) {
+            checkIfInitialized();
+            return new transactionOptions.web3.eth.Contract(<AbiItem[]>ProviderRegistryJSON.abi, this.address);
+        }
+
+        if (this.contract) return this.contract;
         checkIfInitialized();
 
-        this.contract = new store.web3!.eth.Contract(<AbiItem[]>ProviderRegistryJSON.abi, this.address);
         this.logger = rootLogger.child({ className: "ProviderRegistry", address: this.address });
+        return this.contract = new store.web3!.eth.Contract(<AbiItem[]>ProviderRegistryJSON.abi, this.address);
     }
 
     /**
@@ -66,11 +71,11 @@ class ProviderRegistry {
         externalId = formatBytes32String('default'),
         transactionOptions?: TransactionOptions
     ): Promise<void> {
-        this.checkInit();
+        const contract = this.checkInit(transactionOptions);
         checkIfActionAccountInitialized();
 
         const providerInfoParams = objectToTuple(providerInfo, ProviderInfoStructure);
-        await this.contract.methods
+        await contract.methods
             .register(providerInfoParams, externalId)
             .send(await createTransactionOptions(transactionOptions));
     }
@@ -82,9 +87,9 @@ class ProviderRegistry {
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
     public static async refillSecurityDeposit(amount: number, transactionOptions?: TransactionOptions): Promise<void> {
-        this.checkInit();
+        const contract = this.checkInit(transactionOptions);
         checkIfActionAccountInitialized();
-        await this.contract.methods.refillSecurityDepo(amount).send(await createTransactionOptions(transactionOptions));
+        await contract.methods.refillSecurityDepo(amount).send(await createTransactionOptions(transactionOptions));
     }
 
     /**
@@ -94,9 +99,9 @@ class ProviderRegistry {
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
     public static async returnSecurityDeposit(amount: number, transactionOptions?: TransactionOptions): Promise<void> {
-        this.checkInit();
+        const contract = this.checkInit(transactionOptions);
         checkIfActionAccountInitialized();
-        await this.contract.methods.returnSecurityDepo(amount).send(await createTransactionOptions(transactionOptions));
+        await contract.methods.returnSecurityDepo(amount).send(await createTransactionOptions(transactionOptions));
     }
 
     /**

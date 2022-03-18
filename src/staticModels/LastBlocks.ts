@@ -14,12 +14,17 @@ class LastBlocks {
     /**
      * Checks if contract has been initialized, if not - initialize contract
      */
-    private static checkInit() {
-        if (this.contract) return;
+    private static checkInit(transactionOptions?: TransactionOptions) {
+        if (transactionOptions?.web3) {
+            checkIfInitialized();
+            return new transactionOptions.web3.eth.Contract(<AbiItem[]>LastBlocksJSON.abi, this.address);
+        }
+
+        if (this.contract) return this.contract;
         checkIfInitialized();
 
-        this.contract = new store.web3!.eth.Contract(<AbiItem[]>LastBlocksJSON.abi, this.address);
         this.logger = rootLogger.child({ className: "LastBlocks", address: this.address });
+        return this.contract = new store.web3!.eth.Contract(<AbiItem[]>LastBlocksJSON.abi, this.address);
     }
 
     /**
@@ -28,10 +33,10 @@ class LastBlocks {
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
     public static async getRandomL1(tcbAddress: string, transactionOptions?: TransactionOptions): Promise<void> {
-        this.checkInit();
+        const contract = this.checkInit(transactionOptions);
         checkIfActionAccountInitialized();
 
-        return await this.contract.methods
+        return await contract.methods
             .getRandomL1(tcbAddress)
             .send(await createTransactionOptions(transactionOptions));
     }

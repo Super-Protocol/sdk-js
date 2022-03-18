@@ -3,9 +3,8 @@ import { Contract } from "web3-eth-contract";
 import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
 import EpochsJSON from "../contracts/Epochs.json";
-import { checkIfInitialized, tupleToObject, createTransactionOptions } from "../utils";
+import { checkIfInitialized, tupleToObject } from "../utils";
 import { Epoch, EpochStructure } from "../types/Epoch";
-import { TransactionOptions } from "../types/Web3";
 
 class Epochs {
     public static address: string;

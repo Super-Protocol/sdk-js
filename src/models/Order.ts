@@ -147,7 +147,7 @@ class Order {
      * @param subOrderInfo - order info for new subOrder
      * @param blocking - is sub order blocking
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
-     * @returns Promise<void> - Does not return address of created contract!
+     * @returns {Promise<void>} - Does not return address of created contract!
      */
     public async createSubOrder(
         subOrderInfo: OrderInfo,

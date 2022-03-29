@@ -41,7 +41,7 @@ class AES {
      * @param outputStream - place where it will be saved
      * @param algorithm - file encryption algorithm
      * @param key – key that will be used to encrypt data
-     * @return Promise<Encryption> - encryption info
+     * @return {Promise<Encryption>} - encryption info
      */
     public static async encryptStream(
         inputStream: ReadStream,

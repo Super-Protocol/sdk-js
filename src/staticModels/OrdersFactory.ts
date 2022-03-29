@@ -81,7 +81,7 @@ class OrdersFactory {
      * @param orderInfo - order info for new order
      * @param suspended - is orders suspended
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
-     * @returns Promise<void> - Does not return address of created contract!
+     * @returns {Promise<void>} - Does not return address of created contract!
      */
     public static async createOrder(
         orderInfo: OrderInfo,

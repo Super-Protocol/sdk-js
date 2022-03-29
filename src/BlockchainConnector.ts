@@ -103,10 +103,10 @@ class BlockchainConnector {
      * Fetch transactions for specific addresses starting with specific block until last block
      * @param addresses - array of addresses to fetch transactions (from this addresses and to this addresses)
      * @param startBlock - number of block to start fetching transactions (if empty fetch only for last block)
-     * @returns Promise<{
+     * @returns {Promise<{
      *   transactionsByAddress, - found transactions sorted by addresses
      *   lastBlock, - number of last fetched block (can be used to start fetching from this block next time)
-     * }>
+     * }>}
      */
     public static async getTransactions(addresses: string[], startBlock?: number) {
         const endBlock = await store.web3!.eth.getBlockNumber();

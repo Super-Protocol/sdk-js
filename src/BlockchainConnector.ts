@@ -1,5 +1,6 @@
 import rootLogger from "./logger";
 import Web3 from "web3";
+import { HttpProviderBase, WebsocketProviderBase } from "web3-core-helpers";
 import store from "./store";
 import { defaultBlockchainUrl } from "./constants";
 import { checkIfInitialized } from "./utils";
@@ -21,6 +22,7 @@ import Epochs from "./staticModels/Epochs";
 
 class BlockchainConnector {
     private static logger = rootLogger.child({ className: "BlockchainConnector" });
+    private static provider?: HttpProviderBase | WebsocketProviderBase;
 
     public static defaultActionAccount?: string;
 
@@ -35,7 +37,7 @@ class BlockchainConnector {
         const url = config?.blockchainUrl || defaultBlockchainUrl;
 
         if (/^(ws)|(wss)/.test(url)) {
-            const provider = new Web3.providers.WebsocketProvider(
+            this.provider = new Web3.providers.WebsocketProvider(
                 url,
                 {
                     reconnect: {
@@ -46,10 +48,10 @@ class BlockchainConnector {
                     },
                 },
             );
-            store.web3 = new Web3(provider);
+            store.web3 = new Web3(this.provider);
         } else {
-            const provider = new Web3.providers.HttpProvider(url);
-            store.web3 = new Web3(provider);
+            this.provider = new Web3.providers.HttpProvider(url);
+            store.web3 = new Web3(this.provider);
         }
 
         if (config?.gasLimit) store.gasLimit = config.gasLimit;
@@ -150,6 +152,10 @@ class BlockchainConnector {
         }
 
         return { transactionsByAddress, lastBlock: endBlock };
+    }
+
+    public static disconnect() {
+        this.provider?.disconnect(0, "");
     }
 }
 

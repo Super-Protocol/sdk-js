@@ -17,7 +17,8 @@
     "build": "rm -rf ./build && tsc",
     "prepare": "npm run build",
     "docs": "typedoc src/index.ts --excludePrivate --plugin typedoc-plugin-markdown --out ./auto-docs",
-    "docs-cleanup": "rm -rf auto-docs"
+    "docs-cleanup": "rm -rf auto-docs",
+    "bump": "npm version patch && git push && git push --tags"
   },
   "devDependencies": {
     "@types/eccrypto": "^1.1.3",

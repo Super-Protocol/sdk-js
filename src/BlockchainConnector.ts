@@ -156,6 +156,8 @@ class BlockchainConnector {
 
     public static disconnect() {
         this.provider?.disconnect(0, "");
+        store.isInitialized = false;
+        store.web3 = undefined;
     }
 }
 

@@ -1,4 +1,5 @@
 import { TLBlockSerializerV1, TLBlockUnserializeResultType } from "@super-protocol/tee-lib";
+import _ from 'lodash';
 
 import { Offer, OfferInfo, TeeOfferInfo } from ".";
 import Crypto from "./crypto";
@@ -10,19 +11,26 @@ import {
     Encoding,
     Encryption,
     Resource,
-    UrlResource
+    UrlResource,
+    Linkage
 } from "@super-protocol/sp-dto-js";
 
 class TIIGenerator {
     public static async generateByOffer(
         offerId: string,
         solutionHashes: string[],
+        linkageString: string|undefined,
         resource: Resource,
         args: any,
         encryption: Encryption
     ): Promise<string> {
         const teeOffer: TeeOffer = new TeeOffer(offerId);
         const teeOfferInfo: TeeOfferInfo = await teeOffer.getInfo();
+
+        const linkage: Linkage = linkageString ? JSON.parse(linkageString) : {
+            encoding: Encoding.base64,
+            mrenclave: '',
+        };
 
         // TODO: get real tlb
         const tlb: TLBlockUnserializeResultType =
@@ -34,6 +42,7 @@ class TIIGenerator {
 
         const tri: TeeRunInfo = {
             solutionHashes,
+            linkage,
             args,
             encryption: encryption,
         };
@@ -67,13 +76,25 @@ class TIIGenerator {
         const parentOrderInfo: OrderInfo = await parentOrder.getOrderInfo();
 
         const solutionHashes: string[] = [];
+        let solutionLinkage: string|undefined;
+        let anyLinkage: string|undefined;
         await Promise.all(
             parentOrderInfo.args.inputOffers.map(
                 async (offerAddress: string): Promise<void> => {
                     const offer: Offer = new Offer(offerAddress);
                     const offerInfo: OfferInfo = await offer.getInfo();
+
                     if (offerInfo.hash) {
                         solutionHashes.push(offerInfo.hash);
+                    }
+
+                    const restrictions = _
+                        .intersection(offerInfo.restrictions.offers, parentOrderInfo.args.inputOffers)
+                        .filter(restrictedOfferAddress => restrictedOfferAddress !== offer.address);
+                    if (restrictions.length) {
+                        solutionLinkage = offerInfo.linkage;
+                    } else {
+                        anyLinkage = offerInfo.linkage;
                     }
                 }
             )
@@ -82,6 +103,7 @@ class TIIGenerator {
         return this.generateByOffer(
             parentOrderInfo.offer,
             solutionHashes,
+            solutionLinkage || anyLinkage,
             resource,
             args,
             encryption
@@ -110,6 +132,7 @@ class TIIGenerator {
 
 export type TeeRunInfo = {
     solutionHashes: string[];
+    linkage: Linkage,
     args: any;
     encryption: Encryption;
 };

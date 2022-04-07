@@ -1,11 +1,12 @@
-import { OfferInfo, OrderInfo, TeeOfferInfo } from "../src";
+import {OfferInfo, OfferType, OrderInfo, TeeOfferInfo} from "../src";
 import TIIGenerator from "../src/TIIGenerator";
 import {
     CryptoAlgorithm,
-    StorageType,
-    ResourceType,
+    Encoding,
     Resource,
-    StorageProviderResource, Encoding,
+    ResourceType,
+    StorageProviderResource,
+    StorageType,
 } from "@super-protocol/sp-dto-js";
 
 const fileEncryptionAlgo = CryptoAlgorithm.AES;
@@ -70,6 +71,14 @@ jest.mock("../src/models/Offer", () => {
         return {
             async getInfo() {
                 return {
+                    linkage: JSON.stringify({
+                        encoding: Encoding.base64,
+                        mrenclave: "",
+                    }),
+                    restrictions: {
+                        offers: [ "offer" ],
+                        types: [ OfferType.Storage ],
+                    },
                     hash: "875e64e17e414b21b4a029bf88ff2ba0",
                 } as OfferInfo;
             },
@@ -115,6 +124,10 @@ describe("TIIGenerator", () => {
             const tii = await TIIGenerator.generateByOffer(
                 "offer",
                 [],
+                JSON.stringify({
+                    encoding: Encoding.base64,
+                    mrenclave: '',
+                }),
                 resource,
                 {},
                 {

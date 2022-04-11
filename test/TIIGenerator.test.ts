@@ -79,7 +79,11 @@ jest.mock("../src/models/Offer", () => {
                         offers: [ "offer" ],
                         types: [ OfferType.Storage ],
                     },
-                    hash: "875e64e17e414b21b4a029bf88ff2ba0",
+                    hash: JSON.stringify({
+                        encoding: "hex",
+                        algo: "md5",
+                        hash: "875e64e17e414b21b4a029bf88ff2ba0"
+                    }),
                 } as OfferInfo;
             },
         };

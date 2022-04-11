@@ -12,13 +12,14 @@ import {
     Encryption,
     Resource,
     UrlResource,
+    Hash,
     Linkage
 } from "@super-protocol/sp-dto-js";
 
 class TIIGenerator {
     public static async generateByOffer(
         offerId: string,
-        solutionHashes: string[],
+        solutionHashes: Hash[],
         linkageString: string|undefined,
         resource: Resource,
         args: any,
@@ -75,7 +76,7 @@ class TIIGenerator {
         const parentOrder: Order = new Order(parentOrderAddress);
         const parentOrderInfo: OrderInfo = await parentOrder.getOrderInfo();
 
-        const solutionHashes: string[] = [];
+        const solutionHashes: Hash[] = [];
         let solutionLinkage: string|undefined;
         let anyLinkage: string|undefined;
         await Promise.all(
@@ -85,7 +86,7 @@ class TIIGenerator {
                     const offerInfo: OfferInfo = await offer.getInfo();
 
                     if (offerInfo.hash) {
-                        solutionHashes.push(offerInfo.hash);
+                        solutionHashes.push(JSON.parse(offerInfo.hash));
                     }
 
                     const restrictions = _
@@ -131,8 +132,8 @@ class TIIGenerator {
 }
 
 export type TeeRunInfo = {
-    solutionHashes: string[];
-    linkage: Linkage,
+    solutionHashes: Hash[];
+    linkage: Linkage;
     args: any;
     encryption: Encryption;
 };

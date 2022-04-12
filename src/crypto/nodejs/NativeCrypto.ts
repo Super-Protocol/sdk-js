@@ -178,7 +178,7 @@ class NativeCrypto {
         return result;
     }
 
-    public static async decrypt(
+    public static decrypt(
         key: Buffer,
         content: string,
         cipherName: string,
@@ -189,7 +189,7 @@ class NativeCrypto {
         inputEncoding: Encoding = Encoding.base64,
         // TODO: replace BufferEncoding with Encoding
         outputEncoding: BufferEncoding = 'binary',
-    ): Promise<string> {
+    ): string {
         const decipher: Decipher = this.createDecipher(
             cipherName,
             key,

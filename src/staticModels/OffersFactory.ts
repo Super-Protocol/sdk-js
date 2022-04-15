@@ -2,38 +2,36 @@ import store from "../store";
 import { Contract } from "web3-eth-contract";
 import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
-import OffersFactoryJSON from "../contracts/OffersFactory.json";
-import {
-    checkIfActionAccountInitialized,
-    checkIfInitialized,
-    createTransactionOptions,
-    objectToTuple,
-} from "../utils";
-import { OfferInfo, OfferInfoStructure } from "../types/Offer";
-import { formatBytes32String } from 'ethers/lib/utils';
+import OffersJSON from "../contracts/Offers.json";
+import { checkIfActionAccountInitialized, checkIfInitialized, createTransactionOptions, objectToTuple } from "../utils";
+import { OfferInfo, OfferInfoV1, OfferInfoV2, OfferInfoStructureV2 } from "../types/Offer";
+import { formatBytes32String } from "ethers/lib/utils";
 import { ContractEvent, TransactionOptions } from "../types/Web3";
+import Superpro from "./Superpro";
 
 class OffersFactory {
-    public static address: string;
     private static contract: Contract;
     private static logger: typeof rootLogger;
 
     public static offers?: string[];
 
+    public static get address(): string {
+        return Superpro.address;
+    }
     /**
      * Checks if contract has been initialized, if not - initialize contract
      */
     private static checkInit(transactionOptions?: TransactionOptions) {
         if (transactionOptions?.web3) {
             checkIfInitialized();
-            return new transactionOptions.web3.eth.Contract(<AbiItem[]>OffersFactoryJSON.abi, this.address);
+            return new transactionOptions.web3.eth.Contract(<AbiItem[]>OffersJSON.abi, Superpro.address);
         }
 
         if (this.contract) return this.contract;
         checkIfInitialized();
 
-        this.logger = rootLogger.child({ className: "OffersFactory", address: this.address });
-        return this.contract = new store.web3!.eth.Contract(<AbiItem[]>OffersFactoryJSON.abi, this.address);
+        this.logger = rootLogger.child({ className: "OffersFactory" });
+        return this.contract = new store.web3!.eth.Contract(<AbiItem[]>OffersJSON.abi, Superpro.address);
     }
 
     /**
@@ -42,7 +40,12 @@ class OffersFactory {
     public static async getAllOffers(): Promise<string[]> {
         this.checkInit();
 
-        this.offers = await this.contract.methods.getOffers().call();
+        this.offers = [];
+        const events = await this.contract.getPastEvents("OfferCreated");
+        events.forEach((event) => {
+            this.offers?.push(event.returnValues.offerId);
+        });
+
         return this.offers!;
     }
 
@@ -54,16 +57,20 @@ class OffersFactory {
      */
     public static async createOffer(
         providerAuthorityAccount: string,
-        offerInfo: OfferInfo,
-        externalId = formatBytes32String('default'),
-        transactionOptions?: TransactionOptions
+        offerInfo: OfferInfoV1,
+        externalId = formatBytes32String("default"),
+        transactionOptions?: TransactionOptions,
     ): Promise<void> {
         const contract = this.checkInit(transactionOptions);
         checkIfActionAccountInitialized();
 
-        const offerInfoParams = objectToTuple(offerInfo, OfferInfoStructure);
+        delete offerInfo.disabledAfter;
+        const offerInfoV2: OfferInfoV2 = offerInfo;
+        offerInfoV2.externalId = externalId;
+
+        const offerInfoParams = objectToTuple(offerInfoV2, OfferInfoStructureV2);
         await contract.methods
-            .create(providerAuthorityAccount, offerInfoParams, externalId)
+            .createValueOffer(providerAuthorityAccount, offerInfoParams)
             .send(await createTransactionOptions(transactionOptions));
     }
 
@@ -76,10 +83,10 @@ class OffersFactory {
         this.checkInit();
         const logger = this.logger.child({ method: "onOfferCreated" });
 
-        let subscription = this.contract.events
+        const subscription = this.contract.events
             .OfferCreated()
             .on("data", async (event: ContractEvent) => {
-                callback(<string>event.returnValues.newOfferAddress);
+                callback(<string>event.returnValues.offerId);
             })
             .on("error", (error: Error, receipt: string) => {
                 if (receipt) return; // Used to avoid logging of transaction rejected

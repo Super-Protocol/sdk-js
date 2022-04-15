@@ -2,19 +2,24 @@ import store from "../store";
 import { Contract } from "web3-eth-contract";
 import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
-import ProviderRegistryJSON from "../contracts/ProviderRegistry.json";
+import ProvidersJSON from "../contracts/Providers.json";
+import ProvidersOffersJSON from "../contracts/ProvidersOffers.json";
 import {
     checkIfInitialized,
     createTransactionOptions,
     checkIfActionAccountInitialized,
     objectToTuple
 } from "../utils";
-import {ProviderInfo, ProviderInfoStructure} from "../types/Provider";
+import { 
+    ProviderInfo,
+    ProviderInfoV2,
+    ProviderInfoStructureV2
+} from "../types/Provider";
 import { formatBytes32String } from 'ethers/lib/utils';
 import { ContractEvent, TransactionOptions } from "../types/Web3";
+import Superpro from "./Superpro";
 
 class ProviderRegistry {
-    public static address: string;
     private static contract: Contract;
     private static logger: typeof rootLogger;
 
@@ -23,25 +28,38 @@ class ProviderRegistry {
     /**
      * Checks if contract has been initialized, if not - initialize contract
      */
-    private static checkInit(transactionOptions?: TransactionOptions) {
+    private static checkInitProviders(transactionOptions?: TransactionOptions) {
         if (transactionOptions?.web3) {
             checkIfInitialized();
-            return new transactionOptions.web3.eth.Contract(<AbiItem[]>ProviderRegistryJSON.abi, this.address);
+            return new transactionOptions.web3.eth.Contract(<AbiItem[]>ProvidersJSON.abi, Superpro.address);
         }
 
         if (this.contract) return this.contract;
         checkIfInitialized();
 
-        this.logger = rootLogger.child({ className: "ProviderRegistry", address: this.address });
-        return this.contract = new store.web3!.eth.Contract(<AbiItem[]>ProviderRegistryJSON.abi, this.address);
+        this.logger = rootLogger.child({ className: "Providers" });
+        return this.contract = new store.web3!.eth.Contract(<AbiItem[]>ProvidersJSON.abi, Superpro.address);
+    }
+
+    private static checkInitProvidersOffers(transactionOptions?: TransactionOptions) {
+        if (transactionOptions?.web3) {
+            checkIfInitialized();
+            return new transactionOptions.web3.eth.Contract(<AbiItem[]>ProvidersOffersJSON.abi, Superpro.address);
+        }
+
+        if (this.contract) return this.contract;
+        checkIfInitialized();
+
+        this.logger = rootLogger.child({ className: "ProvidersOffers" });
+        return this.contract = new store.web3!.eth.Contract(<AbiItem[]>ProvidersOffersJSON.abi, Superpro.address);
     }
 
     /**
      * Function for fetching list of all providers addresses
      */
     public static async getAllProviders(): Promise<string[]> {
-        this.checkInit();
-        this.providers = await this.contract.methods.listAll().call();
+        this.checkInitProviders();
+        this.providers = await this.contract.methods.getProvidersAuths().call();
         return this.providers!;
     }
 
@@ -49,16 +67,15 @@ class ProviderRegistry {
      * Fetch provider address by provider authority account
      */
     public static async get(providerAuthority: string): Promise<string> {
-        this.checkInit();
-        return await this.contract.methods.get(providerAuthority).call();
+        return providerAuthority;
     }
 
     /**
      * Fetch provider security deposit by provider authority account
      */
     public static async getSecurityDeposit(providerAuthority: string): Promise<number> {
-        this.checkInit();
-        return +(await this.contract.methods.getSecurityDeposit(providerAuthority).call());
+        this.checkInitProviders();
+        return +(await this.contract.methods.getProviderSecurityDeposit(providerAuthority).call());
     }
 
     /**
@@ -68,15 +85,17 @@ class ProviderRegistry {
      */
     public static async registerProvider(
         providerInfo: ProviderInfo,
-        externalId = formatBytes32String('default'),
-        transactionOptions?: TransactionOptions
+        externalId = formatBytes32String("default"),
+        transactionOptions?: TransactionOptions,
     ): Promise<void> {
-        const contract = this.checkInit(transactionOptions);
+        const contract = this.checkInitProviders(transactionOptions);
         checkIfActionAccountInitialized();
 
-        const providerInfoParams = objectToTuple(providerInfo, ProviderInfoStructure);
+        const providerInfoV2: ProviderInfoV2 = providerInfo;
+        providerInfoV2.externalId = externalId;
+        const providerInfoParams = objectToTuple(providerInfoV2, ProviderInfoStructureV2);
         await contract.methods
-            .register(providerInfoParams, externalId)
+            .registerProvider(providerInfoParams)
             .send(await createTransactionOptions(transactionOptions));
     }
 
@@ -87,9 +106,11 @@ class ProviderRegistry {
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
     public static async refillSecurityDeposit(amount: number, transactionOptions?: TransactionOptions): Promise<void> {
-        const contract = this.checkInit(transactionOptions);
+        const contract = this.checkInitProviders(transactionOptions);
         checkIfActionAccountInitialized();
-        await contract.methods.refillSecurityDepo(amount).send(await createTransactionOptions(transactionOptions));
+        await contract.methods
+            .refillProviderSecurityDepo(amount)
+            .send(await createTransactionOptions(transactionOptions));
     }
 
     /**
@@ -99,9 +120,11 @@ class ProviderRegistry {
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
     public static async returnSecurityDeposit(amount: number, transactionOptions?: TransactionOptions): Promise<void> {
-        const contract = this.checkInit(transactionOptions);
+        const contract = this.checkInitProviders(transactionOptions);
         checkIfActionAccountInitialized();
-        await contract.methods.returnSecurityDepo(amount).send(await createTransactionOptions(transactionOptions));
+        await contract.methods
+            .returnProviderSecurityDepo(amount)
+            .send(await createTransactionOptions(transactionOptions));
     }
 
     /**
@@ -110,10 +133,10 @@ class ProviderRegistry {
      * @return unsubscribe - unsubscribe function from event
      */
     public static onProviderRegistered(callback: onProviderRegisteredCallback): () => void {
-        this.checkInit();
-        const logger = this.logger.child({ method: "onTeeOfferCreated" });
+        this.checkInitProviders();
+        const logger = this.logger.child({ method: "onProviderRegistered" });
 
-        let subscription = this.contract.events
+        const subscription = this.contract.events
             .ProviderRegistred()
             .on("data", async (event: ContractEvent) => {
                 callback(<string>event.returnValues.providerInfo);

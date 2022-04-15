@@ -21,3 +21,20 @@ export type TeeOfferInfo = {
     tlb: string;
     argsPublicKey: string;
 };
+
+export const TeeOfferInfoStructureV2 = {
+    name: String,
+    description: String,
+    teeType: String,
+    slots: Number,
+    minTimeMinutes: Number,
+    properties: String,
+    tcb: String,
+    tlb: String,
+    argsPublicKey: String,
+    externalId: String,
+};
+
+export type TeeOfferInfoV2 = TeeOfferInfo & {
+    externalId?: string;
+};

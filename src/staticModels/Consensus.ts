@@ -2,7 +2,8 @@ import store from "../store";
 import { Contract } from "web3-eth-contract";
 import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
-import ConsensusJSON from "../contracts/Consensus.json";
+// import ConsensusJSON from "../contracts/Consensus.json";
+import OffersJSON from "../contracts/Offers.json";
 import TCB from "../models/TCB";
 import LastBlocks from "./LastBlocks";
 import Suspicious from "./Suspicious";
@@ -10,6 +11,7 @@ import { checkIfActionAccountInitialized, checkIfInitialized, createTransactionO
 import { ONE_DAY } from "../constants";
 import { PublicData, LType } from "../types/TcbData";
 import { TransactionOptions } from "../types/Web3";
+import Superpro from "./Superpro";
 
 class Consensus {
     public static address: string;
@@ -27,14 +29,20 @@ class Consensus {
     private static checkInit(transactionOptions?: TransactionOptions) {
         if (transactionOptions?.web3) {
             checkIfInitialized();
-            return new transactionOptions.web3.eth.Contract(<AbiItem[]>ConsensusJSON.abi, this.address);
+            // return new transactionOptions.web3.eth.Contract(<AbiItem[]>ConsensusJSON.abi, this.address);
+            // TODO: stub
+            return new transactionOptions.web3!.eth.Contract(<AbiItem[]>OffersJSON.abi, Superpro.address);
         }
 
         if (this.contract) return this.contract;
         checkIfInitialized();
 
-        this.logger = rootLogger.child({ className: "Consensus", address: this.address });
-        return this.contract = new store.web3!.eth.Contract(<AbiItem[]>ConsensusJSON.abi, this.address);
+        this.logger = rootLogger.child({ className: "Consensus" });
+        // return this.contract = new store.web3!.eth.Contract(<AbiItem[]>ConsensusJSON.abi, this.address);
+        // TODO: stub
+        this.contract = new store.web3!.eth.Contract(<AbiItem[]>OffersJSON.abi, Superpro.address);
+
+        return this.contract;
     }
 
     private static async initTcb(teeOfferAddress: string, transactionOptions?: TransactionOptions): Promise<TCB> {
@@ -58,8 +66,8 @@ class Consensus {
 
         const needAddMarks = async (lType: LType): Promise<number> => {
             return lType == LType.L1
-                    ? (await tcb.getL1()).length - (await tcb.getL1Marks()).length
-                    : (await tcb.getL2()).length - (await tcb.getL2Marks()).length;
+                ? (await tcb.getL1()).length - (await tcb.getL1Marks()).length
+                : (await tcb.getL2()).length - (await tcb.getL2Marks()).length;
         };
         const addAdjustedMarks = async (diff: number, marks: number[], lType: LType) => {
             if (diff > marks.length) {
@@ -67,7 +75,7 @@ class Consensus {
                 return;
             }
             if (diff > 0) {
-                const adjustedMarks = marks.slice(diff * (-1));
+                const adjustedMarks = marks.slice(diff * -1);
                 await tcb.addMarks(lType, adjustedMarks, transactionOptions);
             }
             // diff == 0, it's ok - do nothing
@@ -89,7 +97,7 @@ class Consensus {
      */
     public static async getListsForVerification(
         teeOfferAddress: string,
-        transactionOptions?: TransactionOptions
+        transactionOptions?: TransactionOptions,
     ): Promise<{ L1: string[]; L2: string[] }> {
         this.checkInit();
         checkIfActionAccountInitialized();
@@ -98,7 +106,8 @@ class Consensus {
         const tcbTimeInited = await this.getTimeInited(teeOfferAddress);
         const timestamp = await getTimestamp();
 
-        const tcb = (tcbTimeInited !== 0 && (tcbTimeInited + ONE_DAY) > timestamp)
+        const tcb =
+            tcbTimeInited !== 0 && tcbTimeInited + ONE_DAY > timestamp
                 ? new TCB(alreadyInited)
                 : await this.initTcb(teeOfferAddress, transactionOptions);
 
@@ -113,7 +122,10 @@ class Consensus {
         const L1 = await tcb.getL1();
         const L2 = await tcb.getL2();
 
-        return { L1, L2 };
+        return {
+            L1,
+            L2,
+        };
     }
 
     /**
@@ -129,7 +141,7 @@ class Consensus {
         L1Marks: number[],
         L2Marks: number[],
         tcbData: { publicData: PublicData; quote: string },
-        transactionOptions?: TransactionOptions
+        transactionOptions?: TransactionOptions,
     ): Promise<void> {
         this.checkInit();
         checkIfActionAccountInitialized();
@@ -167,7 +179,7 @@ class Consensus {
     public static async unlockRewards(
         tcbAddress: string,
         unlockAmount: number,
-        transactionOptions?: TransactionOptions
+        transactionOptions?: TransactionOptions,
     ): Promise<void> {
         const contract = this.checkInit(transactionOptions);
         checkIfActionAccountInitialized();

@@ -47,7 +47,7 @@ This repo doesn't have code to test new functionality during development, so you
 1. Commit your changes:
    ```
    git add .
-   git commit -m"deploy v0.0.6"
+   git commit -m "deploy v0.0.6"
    ```
 1. Create git tag:
    ```

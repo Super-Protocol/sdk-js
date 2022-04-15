@@ -2,16 +2,20 @@ import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
 import StakingJSON from "../contracts/Staking.json";
 import store from "../store";
-import {checkIfActionAccountInitialized, checkIfInitialized, createTransactionOptions, tupleToObject} from "../utils";
+import { checkIfActionAccountInitialized, checkIfInitialized, createTransactionOptions, tupleToObject } from "../utils";
 import { LockInfo, LockInfoStructure, StakeInfo, StakeInfoStructure } from "../types/Staking";
 import { ContractName } from "../types/Superpro";
 import { Contract } from "web3-eth-contract";
 import { TransactionOptions } from "../types/Web3";
+import Superpro from "./Superpro";
 
 class Staking {
-    public static address: string;
     private static contract: Contract;
     private static logger: typeof rootLogger;
+
+    public static get address(): string {
+        return Superpro.address;
+    }
 
     /**
      * Checks if contract has been initialized, if not - initialize contract
@@ -19,14 +23,14 @@ class Staking {
     private static checkInit(transactionOptions?: TransactionOptions) {
         if (transactionOptions?.web3) {
             checkIfInitialized();
-            return new transactionOptions.web3.eth.Contract(<AbiItem[]>StakingJSON.abi, this.address);
+            return new transactionOptions.web3.eth.Contract(<AbiItem[]>StakingJSON.abi, Superpro.address);
         }
 
         if (this.contract) return this.contract;
         checkIfInitialized();
 
-        this.logger = rootLogger.child({ className: "Staking", address: this.address });
-        return this.contract = new store.web3!.eth.Contract(<AbiItem[]>StakingJSON.abi, this.address);
+        this.logger = rootLogger.child({ className: "Staking" });
+        return this.contract = new store.web3!.eth.Contract(<AbiItem[]>StakingJSON.abi, Superpro.address);
     }
 
     /**
@@ -45,7 +49,7 @@ class Staking {
     public static async getLockInfo(ownerAddress: string, contractName: ContractName): Promise<LockInfo> {
         this.checkInit();
 
-        const lockInfoParams = await this.contract.methods.getLockInfo(ownerAddress, contractName).call();
+        const lockInfoParams = await this.contract.methods.getLockedTokensInfo(ownerAddress).call();
         return tupleToObject(lockInfoParams, LockInfoStructure);
     }
 

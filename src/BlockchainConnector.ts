@@ -4,21 +4,10 @@ import { HttpProviderBase, WebsocketProviderBase } from "web3-core-helpers";
 import store from "./store";
 import { defaultBlockchainUrl } from "./constants";
 import { checkIfInitialized } from "./utils";
-import { ContractName } from "./types/Superpro";
 import { Transaction } from "./types/Web3";
 
-import TeeOffersFactory from "./staticModels/TeeOffersFactory";
-import OffersFactory from "./staticModels/OffersFactory";
 import Superpro from "./staticModels/Superpro";
-import OrdersFactory from "./staticModels/OrdersFactory";
-import ProviderRegistry from "./staticModels/ProviderRegistry";
-import Staking from "./staticModels/Staking";
 import SuperproToken from "./staticModels/SuperproToken";
-import Voting from "./staticModels/Voting";
-import Consensus from "./staticModels/Consensus";
-import LastBlocks from "./staticModels/LastBlocks";
-import Suspicious from "./staticModels/Suspicious";
-import Epochs from "./staticModels/Epochs";
 
 class BlockchainConnector {
     private static logger = rootLogger.child({ className: "BlockchainConnector" });
@@ -58,25 +47,7 @@ class BlockchainConnector {
         if (config?.gasPrice) store.gasPrice = config.gasPrice;
 
         Superpro.address = config.contractAddress;
-
-        const addressesToFetch: { name: ContractName; model: { address?: string } }[] = [
-            { name: ContractName.TeeOffersFactory, model: TeeOffersFactory },
-            { name: ContractName.ValueOffersFactory, model: OffersFactory },
-            { name: ContractName.Orders, model: OrdersFactory },
-            { name: ContractName.ProviderRegistry, model: ProviderRegistry },
-            { name: ContractName.Staking, model: Staking },
-            { name: ContractName.Token, model: SuperproToken },
-            { name: ContractName.Voting, model: Voting },
-            { name: ContractName.Consensus, model: Consensus },
-            { name: ContractName.Suspicious, model: Suspicious },
-            { name: ContractName.LastBlocks, model: LastBlocks },
-            { name: ContractName.Epochs, model: Epochs },
-        ];
-        await Promise.all(
-            addressesToFetch.map(async ({ name, model }) => {
-                model.address = await Superpro.getContractAddress(name);
-            })
-        );
+        SuperproToken.address = await Superpro.getTokenAddress();
 
         store.isInitialized = true;
     }
@@ -98,7 +69,7 @@ class BlockchainConnector {
      */
     public static async getBalance(address: string): Promise<string> {
         checkIfInitialized();
-        return await store.web3!.eth.getBalance( address );
+        return await store.web3!.eth.getBalance(address);
     }
 
     /**
@@ -147,7 +118,7 @@ class BlockchainConnector {
                             });
                         }
                     });
-                })
+                }),
             );
         }
 

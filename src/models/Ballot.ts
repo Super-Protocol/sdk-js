@@ -1,10 +1,12 @@
 import { Contract } from "web3-eth-contract";
 import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
-import BallotJSON from "../contracts/Ballot.json";
+// import BallotJSON from "../contracts/Ballot.json";
+import OffersJSON from "../contracts/Offers.json";
 import store from "../store";
-import {checkIfInitialized, tupleToObject} from "../utils";
+import { checkIfInitialized, tupleToObject } from "../utils";
 import { BallotInfo, BallotInfoStructure } from "../types/Ballot";
+import Superpro from "../staticModels/Superpro";
 
 class Ballot {
     public address: string;
@@ -17,7 +19,9 @@ class Ballot {
         checkIfInitialized();
 
         this.address = address;
-        this.contract = new store.web3!.eth.Contract(<AbiItem[]>BallotJSON.abi, address);
+        // this.contract = new store.web3!.eth.Contract(<AbiItem[]>BallotJSON.abi, address);
+        // TODO: stub
+        this.contract = new store.web3!.eth.Contract(<AbiItem[]>OffersJSON.abi, Superpro.address);
 
         this.logger = rootLogger.child({ className: "Ballot", address });
     }

@@ -2,13 +2,12 @@ import store from "../store";
 import { Contract } from "web3-eth-contract";
 import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
-import VotingJSON from "../contracts/Voting.json";
+// import VotingJSON from "../contracts/Voting.json";
 import { checkIfActionAccountInitialized, checkIfInitialized, createTransactionOptions } from "../utils";
 import { ContractName, ParamName } from "../types/Superpro";
 import { TransactionOptions } from "../types/Web3";
 
 class Voting {
-    public static address: string;
     private static contract: Contract;
     private static logger: typeof rootLogger;
 
@@ -20,14 +19,14 @@ class Voting {
     private static checkInit(transactionOptions?: TransactionOptions) {
         if (transactionOptions?.web3) {
             checkIfInitialized();
-            return new transactionOptions.web3.eth.Contract(<AbiItem[]>VotingJSON.abi, this.address);
+            // return new transactionOptions.web3.eth.Contract(<AbiItem[]>VotingJSON.abi, this.address);
         }
 
         if (this.contract) return this.contract;
         checkIfInitialized();
 
-        this.logger = rootLogger.child({ className: "Voting", address: this.address });
-        return this.contract = new store.web3!.eth.Contract(<AbiItem[]>VotingJSON.abi, this.address);
+        this.logger = rootLogger.child({ className: "Voting" });
+        // return this.contract = new store.web3!.eth.Contract(<AbiItem[]>VotingJSON.abi, this.address);
     }
 
     /**
@@ -39,14 +38,14 @@ class Voting {
     public static async createBallotForAddressUpdate(
         contractName: ContractName,
         newAddress: string,
-        transactionOptions?: TransactionOptions
+        transactionOptions?: TransactionOptions,
     ) {
-        const contract = this.checkInit(transactionOptions);
-        checkIfActionAccountInitialized();
-
-        await contract.methods
-            .createBallotForAddressUpdate(contractName, newAddress)
-            .send(await createTransactionOptions(transactionOptions));
+        // TODO: stub
+        // const contract = this.checkInit(transactionOptions);
+        // checkIfActionAccountInitialized();
+        // await contract.methods
+        //    .createBallotForAddressUpdate(contractName, newAddress)
+        //    .send(await createTransactionOptions(transactionOptions));
     }
 
     /**
@@ -58,24 +57,25 @@ class Voting {
     public static async createBallotForParamUpdate(
         paramName: ParamName,
         newValue: number,
-        transactionOptions?: TransactionOptions
+        transactionOptions?: TransactionOptions,
     ) {
-        const contract = this.checkInit(transactionOptions);
-        checkIfActionAccountInitialized();
-
-        await contract.methods
-            .createBallotForParamUpdate(paramName, newValue)
-            .send(await createTransactionOptions(transactionOptions));
+        // TODO: stub
+        // const contract = this.checkInit(transactionOptions);
+        // checkIfActionAccountInitialized();
+        // await contract.methods
+        //    .createBallotForParamUpdate(paramName, newValue)
+        //    .send(await createTransactionOptions(transactionOptions));
     }
 
     /**
      * Function for fetching list of all ballots addresses
      */
     public static async getAllBallots(): Promise<string[]> {
-        this.checkInit();
-
-        this.ballots = await this.contract.methods.getBallots().call();
-        return this.ballots!;
+        return [];
+        // TODO: stub
+        // this.checkInit();
+        // this.ballots = await this.contract.methods.getBallots().call();
+        // return this.ballots!;
     }
 
     /**
@@ -83,9 +83,10 @@ class Voting {
      * @param userAddress - address of user fpr fetching ballots
      */
     public static async getUserBallots(userAddress: string): Promise<string[]> {
-        this.checkInit();
-
-        return await this.contract.methods.getUserBallots(userAddress).call();
+        return [];
+        // TODO: stub
+        // this.checkInit();
+        // return await this.contract.methods.getUserBallots(userAddress).call();
     }
 }
 

@@ -1,15 +1,17 @@
 import { Contract } from "web3-eth-contract";
 import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
-import TcbJSON from "../contracts/TCB.json";
+// import TcbJSON from "../contracts/TCB.json";
+import OffersJSON from "../contracts/Offers.json";
 import store from "../store";
 import { PublicData, LType, TcbEpochInfo, PublicDataStructure, TcbEpochInfoStructure } from "../types/TcbData";
-import {checkIfActionAccountInitialized, checkIfInitialized, createTransactionOptions, tupleToObject} from "../utils";
+import { checkIfActionAccountInitialized, checkIfInitialized, createTransactionOptions, tupleToObject } from "../utils";
 import { TransactionOptions } from "../types/Web3";
 import Suspicious from "../staticModels/Suspicious";
 import LastBlocks from "../staticModels/LastBlocks";
-import { formatBytes32String, parseBytes32String } from 'ethers/lib/utils';
+import { formatBytes32String, parseBytes32String } from "ethers/lib/utils";
 import { TcbStatus } from "./../types/Epoch";
+import Superpro from "../staticModels/Superpro";
 
 class TCB {
     public address: string;
@@ -29,7 +31,9 @@ class TCB {
         checkIfInitialized();
 
         this.address = address;
-        this.contract = new store.web3!.eth.Contract(<AbiItem[]>TcbJSON.abi, address);
+        // this.contract = new store.web3!.eth.Contract(<AbiItem[]>TcbJSON.abi, address);
+        // TODO: stub
+        this.contract = new store.web3!.eth.Contract(<AbiItem[]>OffersJSON.abi, Superpro.address);
 
         this.logger = rootLogger.child({ className: "TCB", address });
     }
@@ -117,7 +121,9 @@ class TCB {
 
     public async getEpochInfo(): Promise<TcbEpochInfo> {
         const epoch = await this.contract.methods.getEpochInfo().call();
-        return this.epoch = tupleToObject(epoch, TcbEpochInfoStructure);
+        this.epoch = tupleToObject(epoch, TcbEpochInfoStructure);
+
+        return this.epoch;
     }
 
     /**
@@ -127,14 +133,17 @@ class TCB {
         const [positive, negative] = await this.contract.methods.getOwnMarks().call();
         this.positive = positive;
         this.negative = negative;
-        return { positive, negative };
+        return {
+            positive,
+            negative,
+        };
     }
 
     /**
      * Function for fetching used TCB data
      */
     public async getPublicData(): Promise<PublicData> {
-        let publicDataParams = await this.contract.methods.getPublicData().call();
+        const publicDataParams = await this.contract.methods.getPublicData().call();
 
         const publicData: PublicData = tupleToObject(publicDataParams, PublicDataStructure);
         publicData.deviceID = (Buffer.from(parseBytes32String(publicData.deviceID), 'base64')).toString('hex');

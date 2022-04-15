@@ -1,15 +1,17 @@
 import { Contract } from "web3-eth-contract";
 import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
-import ProviderJSON from "../contracts/Provider.json";
+import ProvidersJSON from "../contracts/Providers.json";
+import ProvidersOffersJSON from "../contracts/Providers.json";
 import store from "../store";
-import {checkIfInitialized, tupleToObject} from "../utils";
+import { checkIfInitialized, tupleToObject } from "../utils";
 import { ProviderInfo, ProviderInfoStructure } from "../types/Provider";
 import { Origins, OriginsStructure } from "../types/Origins";
+import Superpro from "../staticModels/Superpro";
 
 class Provider {
-    public address: string;
-    private contract: Contract;
+    private contractProviders: Contract;
+    private contractProvidersOffers: Contract;
     private logger: typeof rootLogger;
 
     public providerInfo?: ProviderInfo;
@@ -18,37 +20,44 @@ class Provider {
     public valueOffers?: string[];
     public teeOffers?: string[];
     public origins?: Origins;
+    public providerId: number;
 
-    constructor(address: string) {
+    constructor(providerId: string) {
         checkIfInitialized();
 
-        this.address = address;
-        this.contract = new store.web3!.eth.Contract(<AbiItem[]>ProviderJSON.abi, address);
+        this.providerId = +providerId;
+        this.contractProviders = new store.web3!.eth.Contract(<AbiItem[]>ProvidersJSON.abi, Superpro.address);
+        this.contractProvidersOffers = new store.web3!.eth.Contract(
+            <AbiItem[]>ProvidersOffersJSON.abi,
+            Superpro.address,
+        );
 
-        this.logger = rootLogger.child({ className: "Provider", address });
+        this.logger = rootLogger.child({ className: "Provider", providerId: this.providerId });
     }
 
     /**
      * Function for fetching provider info from blockchain
      */
     public async getInfo(): Promise<ProviderInfo> {
-        let providerInfoParams = await this.contract.methods.getInfo().call();
-        return this.providerInfo = tupleToObject(providerInfoParams, ProviderInfoStructure);
+        const providerInfoParams = await this.contractProviders.methods.getInfo().call();
+        this.providerInfo = tupleToObject(providerInfoParams, ProviderInfoStructure);
+
+        return this.providerInfo;
     }
 
     /**
      * Function for fetching provider authority address from blockchain
      */
     public async getAuthority(): Promise<string> {
-        this.authority = await this.contract.methods.getAuth().call();
-        return this.authority!;
+        return this.providerId.toString();
     }
 
     /**
      * Function for fetching all value offers for this provider
      */
     public async getValueOffers(): Promise<string[]> {
-        this.valueOffers = await this.contract.methods.getValueOffers().call();
+        this.valueOffers = await this.contractProvidersOffers.methods.getProviderValueOffers().call();
+
         return this.valueOffers!;
     }
 
@@ -56,7 +65,8 @@ class Provider {
      * Function for fetching all TEE offers for this provider
      */
     public async getTeeOffers(): Promise<string[]> {
-        this.teeOffers = await this.contract.methods.getTeeOffers().call();
+        this.teeOffers = await this.contractProvidersOffers.methods.getProviderTeeOffers().call();
+
         return this.teeOffers!;
     }
 
@@ -64,7 +74,8 @@ class Provider {
      * Function for fetching violationRate for this provider
      */
     public async getViolationRate(): Promise<number> {
-        this.violationRate = await this.contract.methods.getViolationRate().call();
+        this.violationRate = await this.contractProviders.methods.getProviderViolationRate(this.providerId).call();
+
         return this.violationRate!;
     }
 
@@ -72,7 +83,7 @@ class Provider {
      * Fetch new Origins (createdDate, createdBy, modifiedDate and modifiedBy)
      */
     public async getOrigins(): Promise<Origins> {
-        let origins = await this.contract.methods.getOrigins().call();
+        let origins = await this.contractProviders.methods.getProviderOrigins(this.providerId).call();
 
         // Converts blockchain array into object
         origins = tupleToObject(origins, OriginsStructure);
@@ -81,7 +92,7 @@ class Provider {
         origins.createdDate = +origins.createdDate * 1000;
         origins.modifiedDate = +origins.modifiedDate * 1000;
 
-        return this.origins = origins;
+        return (this.origins = origins);
     }
 }
 

@@ -2,38 +2,36 @@ import store from "../store";
 import { Contract } from "web3-eth-contract";
 import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
-import OrdersFactoryJSON from "../contracts/OrdersFactory.json";
-import {
-    checkIfActionAccountInitialized,
-    checkIfInitialized,
-    createTransactionOptions,
-    objectToTuple
-} from "../utils";
-import { OrderInfo, OrderInfoStructure } from "../types/Order";
-import { formatBytes32String } from 'ethers/lib/utils';
+import OrdersJSON from "../contracts/Orders.json";
+import { checkIfActionAccountInitialized, checkIfInitialized, createTransactionOptions, objectToTuple } from "../utils";
+import { OrderInfo, OrderInfoV2, OrderInfoStructureV2 } from "../types/Order";
+import { formatBytes32String } from "ethers/lib/utils";
 import { ContractEvent, TransactionOptions } from "../types/Web3";
+import Superpro from "./Superpro";
 
 class OrdersFactory {
-    public static address: string;
     private static contract: Contract;
     private static logger: typeof rootLogger;
 
     public static orders?: string[];
 
+    public static get address(): string {
+        return Superpro.address;
+    }
     /**
      * Checks if contract has been initialized, if not - initialize contract
      */
     private static checkInit(transactionOptions?: TransactionOptions) {
         if (transactionOptions?.web3) {
             checkIfInitialized();
-            return new transactionOptions.web3.eth.Contract(<AbiItem[]>OrdersFactoryJSON.abi, this.address);
+            return new transactionOptions.web3.eth.Contract(<AbiItem[]>OrdersJSON.abi, Superpro.address);
         }
 
         if (this.contract) return this.contract;
         checkIfInitialized();
 
-        this.logger = rootLogger.child({ className: "OrdersFactory", address: this.address });
-        return this.contract = new store.web3!.eth.Contract(<AbiItem[]>OrdersFactoryJSON.abi, this.address);
+        this.logger = rootLogger.child({ className: "OrdersFactory", address: Superpro.address });
+        return this.contract = new store.web3!.eth.Contract(<AbiItem[]>OrdersJSON.abi, Superpro.address);
     }
 
     /**
@@ -63,7 +61,7 @@ class OrdersFactory {
         this.checkInit();
         const logger = this.logger.child({ method: "onOrderCreated" });
 
-        let subscription = this.contract.events
+        const subscription = this.contract.events
             .OrderCreated()
             .on("data", async (event: ContractEvent) => {
                 callback(<string>event.returnValues.newOrderAddress);
@@ -87,16 +85,18 @@ class OrdersFactory {
         orderInfo: OrderInfo,
         holdDeposit = 0,
         suspended = false,
-        externalId = formatBytes32String('default'),
-        transactionOptions?: TransactionOptions
+        externalId = formatBytes32String("default"),
+        transactionOptions?: TransactionOptions,
     ) {
         const contract = this.checkInit(transactionOptions);
         checkIfActionAccountInitialized();
 
+        const orderInfoV2: OrderInfoV2 = orderInfo;
+        orderInfoV2.externalId = externalId;
 
-        const orderInfoArguments = objectToTuple(orderInfo, OrderInfoStructure);
+        const orderInfoArguments = objectToTuple(orderInfoV2, OrderInfoStructureV2);
         await contract.methods
-            .create(orderInfoArguments, holdDeposit, suspended, externalId)
+            .createOrder(orderInfoArguments, holdDeposit, suspended)
             .send(await createTransactionOptions(transactionOptions));
     }
 
@@ -109,7 +109,7 @@ class OrdersFactory {
     public static async refillOrderDeposit(
         orderAddress: string,
         amount: number,
-        transactionOptions?: TransactionOptions
+        transactionOptions?: TransactionOptions,
     ) {
         const contract = this.checkInit(transactionOptions);
         checkIfActionAccountInitialized();

@@ -41,6 +41,28 @@ export const OfferInfoStructure = {
     linkage: String,
     hash: String,
 };
+
+export const OfferInfoStructureV2 = {
+    name: String,
+    group: OfferGroup,
+    offerType: OfferType,
+    cancelable: Boolean,
+    description: String,
+    holdSum: Number,
+    restrictions: OfferRestrictionsStructure,
+    properties: String,
+    maxDurationTimeMinutes: Number,
+    inputFormat: String,
+    outputFormat: String,
+    allowedArgs: String,
+    allowedAccounts: [String],
+    argsPublicKey: String,
+    resultUrl: String,
+    linkage: String,
+    hash: String,
+    externalId: String,
+};
+
 export type OfferInfo = {
     name: string;
     group: OfferGroup;
@@ -57,7 +79,14 @@ export type OfferInfo = {
     allowedAccounts: string[];
     argsPublicKey: string;
     resultUrl: string;
-    disabledAfter: number;
     linkage: string;
     hash: string;
+};
+
+export type OfferInfoV1 = OfferInfo & {
+    disabledAfter?: number;
+};
+
+export type OfferInfoV2 = OfferInfo & {
+    externalId?: string;
 };

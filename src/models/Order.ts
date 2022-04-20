@@ -1,11 +1,4 @@
-import {
-    OrderInfo,
-    OrderInfoV2,
-    OrderInfoStructureV2,
-    OrderResult,
-    OrderResultStructure,
-    OrderStatus,
-} from "../types/Order";
+import { OrderInfo, OrderInfoStructure, OrderResult, OrderResultStructure, OrderStatus } from "../types/Order";
 import { Contract } from "web3-eth-contract";
 import rootLogger from "../logger";
 import { ContractEvent, TransactionOptions } from "../types/Web3";
@@ -20,6 +13,7 @@ import {
     tupleToObject,
 } from "../utils";
 import { Origins, OriginsStructure } from "../types/Origins";
+import { SubOrderCreatedEvent } from "../types/Events";
 import { formatBytes32String } from "ethers/lib/utils";
 import Superpro from "../staticModels/Superpro";
 
@@ -47,10 +41,10 @@ class Order {
     /**
      * Function for fetching order info from blockchain
      */
-    public async getOrderInfo(): Promise<OrderInfoV2> {
+    public async getOrderInfo(): Promise<OrderInfo> {
         const orderInfoParams = await this.contract.methods.getOrder().call();
 
-        return (this.orderInfo = tupleToObject(orderInfoParams[1], OrderInfoStructureV2));
+        return (this.orderInfo = tupleToObject(orderInfoParams[1], OrderInfoStructure));
     }
 
     public async getConsumer(): Promise<string> {
@@ -170,13 +164,24 @@ class Order {
     ) {
         checkIfActionAccountInitialized();
 
-        const subOrderInfoArgumentsV2: OrderInfoV2 = subOrderInfo;
-        subOrderInfoArgumentsV2.externalId = externalId;
-
-        const tupleSubOrder = objectToTuple(subOrderInfoArgumentsV2, OrderInfoStructureV2);
+        const tupleSubOrder = objectToTuple(subOrderInfo, OrderInfoStructure);
         await this.contract.methods
-            .createSubOrder(this.orderId, tupleSubOrder, blocking)
+            .createSubOrder(this.orderId, tupleSubOrder, blocking, externalId)
             .send(await createTransactionOptions(transactionOptions));
+    }
+
+    public async getSubOrder(consumer: string, externalId: string): Promise<SubOrderCreatedEvent> {
+        const filter = {
+            consumer,
+            externalId: formatBytes32String(externalId),
+        };
+        const foundIds = await this.contract.getPastEvents("SubOrderCreated", { filter });
+        const notFound = { consumer, externalId, subOfferId: -1, subOrderId: -1, parentOrderId: -1 };
+
+        const response: SubOrderCreatedEvent =
+            foundIds.length > 0 ? (foundIds[0].returnValues as SubOrderCreatedEvent) : notFound;
+
+        return response;
     }
 
     /**

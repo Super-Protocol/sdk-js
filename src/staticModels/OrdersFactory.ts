@@ -4,9 +4,10 @@ import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
 import OrdersJSON from "../contracts/Orders.json";
 import { checkIfActionAccountInitialized, checkIfInitialized, createTransactionOptions, objectToTuple } from "../utils";
-import { OrderInfo, OrderInfoV2, OrderInfoStructureV2 } from "../types/Order";
+import { OrderInfo, OrderInfoStructure } from "../types/Order";
 import { formatBytes32String } from "ethers/lib/utils";
 import { ContractEvent, TransactionOptions } from "../types/Web3";
+import { OrderCreatedEvent } from "../types/Events";
 import Superpro from "./Superpro";
 
 class OrdersFactory {
@@ -91,13 +92,25 @@ class OrdersFactory {
         const contract = this.checkInit(transactionOptions);
         checkIfActionAccountInitialized();
 
-        const orderInfoV2: OrderInfoV2 = orderInfo;
-        orderInfoV2.externalId = externalId;
-
-        const orderInfoArguments = objectToTuple(orderInfoV2, OrderInfoStructureV2);
+        const orderInfoArguments = objectToTuple(orderInfo, OrderInfoStructure);
         await contract.methods
-            .createOrder(orderInfoArguments, holdDeposit, suspended)
+            .createOrder(orderInfoArguments, holdDeposit, suspended, externalId)
             .send(await createTransactionOptions(transactionOptions));
+    }
+
+    public static async getOrder(consumer: string, externalId: string): Promise<OrderCreatedEvent> {
+        const contract = this.checkInit();
+        const filter = {
+            consumer,
+            externalId: formatBytes32String(externalId),
+        };
+        const foundIds = await contract.getPastEvents("OrderCreated", { filter });
+        const notFound = { consumer, externalId, offerId: -1, orderId: -1 };
+
+        const response: OrderCreatedEvent =
+            foundIds.length > 0 ? (foundIds[0].returnValues as OrderCreatedEvent) : notFound;
+
+        return response;
     }
 
     /**

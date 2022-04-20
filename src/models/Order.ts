@@ -159,14 +159,15 @@ class Order {
     public async createSubOrder(
         subOrderInfo: OrderInfo,
         blocking: boolean,
-        externalId = formatBytes32String("default"),
+        externalId = "default",
         transactionOptions?: TransactionOptions,
     ) {
         checkIfActionAccountInitialized();
 
         const tupleSubOrder = objectToTuple(subOrderInfo, OrderInfoStructure);
+        const formattedExternalId = formatBytes32String(externalId);
         await this.contract.methods
-            .createSubOrder(this.orderId, tupleSubOrder, blocking, externalId)
+            .createSubOrder(this.orderId, tupleSubOrder, blocking, formattedExternalId)
             .send(await createTransactionOptions(transactionOptions));
     }
 

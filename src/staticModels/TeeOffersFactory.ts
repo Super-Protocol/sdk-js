@@ -59,7 +59,7 @@ class TeeOffersFactory {
     public static async createTeeOffer(
         providerAuthorityAccount: string,
         teeOfferInfo: TeeOfferInfo,
-        externalId = formatBytes32String("default"),
+        externalId = "default",
         transactionOptions?: TransactionOptions,
     ): Promise<void> {
         const contract = this.checkInit(transactionOptions);
@@ -67,8 +67,9 @@ class TeeOffersFactory {
 
         // Converts offer info to array of arrays (used in blockchain)
         const teeOfferInfoParams = objectToTuple(teeOfferInfo, TeeOfferInfoStructure);
+        const formattedExternalId = formatBytes32String(externalId);
         await contract.methods
-            .createTeeOffer(providerAuthorityAccount, teeOfferInfoParams, externalId)
+            .createTeeOffer(providerAuthorityAccount, teeOfferInfoParams, formattedExternalId)
             .send(await createTransactionOptions(transactionOptions));
     }
 

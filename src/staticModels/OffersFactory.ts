@@ -59,7 +59,7 @@ class OffersFactory {
     public static async createOffer(
         providerAuthorityAccount: string,
         offerInfoV1: OfferInfoV1,
-        externalId = formatBytes32String("default"),
+        externalId = "default",
         transactionOptions?: TransactionOptions,
     ): Promise<void> {
         const contract = this.checkInit(transactionOptions);
@@ -69,8 +69,9 @@ class OffersFactory {
         const offerInfo: OfferInfo = offerInfoV1;
 
         const offerInfoParams = objectToTuple(offerInfo, OfferInfoStructure);
+        const formattedExternalId = formatBytes32String(externalId);
         await contract.methods
-            .createValueOffer(providerAuthorityAccount, offerInfoParams, externalId)
+            .createValueOffer(providerAuthorityAccount, offerInfoParams, formattedExternalId)
             .send(await createTransactionOptions(transactionOptions));
     }
 

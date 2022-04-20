@@ -86,15 +86,16 @@ class OrdersFactory {
         orderInfo: OrderInfo,
         holdDeposit = 0,
         suspended = false,
-        externalId = formatBytes32String("default"),
+        externalId = "default",
         transactionOptions?: TransactionOptions,
     ) {
         const contract = this.checkInit(transactionOptions);
         checkIfActionAccountInitialized();
 
         const orderInfoArguments = objectToTuple(orderInfo, OrderInfoStructure);
+        const formattedExternalId = formatBytes32String(externalId);
         await contract.methods
-            .createOrder(orderInfoArguments, holdDeposit, suspended, externalId)
+            .createOrder(orderInfoArguments, holdDeposit, suspended, formattedExternalId)
             .send(await createTransactionOptions(transactionOptions));
     }
 

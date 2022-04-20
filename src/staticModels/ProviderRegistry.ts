@@ -76,7 +76,7 @@ class ProviderRegistry {
      */
     public static async registerProvider(
         providerInfo: ProviderInfo,
-        externalId = formatBytes32String("default"),
+        externalId = "default",
         transactionOptions?: TransactionOptions,
     ): Promise<void> {
         const contract = this.checkInitProviders(transactionOptions);

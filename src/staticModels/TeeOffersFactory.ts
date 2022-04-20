@@ -6,7 +6,8 @@ import OffersJSON from "../contracts/Offers.json";
 import { checkIfActionAccountInitialized, checkIfInitialized, createTransactionOptions, objectToTuple } from "../utils";
 import { formatBytes32String } from "ethers/lib/utils";
 import { ContractEvent, TransactionOptions } from "../types/Web3";
-import { TeeOfferInfo, TeeOfferInfoV2, TeeOfferInfoStructureV2 } from "../types/TeeOffer";
+import { TeeOfferInfo, TeeOfferInfoStructure } from "../types/TeeOffer";
+import { OfferCreatedEvent } from "../types/Events";
 import Superpro from "./Superpro";
 
 class TeeOffersFactory {
@@ -41,7 +42,7 @@ class TeeOffersFactory {
         this.checkInit();
 
         this.teeOffers = [];
-        const events = await this.contract.getPastEvents('TeeOfferCreated');
+        const events = await this.contract.getPastEvents("TeeOfferCreated");
         events.forEach(event => {
             this.teeOffers?.push(event.returnValues.offerId);
         });
@@ -65,13 +66,25 @@ class TeeOffersFactory {
         checkIfActionAccountInitialized();
 
         // Converts offer info to array of arrays (used in blockchain)
-        const teeOfferInfoV2: TeeOfferInfoV2 = teeOfferInfo;
-        teeOfferInfoV2.externalId = externalId;
-
-        const teeOfferInfoParams = objectToTuple(teeOfferInfoV2, TeeOfferInfoStructureV2);
+        const teeOfferInfoParams = objectToTuple(teeOfferInfo, TeeOfferInfoStructure);
         await contract.methods
-            .createTeeOffer(providerAuthorityAccount, teeOfferInfoParams)
+            .createTeeOffer(providerAuthorityAccount, teeOfferInfoParams, externalId)
             .send(await createTransactionOptions(transactionOptions));
+    }
+
+    public static async getOffer(creator: string, externalId: string): Promise<OfferCreatedEvent> {
+        const contract = this.checkInit();
+
+        const filter = {
+            creator,
+            externalId: formatBytes32String(externalId),
+        };
+        const foundIds = await contract.getPastEvents("TeeOfferCreated", { filter });
+        const notFound = { creator, externalId, offerId: -1 };
+        const response: OfferCreatedEvent =
+            foundIds.length > 0 ? (foundIds[0].returnValues as OfferCreatedEvent) : notFound;
+
+        return response;
     }
 
     /**

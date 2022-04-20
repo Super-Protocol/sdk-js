@@ -26,17 +26,14 @@ class BlockchainConnector {
         const url = config?.blockchainUrl || defaultBlockchainUrl;
 
         if (/^(ws)|(wss)/.test(url)) {
-            this.provider = new Web3.providers.WebsocketProvider(
-                url,
-                {
-                    reconnect: {
-                        auto: true,
-                        delay: 5000, // ms
-                        maxAttempts: 5,
-                        onTimeout: false
-                    },
+            this.provider = new Web3.providers.WebsocketProvider(url, {
+                reconnect: {
+                    auto: true,
+                    delay: 5000, // ms
+                    maxAttempts: 5,
+                    onTimeout: false,
                 },
-            );
+            });
             store.web3 = new Web3(this.provider);
         } else {
             this.provider = new Web3.providers.HttpProvider(url);
@@ -122,7 +119,10 @@ class BlockchainConnector {
             );
         }
 
-        return { transactionsByAddress, lastBlock: endBlock };
+        return {
+            transactionsByAddress,
+            lastBlock: endBlock,
+        };
     }
 
     public static disconnect() {

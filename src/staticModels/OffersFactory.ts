@@ -4,9 +4,10 @@ import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
 import OffersJSON from "../contracts/Offers.json";
 import { checkIfActionAccountInitialized, checkIfInitialized, createTransactionOptions, objectToTuple } from "../utils";
-import { OfferInfo, OfferInfoV1, OfferInfoV2, OfferInfoStructureV2 } from "../types/Offer";
+import { OfferInfo, OfferInfoV1, OfferInfoStructure } from "../types/Offer";
 import { formatBytes32String } from "ethers/lib/utils";
 import { ContractEvent, TransactionOptions } from "../types/Web3";
+import { OfferCreatedEvent } from "../types/Events";
 import Superpro from "./Superpro";
 
 class OffersFactory {
@@ -57,21 +58,35 @@ class OffersFactory {
      */
     public static async createOffer(
         providerAuthorityAccount: string,
-        offerInfo: OfferInfoV1,
+        offerInfoV1: OfferInfoV1,
         externalId = formatBytes32String("default"),
         transactionOptions?: TransactionOptions,
     ): Promise<void> {
         const contract = this.checkInit(transactionOptions);
         checkIfActionAccountInitialized();
 
-        delete offerInfo.disabledAfter;
-        const offerInfoV2: OfferInfoV2 = offerInfo;
-        offerInfoV2.externalId = externalId;
+        delete offerInfoV1.disabledAfter;
+        const offerInfo: OfferInfo = offerInfoV1;
 
-        const offerInfoParams = objectToTuple(offerInfoV2, OfferInfoStructureV2);
+        const offerInfoParams = objectToTuple(offerInfo, OfferInfoStructure);
         await contract.methods
-            .createValueOffer(providerAuthorityAccount, offerInfoParams)
+            .createValueOffer(providerAuthorityAccount, offerInfoParams, externalId)
             .send(await createTransactionOptions(transactionOptions));
+    }
+
+    public static async getOffer(creator: string, externalId: string): Promise<OfferCreatedEvent> {
+        const contract = this.checkInit();
+        const filter = {
+            creator,
+            externalId: formatBytes32String(externalId),
+        };
+        const foundIds = await contract.getPastEvents("OfferCreated", { filter });
+        const response: OfferCreatedEvent =
+            foundIds.length > 0
+                ? (foundIds[0].returnValues as OfferCreatedEvent)
+                : { creator, externalId, offerId: -1 };
+
+        return response;
     }
 
     /**

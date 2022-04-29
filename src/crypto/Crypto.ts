@@ -69,6 +69,12 @@ class Crypto {
                     outputStream,
                     encryption,
                 );
+            case CryptoAlgorithm.RSAHybrid:
+                return await RSAHybrid.encryptStream(
+                    inputStream,
+                    outputStream,
+                    encryption,
+                );
             default:
                 throw Error(`${encryption.algo} algorithm not supported`);
         }
@@ -123,6 +129,12 @@ class Crypto {
                     inputStream,
                     outputStream,
                     encryption as ARIAEncryption
+                );
+            case CryptoAlgorithm.RSAHybrid:
+                return await RSAHybrid.decryptStream(
+                    inputStream,
+                    outputStream,
+                    encryption as RSAHybridEncryption
                 );
             default:
                 throw Error(`${encryption.algo} algorithm not supported`);

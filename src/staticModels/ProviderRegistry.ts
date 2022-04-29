@@ -4,18 +4,9 @@ import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
 import ProvidersJSON from "../contracts/Providers.json";
 import ProvidersOffersJSON from "../contracts/ProvidersOffers.json";
-import {
-    checkIfInitialized,
-    createTransactionOptions,
-    checkIfActionAccountInitialized,
-    objectToTuple
-} from "../utils";
-import { 
-    ProviderInfo,
-    ProviderInfoV2,
-    ProviderInfoStructureV2
-} from "../types/Provider";
-import { formatBytes32String } from 'ethers/lib/utils';
+import { checkIfInitialized, createTransactionOptions, checkIfActionAccountInitialized, objectToTuple } from "../utils";
+import { ProviderInfo, ProviderInfoStructure } from "../types/Provider";
+import { formatBytes32String } from "ethers/lib/utils";
 import { ContractEvent, TransactionOptions } from "../types/Web3";
 import Superpro from "./Superpro";
 
@@ -85,15 +76,13 @@ class ProviderRegistry {
      */
     public static async registerProvider(
         providerInfo: ProviderInfo,
-        externalId = formatBytes32String("default"),
+        externalId = "default",
         transactionOptions?: TransactionOptions,
     ): Promise<void> {
         const contract = this.checkInitProviders(transactionOptions);
         checkIfActionAccountInitialized();
 
-        const providerInfoV2: ProviderInfoV2 = providerInfo;
-        providerInfoV2.externalId = externalId;
-        const providerInfoParams = objectToTuple(providerInfoV2, ProviderInfoStructureV2);
+        const providerInfoParams = objectToTuple(providerInfo, ProviderInfoStructure);
         await contract.methods
             .registerProvider(providerInfoParams)
             .send(await createTransactionOptions(transactionOptions));

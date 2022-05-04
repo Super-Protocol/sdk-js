@@ -18,6 +18,7 @@ class TeeOffer {
     public totalLocked?: number;
     public offerInfo?: TeeOfferInfo;
     public type?: OfferType;
+    public providerAuthority?: string;
     public provider?: string;
     public disabledAfter?: number;
     public tcb?: string;
@@ -50,7 +51,16 @@ class TeeOffer {
      * Function for fetching TEE offer provider from blockchain
      */
     public async getProvider(): Promise<string> {
-        return await this.contract.methods.getProviderAuthority();
+        this.providerAuthority = await this.contract.methods.getOfferProviderAuthority(this.offerId).call();
+        return this.providerAuthority!;
+    }
+
+    /**
+     * Function for fetching TEE offer provider authority account from blockchain
+     */
+    public async getProviderAuthority(): Promise<string> {
+        this.providerAuthority = await this.contract.methods.getOfferProviderAuthority(this.offerId).call();
+        return this.providerAuthority!;
     }
 
     /**

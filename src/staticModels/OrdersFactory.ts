@@ -40,7 +40,18 @@ class OrdersFactory {
      */
     public static async getAllOrders(): Promise<string[]> {
         this.checkInit();
-        this.orders = await this.contract.methods.listAll().call();
+
+        this.orders = [];
+        const orderEvents = await this.contract.getPastEvents("OrderCreated");
+        const subOrderEvents = await this.contract.getPastEvents("SubOrderCreated");
+
+        orderEvents.forEach((event) => {
+            this.orders?.push(event.returnValues.orderId);
+        });
+        subOrderEvents.forEach((event) => {
+            this.orders?.push(event.returnValues.subOrderId);
+        });
+
         return this.orders!;
     }
 

@@ -44,13 +44,13 @@ class Order {
      * Function for fetching order info from blockchain
      */
     public async getOrderInfo(): Promise<OrderInfo> {
-        const orderInfoParams = await this.contract.methods.getOrder().call();
+        const orderInfoParams = await this.contract.methods.getOrder(this.orderId).call();
 
         return (this.orderInfo = tupleToObject(orderInfoParams[1], OrderInfoStructure));
     }
 
     public async getConsumer(): Promise<string> {
-        const orderInfoParams = await this.contract.methods.getOrder().call();
+        const orderInfoParams = await this.contract.methods.getOrder(this.orderId).call();
         this.consumer = orderInfoParams[0];
         return this.consumer!;
     }
@@ -59,7 +59,7 @@ class Order {
      * Function for fetching order result from blockchain
      */
     public async getOrderResult(): Promise<OrderResult> {
-        const orderInfoParams = await this.contract.methods.getOrder().call();
+        const orderInfoParams = await this.contract.methods.getOrder(this.orderId).call();
         this.orderResult = orderInfoParams[2];
         return this.orderResult = tupleToObject(orderInfoParams[2], OrderResultStructure);
     }

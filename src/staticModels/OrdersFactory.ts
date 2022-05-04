@@ -46,11 +46,11 @@ class OrdersFactory {
 
     /**
      * Function for fetching order hold deposit for specific order
-     * @param orderAddress - address of order for fetching hold deposit
+     * @param orderId - id of order for fetching hold deposit
      */
-    public static async getOrderHoldDeposit(orderAddress: string): Promise<number> {
+    public static async getOrderHoldDeposit(orderId: number): Promise<number> {
         this.checkInit();
-        return await this.contract.methods.getOrderHoldDeposit(orderAddress).call();
+        return await this.contract.methods.getOrderHoldDeposit(orderId).call();
     }
 
     /**

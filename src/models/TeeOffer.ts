@@ -26,10 +26,10 @@ class TeeOffer {
     public origins?: Origins;
     public offerId: number;
 
-    constructor(offerId: string) {
+    constructor(offerId: number) {
         checkIfInitialized();
 
-        this.offerId = +offerId;
+        this.offerId = offerId;
         this.contract = new store.web3!.eth.Contract(<AbiItem[]>OffersJSON.abi, Superpro.address);
 
         this.logger = rootLogger.child({ className: "TeeOffer" });

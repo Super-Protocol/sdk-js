@@ -85,7 +85,7 @@ class TIIGenerator {
     }
 
     public static async generate(
-        orderId: string,
+        orderId: number,
         resource: Resource,
         args: any,
         encryption: Encryption
@@ -93,7 +93,7 @@ class TIIGenerator {
         const order: Order = new Order(orderId);
 
         const parentOrderAddress: string = await order.getParentOrder();
-        const parentOrder: Order = new Order(parentOrderAddress);
+        const parentOrder: Order = new Order(+parentOrderAddress);
         const parentOrderInfo: OrderInfo = await parentOrder.getOrderInfo();
 
         const solutionHashes: Hash[] = [];

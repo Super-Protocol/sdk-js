@@ -18,12 +18,14 @@ class Offer {
     public type?: OfferType;
     public providerAuthority?: string;
     public origins?: Origins;
+    public address: string;
     public offerId: number;
 
-    constructor(offerId: number) {
+    constructor(offerId: string) {
         checkIfInitialized();
 
-        this.offerId = offerId;
+        this.offerId = +offerId;
+        this.address = offerId;
         this.contract = new store.web3!.eth.Contract(<AbiItem[]>OffersJSON.abi, Superpro.address);
         this.logger = rootLogger.child({ className: "Offer", offerId: this.offerId });
     }

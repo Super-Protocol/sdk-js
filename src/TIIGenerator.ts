@@ -24,7 +24,7 @@ import { TeeOfferInfo } from "./types/TeeOffer";
 
 class TIIGenerator {
     public static async generateByOffer(
-        offerId: string,
+        offerId: number,
         solutionHashes: Hash[],
         linkageString: string|undefined,
         resource: Resource,
@@ -101,8 +101,8 @@ class TIIGenerator {
         let anyLinkage: string|undefined;
         await Promise.all(
             parentOrderInfo.args.inputOffers.map(
-                async (offerAddress: string): Promise<void> => {
-                    const offer: Offer = new Offer(offerAddress);
+                async (offerId: string): Promise<void> => {
+                    const offer: Offer = new Offer(+offerId);
                     const offerInfo: OfferInfo = await offer.getInfo();
 
                     if (offerInfo.hash) {
@@ -111,7 +111,7 @@ class TIIGenerator {
 
                     const restrictions = _
                         .intersection(offerInfo.restrictions.offers, parentOrderInfo.args.inputOffers)
-                        .filter(restrictedOfferAddress => restrictedOfferAddress !== offer.address);
+                        .filter(restrictedOfferId => +restrictedOfferId !== offer.offerId);
                     if (restrictions.length) {
                         solutionLinkage = offerInfo.linkage;
                     } else {
@@ -122,7 +122,7 @@ class TIIGenerator {
         );
 
         return this.generateByOffer(
-            parentOrderInfo.offer,
+            +parentOrderInfo.offer,
             solutionHashes,
             solutionLinkage || anyLinkage,
             resource,

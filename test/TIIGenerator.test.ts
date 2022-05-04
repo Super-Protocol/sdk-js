@@ -43,22 +43,25 @@ const tii = JSON.stringify({
 
 jest.mock("../src/models/Order", () => {
     return jest.fn().mockImplementation((address) => {
+        // 1: order
+        // 2: tee order
+        // 3: parent order
         if (
-            address !== "order" &&
-            address !== "parentOrder" &&
-            address !== "teeOrder"
+            address !== 1 &&
+            address !== 2 &&
+            address !== 3
         ) {
             throw new Error("Order doesnot exists");
         }
         return {
             async getParentOrder() {
-                return address === "teeOrder" ? null : "parentOrder";
+                return address === 2 ? null : 3;
             },
             async getOrderInfo() {
                 return {
                     offer: "",
                     args: {
-                        inputOffers: ["offer"],
+                        inputOffers: ["1"],
                     },
                 } as OrderInfo;
             },
@@ -76,7 +79,7 @@ jest.mock("../src/models/Offer", () => {
                         mrenclave: "",
                     }),
                     restrictions: {
-                        offers: [ "offer" ],
+                        offers: [ "1" ],
                         types: [ OfferType.Storage ],
                     },
                     hash: JSON.stringify({
@@ -126,7 +129,7 @@ describe("TIIGenerator", () => {
     describe("generateByOffer", () => {
         test("generate TII", async () => {
             const tii = await TIIGenerator.generateByOffer(
-                "offer",
+                1,
                 [],
                 JSON.stringify({
                     encoding: Encoding.base64,
@@ -154,7 +157,7 @@ describe("TIIGenerator", () => {
     describe("generate", () => {
         test("generate TII", async () => {
             const tii = await TIIGenerator.generate(
-                "order",
+                1,
                 resource,
                 {},
                 {
@@ -176,7 +179,7 @@ describe("TIIGenerator", () => {
         test("fail for no Order", async () => {
             expect(
                 TIIGenerator.generate(
-                    "badOrder",
+                    0,
                     resource,
                     {},
                     {
@@ -192,7 +195,7 @@ describe("TIIGenerator", () => {
         test("fail for no parent Order", async () => {
             expect(
                 TIIGenerator.generate(
-                    "teeOrder",
+                    2,
                     resource,
                     {},
                     {

@@ -21,11 +21,13 @@ class Provider {
     public teeOffers?: string[];
     public origins?: Origins;
     public providerId: number;
+    public address: string;
 
     constructor(providerId: string) {
         checkIfInitialized();
 
         this.providerId = +providerId;
+        this.address = providerId;
         this.contractProviders = new store.web3!.eth.Contract(<AbiItem[]>ProvidersJSON.abi, Superpro.address);
         this.contractProvidersOffers = new store.web3!.eth.Contract(
             <AbiItem[]>ProvidersOffersJSON.abi,

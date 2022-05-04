@@ -25,11 +25,13 @@ class TeeOffer {
     public tcbAddedTime?: number;
     public origins?: Origins;
     public offerId: number;
+    public address: string;
 
     constructor(offerId: string) {
         checkIfInitialized();
 
         this.offerId = +offerId;
+        this.address = offerId;
         this.contract = new store.web3!.eth.Contract(<AbiItem[]>OffersJSON.abi, Superpro.address);
 
         this.logger = rootLogger.child({ className: "TeeOffer" });

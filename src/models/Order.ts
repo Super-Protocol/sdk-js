@@ -28,11 +28,13 @@ class Order {
     public consumer?: string;
     public origins?: Origins;
     public orderId: number;
+    public address: string;
 
     constructor(orderId: string) {
         checkIfInitialized();
 
         this.orderId = +orderId;
+        this.address = orderId;
         this.contract = new store.web3!.eth.Contract(<AbiItem[]>OrdersJSON.abi, Superpro.address);
 
         this.logger = rootLogger.child({ className: "Order", orderId: this.orderId });

@@ -76,7 +76,7 @@ class OrdersFactory {
         const subscription = this.contract.events
             .OrderCreated()
             .on("data", async (event: ContractEvent) => {
-                callback(<string>event.returnValues.newOrderAddress);
+                callback(<string>event.returnValues.orderId);
             })
             .on("error", (error: Error, receipt: string) => {
                 if (receipt) return; // Used to avoid logging of transaction rejected

@@ -42,8 +42,8 @@ class Offer {
      * Function for fetching offer provider from blockchain (works for TEE and Value offers)
      */
     public async getProvider(): Promise<string> {
-        this.providerAuthority = await this.contract.methods.getOfferProviderAuthority(this.offerId).call();
-        return this.providerAuthority!;
+        this.provider = await this.contract.methods.getOfferProviderAuthority(this.offerId).call();
+        return this.provider!;
     }
 
     /**

@@ -86,6 +86,23 @@ class OrdersFactory {
         return () => subscription.unsubscribe();
     }
 
+    public static onSubOrderCreated(callback: onSubOrderCreatedCallback): () => void {
+        this.checkInit();
+        const logger = this.logger.child({ method: "SubOrderCreated" });
+
+        const subscription = this.contract.events
+            .SubOrderCreated()
+            .on("data", async (event: ContractEvent) => {
+                callback(<string>event.returnValues.subOrderId);
+            })
+            .on("error", (error: Error, receipt: string) => {
+                if (receipt) return; // Used to avoid logging of transaction rejected
+                logger.warn(error);
+            });
+
+        return () => subscription.unsubscribe();
+    }
+
     /**
      * Function for creating orders
      * @param orderInfo - order info for new order
@@ -146,5 +163,6 @@ class OrdersFactory {
 }
 
 export type onOrderCreatedCallback = (address: string) => void;
+export type onSubOrderCreatedCallback = (address: string) => void;
 
 export default OrdersFactory;

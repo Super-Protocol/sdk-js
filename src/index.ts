@@ -44,6 +44,9 @@ export * from "./staticModels/Superpro";
 export { default as Epochs } from "./staticModels/Epochs";
 export * from "./staticModels/Epochs";
 
+export { default as Marks } from "./staticModels/Marks";
+export * from "./staticModels/Marks";
+
 export { default as Order } from "./models/Order";
 export * from "./models/Order";
 
@@ -64,6 +67,7 @@ export * from "./models/TCB";
 
 export * from "./types/Offer";
 export * from "./types/Epoch";
+export * from "./types/Marks";
 export * from "./types/Order";
 export * from "./types/TeeOffer";
 export * from "./types/Provider";

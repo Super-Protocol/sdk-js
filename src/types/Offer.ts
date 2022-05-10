@@ -31,8 +31,8 @@ export const OfferInfoStructure = {
     restrictions: OfferRestrictionsStructure,
     properties: String,
     maxDurationTimeMinutes: Number,
-    inputFormat: String,
-    outputFormat: String,
+    input: String,
+    output: String,
     allowedArgs: String,
     allowedAccounts: [String],
     argsPublicKey: String,
@@ -51,8 +51,8 @@ export type OfferInfo = {
     restrictions: OfferRestrictions;
     properties: string;
     maxDurationTimeMinutes: number;
-    inputFormat: string;
-    outputFormat: string;
+    input: string;
+    output: string;
     allowedArgs: string;
     allowedAccounts: string[];
     argsPublicKey: string;

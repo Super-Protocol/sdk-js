@@ -7,7 +7,7 @@ export enum OrderStatus {
     Error = "5",
     Blocked = "6",
     Suspended = "7",
-    AwaitingPayment = "8",
+    AwaitingPayment = "8", // TODO Remove
 }
 
 // Order of keys and type conversion functions for this object in blockchain contract
@@ -43,11 +43,17 @@ export type OrderInfo = {
 // Order of keys and type conversion functions for this object in blockchain contract
 export const OrderResultStructure = {
     encryptedResult: String,
-    encryptedError: String,
+    encryptedError: String, // TODO Remove
     orderPrice: Number,
 };
 export type OrderResult = {
     encryptedResult: string;
-    encryptedError: string;
+    encryptedError: string; // TODO Remove
     orderPrice: number;
 };
+
+export type SubOrderParams = {
+    blockParentOrder: Boolean;
+    externalId: string;
+    holdSum: number;
+}

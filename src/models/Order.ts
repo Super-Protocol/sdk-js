@@ -1,4 +1,4 @@
-import { OrderInfo, OrderInfoStructure, OrderResult, OrderResultStructure, OrderStatus } from "../types/Order";
+import { OrderInfo, OrderInfoStructure, OrderResult, OrderResultStructure, OrderStatus, SubOrderParams } from "../types/Order";
 import { Contract } from "web3-eth-contract";
 import rootLogger from "../logger";
 import { ContractEvent, TransactionOptions } from "../types/Web3";
@@ -97,6 +97,22 @@ class Order {
     }
 
     /**
+     * Function for fetching parent order from blockchain
+     */
+     public async getAwaitingPayment(): Promise<boolean> {
+        return this.contract.methods.getAwaitingPayment(this.orderId).call();
+    }
+
+    /**
+     * Function for fetching parent order from blockchain
+     */
+     public async setAwaitingPayment(value: boolean): Promise<void> {
+        checkIfActionAccountInitialized();
+
+        await this.contract.methods.setAwaitingPayment(this.orderId, value).call();
+    }
+
+    /**
      * Function for updating status of contract
      */
     public async updateStatus(status: OrderStatus, price: number, transactionOptions?: TransactionOptions) {
@@ -105,12 +121,6 @@ class Order {
         if (status === OrderStatus.Processing) {
             await this.contract.methods
                 .processOrder(this.orderId)
-                .send(await createTransactionOptions(transactionOptions));
-        }
-
-        if (status === OrderStatus.AwaitingPayment) {
-            await this.contract.methods
-                .updateStatus(this.orderId, price)
                 .send(await createTransactionOptions(transactionOptions));
         }
 
@@ -136,18 +146,32 @@ class Order {
     }
 
     /**
-     * Completes order
+     * Updates order result
      */
-    public async complete(
-        status: OrderStatus,
+     public async updateOrderResult(
         encryptedResult = "",
-        encryptedError = "",
         transactionOptions?: TransactionOptions,
     ) {
         checkIfActionAccountInitialized();
 
         await this.contract.methods
-            .completeOrder(this.orderId, status, encryptedResult, encryptedError)
+            .updateOrderResult(this.orderId, encryptedResult)
+            .send(await createTransactionOptions(transactionOptions));
+    }
+
+    /**
+     * Completes order
+     */
+    public async complete(
+        status: OrderStatus,
+        encryptedResult = "",
+        encryptedError = "", // for SDK compatibility
+        transactionOptions?: TransactionOptions,
+    ) {
+        checkIfActionAccountInitialized();
+
+        await this.contract.methods
+            .completeOrder(this.orderId, status, encryptedResult)
             .send(await createTransactionOptions(transactionOptions));
     }
 
@@ -162,14 +186,20 @@ class Order {
         subOrderInfo: OrderInfo,
         blocking: boolean,
         externalId = "default",
+        holdSum: number = 0,
         transactionOptions?: TransactionOptions,
     ) {
         checkIfActionAccountInitialized();
 
         const tupleSubOrder = objectToTuple(subOrderInfo, OrderInfoStructure);
         const formattedExternalId = formatBytes32String(externalId);
+        const params: SubOrderParams = {
+            blockParentOrder: blocking,
+            externalId: formattedExternalId,
+            holdSum,
+        };
         await this.contract.methods
-            .createSubOrder(this.orderId, tupleSubOrder, blocking, formattedExternalId)
+            .createSubOrder(this.orderId, tupleSubOrder, params)
             .send(await createTransactionOptions(transactionOptions));
     }
 

@@ -1,6 +1,6 @@
 {
   "name": "@super-protocol/sp-sdk-js",
-  "version": "0.1.13",
+  "version": "0.1.14",
   "main": "build/index.js",
   "license": "MIT",
   "files": [
@@ -18,12 +18,16 @@
     "prepare": "npm run build",
     "docs": "typedoc src/index.ts --excludePrivate --plugin typedoc-plugin-markdown --out ./auto-docs",
     "docs-cleanup": "rm -rf auto-docs",
-    "bump": "npm version patch && git push && git push --tags"
+    "bump": "npm version patch && git push && git push --tags",
+    "dto:update": "npm run dto:clean && npm run dto:generate",
+    "dto:clean": "rm -rf ./src/proto/*",
+    "dto:generate": "cd ./dto/src && protoc --plugin=../../node_modules/.bin/protoc-gen-ts_proto --ts_proto_opt=esModuleInterop=true --ts_proto_opt=unrecognizedEnum=false --ts_proto_out=../../src/proto ./*"
   },
   "devDependencies": {
     "@types/eccrypto": "^1.1.3",
     "@types/jest": "^27.0.3",
     "@types/lodash": "^4.14.176",
+    "@types/node-gzip": "^1.1.0",
     "@typescript-eslint/eslint-plugin": "^5.8.0",
     "@typescript-eslint/parser": "^5.8.0",
     "eslint": "^8.5.0",
@@ -34,6 +38,7 @@
     "pandoc-bin": "^0.2.0",
     "prettier": "^2.4.1",
     "ts-jest": "^27.0.7",
+    "ts-proto": "^1.110.4",
     "typedoc": "^0.22.11",
     "typedoc-plugin-markdown": "^3.11.12",
     "typescript": "^4.4.4"
@@ -45,7 +50,9 @@
     "ethers": "^5.5.3",
     "hybrid-crypto-js": "^0.2.4",
     "lodash": "^4.17.21",
+    "node-gzip": "^1.1.2",
     "pino": "^7.2.0",
+    "protobufjs": "^6.11.2",
     "uplink-nodejs": "^1.2.6",
     "web3": "^1.6.1"
   },

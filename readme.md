@@ -60,11 +60,25 @@ This repo doesn't have code to test new functionality during development, so you
    ```
    Replace `v0.0.6` to your new version
 
+## Update DTO
+
+1. Fetch DTO submodule changes from github
+   ```
+   git submodule foreach git pull
+   ```
+
+1. Update TypeScript classes based on updated DTO
+   ```
+   yarn dto:update
+   ```
+
 ## Scripts
 
 `yarn prettier` - run auto code style fixing
 
 `yarn build` - create production build (in build folder)
+
+`yarn dto:update` - generate TypeScript classes based on DTO submodule
 
 ## Dependencies
 - NodeJS v16.8.0

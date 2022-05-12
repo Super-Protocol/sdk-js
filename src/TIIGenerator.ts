@@ -1,20 +1,26 @@
-import { TLBlockSerializerV1, TLBlockUnserializeResultType } from "@super-protocol/tee-lib";
+import {gzip, ungzip} from "node-gzip";
 import _ from 'lodash';
 
-import { Offer, OfferInfo, TeeOfferInfo } from ".";
+import { Compression, Compression_TYPE } from './proto/Compression';
+import { TRI } from './proto/TRI';
 import Crypto from "./crypto";
+import Offer from "./models/Offer";
 import Order from "./models/Order";
 import TeeOffer from "./models/TeeOffer";
 import { OrderInfo } from "./types/Order";
+import { OfferInfo } from "./types/Offer";
 import {
     CryptoAlgorithm,
     Encoding,
     Encryption,
-    Resource,
-    UrlResource,
+    EncryptionWithMacIV,
     Hash,
-    Linkage
+    Linkage,
+    Resource,
+    UrlResource
 } from "@super-protocol/sp-dto-js";
+import { TLBlockSerializerV1, TLBlockUnserializeResultType } from "@super-protocol/tee-lib";
+import { TeeOfferInfo } from "./types/TeeOffer";
 
 class TIIGenerator {
     public static async generateByOffer(
@@ -41,12 +47,26 @@ class TIIGenerator {
 
         // TODO: check env with SP-149
 
-        const tri: TeeRunInfo = {
-            solutionHashes,
-            linkage,
-            args,
-            encryption: encryption,
-        };
+        const tri = TRI.encode({
+            solutionHashes: solutionHashes.map(hash => ({
+                type: hash.algo,
+                hash: Buffer.from(hash.hash, hash.encoding),
+            })),
+            mrenclave: Buffer.from(linkage.mrenclave, linkage.encoding),
+            args: JSON.stringify(args),
+            encryption: {
+                ...encryption,
+                ciphertext: encryption.ciphertext ? Buffer.from(encryption.ciphertext, encryption.encoding) : undefined,
+                key: encryption.key ? Buffer.from(encryption.key, encryption.encoding) : undefined,
+                iv: (encryption as EncryptionWithMacIV).iv ? Buffer.from((encryption as EncryptionWithMacIV).iv, encryption.encoding) : undefined,
+                mac: (encryption as EncryptionWithMacIV).mac ? Buffer.from((encryption as EncryptionWithMacIV).mac, encryption.encoding) : undefined,
+            }
+        }).finish();
+
+        const compressedTri = Compression.encode({
+            data: await gzip(tri),
+            type: Compression_TYPE.GZIP,
+        }).finish();
 
         return JSON.stringify({
             encryptedResource: await Crypto.encrypt(
@@ -54,7 +74,7 @@ class TIIGenerator {
                 JSON.parse(teeOfferInfo.argsPublicKey) as Encryption,
             ),
             tri: await Crypto.encrypt(
-                JSON.stringify(tri),
+                Buffer.from(compressedTri).toString(Encoding.base64),
                 {
                     algo: CryptoAlgorithm.ECIES,
                     key: tlb.data.teePubKeyData.toString("base64"),
@@ -111,11 +131,24 @@ class TIIGenerator {
         );
     }
 
-    public static async getTRI(tii: string, decryptionKey: Buffer): Promise<TeeRunInfo> {
+    public static async getTRI(tii: string, decryptionKey: Buffer): Promise<TRI> {
         const tiiObj = JSON.parse(tii);
         tiiObj.tri.key = decryptionKey.toString(tiiObj.tri.encoding);
         const tri: string = await Crypto.decrypt(tiiObj.tri as Encryption);
-        return <TeeRunInfo>JSON.parse(tri);
+
+        const compression = Compression.decode(Buffer.from(tri, (tiiObj.tri as Encryption).encoding));
+
+        let decompressed: Buffer;
+        switch (compression.type) {
+            case Compression_TYPE.GZIP:
+                decompressed = await ungzip(compression.data);
+                break;
+
+            default:
+                throw Error('Unknown compression method');
+        }
+
+        return TRI.decode(decompressed);
     }
 
     public static async getUrl(tii: string, decryptionKey: Buffer): Promise<string> {
@@ -130,12 +163,5 @@ class TIIGenerator {
         return JSON.parse(resource) as T;
     }
 }
-
-export type TeeRunInfo = {
-    solutionHashes: Hash[];
-    linkage: Linkage;
-    args: any;
-    encryption: Encryption;
-};
 
 export default TIIGenerator;

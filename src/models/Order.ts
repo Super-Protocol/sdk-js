@@ -266,7 +266,7 @@ class Order {
         const subscription = this.contract.events
             .OrderStatusUpdated()
             .on("data", async (event: ContractEvent) => {
-                if (event.returnValues.orderId !== this.orderId) {
+                if (event.returnValues.orderId != this.orderId) {
                     return;
                 }
                 if (this.orderInfo) this.orderInfo.status = <OrderStatus>event.returnValues.status;

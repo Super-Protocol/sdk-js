@@ -171,7 +171,7 @@ class Order {
         checkIfActionAccountInitialized();
 
         await this.contract.methods
-            .completeOrder(this.orderId, status, encryptedResult)
+            .completeOrder(this.orderId, status, encryptedResult || encryptedError)
             .send(await createTransactionOptions(transactionOptions));
     }
 

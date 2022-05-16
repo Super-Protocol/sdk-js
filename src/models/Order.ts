@@ -1,8 +1,15 @@
-import { OrderInfo, OrderInfoStructure, OrderResult, OrderResultStructure, OrderStatus, SubOrderParams } from "../types/Order";
-import { Contract } from "web3-eth-contract";
+import {
+    OrderInfo,
+    OrderInfoStructure,
+    OrderResult,
+    OrderResultStructure,
+    OrderStatus,
+    SubOrderParams
+} from "../types/Order";
+import {Contract} from "web3-eth-contract";
 import rootLogger from "../logger";
-import { ContractEvent, TransactionOptions } from "../types/Web3";
-import { AbiItem } from "web3-utils";
+import {ContractEvent, TransactionOptions} from "../types/Web3";
+import {AbiItem} from "web3-utils";
 import OrdersJSON from "../contracts/Orders.json";
 import store from "../store";
 import {
@@ -12,9 +19,9 @@ import {
     objectToTuple,
     tupleToObject,
 } from "../utils";
-import { Origins, OriginsStructure } from "../types/Origins";
-import { SubOrderCreatedEvent } from "../types/Events";
-import { formatBytes32String } from "ethers/lib/utils";
+import {Origins, OriginsStructure} from "../types/Origins";
+import {SubOrderCreatedEvent} from "../types/Events";
+import {formatBytes32String} from "ethers/lib/utils";
 import Superpro from "../staticModels/Superpro";
 
 class Order {
@@ -60,8 +67,15 @@ class Order {
      */
     public async getOrderResult(): Promise<OrderResult> {
         const orderInfoParams = await this.contract.methods.getOrder(this.orderId).call();
-        this.orderResult = orderInfoParams[2];
-        return this.orderResult = tupleToObject(orderInfoParams[2], OrderResultStructure);
+
+        // for SDK compatibility
+        const result = ['', '', orderInfoParams[2][1]];
+        if (orderInfoParams[1][4] === OrderStatus.Error)
+            result[1] = orderInfoParams[2][0];
+        else
+            result[0] = orderInfoParams[2][0];
+
+        return this.orderResult = tupleToObject(result, OrderResultStructure);
     }
 
     /**
@@ -171,7 +185,7 @@ class Order {
         checkIfActionAccountInitialized();
 
         await this.contract.methods
-            .completeOrder(this.orderId, status, encryptedResult || encryptedError)
+            .completeOrder(this.orderId, status, status === OrderStatus.Error ? encryptedError : encryptedResult)
             .send(await createTransactionOptions(transactionOptions));
     }
 

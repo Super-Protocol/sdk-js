@@ -48,9 +48,6 @@ class OrdersFactory {
         orderEvents.forEach((event) => {
             this.orders?.push(event.returnValues.orderId);
         });
-        subOrderEvents.forEach((event) => {
-            this.orders?.push(event.returnValues.subOrderId);
-        });
 
         return this.orders!;
     }

@@ -6,11 +6,11 @@ export const protobufPackage = "";
 
 export interface Encryption {
     algo: string;
-    key?: Uint8Array | undefined;
-    cipher?: string | undefined;
-    ciphertext?: Uint8Array | undefined;
-    iv?: Uint8Array | undefined;
-    mac?: Uint8Array | undefined;
+    key: Uint8Array;
+    cipher: string;
+    ciphertext: Uint8Array;
+    iv: Uint8Array;
+    mac: Uint8Array;
 }
 
 export interface Hash {
@@ -26,7 +26,14 @@ export interface TRI {
 }
 
 function createBaseEncryption(): Encryption {
-    return { algo: "", key: undefined, cipher: undefined, ciphertext: undefined, iv: undefined, mac: undefined };
+    return {
+        algo: "",
+        key: new Uint8Array(),
+        cipher: "",
+        ciphertext: new Uint8Array(),
+        iv: new Uint8Array(),
+        mac: new Uint8Array(),
+    };
 }
 
 export const Encryption = {
@@ -34,19 +41,19 @@ export const Encryption = {
         if (message.algo !== "") {
             writer.uint32(10).string(message.algo);
         }
-        if (message.key !== undefined) {
+        if (message.key.length !== 0) {
             writer.uint32(18).bytes(message.key);
         }
-        if (message.cipher !== undefined) {
+        if (message.cipher !== "") {
             writer.uint32(26).string(message.cipher);
         }
-        if (message.ciphertext !== undefined) {
+        if (message.ciphertext.length !== 0) {
             writer.uint32(34).bytes(message.ciphertext);
         }
-        if (message.iv !== undefined) {
+        if (message.iv.length !== 0) {
             writer.uint32(50).bytes(message.iv);
         }
-        if (message.mac !== undefined) {
+        if (message.mac.length !== 0) {
             writer.uint32(58).bytes(message.mac);
         }
         return writer;
@@ -88,34 +95,39 @@ export const Encryption = {
     fromJSON(object: any): Encryption {
         return {
             algo: isSet(object.algo) ? String(object.algo) : "",
-            key: isSet(object.key) ? bytesFromBase64(object.key) : undefined,
-            cipher: isSet(object.cipher) ? String(object.cipher) : undefined,
-            ciphertext: isSet(object.ciphertext) ? bytesFromBase64(object.ciphertext) : undefined,
-            iv: isSet(object.iv) ? bytesFromBase64(object.iv) : undefined,
-            mac: isSet(object.mac) ? bytesFromBase64(object.mac) : undefined,
+            key: isSet(object.key) ? bytesFromBase64(object.key) : new Uint8Array(),
+            cipher: isSet(object.cipher) ? String(object.cipher) : "",
+            ciphertext: isSet(object.ciphertext) ? bytesFromBase64(object.ciphertext) : new Uint8Array(),
+            iv: isSet(object.iv) ? bytesFromBase64(object.iv) : new Uint8Array(),
+            mac: isSet(object.mac) ? bytesFromBase64(object.mac) : new Uint8Array(),
         };
     },
 
     toJSON(message: Encryption): unknown {
         const obj: any = {};
         message.algo !== undefined && (obj.algo = message.algo);
-        message.key !== undefined && (obj.key = message.key !== undefined ? base64FromBytes(message.key) : undefined);
+        message.key !== undefined &&
+            (obj.key = base64FromBytes(message.key !== undefined ? message.key : new Uint8Array()));
         message.cipher !== undefined && (obj.cipher = message.cipher);
         message.ciphertext !== undefined &&
-            (obj.ciphertext = message.ciphertext !== undefined ? base64FromBytes(message.ciphertext) : undefined);
-        message.iv !== undefined && (obj.iv = message.iv !== undefined ? base64FromBytes(message.iv) : undefined);
-        message.mac !== undefined && (obj.mac = message.mac !== undefined ? base64FromBytes(message.mac) : undefined);
+            (obj.ciphertext = base64FromBytes(
+                message.ciphertext !== undefined ? message.ciphertext : new Uint8Array(),
+            ));
+        message.iv !== undefined &&
+            (obj.iv = base64FromBytes(message.iv !== undefined ? message.iv : new Uint8Array()));
+        message.mac !== undefined &&
+            (obj.mac = base64FromBytes(message.mac !== undefined ? message.mac : new Uint8Array()));
         return obj;
     },
 
     fromPartial<I extends Exact<DeepPartial<Encryption>, I>>(object: I): Encryption {
         const message = createBaseEncryption();
         message.algo = object.algo ?? "";
-        message.key = object.key ?? undefined;
-        message.cipher = object.cipher ?? undefined;
-        message.ciphertext = object.ciphertext ?? undefined;
-        message.iv = object.iv ?? undefined;
-        message.mac = object.mac ?? undefined;
+        message.key = object.key ?? new Uint8Array();
+        message.cipher = object.cipher ?? "";
+        message.ciphertext = object.ciphertext ?? new Uint8Array();
+        message.iv = object.iv ?? new Uint8Array();
+        message.mac = object.mac ?? new Uint8Array();
         return message;
     },
 };

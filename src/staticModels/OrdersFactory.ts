@@ -9,6 +9,7 @@ import { formatBytes32String } from "ethers/lib/utils";
 import { ContractEvent, TransactionOptions } from "../types/Web3";
 import { OrderCreatedEvent } from "../types/Events";
 import Superpro from "./Superpro";
+import { BigNumber } from 'ethers';
 
 class OrdersFactory {
     private static contract: Contract;
@@ -37,13 +38,20 @@ class OrdersFactory {
 
     /**
      * Function for fetching list of all orders addresses
+     * @param fromBlock - Number|String (optional): The block number (greater than or equal to) from which to get events on. Pre-defined block numbers as "earliest", "latest" and "pending" can also be used.
+     * @param toBlock - Number|String (optional): The block number (less than or equal to) to get events up to (Defaults to "latest"). Pre-defined block numbers as "earliest", "latest" and "pending" can also be used.
      */
-    public static async getAllOrders(): Promise<string[]> {
+    public static async getAllOrders(
+        fromBlock: number | string = 0,
+        toBlock: number | string = "latest",
+    ): Promise<string[]> {
         this.checkInit();
 
         this.orders = [];
-        const orderEvents = await this.contract.getPastEvents("OrderCreated", { fromBlock: 0 });
-        const subOrderEvents = await this.contract.getPastEvents("SubOrderCreated");
+        const orderEvents = await this.contract.getPastEvents("OrderCreated", {
+            fromBlock,
+            toBlock,
+        });
 
         orderEvents.forEach((event) => {
             this.orders?.push(event.returnValues.orderId);

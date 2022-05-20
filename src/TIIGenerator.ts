@@ -64,8 +64,6 @@ class TIIGenerator {
         };
         const tri = TRI.encode(rawTri).finish();
 
-        console.log(rawTri);
-
         const compressedTri = Compression.encode({
             data: await gzip(tri),
             type: Compression_TYPE.GZIP,
@@ -152,8 +150,6 @@ class TIIGenerator {
         }
 
         const decoded = TRI.decode(decompressed);
-        console.log(decoded);
-
         if (decoded.encryption?.iv) {
             decoded.encryption.iv = Buffer.from(decoded.encryption.iv).toString(tiiObj.tri.encoding) as any;
         }

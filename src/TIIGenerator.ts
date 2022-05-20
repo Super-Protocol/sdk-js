@@ -46,9 +46,9 @@ class TIIGenerator {
             );
 
         // TODO: check env with SP-149
-
-        const tri = TRI.encode({
-            solutionHashes: solutionHashes.map(hash => ({
+        const mac = (encryption as any).authTag || (encryption as EncryptionWithMacIV).mac;
+        const rawTri = {
+            solutionHashes: solutionHashes.map((hash) => ({
                 type: hash.algo,
                 hash: Buffer.from(hash.hash, hash.encoding),
             })),
@@ -59,9 +59,12 @@ class TIIGenerator {
                 ciphertext: encryption.ciphertext ? Buffer.from(encryption.ciphertext, encryption.encoding) : undefined,
                 key: encryption.key ? Buffer.from(encryption.key, encryption.encoding) : undefined,
                 iv: (encryption as EncryptionWithMacIV).iv ? Buffer.from((encryption as EncryptionWithMacIV).iv, encryption.encoding) : undefined,
-                mac: (encryption as EncryptionWithMacIV).mac ? Buffer.from((encryption as EncryptionWithMacIV).mac, encryption.encoding) : undefined,
-            }
-        }).finish();
+                mac: mac ? Buffer.from(mac, encryption.encoding) : undefined,
+            },
+        };
+        const tri = TRI.encode(rawTri).finish();
+
+        console.log(rawTri);
 
         const compressedTri = Compression.encode({
             data: await gzip(tri),
@@ -148,7 +151,19 @@ class TIIGenerator {
                 throw Error('Unknown compression method');
         }
 
-        return TRI.decode(decompressed);
+        const decoded = TRI.decode(decompressed);
+        console.log(decoded);
+
+        if (decoded.encryption?.iv) {
+            decoded.encryption.iv = Buffer.from(decoded.encryption.iv).toString(tiiObj.tri.encoding) as any;
+        }
+        if (decoded.encryption?.key) {
+            decoded.encryption.key = Buffer.from(decoded.encryption.key).toString(tiiObj.tri.encoding) as any;
+        }
+        if (decoded.encryption?.mac) {
+            decoded.encryption.mac = Buffer.from(decoded.encryption.mac).toString(tiiObj.tri.encoding) as any;
+        }
+        return decoded;
     }
 
     public static async getUrl(tii: string, decryptionKey: Buffer): Promise<string> {

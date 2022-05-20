@@ -11,6 +11,7 @@ export interface Encryption {
     ciphertext?: Uint8Array | undefined;
     iv?: Uint8Array | undefined;
     mac?: Uint8Array | undefined;
+    encoding: string;
 }
 
 export interface Hash {
@@ -26,7 +27,15 @@ export interface TRI {
 }
 
 function createBaseEncryption(): Encryption {
-    return { algo: "", key: undefined, cipher: undefined, ciphertext: undefined, iv: undefined, mac: undefined };
+    return {
+        algo: "",
+        key: undefined,
+        cipher: undefined,
+        ciphertext: undefined,
+        iv: undefined,
+        mac: undefined,
+        encoding: "",
+    };
 }
 
 export const Encryption = {
@@ -48,6 +57,9 @@ export const Encryption = {
         }
         if (message.mac !== undefined) {
             writer.uint32(58).bytes(message.mac);
+        }
+        if (message.encoding !== "") {
+            writer.uint32(66).string(message.encoding);
         }
         return writer;
     },
@@ -77,6 +89,9 @@ export const Encryption = {
                 case 7:
                     message.mac = reader.bytes();
                     break;
+                case 8:
+                    message.encoding = reader.string();
+                    break;
                 default:
                     reader.skipType(tag & 7);
                     break;
@@ -93,6 +108,7 @@ export const Encryption = {
             ciphertext: isSet(object.ciphertext) ? bytesFromBase64(object.ciphertext) : undefined,
             iv: isSet(object.iv) ? bytesFromBase64(object.iv) : undefined,
             mac: isSet(object.mac) ? bytesFromBase64(object.mac) : undefined,
+            encoding: isSet(object.encoding) ? String(object.encoding) : "",
         };
     },
 
@@ -105,6 +121,7 @@ export const Encryption = {
             (obj.ciphertext = message.ciphertext !== undefined ? base64FromBytes(message.ciphertext) : undefined);
         message.iv !== undefined && (obj.iv = message.iv !== undefined ? base64FromBytes(message.iv) : undefined);
         message.mac !== undefined && (obj.mac = message.mac !== undefined ? base64FromBytes(message.mac) : undefined);
+        message.encoding !== undefined && (obj.encoding = message.encoding);
         return obj;
     },
 
@@ -116,6 +133,7 @@ export const Encryption = {
         message.ciphertext = object.ciphertext ?? undefined;
         message.iv = object.iv ?? undefined;
         message.mac = object.mac ?? undefined;
+        message.encoding = object.encoding ?? "";
         return message;
     },
 };

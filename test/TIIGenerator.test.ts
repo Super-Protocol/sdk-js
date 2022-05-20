@@ -1,4 +1,4 @@
-import {OfferInfo, OfferType, OrderInfo, TeeOfferInfo} from "../src";
+import {OfferInfo, OfferType, OrderInfo, TeeOfferInfo, Crypto} from "../src";
 import TIIGenerator from "../src/TIIGenerator";
 import {
     CryptoAlgorithm,
@@ -10,7 +10,7 @@ import {
 } from "@super-protocol/sp-dto-js";
 
 const fileEncryptionAlgo = CryptoAlgorithm.AES;
-const key = "345";
+const key = "12345789";
 
 const argsPrivateKey =
     "6W6C+mZySBfsFKjiu3uOXsFlBwd1vXDL8QJHDdGlz5s=";
@@ -32,12 +32,12 @@ const tii = JSON.stringify({
         ciphertext: 'Z9fyGL8xkIUeR9zxw9UGvn988fIhbDPy7pqRv5vlQs7dK8SFzHGR2QdmK4zovw2PsyRnfaybJi/BQV8MPmqFil/xBHlLPRxvKsosux8WqKzEGIauyJEke8dUQes6qdPLHMBOB6LfQkhFyk1akLXvSQ=='
     },
     tri: {
-        iv: 'F+57GgUONXqvaiHN6yM5cg==',
-        ephemPublicKey: 'BMtORnAIFortwlLIU9GBeWPoRA65tavpKGPqm4rJIlBlaSD9eCqIUXPXmAaxQxVdX2OGy7Rv1KS2sfSaYua20ac=',
-        mac: '5aasrr1PNS5bV50Htyonqf9XLl0y8xReWa9HKEumF+0=',
+        iv: 'AGiCZgstgTo5m46Lz2UOqw==',
+        ephemPublicKey: 'BL4x3ULPWFCfFBdecDA9Pri2wa8w3kfEguzJBC0S1MQ22nxVvRufvFWAsOnI+ABbc/qIt1wMqrPKCDPzv0qFZZ0=',
+        mac: 'H9ePSIWeFyErspCg0yFgiQWJ3atBIq16seVCBdPIqtw=',
         encoding: 'base64',
         algo: 'ECIES',
-        ciphertext: 'o9wTrXjWP7ra8RG+17WiDphUlIEVcoiB8lsXJ0gpLXZL0MfLA6J1R35nMIoQaAiDN5Fiu99OU4lh7IGuZULWlkNvAAZYaJMr43SNbGKvlXbUmx1cAfKmNpce62i3tYqN/mp8LFfjpP+xlBhNFG+WvWWZUpNIk6ndYwUHuTaUspg='
+        ciphertext: '6ewHeID9MxGW3gPujKQBeOFwzN4V4BBLpCMMRCoH2kxN+KJISOlJeNkKXEEAUTXlzKD2cmC40nTi+X552GFMQjhCHSh/3hCF73WHvc12/R9VVSmMU9O39j3TfjUDjTtO7V9VZVNYwAKAyVvpcdNFWoj2rLLyFcSM+dI0TlnQ/yk='
     }
 });
 
@@ -118,8 +118,8 @@ describe("TIIGenerator", () => {
         } as StorageProviderResource;
 
         fileEncryptoAlgoDeps = {
-            iv: "123",
-            authTag: "345",
+            iv: "1234",
+            mac: "4578",
         };
     });
 
@@ -168,6 +168,8 @@ describe("TIIGenerator", () => {
             expect(typeof tii).toBe("string");
 
             const tiiObj = JSON.parse(tii);
+
+            console.log(tiiObj.tri);
 
             expect(tiiObj).toHaveProperty("encryptedResource");
             expect(tiiObj).toHaveProperty("tri");

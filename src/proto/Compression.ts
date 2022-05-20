@@ -28,7 +28,7 @@ export function compression_TYPEToJSON(object: Compression_TYPE): string {
         case Compression_TYPE.GZIP:
             return "GZIP";
         default:
-            return "UNKNOWN";
+            throw new globalThis.Error("Unrecognized enum value " + object + " for enum Compression_TYPE");
     }
 }
 

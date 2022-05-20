@@ -93,7 +93,6 @@ class OrdersFactory {
         const contract = this.checkInit(transactionOptions);
         checkIfActionAccountInitialized();
 
-
         const orderInfoArguments = objectToTuple(orderInfo, OrderInfoStructure);
         await contract.methods
             .create(orderInfoArguments, holdDeposit, suspended, externalId)

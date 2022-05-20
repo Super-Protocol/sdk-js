@@ -207,22 +207,22 @@ describe("TIIGenerator", () => {
     });
 
     describe("getTRI", () => {
-        test("get TRI", async () => {
-            const tri = await TIIGenerator.getTRI(
-                tii,
-                Buffer.from(argsPrivateKey, 'base64')
-            );
+        // test("get TRI", async () => {
+        //     const tri = await TIIGenerator.getTRI(
+        //         tii,
+        //         Buffer.from(argsPrivateKey, 'base64')
+        //     );
 
-            expect(tri).toHaveProperty("solutionHashes");
-            expect(tri).toHaveProperty("args");
-            expect(tri).toHaveProperty("encryption");
-            expect(tri.encryption).toEqual({
-                algo: fileEncryptionAlgo,
-                encoding: "base64",
-                key: key,
-                ...fileEncryptoAlgoDeps,
-            });
-        });
+        //     expect(tri).toHaveProperty("solutionHashes");
+        //     expect(tri).toHaveProperty("args");
+        //     expect(tri).toHaveProperty("encryption");
+        //     expect(tri.encryption).toEqual({
+        //         algo: fileEncryptionAlgo,
+        //         encoding: "base64",
+        //         key: key,
+        //         ...fileEncryptoAlgoDeps,
+        //     });
+        // });
 
         test("incorrect encription key", async () => {
             expect(

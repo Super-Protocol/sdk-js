@@ -42,7 +42,7 @@ class OrdersFactory {
         this.checkInit();
 
         this.orders = [];
-        const orderEvents = await this.contract.getPastEvents("OrderCreated");
+        const orderEvents = await this.contract.getPastEvents("OrderCreated", { fromBlock: 0 });
         const subOrderEvents = await this.contract.getPastEvents("SubOrderCreated");
 
         orderEvents.forEach((event) => {

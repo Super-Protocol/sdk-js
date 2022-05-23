@@ -29,11 +29,12 @@ class Superpro {
      */
     public static async getContractAddress(name: ContractName): Promise<string> {
         this.checkInit();
-        try {
-            return await this.contract.methods.getAddress(name).call();
-        } catch (e) {
-            throw new Error("Error: fetching contracts addresses error: " + e);
-        }
+        return this.address;
+    }
+
+    public static async getTokenAddress(): Promise<string> {
+        this.checkInit();
+        return await this.contract.methods.getToken().call();
     }
 
     /**
@@ -41,7 +42,7 @@ class Superpro {
      */
     public static async getParam(name: ParamName): Promise<number> {
         this.checkInit();
-        return +(await this.contract.methods.getParam(name).call());
+        return +(await this.contract.methods.getConfigParam(name).call());
     }
 }
 

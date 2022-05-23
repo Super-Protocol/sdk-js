@@ -31,16 +31,16 @@ export const OfferInfoStructure = {
     restrictions: OfferRestrictionsStructure,
     properties: String,
     maxDurationTimeMinutes: Number,
-    inputFormat: String,
-    outputFormat: String,
+    input: String,
+    output: String,
     allowedArgs: String,
     allowedAccounts: [String],
     argsPublicKey: String,
     resultUrl: String,
-    disabledAfter: Number,
     linkage: String,
     hash: String,
 };
+
 export type OfferInfo = {
     name: string;
     group: OfferGroup;
@@ -51,13 +51,16 @@ export type OfferInfo = {
     restrictions: OfferRestrictions;
     properties: string;
     maxDurationTimeMinutes: number;
-    inputFormat: string;
-    outputFormat: string;
+    input: string;
+    output: string;
     allowedArgs: string;
     allowedAccounts: string[];
     argsPublicKey: string;
     resultUrl: string;
-    disabledAfter: number;
     linkage: string;
     hash: string;
+};
+
+export type OfferInfoV1 = OfferInfo & {
+    disabledAfter?: number;
 };

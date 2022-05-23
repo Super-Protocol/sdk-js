@@ -17,7 +17,7 @@ import {
     Hash,
     Linkage,
     Resource,
-    UrlResource
+    UrlResource,
 } from "@super-protocol/sp-dto-js";
 import { TLBlockSerializerV1, TLBlockUnserializeResultType } from "@super-protocol/tee-lib";
 import { TeeOfferInfo } from "./types/TeeOffer";
@@ -63,8 +63,6 @@ class TIIGenerator {
             },
         };
         const tri = TRI.encode(rawTri).finish();
-
-        console.log(rawTri);
 
         const compressedTri = Compression.encode({
             data: await gzip(tri),
@@ -152,8 +150,6 @@ class TIIGenerator {
         }
 
         const decoded = TRI.decode(decompressed);
-        console.log(decoded);
-
         if (decoded.encryption?.iv) {
             decoded.encryption.iv = Buffer.from(decoded.encryption.iv).toString(tiiObj.tri.encoding) as any;
         }
@@ -178,5 +174,12 @@ class TIIGenerator {
         return JSON.parse(resource) as T;
     }
 }
+
+export type TeeRunInfo = {
+    solutionHashes: Hash[];
+    linkage: Linkage;
+    args: any;
+    encryption: Encryption;
+};
 
 export default TIIGenerator;

@@ -1,16 +1,16 @@
 import { Contract } from "web3-eth-contract";
 import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
-import TeeOfferJSON from "../contracts/TeeOffer.json";
+import OffersJSON from "../contracts/Offers.json";
 import store from "../store";
-import {checkIfActionAccountInitialized, checkIfInitialized, createTransactionOptions, tupleToObject} from "../utils";
+import { checkIfActionAccountInitialized, checkIfInitialized, createTransactionOptions, tupleToObject } from "../utils";
 import { TeeOfferInfo, TeeOfferInfoStructure } from "../types/TeeOffer";
 import { TransactionOptions } from "../types/Web3";
 import { OfferType } from "../types/Offer";
 import { Origins, OriginsStructure } from "../types/Origins";
+import Superpro from "../staticModels/Superpro";
 
 class TeeOffer {
-    public address: string;
     private contract: Contract;
     private logger: typeof rootLogger;
 
@@ -18,43 +18,57 @@ class TeeOffer {
     public totalLocked?: number;
     public offerInfo?: TeeOfferInfo;
     public type?: OfferType;
+    public providerAuthority?: string;
     public provider?: string;
     public disabledAfter?: number;
     public tcb?: string;
     public tlbAddedTime?: number;
     public tcbAddedTime?: number;
     public origins?: Origins;
+    public offerId: number;
+    public address: string;
 
-    constructor(address: string) {
+    constructor(offerId: string) {
         checkIfInitialized();
 
-        this.address = address;
-        this.contract = new store.web3!.eth.Contract(<AbiItem[]>TeeOfferJSON.abi, address);
+        this.offerId = +offerId;
+        this.address = offerId;
+        this.contract = new store.web3!.eth.Contract(<AbiItem[]>OffersJSON.abi, Superpro.address);
 
-        this.logger = rootLogger.child({ className: "TeeOffer", address });
+        this.logger = rootLogger.child({ className: "TeeOffer" });
     }
 
     /**
      * Function for fetching TEE offer info from blockchain
      */
     public async getInfo(): Promise<TeeOfferInfo> {
-        let teeOfferInfoParams = await this.contract.methods.getInfo().call();
-        return this.offerInfo = tupleToObject(teeOfferInfoParams, TeeOfferInfoStructure);
+        const [teeOfferInfoParams, ,] = await this.contract.methods.getTeeOffer(this.offerId).call();
+
+        return (this.offerInfo = tupleToObject(teeOfferInfoParams, TeeOfferInfoStructure));
     }
 
     /**
      * Function for fetching TEE offer provider from blockchain
      */
     public async getProvider(): Promise<string> {
-        this.provider = await this.contract.methods.getProvider().call();
-        return this.provider!;
+        this.providerAuthority = await this.contract.methods.getOfferProviderAuthority(this.offerId).call();
+        return this.providerAuthority!;
+    }
+
+    /**
+     * Function for fetching TEE offer provider authority account from blockchain
+     */
+    public async getProviderAuthority(): Promise<string> {
+        this.providerAuthority = await this.contract.methods.getOfferProviderAuthority(this.offerId).call();
+        return this.providerAuthority!;
     }
 
     /**
      * Fetch offer type from blockchain (works for TEE and Value offers)
      */
     public async getOfferType(): Promise<OfferType> {
-        this.type = await this.contract.methods.getOfferType().call();
+        this.type = await this.contract.methods.getOfferType(this.offerId).call();
+
         return this.type!;
     }
 
@@ -62,7 +76,8 @@ class TeeOffer {
      * Function for fetching offer provider from blockchain
      */
     public async getDisabledAfter(): Promise<number> {
-        this.disabledAfter = +await this.contract.methods.getDisabledAfter().call();
+        this.disabledAfter = +(await this.contract.methods.getOfferDisabledAfter(this.offerId).call());
+
         return this.disabledAfter!;
     }
 
@@ -70,17 +85,16 @@ class TeeOffer {
      * Function for fetching tcb provider from blockchain
      */
     public async getTcb(): Promise<string> {
-        this.tcb = await this.contract.methods.getTcb().call();
-        return this.tcb!;
+        const offerInfo = await this.getInfo();
+        return offerInfo.tcb;
     }
 
     /**
      * Function for fetching TLB provider from blockchain
      */
     public async getTlb(): Promise<string> {
-        const tlb: string = await this.contract.methods.getTlb().call();
-        if (this.offerInfo) this.offerInfo.tlb = tlb;
-        return tlb;
+        const offerInfo = await this.getInfo();
+        return offerInfo.tlb;
     }
 
     /**
@@ -103,7 +117,7 @@ class TeeOffer {
      * Function for fetching violationRate for this TEE offer
      */
     public async getViolationRate(): Promise<number> {
-        this.violationRate = await this.contract.methods.getViolationRate().call();
+        this.violationRate = await this.contract.methods.getTeeOfferViolationRate(this.offerId).call();
         return this.violationRate!;
     }
 
@@ -111,15 +125,17 @@ class TeeOffer {
      * Function for fetching amount of total locked tokens
      */
     public async getTotalLocked(): Promise<number> {
-        this.totalLocked = await this.contract.methods.getTotalLocked().call();
-        return this.totalLocked!;
+        // this.totalLocked = await this.contract.methods.getTotalLocked().call();
+        // return this.totalLocked!;
+        // TODO: stub
+        return 0;
     }
 
     /**
      * Fetch new Origins (createdDate, createdBy, modifiedDate and modifiedBy)
      */
     public async getOrigins(): Promise<Origins> {
-        let origins = await this.contract.methods.getOrigins().call();
+        let origins = await this.contract.methods.getOfferOrigins(this.offerId).call();
 
         // Converts blockchain array into object
         origins = tupleToObject(origins, OriginsStructure);
@@ -128,7 +144,7 @@ class TeeOffer {
         origins.createdDate = +origins.createdDate * 1000;
         origins.modifiedDate = +origins.modifiedDate * 1000;
 
-        return this.origins = origins;
+        return (this.origins = origins);
     }
 
     /**
@@ -139,7 +155,9 @@ class TeeOffer {
     public async addTlb(tlb: string, transactionOptions?: TransactionOptions): Promise<void> {
         checkIfActionAccountInitialized();
 
-        await this.contract.methods.addTlb(tlb).send(await createTransactionOptions(transactionOptions));
+        await this.contract.methods
+            .setTeeOfferTlb(this.offerId, tlb)
+            .send(await createTransactionOptions(transactionOptions));
         if (this.offerInfo) this.offerInfo.tlb = tlb;
     }
 
@@ -151,7 +169,9 @@ class TeeOffer {
     public async setName(name: string, transactionOptions?: TransactionOptions): Promise<void> {
         checkIfActionAccountInitialized();
 
-        await this.contract.methods.setName(name).send(await createTransactionOptions(transactionOptions));
+        await this.contract.methods
+            .setOfferName(this.offerId, name)
+            .send(await createTransactionOptions(transactionOptions));
         if (this.offerInfo) this.offerInfo.name = name;
     }
 
@@ -163,7 +183,9 @@ class TeeOffer {
     public async setDescription(description: string, transactionOptions?: TransactionOptions): Promise<void> {
         checkIfActionAccountInitialized();
 
-        await this.contract.methods.setDescription(description).send(await createTransactionOptions(transactionOptions));
+        await this.contract.methods
+            .setOfferDescription(this.offerId, description)
+            .send(await createTransactionOptions(transactionOptions));
         if (this.offerInfo) this.offerInfo.description = description;
     }
 
@@ -172,14 +194,11 @@ class TeeOffer {
      * @param argsPublicKey - new argsPublicKey
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
-    public async setKeys(
-        argsPublicKey: string,
-        transactionOptions?: TransactionOptions
-    ): Promise<void> {
+    public async setKeys(argsPublicKey: string, transactionOptions?: TransactionOptions): Promise<void> {
         checkIfActionAccountInitialized();
 
         await this.contract.methods
-            .setKeys(argsPublicKey)
+            .setOfferPublicKey(this.offerId, argsPublicKey)
             .send(await createTransactionOptions(transactionOptions));
         if (this.offerInfo) {
             this.offerInfo.argsPublicKey = argsPublicKey;
@@ -193,7 +212,7 @@ class TeeOffer {
     public async disable(transactionOptions?: TransactionOptions) {
         checkIfActionAccountInitialized();
 
-        await this.contract.methods.disable().send(await createTransactionOptions(transactionOptions));
+        await this.contract.methods.disableOffer(this.offerId).send(await createTransactionOptions(transactionOptions));
     }
 
     /**
@@ -203,7 +222,7 @@ class TeeOffer {
     public async enable(transactionOptions?: TransactionOptions) {
         checkIfActionAccountInitialized();
 
-        await this.contract.methods.enable().send(await createTransactionOptions(transactionOptions));
+        await this.contract.methods.enableOffer(this.offerId).send(await createTransactionOptions(transactionOptions));
     }
 }
 

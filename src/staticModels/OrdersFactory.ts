@@ -2,46 +2,61 @@ import store from "../store";
 import { Contract } from "web3-eth-contract";
 import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
-import OrdersFactoryJSON from "../contracts/OrdersFactory.json";
-import {
-    checkIfActionAccountInitialized,
-    checkIfInitialized,
-    createTransactionOptions,
-    objectToTuple
-} from "../utils";
+import OrdersJSON from "../contracts/Orders.json";
+import { checkIfActionAccountInitialized, checkIfInitialized, createTransactionOptions, objectToTuple } from "../utils";
 import { OrderInfo, OrderInfoStructure } from "../types/Order";
-import { formatBytes32String } from 'ethers/lib/utils';
+import { formatBytes32String } from "ethers/lib/utils";
 import { ContractEvent, TransactionOptions } from "../types/Web3";
+import { OrderCreatedEvent } from "../types/Events";
+import Superpro from "./Superpro";
+import { BigNumber } from 'ethers';
 
 class OrdersFactory {
-    public static address: string;
     private static contract: Contract;
     private static logger: typeof rootLogger;
 
     public static orders?: string[];
 
+    public static get address(): string {
+        return Superpro.address;
+    }
     /**
      * Checks if contract has been initialized, if not - initialize contract
      */
     private static checkInit(transactionOptions?: TransactionOptions) {
         if (transactionOptions?.web3) {
             checkIfInitialized();
-            return new transactionOptions.web3.eth.Contract(<AbiItem[]>OrdersFactoryJSON.abi, this.address);
+            return new transactionOptions.web3.eth.Contract(<AbiItem[]>OrdersJSON.abi, Superpro.address);
         }
 
         if (this.contract) return this.contract;
         checkIfInitialized();
 
-        this.logger = rootLogger.child({ className: "OrdersFactory", address: this.address });
-        return this.contract = new store.web3!.eth.Contract(<AbiItem[]>OrdersFactoryJSON.abi, this.address);
+        this.logger = rootLogger.child({ className: "OrdersFactory", address: Superpro.address });
+        return this.contract = new store.web3!.eth.Contract(<AbiItem[]>OrdersJSON.abi, Superpro.address);
     }
 
     /**
      * Function for fetching list of all orders addresses
+     * @param fromBlock - Number|String (optional): The block number (greater than or equal to) from which to get events on. Pre-defined block numbers as "earliest", "latest" and "pending" can also be used.
+     * @param toBlock - Number|String (optional): The block number (less than or equal to) to get events up to (Defaults to "latest"). Pre-defined block numbers as "earliest", "latest" and "pending" can also be used.
      */
-    public static async getAllOrders(): Promise<string[]> {
+    public static async getAllOrders(
+        fromBlock: number | string = 0,
+        toBlock: number | string = "latest",
+    ): Promise<string[]> {
         this.checkInit();
-        this.orders = await this.contract.methods.listAll().call();
+
+        this.orders = [];
+        const orderEvents = await this.contract.getPastEvents("OrderCreated", {
+            fromBlock,
+            toBlock,
+        });
+
+        orderEvents.forEach((event) => {
+            this.orders?.push(event.returnValues.orderId);
+        });
+
         return this.orders!;
     }
 
@@ -63,10 +78,27 @@ class OrdersFactory {
         this.checkInit();
         const logger = this.logger.child({ method: "onOrderCreated" });
 
-        let subscription = this.contract.events
+        const subscription = this.contract.events
             .OrderCreated()
             .on("data", async (event: ContractEvent) => {
-                callback(<string>event.returnValues.newOrderAddress);
+                callback(<string>event.returnValues.orderId);
+            })
+            .on("error", (error: Error, receipt: string) => {
+                if (receipt) return; // Used to avoid logging of transaction rejected
+                logger.warn(error);
+            });
+
+        return () => subscription.unsubscribe();
+    }
+
+    public static onSubOrderCreated(callback: onSubOrderCreatedCallback): () => void {
+        this.checkInit();
+        const logger = this.logger.child({ method: "SubOrderCreated" });
+
+        const subscription = this.contract.events
+            .SubOrderCreated()
+            .on("data", async (event: ContractEvent) => {
+                callback(<string>event.returnValues.subOrderId);
             })
             .on("error", (error: Error, receipt: string) => {
                 if (receipt) return; // Used to avoid logging of transaction rejected
@@ -87,16 +119,32 @@ class OrdersFactory {
         orderInfo: OrderInfo,
         holdDeposit = 0,
         suspended = false,
-        externalId = formatBytes32String('default'),
-        transactionOptions?: TransactionOptions
+        externalId = "default",
+        transactionOptions?: TransactionOptions,
     ) {
         const contract = this.checkInit(transactionOptions);
         checkIfActionAccountInitialized();
 
         const orderInfoArguments = objectToTuple(orderInfo, OrderInfoStructure);
+        const formattedExternalId = formatBytes32String(externalId);
         await contract.methods
-            .create(orderInfoArguments, holdDeposit, suspended, externalId)
+            .createOrder(orderInfoArguments, holdDeposit, suspended, formattedExternalId)
             .send(await createTransactionOptions(transactionOptions));
+    }
+
+    public static async getOrder(consumer: string, externalId: string): Promise<OrderCreatedEvent> {
+        const contract = this.checkInit();
+        const filter = {
+            consumer,
+            externalId: formatBytes32String(externalId),
+        };
+        const foundIds = await contract.getPastEvents("OrderCreated", { filter });
+        const notFound = { consumer, externalId, offerId: -1, orderId: -1 };
+
+        const response: OrderCreatedEvent =
+            foundIds.length > 0 ? (foundIds[0].returnValues as OrderCreatedEvent) : notFound;
+
+        return response;
     }
 
     /**
@@ -108,7 +156,7 @@ class OrdersFactory {
     public static async refillOrderDeposit(
         orderAddress: string,
         amount: number,
-        transactionOptions?: TransactionOptions
+        transactionOptions?: TransactionOptions,
     ) {
         const contract = this.checkInit(transactionOptions);
         checkIfActionAccountInitialized();
@@ -120,5 +168,6 @@ class OrdersFactory {
 }
 
 export type onOrderCreatedCallback = (address: string) => void;
+export type onSubOrderCreatedCallback = (address: string) => void;
 
 export default OrdersFactory;

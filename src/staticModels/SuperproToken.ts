@@ -4,7 +4,7 @@ import { AbiItem } from "web3-utils";
 import SuperproTokenJSON from "../contracts/SuperproToken.json";
 import store from "../store";
 import { checkIfActionAccountInitialized, checkIfInitialized, createTransactionOptions } from "../utils";
-import { TransactionOptions } from "../types/Web3";
+import { TransactionOptions, Transaction } from "../types/Web3";
 
 class SuperproToken {
     public static address: string;
@@ -42,11 +42,15 @@ class SuperproToken {
      * @param amount - amount of tokens to transfer
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
-    public static async transfer(to: string, amount: number, transactionOptions?: TransactionOptions): Promise<void> {
+    public static async transfer(
+        to: string,
+        amount: number,
+        transactionOptions?: TransactionOptions,
+    ): Promise<Transaction> {
         const contract = this.checkInit(transactionOptions);
         checkIfActionAccountInitialized();
 
-        await contract.methods.transfer(to, amount).send(await createTransactionOptions(transactionOptions));
+        return await contract.methods.transfer(to, amount).send(await createTransactionOptions(transactionOptions));
     }
 
     /**

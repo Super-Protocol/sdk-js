@@ -120,10 +120,12 @@ class Order {
     /**
      * Function for fetching parent order from blockchain
      */
-     public async setAwaitingPayment(value: boolean): Promise<void> {
+     public async setAwaitingPayment(value: boolean, transactionOptions?: TransactionOptions): Promise<void> {
         checkIfActionAccountInitialized();
 
-        await this.contract.methods.setAwaitingPayment(this.orderId, value).call();
+        await this.contract.methods
+            .setAwaitingPayment(this.orderId, value)
+            .send(await createTransactionOptions(transactionOptions));
     }
 
     /**

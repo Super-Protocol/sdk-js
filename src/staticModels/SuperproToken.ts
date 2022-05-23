@@ -30,8 +30,9 @@ class SuperproToken {
     /**
      * Fetching balance of SuperProtocol tokens on address
      */
-    public static async balanceOf(address: string): Promise<number> {
+    public static async balanceOf(address: string): Promise<string> {
         this.checkInit();
+
         return await this.contract.methods.balanceOf(address).call();
     }
 
@@ -41,10 +42,11 @@ class SuperproToken {
      * @param amount - amount of tokens to transfer
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
-    public static async transfer(to: string, amount: number, transactionOptions?: TransactionOptions): Promise<number> {
+    public static async transfer(to: string, amount: number, transactionOptions?: TransactionOptions): Promise<void> {
         const contract = this.checkInit(transactionOptions);
         checkIfActionAccountInitialized();
-        return await contract.methods.transfer(to, amount).send(await createTransactionOptions(transactionOptions));
+
+        await contract.methods.transfer(to, amount).send(await createTransactionOptions(transactionOptions));
     }
 
     /**

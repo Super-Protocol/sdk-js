@@ -42,7 +42,7 @@ class Provider {
      * Function for fetching provider info from blockchain
      */
     public async getInfo(): Promise<ProviderInfo> {
-        const providerInfoParams = await this.contractProviders.methods.getInfo().call();
+        const providerInfoParams = await this.contractProviders.methods.getProviderInfo().call();
         this.providerInfo = tupleToObject(providerInfoParams, ProviderInfoStructure);
 
         return this.providerInfo;

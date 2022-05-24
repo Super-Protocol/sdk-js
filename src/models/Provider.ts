@@ -20,21 +20,22 @@ class Provider {
     public valueOffers?: string[];
     public teeOffers?: string[];
     public origins?: Origins;
-    public providerId: number;
-    public address: string;
+    public providerId: string;
 
     constructor(providerId: string) {
         checkIfInitialized();
 
-        this.providerId = +providerId;
-        this.address = providerId;
+        this.providerId = providerId;
         this.contractProviders = new store.web3!.eth.Contract(<AbiItem[]>ProvidersJSON.abi, Superpro.address);
         this.contractProvidersOffers = new store.web3!.eth.Contract(
             <AbiItem[]>ProvidersOffersJSON.abi,
             Superpro.address,
         );
 
-        this.logger = rootLogger.child({ className: "Provider", providerId: this.providerId });
+        this.logger = rootLogger.child({
+            className: "Provider",
+            providerId: this.providerId.toString(),
+        });
     }
 
     /**

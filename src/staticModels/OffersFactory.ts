@@ -37,12 +37,26 @@ class OffersFactory {
 
     /**
      * Function for fetching list of all offers addresses
+     * @param fromBlock - Number|String (optional): The block number (greater than or equal to) from which to get events on. Pre-defined block numbers as "earliest", "latest" and "pending" can also be used.
+     * @param toBlock - Number|String (optional): The block number (less than or equal to) to get events up to (Defaults to "latest"). Pre-defined block numbers as "earliest", "latest" and "pending" can also be used.
      */
-    public static async getAllOffers(): Promise<string[]> {
+    public static async getAllOffers(fromBlock?: number | string, toBlock?: number | string): Promise<string[]> {
         this.checkInit();
 
+        if (!toBlock || toBlock == "latest") {
+            toBlock = await store.web3!.eth.getBlockNumber();
+        }
+
+        if (!fromBlock) {
+            fromBlock = +toBlock > 10_000 ? +toBlock - 10_000 : 0;
+        }
+
         this.offers = [];
-        const events = await this.contract.getPastEvents("OfferCreated");
+        const events = await this.contract.getPastEvents("OfferCreated", {
+            fromBlock,
+            toBlock,
+        });
+
         events.forEach((event) => {
             this.offers?.push(event.returnValues.offerId);
         });

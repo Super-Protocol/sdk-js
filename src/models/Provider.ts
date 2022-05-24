@@ -2,7 +2,7 @@ import { Contract } from "web3-eth-contract";
 import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
 import ProvidersJSON from "../contracts/Providers.json";
-import ProvidersOffersJSON from "../contracts/Providers.json";
+import ProvidersOffersJSON from "../contracts/ProvidersOffers.json";
 import store from "../store";
 import { checkIfInitialized, tupleToObject } from "../utils";
 import { ProviderInfo, ProviderInfoStructure } from "../types/Provider";
@@ -42,7 +42,7 @@ class Provider {
      * Function for fetching provider info from blockchain
      */
     public async getInfo(): Promise<ProviderInfo> {
-        const providerInfoParams = await this.contractProviders.methods.getProviderInfo().call();
+        const providerInfoParams = await this.contractProviders.methods.getProviderInfo(this.providerId).call();
         this.providerInfo = tupleToObject(providerInfoParams, ProviderInfoStructure);
 
         return this.providerInfo;
@@ -59,7 +59,7 @@ class Provider {
      * Function for fetching all value offers for this provider
      */
     public async getValueOffers(): Promise<string[]> {
-        this.valueOffers = await this.contractProvidersOffers.methods.getProviderValueOffers().call();
+        this.valueOffers = await this.contractProvidersOffers.methods.getProviderValueOffers(this.providerId).call();
 
         return this.valueOffers!;
     }
@@ -68,7 +68,7 @@ class Provider {
      * Function for fetching all TEE offers for this provider
      */
     public async getTeeOffers(): Promise<string[]> {
-        this.teeOffers = await this.contractProvidersOffers.methods.getProviderTeeOffers().call();
+        this.teeOffers = await this.contractProvidersOffers.methods.getProviderTeeOffers(this.providerId).call();
 
         return this.teeOffers!;
     }

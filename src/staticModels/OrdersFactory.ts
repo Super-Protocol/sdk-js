@@ -43,26 +43,14 @@ class OrdersFactory {
      */
     public static async getAllOrders(fromBlock?: number | string, toBlock?: number | string): Promise<string[]> {
         this.checkInit();
+        this.orders = this.orders ?? [];
 
-        if (!toBlock || toBlock == "latest") {
-            toBlock = await store.web3!.eth.getBlockNumber();
+        const ordersCount = await this.contract.methods.getOrdersCount().call();
+        for (let orderId = this.orders.length + 1; orderId <= ordersCount; orderId++) {
+            this.orders?.push(orderId.toString());
         }
 
-        if (!fromBlock) {
-            fromBlock = +toBlock > 10_000 ? +toBlock - 10_000 : 0;
-        }
-
-        this.orders = [];
-        const orderEvents = await this.contract.getPastEvents("OrderCreated", {
-            fromBlock,
-            toBlock,
-        });
-
-        orderEvents.forEach((event) => {
-            this.orders?.push(event.returnValues.orderId);
-        });
-
-        return this.orders!;
+        return this.orders;
     }
 
     /**

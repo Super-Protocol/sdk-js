@@ -6,10 +6,10 @@ import {
     OrderStatus,
     SubOrderParams
 } from "../types/Order";
-import {Contract} from "web3-eth-contract";
+import { Contract } from "web3-eth-contract";
 import rootLogger from "../logger";
-import {ContractEvent, TransactionOptions} from "../types/Web3";
-import {AbiItem} from "web3-utils";
+import { ContractEvent, TransactionOptions } from "../types/Web3";
+import { AbiItem } from "web3-utils";
 import OrdersJSON from "../contracts/Orders.json";
 import store from "../store";
 import {
@@ -19,9 +19,9 @@ import {
     objectToTuple,
     tupleToObject,
 } from "../utils";
-import {Origins, OriginsStructure} from "../types/Origins";
-import {SubOrderCreatedEvent} from "../types/Events";
-import {formatBytes32String} from "ethers/lib/utils";
+import { Origins, OriginsStructure } from "../types/Origins";
+import { SubOrderCreatedEvent } from "../types/Events";
+import { formatBytes32String } from "ethers/lib/utils";
 import Superpro from "../staticModels/Superpro";
 
 class Order {
@@ -95,6 +95,13 @@ class Order {
     }
 
     /**
+     * Function for fetching order deposit spent from blockchain
+     */
+    public async getDepositSpent(): Promise<string> {
+        return this.contract.methods.getDepositSpent(this.orderId).call();
+    }
+
+    /**
      * Fetch new Origins (createdDate, createdBy, modifiedDate and modifiedBy)
      */
     public async getOrigins(): Promise<Origins> {
@@ -113,18 +120,40 @@ class Order {
     /**
      * Function for fetching parent order from blockchain
      */
-     public async getAwaitingPayment(): Promise<boolean> {
+    public async getAwaitingPayment(): Promise<boolean> {
         return this.contract.methods.getAwaitingPayment(this.orderId).call();
     }
 
     /**
      * Function for fetching parent order from blockchain
      */
-     public async setAwaitingPayment(value: boolean, transactionOptions?: TransactionOptions): Promise<void> {
+    public async setAwaitingPayment(value: boolean, transactionOptions?: TransactionOptions): Promise<void> {
         checkIfActionAccountInitialized();
 
         await this.contract.methods
             .setAwaitingPayment(this.orderId, value)
+            .send(await createTransactionOptions(transactionOptions));
+    }
+
+    /**
+     * Updates order price
+     */
+    public async updateOrderPrice(price: string, transactionOptions?: TransactionOptions): Promise<void> {
+        checkIfActionAccountInitialized();
+
+        await this.contract.methods
+            .updateOrderPrice(this.orderId, price)
+            .send(await createTransactionOptions(transactionOptions));
+    }
+
+    /**
+     * Sets deposit spent
+     */
+    public async setDepositSpent(value: string, transactionOptions?: TransactionOptions): Promise<void> {
+        checkIfActionAccountInitialized();
+
+        await this.contract.methods
+            .setDepositSpent(this.orderId, value)
             .send(await createTransactionOptions(transactionOptions));
     }
 
@@ -164,7 +193,7 @@ class Order {
     /**
      * Updates order result
      */
-     public async updateOrderResult(
+    public async updateOrderResult(
         encryptedResult = "",
         transactionOptions?: TransactionOptions,
     ) {

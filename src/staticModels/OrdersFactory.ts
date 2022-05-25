@@ -41,7 +41,7 @@ class OrdersFactory {
      * @param fromBlock - Number|String (optional): The block number (greater than or equal to) from which to get events on. Pre-defined block numbers as "earliest", "latest" and "pending" can also be used.
      * @param toBlock - Number|String (optional): The block number (less than or equal to) to get events up to (Defaults to "latest"). Pre-defined block numbers as "earliest", "latest" and "pending" can also be used.
      */
-    public static async getAllOrders(fromBlock?: number | string, toBlock?: number | string): Promise<string[]> {
+    public static async getAllOrders(): Promise<string[]> {
         this.checkInit();
         this.orders = this.orders ?? [];
 

@@ -7,6 +7,7 @@ import { checkIfActionAccountInitialized, checkIfInitialized, createTransactionO
 import { formatBytes32String } from "ethers/lib/utils";
 import { ContractEvent, TransactionOptions } from "../types/Web3";
 import { TeeOfferInfo, TeeOfferInfoStructure } from "../types/TeeOffer";
+import { OfferType } from "../types/Offer";
 import { OfferCreatedEvent } from "../types/Events";
 import Superpro from "./Superpro";
 
@@ -41,13 +42,17 @@ class TeeOffersFactory {
     public static async getAllTeeOffers(): Promise<string[]> {
         this.checkInit();
 
-        this.teeOffers = [];
-        const events = await this.contract.getPastEvents("TeeOfferCreated");
-        events.forEach(event => {
-            this.teeOffers?.push(event.returnValues.offerId);
-        });
+        // TODO: offerId start at 1 in next smart-contract deployment
+        const count = await this.contract.methods.getOffersCount().call();
+        this.teeOffers = this.teeOffers || [];
+        for (let offerId = this.teeOffers.length; offerId < count; ++offerId) {
+            const offerType = (await this.contract.methods.getOfferType(offerId)) as OfferType;
+            if (offerType === OfferType.TeeOffer) {
+                this.teeOffers.push(offerId.toString());
+            }
+        }
 
-        return this.teeOffers!;
+        return this.teeOffers;
     }
 
     /**

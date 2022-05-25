@@ -41,28 +41,16 @@ class OrdersFactory {
      * @param fromBlock - Number|String (optional): The block number (greater than or equal to) from which to get events on. Pre-defined block numbers as "earliest", "latest" and "pending" can also be used.
      * @param toBlock - Number|String (optional): The block number (less than or equal to) to get events up to (Defaults to "latest"). Pre-defined block numbers as "earliest", "latest" and "pending" can also be used.
      */
-    public static async getAllOrders(fromBlock?: number | string, toBlock?: number | string): Promise<string[]> {
+    public static async getAllOrders(): Promise<string[]> {
         this.checkInit();
+        this.orders = this.orders ?? [];
 
-        if (!toBlock || toBlock == "latest") {
-            toBlock = await store.web3!.eth.getBlockNumber();
+        const ordersCount = await this.contract.methods.getOrdersCount().call();
+        for (let orderId = this.orders.length + 1; orderId <= ordersCount; orderId++) {
+            this.orders?.push(orderId.toString());
         }
 
-        if (!fromBlock) {
-            fromBlock = +toBlock > 10_000 ? +toBlock - 10_000 : 0;
-        }
-
-        this.orders = [];
-        const orderEvents = await this.contract.getPastEvents("OrderCreated", {
-            fromBlock,
-            toBlock,
-        });
-
-        orderEvents.forEach((event) => {
-            this.orders?.push(event.returnValues.orderId);
-        });
-
-        return this.orders!;
+        return this.orders;
     }
 
     /**

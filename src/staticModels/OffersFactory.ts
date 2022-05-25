@@ -4,7 +4,7 @@ import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
 import OffersJSON from "../contracts/Offers.json";
 import { checkIfActionAccountInitialized, checkIfInitialized, createTransactionOptions, objectToTuple } from "../utils";
-import { OfferInfo, OfferInfoV1, OfferInfoStructure } from "../types/Offer";
+import { OfferInfo, OfferInfoV1, OfferInfoStructure, OfferType } from "../types/Offer";
 import { formatBytes32String } from "ethers/lib/utils";
 import { ContractEvent, TransactionOptions } from "../types/Web3";
 import { OfferCreatedEvent } from "../types/Events";
@@ -40,28 +40,20 @@ class OffersFactory {
      * @param fromBlock - Number|String (optional): The block number (greater than or equal to) from which to get events on. Pre-defined block numbers as "earliest", "latest" and "pending" can also be used.
      * @param toBlock - Number|String (optional): The block number (less than or equal to) to get events up to (Defaults to "latest"). Pre-defined block numbers as "earliest", "latest" and "pending" can also be used.
      */
-    public static async getAllOffers(fromBlock?: number | string, toBlock?: number | string): Promise<string[]> {
+    public static async getAllOffers(): Promise<string[]> {
         this.checkInit();
 
-        if (!toBlock || toBlock == "latest") {
-            toBlock = await store.web3!.eth.getBlockNumber();
+        // TODO: offerId start at 1 in next smart-contract deployment
+        const count = await this.contract.methods.getOffersCount().call();
+        this.offers = this.offers || [];
+        for (let offerId = this.offers.length; offerId < count; ++offerId) {
+            const offerType = (await this.contract.methods.getOfferType(offerId)) as OfferType;
+            if (offerType !== OfferType.TeeOffer) {
+                this.offers.push(offerId.toString());
+            }
         }
 
-        if (!fromBlock) {
-            fromBlock = +toBlock > 10_000 ? +toBlock - 10_000 : 0;
-        }
-
-        this.offers = [];
-        const events = await this.contract.getPastEvents("OfferCreated", {
-            fromBlock,
-            toBlock,
-        });
-
-        events.forEach((event) => {
-            this.offers?.push(event.returnValues.offerId);
-        });
-
-        return this.offers!;
+        return this.offers;
     }
 
     /**

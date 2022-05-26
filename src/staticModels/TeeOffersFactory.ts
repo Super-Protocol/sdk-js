@@ -46,7 +46,7 @@ class TeeOffersFactory {
         const count = await this.contract.methods.getOffersCount().call();
         this.teeOffers = this.teeOffers || [];
         for (let offerId = this.teeOffers.length; offerId < count; ++offerId) {
-            const offerType = (await this.contract.methods.getOfferType(offerId)) as OfferType;
+            const offerType = (await this.contract.methods.getOfferType(offerId).call()) as OfferType;
             if (offerType === OfferType.TeeOffer) {
                 this.teeOffers.push(offerId.toString());
             }

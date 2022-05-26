@@ -48,6 +48,13 @@ class Order {
     }
 
     /**
+     * Check if order exist
+     */
+    public async isExist(): Promise<boolean> {
+        return await this.contract.methods.isOrderValid(this.orderId).call();
+    }
+
+    /**
      * Function for fetching order info from blockchain
      */
     public async getOrderInfo(): Promise<OrderInfo> {

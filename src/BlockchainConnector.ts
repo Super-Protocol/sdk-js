@@ -2,12 +2,12 @@ import rootLogger from "./logger";
 import Web3 from "web3";
 import { HttpProviderBase, WebsocketProviderBase } from "web3-core-helpers";
 import store from "./store";
-import { defaultBlockchainUrl } from "./constants";
+import { BLOCK_SIZE_TO_FETCH_TRANSACTION, defaultBlockchainUrl } from "./constants";
 import { checkIfInitialized } from "./utils";
 import { Transaction } from "./types/Web3";
-
 import Superpro from "./staticModels/Superpro";
 import SuperproToken from "./staticModels/SuperproToken";
+import BlockchainTransaction from "./types/blockchainConnector/StorageAccess";
 
 class BlockchainConnector {
     private static logger = rootLogger.child({ className: "BlockchainConnector" });
@@ -20,7 +20,7 @@ class BlockchainConnector {
      * Used to setting up settings for blockchain connector
      * Needs to run this function before using blockchain connector
      */
-    public static async init(config: Config) {
+    public static async init(config: Config): Promise<void> {
         if (store.isInitialized) return;
 
         const url = config?.blockchainUrl || defaultBlockchainUrl;
@@ -66,29 +66,37 @@ class BlockchainConnector {
      */
     public static async getBalance(address: string): Promise<string> {
         checkIfInitialized();
-        return await store.web3!.eth.getBalance(address);
+        return store.web3!.eth.getBalance(address);
     }
 
     /**
      * Fetch transactions for specific addresses starting with specific block until last block
-     * @param addresses - array of addresses to fetch transactions (from this addresses and to this addresses)
+     * @param addresses - array of addresses to fetch transactions (from these addresses and to these addresses)
      * @param startBlock - number of block to start fetching transactions (if empty fetch only for last block)
+     * @param lastBlock - number of block to last fetching transactions (if empty fetch only for last block)
+     * @param batchSize - block size for asynchronous transaction loading
      * @returns {Promise<{
      *   transactionsByAddress, - found transactions sorted by addresses
      *   lastBlock, - number of last fetched block (can be used to start fetching from this block next time)
      * }>}
      */
-    public static async getTransactions(addresses: string[], startBlock?: number) {
-        const endBlock = await store.web3!.eth.getBlockNumber();
+    public static async getTransactions(
+        addresses: string[],
+        startBlock?: number,
+        lastBlock?: number,
+        batchSize: number = BLOCK_SIZE_TO_FETCH_TRANSACTION): Promise<BlockchainTransaction>{
+
+        const endBlock = lastBlock? lastBlock: await store.web3!.eth.getBlockNumber();
 
         if (!startBlock) startBlock = endBlock;
 
         const blocksNumbersToFetch: number[][] = [[]];
         let activeStep = blocksNumbersToFetch[0];
+
         for (let i = startBlock; i <= endBlock; i++) {
             activeStep.push(i);
 
-            if (activeStep.length >= 500) {
+            if (activeStep.length >= batchSize) {
                 blocksNumbersToFetch.push([]);
                 activeStep = blocksNumbersToFetch[blocksNumbersToFetch.length - 1];
             }

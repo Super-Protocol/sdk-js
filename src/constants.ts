@@ -3,3 +3,4 @@ export const defaultGasLimit = 7000000;
 export const defaultGasPrice = "30000000000";
 export const zeroAddress = "0x0000000000000000000000000000000000000000";
 export const ONE_DAY = 24 * 60 * 60;
+export const BLOCK_SIZE_TO_FETCH_TRANSACTION = 500;

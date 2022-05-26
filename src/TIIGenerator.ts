@@ -53,7 +53,7 @@ class TIIGenerator {
                 hash: Buffer.from(hash.hash, hash.encoding),
             })),
             mrenclave: Buffer.from(linkage.mrenclave, linkage.encoding),
-            args: JSON.stringify(args),
+            args: JSON.stringify(args || ''),
             encryption: {
                 ...encryption,
                 ciphertext: encryption.ciphertext ? Buffer.from(encryption.ciphertext, encryption.encoding) : undefined,
@@ -97,11 +97,24 @@ class TIIGenerator {
         const parentOrder: Order = new Order(parentOrderAddress);
         const parentOrderInfo: OrderInfo = await parentOrder.getOrderInfo();
 
+        const { hashes, linkage } = await this.getSolutionHashesAndLinkage(parentOrderInfo.args.inputOffers);
+
+        return this.generateByOffer(
+            parentOrderInfo.offer,
+            hashes,
+            linkage,
+            resource,
+            args,
+            encryption
+        );
+    }
+
+    public static async getSolutionHashesAndLinkage(inputOffers: string[]): Promise<{ hashes: Hash[], linkage?: string }> {
         const solutionHashes: Hash[] = [];
         let solutionLinkage: string|undefined;
         let anyLinkage: string|undefined;
         await Promise.all(
-            parentOrderInfo.args.inputOffers.map(
+            inputOffers.map(
                 async (offerAddress: string): Promise<void> => {
                     const offer: Offer = new Offer(offerAddress);
                     const offerInfo: OfferInfo = await offer.getInfo();
@@ -111,7 +124,7 @@ class TIIGenerator {
                     }
 
                     const restrictions = _
-                        .intersection(offerInfo.restrictions.offers, parentOrderInfo.args.inputOffers)
+                        .intersection(offerInfo.restrictions.offers, inputOffers)
                         .filter(restrictedOfferAddress => restrictedOfferAddress !== offer.address);
                     if (restrictions.length) {
                         solutionLinkage = offerInfo.linkage;
@@ -122,14 +135,10 @@ class TIIGenerator {
             )
         );
 
-        return this.generateByOffer(
-            parentOrderInfo.offer,
-            solutionHashes,
-            solutionLinkage || anyLinkage,
-            resource,
-            args,
-            encryption
-        );
+        return {
+            hashes: solutionHashes,
+            linkage: solutionLinkage || anyLinkage,
+        }
     }
 
     public static async getTRI(tii: string, decryptionKey: Buffer): Promise<TRI> {

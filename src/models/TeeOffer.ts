@@ -109,8 +109,10 @@ class TeeOffer {
      * Function for fetching last TCB addition time for this TEE offer
      */
     public async getLastTcbAddedTime(): Promise<number> {
-        this.tcbAddedTime = await this.contract.methods.getLastTcbAddedTime().call();
-        return this.tcbAddedTime!;
+        // this.tcbAddedTime = await this.contract.methods.getLastTcbAddedTime().call();
+        // return this.tcbAddedTime!;
+        // TODO: stub
+        return 0;
     }
 
     /**

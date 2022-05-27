@@ -110,7 +110,7 @@ class TCB {
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
     public async addData(pb: PublicData, quote: string, transactionOptions?: TransactionOptions) {
-        checkIfActionAccountInitialized();
+        checkIfActionAccountInitialized(transactionOptions);
 
         const fromattedDeviceId = formatBytes32String((Buffer.from(pb.deviceID, 'hex')).toString('base64'));
 
@@ -166,7 +166,7 @@ class TCB {
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
     public async addMarks(lType: LType, marks: number[], transactionOptions?: TransactionOptions): Promise<void> {
-        checkIfActionAccountInitialized();
+        checkIfActionAccountInitialized(transactionOptions);
 
         if (marks.length > 0) {
             await this.contract.methods.addMarks(lType, marks).send(await createTransactionOptions(transactionOptions));

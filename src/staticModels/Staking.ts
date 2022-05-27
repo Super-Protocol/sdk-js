@@ -60,7 +60,7 @@ class Staking {
      */
     public static async stake(amount: number, transactionOptions?: TransactionOptions): Promise<void> {
         const contract = this.checkInit(transactionOptions);
-        checkIfActionAccountInitialized();
+        checkIfActionAccountInitialized(transactionOptions);
         await contract.methods.stake(amount).send(await createTransactionOptions(transactionOptions));
     }
 }

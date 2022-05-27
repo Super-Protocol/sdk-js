@@ -157,7 +157,7 @@ class TeeOffer {
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
     public async addTlb(tlb: string, transactionOptions?: TransactionOptions): Promise<void> {
-        checkIfActionAccountInitialized();
+        checkIfActionAccountInitialized(transactionOptions);
 
         await this.contract.methods
             .setTeeOfferTlb(this.offerId, tlb)
@@ -171,7 +171,7 @@ class TeeOffer {
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
     public async setName(name: string, transactionOptions?: TransactionOptions): Promise<void> {
-        checkIfActionAccountInitialized();
+        checkIfActionAccountInitialized(transactionOptions);
 
         await this.contract.methods
             .setOfferName(this.offerId, name)
@@ -185,7 +185,7 @@ class TeeOffer {
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
     public async setDescription(description: string, transactionOptions?: TransactionOptions): Promise<void> {
-        checkIfActionAccountInitialized();
+        checkIfActionAccountInitialized(transactionOptions);
 
         await this.contract.methods
             .setOfferDescription(this.offerId, description)
@@ -199,7 +199,7 @@ class TeeOffer {
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
     public async setKeys(argsPublicKey: string, transactionOptions?: TransactionOptions): Promise<void> {
-        checkIfActionAccountInitialized();
+        checkIfActionAccountInitialized(transactionOptions);
 
         await this.contract.methods
             .setOfferPublicKey(this.offerId, argsPublicKey)
@@ -214,7 +214,7 @@ class TeeOffer {
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
     public async disable(transactionOptions?: TransactionOptions) {
-        checkIfActionAccountInitialized();
+        checkIfActionAccountInitialized(transactionOptions);
 
         await this.contract.methods.disableOffer(this.offerId).send(await createTransactionOptions(transactionOptions));
     }
@@ -224,7 +224,7 @@ class TeeOffer {
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
     public async enable(transactionOptions?: TransactionOptions) {
-        checkIfActionAccountInitialized();
+        checkIfActionAccountInitialized(transactionOptions);
 
         await this.contract.methods.enableOffer(this.offerId).send(await createTransactionOptions(transactionOptions));
     }

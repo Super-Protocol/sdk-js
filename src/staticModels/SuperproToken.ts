@@ -48,7 +48,7 @@ class SuperproToken {
         transactionOptions?: TransactionOptions,
     ): Promise<Transaction> {
         const contract = this.checkInit(transactionOptions);
-        checkIfActionAccountInitialized();
+        checkIfActionAccountInitialized(transactionOptions);
 
         return await contract.methods.transfer(to, amount).send(await createTransactionOptions(transactionOptions));
     }
@@ -65,7 +65,7 @@ class SuperproToken {
         transactionOptions?: TransactionOptions
     ): Promise<void> {
         const contract = this.checkInit(transactionOptions);
-        checkIfActionAccountInitialized();
+        checkIfActionAccountInitialized(transactionOptions);
 
         await contract.methods.approve(address, amount).send(await createTransactionOptions(transactionOptions));
     }

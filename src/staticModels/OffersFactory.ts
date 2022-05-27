@@ -72,7 +72,7 @@ class OffersFactory {
         transactionOptions?: TransactionOptions,
     ): Promise<void> {
         const contract = this.checkInit(transactionOptions);
-        checkIfActionAccountInitialized();
+        checkIfActionAccountInitialized(transactionOptions);
 
         delete offerInfoV1.disabledAfter;
         const offerInfo: OfferInfo = offerInfoV1;

@@ -83,7 +83,7 @@ class Offer {
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
     public async disable(transactionOptions?: TransactionOptions) {
-        checkIfActionAccountInitialized();
+        checkIfActionAccountInitialized(transactionOptions);
 
         await this.contract.methods.disableOffer(this.offerId).send(await createTransactionOptions(transactionOptions));
     }
@@ -93,7 +93,7 @@ class Offer {
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
     public async enable(transactionOptions?: TransactionOptions) {
-        checkIfActionAccountInitialized();
+        checkIfActionAccountInitialized(transactionOptions);
 
         await this.contract.methods.enableOffer(this.offerId).send(await createTransactionOptions(transactionOptions));
     }
@@ -103,8 +103,6 @@ class Offer {
      * @param offerAddress - address of offer what needs to be checked
      */
     public async isRestrictionsPermitThatOffer(offerAddress: string) {
-        checkIfActionAccountInitialized();
-
         return await this.contract.methods.isOfferRestrictionsPermitOtherOffer(this.offerId, +offerAddress).call();
     }
 
@@ -113,8 +111,6 @@ class Offer {
      * @param type - address of offer what needs to be checked
      */
     public async isRestrictedByOfferType(type: OfferType) {
-        checkIfActionAccountInitialized();
-
         return await this.contract.methods.isOfferRestrictedByOfferType(this.offerId, type).call();
     }
 }

@@ -178,7 +178,7 @@ class OrdersFactory {
         transactionOptions?: TransactionOptions,
     ) {
         const contract = this.checkInit(transactionOptions);
-        checkIfActionAccountInitialized();
+        checkIfActionAccountInitialized(transactionOptions);
 
         const orderInfoArguments = objectToTuple(orderInfo, OrderInfoStructure);
         const formattedExternalId = formatBytes32String(externalId);
@@ -214,7 +214,7 @@ class OrdersFactory {
         transactionOptions?: TransactionOptions,
     ) {
         const contract = this.checkInit(transactionOptions);
-        checkIfActionAccountInitialized();
+        checkIfActionAccountInitialized(transactionOptions);
 
         await contract.methods
             .refillOrder(orderAddress, amount)

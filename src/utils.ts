@@ -17,8 +17,8 @@ export const checkIfInitialized = () => {
  * Function for checking if provider action account initialized (required for set methods)
  * Used in all set methods
  */
-export const checkIfActionAccountInitialized = () => {
-    if (!store.actionAccount)
+export const checkIfActionAccountInitialized = (transactionOptions?: TransactionOptions) => {
+    if (!store.actionAccount && !transactionOptions?.web3)
         throw new Error(
             "Provider action account is not initialized, needs to run 'BlockchainConnector.initActionAccount(SECRET_KEY)' first"
         );

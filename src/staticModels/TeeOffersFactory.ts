@@ -71,7 +71,7 @@ class TeeOffersFactory {
         transactionOptions?: TransactionOptions,
     ): Promise<void> {
         const contract = this.checkInit(transactionOptions);
-        checkIfActionAccountInitialized();
+        checkIfActionAccountInitialized(transactionOptions);
 
         // Converts offer info to array of arrays (used in blockchain)
         const teeOfferInfoParams = objectToTuple(teeOfferInfo, TeeOfferInfoStructure);

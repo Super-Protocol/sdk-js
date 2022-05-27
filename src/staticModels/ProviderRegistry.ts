@@ -80,7 +80,7 @@ class ProviderRegistry {
         transactionOptions?: TransactionOptions,
     ): Promise<void> {
         const contract = this.checkInitProviders(transactionOptions);
-        checkIfActionAccountInitialized();
+        checkIfActionAccountInitialized(transactionOptions);
 
         const providerInfoParams = objectToTuple(providerInfo, ProviderInfoStructure);
         await contract.methods
@@ -96,7 +96,7 @@ class ProviderRegistry {
      */
     public static async refillSecurityDeposit(amount: number, transactionOptions?: TransactionOptions): Promise<void> {
         const contract = this.checkInitProviders(transactionOptions);
-        checkIfActionAccountInitialized();
+        checkIfActionAccountInitialized(transactionOptions);
         await contract.methods
             .refillProviderSecurityDepo(amount)
             .send(await createTransactionOptions(transactionOptions));
@@ -110,7 +110,7 @@ class ProviderRegistry {
      */
     public static async returnSecurityDeposit(amount: number, transactionOptions?: TransactionOptions): Promise<void> {
         const contract = this.checkInitProviders(transactionOptions);
-        checkIfActionAccountInitialized();
+        checkIfActionAccountInitialized(transactionOptions);
         await contract.methods
             .returnProviderSecurityDepo(amount)
             .send(await createTransactionOptions(transactionOptions));

@@ -135,7 +135,7 @@ class Order {
      * Function for fetching parent order from blockchain
      */
     public async setAwaitingPayment(value: boolean, transactionOptions?: TransactionOptions): Promise<void> {
-        checkIfActionAccountInitialized();
+        checkIfActionAccountInitialized(transactionOptions);
 
         await this.contract.methods
             .setAwaitingPayment(this.orderId, value)
@@ -146,7 +146,7 @@ class Order {
      * Updates order price
      */
     public async updateOrderPrice(price: string, transactionOptions?: TransactionOptions): Promise<void> {
-        checkIfActionAccountInitialized();
+        checkIfActionAccountInitialized(transactionOptions);
 
         await this.contract.methods
             .updateOrderPrice(this.orderId, price)
@@ -157,7 +157,7 @@ class Order {
      * Sets deposit spent
      */
     public async setDepositSpent(value: string, transactionOptions?: TransactionOptions): Promise<void> {
-        checkIfActionAccountInitialized();
+        checkIfActionAccountInitialized(transactionOptions);
 
         await this.contract.methods
             .setDepositSpent(this.orderId, value)
@@ -168,7 +168,7 @@ class Order {
      * Function for updating status of contract
      */
     public async updateStatus(status: OrderStatus, price?: number, transactionOptions?: TransactionOptions) {
-        checkIfActionAccountInitialized();
+        checkIfActionAccountInitialized(transactionOptions);
 
         if (status === OrderStatus.Processing) {
             await this.contract.methods
@@ -183,7 +183,7 @@ class Order {
      * Function for updating status of contract
      */
     public async cancelOrder(transactionOptions?: TransactionOptions) {
-        checkIfActionAccountInitialized();
+        checkIfActionAccountInitialized(transactionOptions);
 
         await this.contract.methods.cancelOrder(this.orderId).send(await createTransactionOptions(transactionOptions));
     }
@@ -192,7 +192,7 @@ class Order {
      * Starts suspended order
      */
     public async start(transactionOptions?: TransactionOptions) {
-        checkIfActionAccountInitialized();
+        checkIfActionAccountInitialized(transactionOptions);
 
         await this.contract.methods.startOrder(this.orderId).send(await createTransactionOptions(transactionOptions));
     }
@@ -204,7 +204,7 @@ class Order {
         encryptedResult = "",
         transactionOptions?: TransactionOptions,
     ) {
-        checkIfActionAccountInitialized();
+        checkIfActionAccountInitialized(transactionOptions);
 
         await this.contract.methods
             .updateOrderResult(this.orderId, encryptedResult)
@@ -220,7 +220,7 @@ class Order {
         encryptedError = "", // for SDK compatibility
         transactionOptions?: TransactionOptions,
     ) {
-        checkIfActionAccountInitialized();
+        checkIfActionAccountInitialized(transactionOptions);
 
         await this.contract.methods
             .completeOrder(this.orderId, status, status === OrderStatus.Error ? encryptedError : encryptedResult)
@@ -241,7 +241,7 @@ class Order {
         holdSum: number = 0,
         transactionOptions?: TransactionOptions,
     ) {
-        checkIfActionAccountInitialized();
+        checkIfActionAccountInitialized(transactionOptions);
 
         const tupleSubOrder = objectToTuple(subOrderInfo, OrderInfoStructure);
         const formattedExternalId = formatBytes32String(externalId);
@@ -274,7 +274,7 @@ class Order {
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
     public async withdrawProfit(transactionOptions?: TransactionOptions) {
-        checkIfActionAccountInitialized();
+        checkIfActionAccountInitialized(transactionOptions);
 
         await this.contract.methods
             .withdrawProfit(this.orderId)
@@ -286,7 +286,7 @@ class Order {
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
     public async withdrawChange(transactionOptions?: TransactionOptions) {
-        checkIfActionAccountInitialized();
+        checkIfActionAccountInitialized(transactionOptions);
 
         await this.contract.methods
             .withdrawChange(this.orderId)

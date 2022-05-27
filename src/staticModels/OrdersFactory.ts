@@ -4,12 +4,11 @@ import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
 import OrdersJSON from "../contracts/Orders.json";
 import { checkIfActionAccountInitialized, checkIfInitialized, createTransactionOptions, objectToTuple } from "../utils";
-import { OrderInfo, OrderInfoStructure } from "../types/Order";
+import { OrderInfo, OrderInfoStructure, OrderStatus } from "../types/Order";
 import { formatBytes32String } from "ethers/lib/utils";
 import { ContractEvent, TransactionOptions } from "../types/Web3";
 import { OrderCreatedEvent } from "../types/Events";
 import Superpro from "./Superpro";
-import { BigNumber } from 'ethers';
 
 class OrdersFactory {
     private static contract: Contract;
@@ -88,12 +87,73 @@ class OrdersFactory {
 
     public static onSubOrderCreated(callback: onSubOrderCreatedCallback): () => void {
         this.checkInit();
-        const logger = this.logger.child({ method: "SubOrderCreated" });
+        const logger = this.logger.child({ method: "onSubOrderCreated" });
 
         const subscription = this.contract.events
             .SubOrderCreated()
             .on("data", async (event: ContractEvent) => {
                 callback(<string>event.returnValues.subOrderId);
+            })
+            .on("error", (error: Error, receipt: string) => {
+                if (receipt) return; // Used to avoid logging of transaction rejected
+                logger.warn(error);
+            });
+
+        return () => subscription.unsubscribe();
+    }
+
+    public static onOrderStarted(callback: onOrderStartedCallback, orderId?: string): () => void {
+        const logger = this.logger.child({ method: "onOrderStarted" });
+
+        const subscription = this.contract.events
+            .OrderStarted()
+            .on("data", async (event: ContractEvent) => {
+                if (orderId && event.returnValues.orderId != orderId) {
+                    return;
+                }
+                callback(<string>event.returnValues.orderId, <string>event.returnValues.consumer);
+            })
+            .on("error", (error: Error, receipt: string) => {
+                if (receipt) return; // Used to avoid logging of transaction rejected
+                logger.warn(error);
+            });
+
+        return () => subscription.unsubscribe();
+    }
+
+    public static onOrdersStatusUpdated(callback: onOrdersStatusUpdatedCallback, orderId?: string): () => void {
+        const logger = this.logger.child({ method: "onOrdersStatusUpdated" });
+
+        const subscription = this.contract.events
+            .OrderStatusUpdated()
+            .on("data", async (event: ContractEvent) => {
+                if (orderId && event.returnValues.orderId != orderId) {
+                    return;
+                }
+                callback(<string>event.returnValues.orderId, <OrderStatus>event.returnValues.status);
+            })
+            .on("error", (error: Error, receipt: string) => {
+                if (receipt) return; // Used to avoid logging of transaction rejected
+                logger.warn(error);
+            });
+
+        return () => subscription.unsubscribe();
+    }
+
+    public static onOrderDepositRefilled(callback: onOrderDepositRefilledCallback, orderId?: string): () => void {
+        const logger = this.logger.child({ method: "onOrderDepositRefilled" });
+
+        const subscription = this.contract.events
+            .OrderDepositRefilled()
+            .on("data", async (event: ContractEvent) => {
+                if (orderId && event.returnValues.orderId != orderId) {
+                    return;
+                }
+                callback(
+                    <string>event.returnValues.orderId,
+                    <string>event.returnValues.consumer,
+                    <string>event.returnValues.amount
+                );
             })
             .on("error", (error: Error, receipt: string) => {
                 if (receipt) return; // Used to avoid logging of transaction rejected
@@ -162,7 +222,10 @@ class OrdersFactory {
     }
 }
 
-export type onOrderCreatedCallback = (address: string) => void;
-export type onSubOrderCreatedCallback = (address: string) => void;
+export type onOrderCreatedCallback = (orderId: string) => void;
+export type onSubOrderCreatedCallback = (orderId: string) => void;
+export type onOrderStartedCallback = (orderId: string, consumer: string) => void;
+export type onOrdersStatusUpdatedCallback = (orderId: string, status: OrderStatus) => void;
+export type onOrderDepositRefilledCallback = (orderId: string, consumer: string, amount: string) => void;
 
 export default OrdersFactory;

@@ -46,12 +46,15 @@ class OffersFactory {
         // TODO: offerId start at 1 in next smart-contract deployment
         const count = await this.contract.methods.getOffersCount().call();
         this.offers = this.offers || [];
-        for (let offerId = this.offers.length; offerId < count; ++offerId) {
+        const offersSet = new Set(this.offers);
+
+        for (let offerId = offersSet.size; offerId < count; ++offerId) {
             const offerType = (await this.contract.methods.getOfferType(offerId).call()) as OfferType;
             if (offerType !== OfferType.TeeOffer) {
-                this.offers.push(offerId.toString());
+                offersSet.add(offerId.toString());
             }
         }
+        this.offers = Array.from(offersSet);
 
         return this.offers;
     }

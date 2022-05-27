@@ -45,12 +45,15 @@ class TeeOffersFactory {
         // TODO: offerId start at 1 in next smart-contract deployment
         const count = await this.contract.methods.getOffersCount().call();
         this.teeOffers = this.teeOffers || [];
-        for (let offerId = this.teeOffers.length; offerId < count; ++offerId) {
+        const teeOfffersSet = new Set(this.teeOffers);
+
+        for (let offerId = teeOfffersSet.size; offerId < count; ++offerId) {
             const offerType = (await this.contract.methods.getOfferType(offerId).call()) as OfferType;
             if (offerType === OfferType.TeeOffer) {
-                this.teeOffers.push(offerId.toString());
+                teeOfffersSet.add(offerId.toString());
             }
         }
+        this.teeOffers = Array.from(teeOfffersSet);
 
         return this.teeOffers;
     }

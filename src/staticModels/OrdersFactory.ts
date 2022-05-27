@@ -44,11 +44,13 @@ class OrdersFactory {
     public static async getAllOrders(): Promise<string[]> {
         this.checkInit();
         this.orders = this.orders ?? [];
+        const ordersSet = new Set(this.orders);
 
         const ordersCount = await this.contract.methods.getOrdersCount().call();
-        for (let orderId = this.orders.length + 1; orderId <= ordersCount; orderId++) {
-            this.orders?.push(orderId.toString());
+        for (let orderId = ordersSet.size + 1; orderId <= ordersCount; orderId++) {
+            ordersSet.add(orderId.toString());
         }
+        this.orders = Array.from(ordersSet);
 
         return this.orders;
     }

@@ -20,6 +20,7 @@ class Offer {
     public origins?: Origins;
     public address: string;
     public offerId: number;
+    public disabledAfter?: number;
 
     constructor(offerId: string) {
         checkIfInitialized();
@@ -112,6 +113,15 @@ class Offer {
      */
     public async isRestrictedByOfferType(type: OfferType) {
         return await this.contract.methods.isOfferRestrictedByOfferType(this.offerId, type).call();
+    }
+
+    /**
+     * Function for fetching offer provider from blockchain
+     */
+    public async getDisabledAfter(): Promise<number> {
+        this.disabledAfter = +(await this.contract.methods.getOfferDisabledAfter(this.offerId).call());
+
+        return this.disabledAfter!;
     }
 }
 

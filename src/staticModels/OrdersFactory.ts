@@ -220,7 +220,7 @@ class OrdersFactory extends Model {
         checkIfActionAccountInitialized(transactionOptions);
 
         await this.execute(
-            contract.methods.refillOrderDeposit,
+            contract.methods.refillOrder,
             [orderAddress, amount],
             await createTransactionOptions(transactionOptions),
         );

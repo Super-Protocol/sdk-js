@@ -81,7 +81,7 @@ class OffersFactory extends Model {
         const offerInfoParams = objectToTuple(offerInfo, OfferInfoStructure);
         const formattedExternalId = formatBytes32String(externalId);
         await this.execute(
-            contract.methods.createOffer,
+            contract.methods.createValueOffer,
             [providerAuthorityAccount, offerInfoParams, formattedExternalId],
             await createTransactionOptions(transactionOptions),
         );

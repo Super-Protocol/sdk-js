@@ -176,7 +176,7 @@ class TeeOffer extends Model {
         checkIfActionAccountInitialized(transactionOptions);
 
         await TeeOffer.execute(
-            this.contract.methods.setName,
+            this.contract.methods.setOfferName,
             [this.offerId, name],
             await createTransactionOptions(transactionOptions),
         );
@@ -192,7 +192,7 @@ class TeeOffer extends Model {
         checkIfActionAccountInitialized(transactionOptions);
 
         await TeeOffer.execute(
-            this.contract.methods.setDescription,
+            this.contract.methods.setOfferDescription,
             [this.offerId, description],
             await createTransactionOptions(transactionOptions),
         );

@@ -8,8 +8,9 @@ import { ContractName } from "../types/Superpro";
 import { Contract } from "web3-eth-contract";
 import { TransactionOptions } from "../types/Web3";
 import Superpro from "./Superpro";
+import Model from "../utils/Model";
 
-class Staking {
+class Staking extends Model {
     private static contract: Contract;
     private static logger: typeof rootLogger;
 
@@ -61,7 +62,8 @@ class Staking {
     public static async stake(amount: number, transactionOptions?: TransactionOptions): Promise<void> {
         const contract = this.checkInit(transactionOptions);
         checkIfActionAccountInitialized(transactionOptions);
-        await contract.methods.stake(amount).send(await createTransactionOptions(transactionOptions));
+
+        await this.execute(contract.methods.stake, [amount], await createTransactionOptions(transactionOptions));
     }
 }
 

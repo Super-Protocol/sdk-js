@@ -1,12 +1,14 @@
 import { Contract } from "web3-eth-contract";
 import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
+import { Transaction } from "web3-core";
 import SuperproTokenJSON from "../contracts/SuperproToken.json";
 import store from "../store";
 import { checkIfActionAccountInitialized, checkIfInitialized, createTransactionOptions } from "../utils";
-import { TransactionOptions, Transaction } from "../types/Web3";
+import { TransactionOptions } from "../types/Web3";
+import Model from "../utils/Model";
 
-class SuperproToken {
+class SuperproToken extends Model {
     public static address: string;
     private static contract: Contract;
     private static logger: typeof rootLogger;
@@ -50,7 +52,13 @@ class SuperproToken {
         const contract = this.checkInit(transactionOptions);
         checkIfActionAccountInitialized(transactionOptions);
 
-        return await contract.methods.transfer(to, amount).send(await createTransactionOptions(transactionOptions));
+        const receipt = await this.execute(
+            contract.methods.transfer,
+            [to, amount],
+            await createTransactionOptions(transactionOptions),
+        );
+
+        return store.web3!.eth.getTransaction(receipt.transactionHash);
     }
 
     /**
@@ -67,7 +75,11 @@ class SuperproToken {
         const contract = this.checkInit(transactionOptions);
         checkIfActionAccountInitialized(transactionOptions);
 
-        await contract.methods.approve(address, amount).send(await createTransactionOptions(transactionOptions));
+        await this.execute(
+            contract.methods.approve,
+            [address, amount],
+            await createTransactionOptions(transactionOptions),
+        );
     }
 }
 

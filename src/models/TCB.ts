@@ -12,8 +12,9 @@ import LastBlocks from "../staticModels/LastBlocks";
 import { formatBytes32String, parseBytes32String } from "ethers/lib/utils";
 import { TcbStatus } from "./../types/Epoch";
 import Superpro from "../staticModels/Superpro";
+import Model from "../utils/Model";
 
-class TCB {
+class TCB extends Model {
     public address: string;
     private contract: Contract;
     private logger: typeof rootLogger;
@@ -28,6 +29,7 @@ class TCB {
     public quote?: string;
 
     constructor(address: string) {
+        super();
         checkIfInitialized();
 
         this.address = address;
@@ -88,7 +90,6 @@ class TCB {
         return this.L2_statusess!;
     }
 
-
     /**
      * Function for fetching TCB status
      */
@@ -114,9 +115,11 @@ class TCB {
 
         const fromattedDeviceId = formatBytes32String((Buffer.from(pb.deviceID, 'hex')).toString('base64'));
 
-        await this.contract.methods
-            .addData(pb.benchmark, pb.properties, fromattedDeviceId, quote)
-            .send(await createTransactionOptions(transactionOptions));
+        await TCB.execute(
+            this.contract.methods.addData,
+            [pb.benchmark, pb.properties, fromattedDeviceId, quote],
+            await createTransactionOptions(transactionOptions),
+        );
     }
 
     public async getEpochInfo(): Promise<TcbEpochInfo> {
@@ -169,7 +172,11 @@ class TCB {
         checkIfActionAccountInitialized(transactionOptions);
 
         if (marks.length > 0) {
-            await this.contract.methods.addMarks(lType, marks).send(await createTransactionOptions(transactionOptions));
+            await TCB.execute(
+                this.contract.methods.addMarks,
+                [lType, marks],
+                await createTransactionOptions(transactionOptions),
+            );
         } // else nothing
     }
 }

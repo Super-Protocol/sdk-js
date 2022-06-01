@@ -8,8 +8,9 @@ import { OfferInfo, OfferInfoStructure, OfferType } from "../types/Offer";
 import { TransactionOptions } from "../types/Web3";
 import { Origins, OriginsStructure } from "../types/Origins";
 import Superpro from "../staticModels/Superpro";
+import Model from "../utils/Model";
 
-class Offer {
+class Offer extends Model {
     private contract: Contract;
     private logger: typeof rootLogger;
 
@@ -23,6 +24,7 @@ class Offer {
     public disabledAfter?: number;
 
     constructor(offerId: string) {
+        super();
         checkIfInitialized();
 
         this.offerId = +offerId;
@@ -86,7 +88,11 @@ class Offer {
     public async disable(transactionOptions?: TransactionOptions) {
         checkIfActionAccountInitialized(transactionOptions);
 
-        await this.contract.methods.disableOffer(this.offerId).send(await createTransactionOptions(transactionOptions));
+        await Offer.execute(
+            this.contract.methods.disableOffer,
+            [this.offerId],
+            await createTransactionOptions(transactionOptions),
+        );
     }
 
     /**
@@ -96,7 +102,11 @@ class Offer {
     public async enable(transactionOptions?: TransactionOptions) {
         checkIfActionAccountInitialized(transactionOptions);
 
-        await this.contract.methods.enableOffer(this.offerId).send(await createTransactionOptions(transactionOptions));
+        await Offer.execute(
+            this.contract.methods.enableOffer,
+            [this.offerId],
+            await createTransactionOptions(transactionOptions),
+        );
     }
 
     /**

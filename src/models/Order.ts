@@ -4,7 +4,7 @@ import {
     OrderResult,
     OrderResultStructure,
     OrderStatus,
-    SubOrderParams
+    SubOrderParams,
 } from "../types/Order";
 import { Contract } from "web3-eth-contract";
 import rootLogger from "../logger";
@@ -23,8 +23,9 @@ import { Origins, OriginsStructure } from "../types/Origins";
 import { SubOrderCreatedEvent } from "../types/Events";
 import { formatBytes32String } from "ethers/lib/utils";
 import Superpro from "../staticModels/Superpro";
+import Model from "../utils/Model";
 
-class Order {
+class Order extends Model {
     private contract: Contract;
     private logger: typeof rootLogger;
 
@@ -38,6 +39,7 @@ class Order {
     public address: string;
 
     constructor(orderId: string) {
+        super();
         checkIfInitialized();
 
         this.orderId = +orderId;
@@ -137,9 +139,11 @@ class Order {
     public async setAwaitingPayment(value: boolean, transactionOptions?: TransactionOptions): Promise<void> {
         checkIfActionAccountInitialized(transactionOptions);
 
-        await this.contract.methods
-            .setAwaitingPayment(this.orderId, value)
-            .send(await createTransactionOptions(transactionOptions));
+        await Order.execute(
+            this.contract.methods.setAwaitingPayment,
+            [this.orderId, value],
+            await createTransactionOptions(transactionOptions),
+        );
     }
 
     /**
@@ -148,9 +152,11 @@ class Order {
     public async updateOrderPrice(price: string, transactionOptions?: TransactionOptions): Promise<void> {
         checkIfActionAccountInitialized(transactionOptions);
 
-        await this.contract.methods
-            .updateOrderPrice(this.orderId, price)
-            .send(await createTransactionOptions(transactionOptions));
+        await Order.execute(
+            this.contract.methods.updateOrderPrice,
+            [this.orderId, price],
+            await createTransactionOptions(transactionOptions),
+        );
     }
 
     /**
@@ -159,9 +165,11 @@ class Order {
     public async setDepositSpent(value: string, transactionOptions?: TransactionOptions): Promise<void> {
         checkIfActionAccountInitialized(transactionOptions);
 
-        await this.contract.methods
-            .setDepositSpent(this.orderId, value)
-            .send(await createTransactionOptions(transactionOptions));
+        await Order.execute(
+            this.contract.methods.setDepositSpent,
+            [this.orderId, value],
+            await createTransactionOptions(transactionOptions),
+        );
     }
 
     /**
@@ -171,9 +179,11 @@ class Order {
         checkIfActionAccountInitialized(transactionOptions);
 
         if (status === OrderStatus.Processing) {
-            await this.contract.methods
-                .processOrder(this.orderId)
-                .send(await createTransactionOptions(transactionOptions));
+            await Order.execute(
+                this.contract.methods.processOrder,
+                [this.orderId],
+                await createTransactionOptions(transactionOptions),
+            );
         }
 
         if (this.orderInfo) this.orderInfo.status = status;
@@ -185,7 +195,11 @@ class Order {
     public async cancelOrder(transactionOptions?: TransactionOptions) {
         checkIfActionAccountInitialized(transactionOptions);
 
-        await this.contract.methods.cancelOrder(this.orderId).send(await createTransactionOptions(transactionOptions));
+        await Order.execute(
+            this.contract.methods.cancelOrder,
+            [this.orderId],
+            await createTransactionOptions(transactionOptions),
+        );
     }
 
     /**
@@ -194,21 +208,24 @@ class Order {
     public async start(transactionOptions?: TransactionOptions) {
         checkIfActionAccountInitialized(transactionOptions);
 
-        await this.contract.methods.startOrder(this.orderId).send(await createTransactionOptions(transactionOptions));
+        await Order.execute(
+            this.contract.methods.startOrder,
+            [this.orderId],
+            await createTransactionOptions(transactionOptions),
+        );
     }
 
     /**
      * Updates order result
      */
-    public async updateOrderResult(
-        encryptedResult = "",
-        transactionOptions?: TransactionOptions,
-    ) {
+    public async updateOrderResult(encryptedResult = "", transactionOptions?: TransactionOptions) {
         checkIfActionAccountInitialized(transactionOptions);
 
-        await this.contract.methods
-            .updateOrderResult(this.orderId, encryptedResult)
-            .send(await createTransactionOptions(transactionOptions));
+        await Order.execute(
+            this.contract.methods.updateOrderResult,
+            [this.orderId, encryptedResult],
+            await createTransactionOptions(transactionOptions),
+        );
     }
 
     /**
@@ -222,9 +239,11 @@ class Order {
     ) {
         checkIfActionAccountInitialized(transactionOptions);
 
-        await this.contract.methods
-            .completeOrder(this.orderId, status, status === OrderStatus.Error ? encryptedError : encryptedResult)
-            .send(await createTransactionOptions(transactionOptions));
+        await Order.execute(
+            this.contract.methods.completeOrder,
+            [this.orderId, status, status === OrderStatus.Error ? encryptedError : encryptedResult],
+            await createTransactionOptions(transactionOptions),
+        );
     }
 
     /**
@@ -250,9 +269,11 @@ class Order {
             externalId: formattedExternalId,
             holdSum,
         };
-        await this.contract.methods
-            .createSubOrder(this.orderId, tupleSubOrder, params)
-            .send(await createTransactionOptions(transactionOptions));
+        await Order.execute(
+            this.contract.methods.createSubOrder,
+            [this.orderId, tupleSubOrder, params],
+            await createTransactionOptions(transactionOptions),
+        );
     }
 
     public async getSubOrder(consumer: string, externalId: string): Promise<SubOrderCreatedEvent> {
@@ -276,9 +297,11 @@ class Order {
     public async withdrawProfit(transactionOptions?: TransactionOptions) {
         checkIfActionAccountInitialized(transactionOptions);
 
-        await this.contract.methods
-            .withdrawProfit(this.orderId)
-            .send(await createTransactionOptions(transactionOptions));
+        await Order.execute(
+            this.contract.methods.withdrawProfit,
+            [this.orderId],
+            await createTransactionOptions(transactionOptions),
+        );
     }
 
     /**
@@ -288,9 +311,11 @@ class Order {
     public async withdrawChange(transactionOptions?: TransactionOptions) {
         checkIfActionAccountInitialized(transactionOptions);
 
-        await this.contract.methods
-            .withdrawChange(this.orderId)
-            .send(await createTransactionOptions(transactionOptions));
+        await Order.execute(
+            this.contract.methods.withdrawChange,
+            [this.orderId],
+            await createTransactionOptions(transactionOptions),
+        );
     }
 
     /**

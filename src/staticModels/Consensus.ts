@@ -12,8 +12,9 @@ import { ONE_DAY } from "../constants";
 import { PublicData, LType } from "../types/TcbData";
 import { TransactionOptions } from "../types/Web3";
 import Superpro from "./Superpro";
+import Model from "../utils/Model";
 
-class Consensus {
+class Consensus extends Model {
     public static address: string;
     private static contract: Contract;
     private static logger: typeof rootLogger;
@@ -53,7 +54,11 @@ class Consensus {
     }
 
     private static async addToSupply(tcbAddress: string, transactionOptions?: TransactionOptions) {
-        await this.contract.methods.addToSupply(tcbAddress).send(await createTransactionOptions(transactionOptions));
+        await this.execute(
+            this.contract.methods.addToSupply,
+            [tcbAddress],
+            await createTransactionOptions(transactionOptions),
+        );
     }
 
     private static async addMarks(
@@ -167,7 +172,11 @@ class Consensus {
         const contract = this.checkInit(transactionOptions);
         checkIfActionAccountInitialized();
 
-        await contract.methods.claimRewards(tcbAddress).send(await createTransactionOptions(transactionOptions));
+        await this.execute(
+            contract.methods.claimRewards,
+            [tcbAddress],
+            await createTransactionOptions(transactionOptions),
+        );
     }
 
     /**

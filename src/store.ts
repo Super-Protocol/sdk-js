@@ -7,6 +7,7 @@ export type Store = {
     actionAccount?: string;
     gasLimit: number;
     gasPrice: string;
+    keys: Record<string, string>;
 };
 
 const store: Store = {
@@ -15,6 +16,7 @@ const store: Store = {
     actionAccount: undefined,
     gasLimit: defaultGasLimit,
     gasPrice: defaultGasPrice,
+    keys: {},
 };
 
 export default store;

@@ -57,7 +57,9 @@ class BlockchainConnector {
         checkIfInitialized();
         const actionAccount = store.web3!.eth.accounts.wallet.add(actionAccountKey).address;
         if (!store.actionAccount) store.actionAccount = actionAccount;
+        if (!store.keys[actionAccount]) store.keys[actionAccount] = actionAccountKey;
         if (!this.defaultActionAccount) this.defaultActionAccount = actionAccount;
+
         return actionAccount;
     }
 
@@ -84,11 +86,11 @@ class BlockchainConnector {
         addresses: string[],
         startBlock?: number,
         lastBlock?: number,
-        batchSize: number = BLOCK_SIZE_TO_FETCH_TRANSACTION): Promise<BlockchainTransaction>{
+        batchSize: number = BLOCK_SIZE_TO_FETCH_TRANSACTION,
+    ): Promise<BlockchainTransaction> {
+        const endBlock = lastBlock ? lastBlock : await store.web3!.eth.getBlockNumber();
 
-        const endBlock = lastBlock? lastBlock: await store.web3!.eth.getBlockNumber();
-
-        if (!startBlock) startBlock = endBlock;
+        if (!startBlock) startBlock = Math.max(endBlock - 1000, 0);
 
         const blocksNumbersToFetch: number[][] = [[]];
         let activeStep = blocksNumbersToFetch[0];

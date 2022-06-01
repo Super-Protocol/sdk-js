@@ -9,8 +9,9 @@ import { TransactionOptions } from "../types/Web3";
 import { OfferType } from "../types/Offer";
 import { Origins, OriginsStructure } from "../types/Origins";
 import Superpro from "../staticModels/Superpro";
+import Model from "../utils/Model";
 
-class TeeOffer {
+class TeeOffer extends Model {
     private contract: Contract;
     private logger: typeof rootLogger;
 
@@ -29,6 +30,7 @@ class TeeOffer {
     public address: string;
 
     constructor(offerId: string) {
+        super();
         checkIfInitialized();
 
         this.offerId = +offerId;
@@ -157,9 +159,11 @@ class TeeOffer {
     public async addTlb(tlb: string, transactionOptions?: TransactionOptions): Promise<void> {
         checkIfActionAccountInitialized(transactionOptions);
 
-        await this.contract.methods
-            .setTeeOfferTlb(this.offerId, tlb)
-            .send(await createTransactionOptions(transactionOptions));
+        await TeeOffer.execute(
+            this.contract.methods.setTeeOfferTlb,
+            [this.offerId, tlb],
+            await createTransactionOptions(transactionOptions),
+        );
         if (this.offerInfo) this.offerInfo.tlb = tlb;
     }
 
@@ -171,9 +175,11 @@ class TeeOffer {
     public async setName(name: string, transactionOptions?: TransactionOptions): Promise<void> {
         checkIfActionAccountInitialized(transactionOptions);
 
-        await this.contract.methods
-            .setOfferName(this.offerId, name)
-            .send(await createTransactionOptions(transactionOptions));
+        await TeeOffer.execute(
+            this.contract.methods.setName,
+            [this.offerId, name],
+            await createTransactionOptions(transactionOptions),
+        );
         if (this.offerInfo) this.offerInfo.name = name;
     }
 
@@ -185,9 +191,11 @@ class TeeOffer {
     public async setDescription(description: string, transactionOptions?: TransactionOptions): Promise<void> {
         checkIfActionAccountInitialized(transactionOptions);
 
-        await this.contract.methods
-            .setOfferDescription(this.offerId, description)
-            .send(await createTransactionOptions(transactionOptions));
+        await TeeOffer.execute(
+            this.contract.methods.setDescription,
+            [this.offerId, description],
+            await createTransactionOptions(transactionOptions),
+        );
         if (this.offerInfo) this.offerInfo.description = description;
     }
 
@@ -199,9 +207,11 @@ class TeeOffer {
     public async setKeys(argsPublicKey: string, transactionOptions?: TransactionOptions): Promise<void> {
         checkIfActionAccountInitialized(transactionOptions);
 
-        await this.contract.methods
-            .setOfferPublicKey(this.offerId, argsPublicKey)
-            .send(await createTransactionOptions(transactionOptions));
+        await TeeOffer.execute(
+            this.contract.methods.setOfferPublicKey,
+            [this.offerId, argsPublicKey],
+            await createTransactionOptions(transactionOptions),
+        );
         if (this.offerInfo) {
             this.offerInfo.argsPublicKey = argsPublicKey;
         }
@@ -214,7 +224,11 @@ class TeeOffer {
     public async disable(transactionOptions?: TransactionOptions) {
         checkIfActionAccountInitialized(transactionOptions);
 
-        await this.contract.methods.disableOffer(this.offerId).send(await createTransactionOptions(transactionOptions));
+        await TeeOffer.execute(
+            this.contract.methods.disableOffer,
+            [this.offerId],
+            await createTransactionOptions(transactionOptions),
+        );
     }
 
     /**
@@ -224,7 +238,11 @@ class TeeOffer {
     public async enable(transactionOptions?: TransactionOptions) {
         checkIfActionAccountInitialized(transactionOptions);
 
-        await this.contract.methods.enableOffer(this.offerId).send(await createTransactionOptions(transactionOptions));
+        await TeeOffer.execute(
+            this.contract.methods.enableOffer,
+            [this.offerId],
+            await createTransactionOptions(transactionOptions),
+        );
     }
 }
 

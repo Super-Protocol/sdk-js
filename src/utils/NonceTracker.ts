@@ -31,9 +31,8 @@ class NonceTracker {
         }
 
         const txCount = await this.getTransactionCount(address);
-
-        this.store[address]++;
         const nextNonce = txCount + (this.store[address] | 0);
+        this.store[address]++;
         let used = false;
 
         return {

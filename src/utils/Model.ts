@@ -4,6 +4,7 @@ import NonceTracker from "./NonceTracker";
 import store from "../store";
 import { TransactionOptions } from "../types/Web3";
 import { checkIfActionAccountInitialized, checkIfInitialized, createTransactionOptions } from "../utils";
+import Superpro from "../staticModels/Superpro";
 
 type ArgumentsType = any | any[];
 
@@ -39,7 +40,7 @@ abstract class Model {
 
         try {
             const options = {
-                to: transaction._parent._address,
+                to: Superpro.address,
                 data: transaction.encodeABI(),
                 nonce: nonce.nextNonce,
                 ...rawOptions,

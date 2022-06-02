@@ -37,24 +37,34 @@ abstract class Model {
 
         const nonce = await NonceTracker.generateNextNonce(rawOptions.from);
 
-        const options = {
-            to: transaction._parent._address,
-            data: transaction.encodeABI(),
-            nonce: nonce,
-            ...rawOptions,
-        };
+        try {
+            const options = {
+                to: transaction._parent._address,
+                data: transaction.encodeABI(),
+                nonce: nonce.nextNonce,
+                ...rawOptions,
+            };
 
-        if (store.keys[rawOptions.from]) {
-            const key = store.keys[rawOptions.from];
-            const signed = await web3.eth.accounts.signTransaction(options, key);
-            if (!signed.rawTransaction) {
-                throw new Error("Failed to sign transaction");
+            let tx: TransactionReceipt;
+            if (store.keys[rawOptions.from]) {
+                const key = store.keys[rawOptions.from];
+                const signed = await web3.eth.accounts.signTransaction(options, key);
+                if (!signed.rawTransaction) {
+                    throw new Error("Failed to sign transaction");
+                }
+
+                tx = await web3.eth.sendSignedTransaction(signed.rawTransaction);
+            } else {
+                tx = await web3.eth.sendTransaction(options);
             }
 
-            return web3.eth.sendSignedTransaction(signed.rawTransaction);
-        }
+            nonce.done();
 
-        return web3.eth.sendTransaction(options);
+            return tx;
+        } catch (error) {
+            nonce.done();
+            throw error;
+        }
     }
 }
 

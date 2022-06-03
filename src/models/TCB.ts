@@ -5,7 +5,7 @@ import { AbiItem } from "web3-utils";
 import OffersJSON from "../contracts/Offers.json";
 import store from "../store";
 import { PublicData, LType, TcbEpochInfo, PublicDataStructure, TcbEpochInfoStructure } from "../types/TcbData";
-import { checkIfActionAccountInitialized, checkIfInitialized, createTransactionOptions, tupleToObject } from "../utils";
+import { checkIfActionAccountInitialized, checkIfInitialized, tupleToObject } from "../utils";
 import { TransactionOptions } from "../types/Web3";
 import Suspicious from "../staticModels/Suspicious";
 import LastBlocks from "../staticModels/LastBlocks";
@@ -118,7 +118,7 @@ class TCB extends Model {
         await TCB.execute(
             this.contract.methods.addData,
             [pb.benchmark, pb.properties, fromattedDeviceId, quote],
-            await createTransactionOptions(transactionOptions),
+            transactionOptions,
         );
     }
 
@@ -172,11 +172,7 @@ class TCB extends Model {
         checkIfActionAccountInitialized(transactionOptions);
 
         if (marks.length > 0) {
-            await TCB.execute(
-                this.contract.methods.addMarks,
-                [lType, marks],
-                await createTransactionOptions(transactionOptions),
-            );
+            await TCB.execute(this.contract.methods.addMarks, [lType, marks], transactionOptions);
         } // else nothing
     }
 }

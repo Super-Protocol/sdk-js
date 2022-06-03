@@ -3,7 +3,7 @@ import { Contract } from "web3-eth-contract";
 import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
 import OrdersJSON from "../contracts/Orders.json";
-import { checkIfActionAccountInitialized, checkIfInitialized, createTransactionOptions, objectToTuple } from "../utils";
+import { checkIfActionAccountInitialized, checkIfInitialized, objectToTuple } from "../utils";
 import { OrderInfo, OrderInfoStructure, OrderStatus } from "../types/Order";
 import { formatBytes32String } from "ethers/lib/utils";
 import { ContractEvent, TransactionOptions } from "../types/Web3";
@@ -186,7 +186,7 @@ class OrdersFactory extends Model {
         await this.execute(
             contract.methods.createOrder,
             [orderInfoArguments, holdDeposit, suspended, formattedExternalId],
-            await createTransactionOptions(transactionOptions),
+            transactionOptions,
         );
     }
 
@@ -219,11 +219,7 @@ class OrdersFactory extends Model {
         const contract = this.checkInit(transactionOptions);
         checkIfActionAccountInitialized(transactionOptions);
 
-        await this.execute(
-            contract.methods.refillOrder,
-            [orderAddress, amount],
-            await createTransactionOptions(transactionOptions),
-        );
+        await this.execute(contract.methods.refillOrder, [orderAddress, amount], transactionOptions);
     }
 }
 

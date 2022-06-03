@@ -7,7 +7,7 @@ import OffersJSON from "../contracts/Offers.json";
 import TCB from "../models/TCB";
 import LastBlocks from "./LastBlocks";
 import Suspicious from "./Suspicious";
-import { checkIfActionAccountInitialized, checkIfInitialized, createTransactionOptions, getTimestamp } from "../utils";
+import { checkIfActionAccountInitialized, checkIfInitialized, getTimestamp } from "../utils";
 import { ONE_DAY } from "../constants";
 import { PublicData, LType } from "../types/TcbData";
 import { TransactionOptions } from "../types/Web3";
@@ -47,18 +47,14 @@ class Consensus extends Model {
     }
 
     private static async initTcb(teeOfferAddress: string, transactionOptions?: TransactionOptions): Promise<TCB> {
-        await this.contract.methods.initTcb(teeOfferAddress).send(await createTransactionOptions(transactionOptions));
+        await this.execute(this.contract.methods.initTcb, [teeOfferAddress], transactionOptions);
 
         const tcbAddress = await this.getInitedTcb(teeOfferAddress);
         return new TCB(tcbAddress);
     }
 
     private static async addToSupply(tcbAddress: string, transactionOptions?: TransactionOptions) {
-        await this.execute(
-            this.contract.methods.addToSupply,
-            [tcbAddress],
-            await createTransactionOptions(transactionOptions),
-        );
+        await this.execute(this.contract.methods.addToSupply, [tcbAddress], transactionOptions);
     }
 
     private static async addMarks(
@@ -172,11 +168,7 @@ class Consensus extends Model {
         const contract = this.checkInit(transactionOptions);
         checkIfActionAccountInitialized();
 
-        await this.execute(
-            contract.methods.claimRewards,
-            [tcbAddress],
-            await createTransactionOptions(transactionOptions),
-        );
+        await this.execute(contract.methods.claimRewards, [tcbAddress], transactionOptions);
     }
 
     /**
@@ -193,11 +185,7 @@ class Consensus extends Model {
         const contract = this.checkInit(transactionOptions);
         checkIfActionAccountInitialized();
 
-        await this.execute(
-            contract.methods.unlockRewards,
-            [tcbAddress, unlockAmount],
-            await createTransactionOptions(transactionOptions),
-        );
+        await this.execute(contract.methods.unlockRewards, [tcbAddress, unlockAmount], transactionOptions);
     }
 
     /**

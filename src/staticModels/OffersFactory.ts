@@ -3,7 +3,7 @@ import { Contract } from "web3-eth-contract";
 import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
 import OffersJSON from "../contracts/Offers.json";
-import { checkIfActionAccountInitialized, checkIfInitialized, createTransactionOptions, objectToTuple } from "../utils";
+import { checkIfActionAccountInitialized, checkIfInitialized, objectToTuple } from "../utils";
 import { OfferInfo, OfferInfoV1, OfferInfoStructure, OfferType } from "../types/Offer";
 import { formatBytes32String } from "ethers/lib/utils";
 import { ContractEvent, TransactionOptions } from "../types/Web3";
@@ -83,7 +83,7 @@ class OffersFactory extends Model {
         await this.execute(
             contract.methods.createValueOffer,
             [providerAuthorityAccount, offerInfoParams, formattedExternalId],
-            await createTransactionOptions(transactionOptions),
+            transactionOptions,
         );
     }
 

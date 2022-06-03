@@ -3,7 +3,7 @@ import { Contract } from "web3-eth-contract";
 import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
 // import LastBlocksJSON from "../contracts/LastBlocks.json";
-import { checkIfInitialized, createTransactionOptions, checkIfActionAccountInitialized } from "../utils";
+import { checkIfInitialized, checkIfActionAccountInitialized } from "../utils";
 import { TransactionOptions } from "../types/Web3";
 
 class LastBlocks {

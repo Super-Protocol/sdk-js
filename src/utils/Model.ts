@@ -47,6 +47,8 @@ abstract class Model {
                 ...rawOptions,
             };
 
+            console.log(options);
+
             let tx: TransactionReceipt;
             if (store.keys[rawOptions.from]) {
                 const key = store.keys[rawOptions.from];

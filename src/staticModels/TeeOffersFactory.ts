@@ -3,15 +3,16 @@ import { Contract } from "web3-eth-contract";
 import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
 import OffersJSON from "../contracts/Offers.json";
-import { checkIfActionAccountInitialized, checkIfInitialized, createTransactionOptions, objectToTuple } from "../utils";
+import { checkIfActionAccountInitialized, checkIfInitialized, objectToTuple } from "../utils";
 import { formatBytes32String } from "ethers/lib/utils";
 import { ContractEvent, TransactionOptions } from "../types/Web3";
 import { TeeOfferInfo, TeeOfferInfoStructure } from "../types/TeeOffer";
 import { OfferType } from "../types/Offer";
 import { OfferCreatedEvent } from "../types/Events";
 import Superpro from "./Superpro";
+import Model from "../utils/Model";
 
-class TeeOffersFactory {
+class TeeOffersFactory extends Model {
     private static contract: Contract;
     private static logger: typeof rootLogger;
 
@@ -76,9 +77,11 @@ class TeeOffersFactory {
         // Converts offer info to array of arrays (used in blockchain)
         const teeOfferInfoParams = objectToTuple(teeOfferInfo, TeeOfferInfoStructure);
         const formattedExternalId = formatBytes32String(externalId);
-        await contract.methods
-            .createTeeOffer(providerAuthorityAccount, teeOfferInfoParams, formattedExternalId)
-            .send(await createTransactionOptions(transactionOptions));
+        await this.execute(
+            contract.methods.createTeeOffer,
+            [providerAuthorityAccount, teeOfferInfoParams, formattedExternalId],
+            transactionOptions,
+        );
     }
 
     public static async getOffer(creator: string, externalId: string): Promise<OfferCreatedEvent> {

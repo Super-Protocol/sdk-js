@@ -4,7 +4,7 @@ import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
 import ProvidersJSON from "../contracts/Providers.json";
 import ProvidersOffersJSON from "../contracts/ProvidersOffers.json";
-import { checkIfInitialized, createTransactionOptions, checkIfActionAccountInitialized, objectToTuple } from "../utils";
+import { checkIfInitialized, checkIfActionAccountInitialized, objectToTuple } from "../utils";
 import { ProviderInfo, ProviderInfoStructure } from "../types/Provider";
 import { formatBytes32String } from "ethers/lib/utils";
 import { ContractEvent, TransactionOptions } from "../types/Web3";
@@ -84,11 +84,7 @@ class ProviderRegistry extends Model {
         checkIfActionAccountInitialized(transactionOptions);
 
         const providerInfoParams = objectToTuple(providerInfo, ProviderInfoStructure);
-        await this.execute(
-            contract.methods.registerProvider,
-            [providerInfoParams],
-            await createTransactionOptions(transactionOptions),
-        );
+        await this.execute(contract.methods.registerProvider, [providerInfoParams], transactionOptions);
     }
 
     /**
@@ -101,11 +97,7 @@ class ProviderRegistry extends Model {
         const contract = this.checkInitProviders(transactionOptions);
         checkIfActionAccountInitialized(transactionOptions);
 
-        await this.execute(
-            contract.methods.refillProviderSecurityDepo,
-            [amount],
-            await createTransactionOptions(transactionOptions),
-        );
+        await this.execute(contract.methods.refillProviderSecurityDepo, [amount], transactionOptions);
     }
 
     /**
@@ -118,11 +110,7 @@ class ProviderRegistry extends Model {
         const contract = this.checkInitProviders(transactionOptions);
         checkIfActionAccountInitialized(transactionOptions);
 
-        await this.execute(
-            contract.methods.returnProviderSecurityDepo,
-            [amount],
-            await createTransactionOptions(transactionOptions),
-        );
+        await this.execute(contract.methods.returnProviderSecurityDepo, [amount], transactionOptions);
     }
 
     /**

@@ -4,7 +4,7 @@ import { AbiItem } from "web3-utils";
 import { Transaction } from "web3-core";
 import SuperproTokenJSON from "../contracts/SuperproToken.json";
 import store from "../store";
-import { checkIfActionAccountInitialized, checkIfInitialized, createTransactionOptions } from "../utils";
+import { checkIfActionAccountInitialized, checkIfInitialized } from "../utils";
 import { TransactionOptions } from "../types/Web3";
 import Model from "../utils/Model";
 
@@ -55,7 +55,7 @@ class SuperproToken extends Model {
         const receipt = await this.execute(
             contract.methods.transfer,
             [to, amount],
-            await createTransactionOptions(transactionOptions),
+            transactionOptions,
             SuperproToken.address,
         );
 
@@ -76,12 +76,7 @@ class SuperproToken extends Model {
         const contract = this.checkInit(transactionOptions);
         checkIfActionAccountInitialized(transactionOptions);
 
-        await this.execute(
-            contract.methods.approve,
-            [address, amount],
-            await createTransactionOptions(transactionOptions),
-            SuperproToken.address,
-        );
+        await this.execute(contract.methods.approve, [address, amount], transactionOptions, SuperproToken.address);
     }
 }
 

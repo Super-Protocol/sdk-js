@@ -2,7 +2,7 @@ import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
 import StakingJSON from "../contracts/Staking.json";
 import store from "../store";
-import { checkIfActionAccountInitialized, checkIfInitialized, createTransactionOptions, tupleToObject } from "../utils";
+import { checkIfActionAccountInitialized, checkIfInitialized, tupleToObject } from "../utils";
 import { LockInfo, LockInfoStructure, StakeInfo, StakeInfoStructure } from "../types/Staking";
 import { ContractName } from "../types/Superpro";
 import { Contract } from "web3-eth-contract";
@@ -63,7 +63,7 @@ class Staking extends Model {
         const contract = this.checkInit(transactionOptions);
         checkIfActionAccountInitialized(transactionOptions);
 
-        await this.execute(contract.methods.stake, [amount], await createTransactionOptions(transactionOptions));
+        await this.execute(contract.methods.stake, [amount], transactionOptions);
     }
 }
 

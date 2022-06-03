@@ -3,7 +3,7 @@ import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
 import OffersJSON from "../contracts/Offers.json";
 import store from "../store";
-import { checkIfActionAccountInitialized, checkIfInitialized, createTransactionOptions, tupleToObject } from "../utils";
+import { checkIfActionAccountInitialized, checkIfInitialized, tupleToObject } from "../utils";
 import { TeeOfferInfo, TeeOfferInfoStructure } from "../types/TeeOffer";
 import { TransactionOptions } from "../types/Web3";
 import { OfferType } from "../types/Offer";
@@ -159,11 +159,7 @@ class TeeOffer extends Model {
     public async addTlb(tlb: string, transactionOptions?: TransactionOptions): Promise<void> {
         checkIfActionAccountInitialized(transactionOptions);
 
-        await TeeOffer.execute(
-            this.contract.methods.setTeeOfferTlb,
-            [this.offerId, tlb],
-            await createTransactionOptions(transactionOptions),
-        );
+        await TeeOffer.execute(this.contract.methods.setTeeOfferTlb, [this.offerId, tlb], transactionOptions);
         if (this.offerInfo) this.offerInfo.tlb = tlb;
     }
 
@@ -175,11 +171,7 @@ class TeeOffer extends Model {
     public async setName(name: string, transactionOptions?: TransactionOptions): Promise<void> {
         checkIfActionAccountInitialized(transactionOptions);
 
-        await TeeOffer.execute(
-            this.contract.methods.setOfferName,
-            [this.offerId, name],
-            await createTransactionOptions(transactionOptions),
-        );
+        await TeeOffer.execute(this.contract.methods.setOfferName, [this.offerId, name], transactionOptions);
         if (this.offerInfo) this.offerInfo.name = name;
     }
 
@@ -194,7 +186,7 @@ class TeeOffer extends Model {
         await TeeOffer.execute(
             this.contract.methods.setOfferDescription,
             [this.offerId, description],
-            await createTransactionOptions(transactionOptions),
+            transactionOptions,
         );
         if (this.offerInfo) this.offerInfo.description = description;
     }
@@ -210,7 +202,7 @@ class TeeOffer extends Model {
         await TeeOffer.execute(
             this.contract.methods.setOfferPublicKey,
             [this.offerId, argsPublicKey],
-            await createTransactionOptions(transactionOptions),
+            transactionOptions,
         );
         if (this.offerInfo) {
             this.offerInfo.argsPublicKey = argsPublicKey;
@@ -224,11 +216,7 @@ class TeeOffer extends Model {
     public async disable(transactionOptions?: TransactionOptions) {
         checkIfActionAccountInitialized(transactionOptions);
 
-        await TeeOffer.execute(
-            this.contract.methods.disableOffer,
-            [this.offerId],
-            await createTransactionOptions(transactionOptions),
-        );
+        await TeeOffer.execute(this.contract.methods.disableOffer, [this.offerId], transactionOptions);
     }
 
     /**
@@ -238,11 +226,7 @@ class TeeOffer extends Model {
     public async enable(transactionOptions?: TransactionOptions) {
         checkIfActionAccountInitialized(transactionOptions);
 
-        await TeeOffer.execute(
-            this.contract.methods.enableOffer,
-            [this.offerId],
-            await createTransactionOptions(transactionOptions),
-        );
+        await TeeOffer.execute(this.contract.methods.enableOffer, [this.offerId], transactionOptions);
     }
 }
 

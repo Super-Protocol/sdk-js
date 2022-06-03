@@ -12,13 +12,7 @@ import { ContractEvent, TransactionOptions } from "../types/Web3";
 import { AbiItem } from "web3-utils";
 import OrdersJSON from "../contracts/Orders.json";
 import store from "../store";
-import {
-    checkIfActionAccountInitialized,
-    checkIfInitialized,
-    createTransactionOptions,
-    objectToTuple,
-    tupleToObject,
-} from "../utils";
+import { checkIfActionAccountInitialized, checkIfInitialized, objectToTuple, tupleToObject } from "../utils";
 import { Origins, OriginsStructure } from "../types/Origins";
 import { SubOrderCreatedEvent } from "../types/Events";
 import { formatBytes32String } from "ethers/lib/utils";
@@ -139,11 +133,7 @@ class Order extends Model {
     public async setAwaitingPayment(value: boolean, transactionOptions?: TransactionOptions): Promise<void> {
         checkIfActionAccountInitialized(transactionOptions);
 
-        await Order.execute(
-            this.contract.methods.setAwaitingPayment,
-            [this.orderId, value],
-            await createTransactionOptions(transactionOptions),
-        );
+        await Order.execute(this.contract.methods.setAwaitingPayment, [this.orderId, value], transactionOptions);
     }
 
     /**
@@ -152,11 +142,7 @@ class Order extends Model {
     public async updateOrderPrice(price: string, transactionOptions?: TransactionOptions): Promise<void> {
         checkIfActionAccountInitialized(transactionOptions);
 
-        await Order.execute(
-            this.contract.methods.updateOrderPrice,
-            [this.orderId, price],
-            await createTransactionOptions(transactionOptions),
-        );
+        await Order.execute(this.contract.methods.updateOrderPrice, [this.orderId, price], transactionOptions);
     }
 
     /**
@@ -165,11 +151,7 @@ class Order extends Model {
     public async setDepositSpent(value: string, transactionOptions?: TransactionOptions): Promise<void> {
         checkIfActionAccountInitialized(transactionOptions);
 
-        await Order.execute(
-            this.contract.methods.setDepositSpent,
-            [this.orderId, value],
-            await createTransactionOptions(transactionOptions),
-        );
+        await Order.execute(this.contract.methods.setDepositSpent, [this.orderId, value], transactionOptions);
     }
 
     /**
@@ -179,11 +161,7 @@ class Order extends Model {
         checkIfActionAccountInitialized(transactionOptions);
 
         if (status === OrderStatus.Processing) {
-            await Order.execute(
-                this.contract.methods.processOrder,
-                [this.orderId],
-                await createTransactionOptions(transactionOptions),
-            );
+            await Order.execute(this.contract.methods.processOrder, [this.orderId], transactionOptions);
         }
 
         if (this.orderInfo) this.orderInfo.status = status;
@@ -195,11 +173,7 @@ class Order extends Model {
     public async cancelOrder(transactionOptions?: TransactionOptions) {
         checkIfActionAccountInitialized(transactionOptions);
 
-        await Order.execute(
-            this.contract.methods.cancelOrder,
-            [this.orderId],
-            await createTransactionOptions(transactionOptions),
-        );
+        await Order.execute(this.contract.methods.cancelOrder, [this.orderId], transactionOptions);
     }
 
     /**
@@ -208,11 +182,7 @@ class Order extends Model {
     public async start(transactionOptions?: TransactionOptions) {
         checkIfActionAccountInitialized(transactionOptions);
 
-        await Order.execute(
-            this.contract.methods.startOrder,
-            [this.orderId],
-            await createTransactionOptions(transactionOptions),
-        );
+        await Order.execute(this.contract.methods.startOrder, [this.orderId], transactionOptions);
     }
 
     /**
@@ -224,7 +194,7 @@ class Order extends Model {
         await Order.execute(
             this.contract.methods.updateOrderResult,
             [this.orderId, encryptedResult],
-            await createTransactionOptions(transactionOptions),
+            transactionOptions,
         );
     }
 
@@ -242,7 +212,7 @@ class Order extends Model {
         await Order.execute(
             this.contract.methods.completeOrder,
             [this.orderId, status, status === OrderStatus.Error ? encryptedError : encryptedResult],
-            await createTransactionOptions(transactionOptions),
+            transactionOptions,
         );
     }
 
@@ -272,7 +242,7 @@ class Order extends Model {
         await Order.execute(
             this.contract.methods.createSubOrder,
             [this.orderId, tupleSubOrder, params],
-            await createTransactionOptions(transactionOptions),
+            transactionOptions,
         );
     }
 
@@ -297,11 +267,7 @@ class Order extends Model {
     public async withdrawProfit(transactionOptions?: TransactionOptions) {
         checkIfActionAccountInitialized(transactionOptions);
 
-        await Order.execute(
-            this.contract.methods.withdrawProfit,
-            [this.orderId],
-            await createTransactionOptions(transactionOptions),
-        );
+        await Order.execute(this.contract.methods.withdrawProfit, [this.orderId], transactionOptions);
     }
 
     /**
@@ -311,11 +277,7 @@ class Order extends Model {
     public async withdrawChange(transactionOptions?: TransactionOptions) {
         checkIfActionAccountInitialized(transactionOptions);
 
-        await Order.execute(
-            this.contract.methods.withdrawChange,
-            [this.orderId],
-            await createTransactionOptions(transactionOptions),
-        );
+        await Order.execute(this.contract.methods.withdrawChange, [this.orderId], transactionOptions);
     }
 
     /**

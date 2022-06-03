@@ -3,7 +3,7 @@ import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
 import OffersJSON from "../contracts/Offers.json";
 import store from "../store";
-import { checkIfActionAccountInitialized, checkIfInitialized, createTransactionOptions, tupleToObject } from "../utils";
+import { checkIfActionAccountInitialized, checkIfInitialized, tupleToObject } from "../utils";
 import { OfferInfo, OfferInfoStructure, OfferType } from "../types/Offer";
 import { TransactionOptions } from "../types/Web3";
 import { Origins, OriginsStructure } from "../types/Origins";
@@ -88,11 +88,7 @@ class Offer extends Model {
     public async disable(transactionOptions?: TransactionOptions) {
         checkIfActionAccountInitialized(transactionOptions);
 
-        await Offer.execute(
-            this.contract.methods.disableOffer,
-            [this.offerId],
-            await createTransactionOptions(transactionOptions),
-        );
+        await Offer.execute(this.contract.methods.disableOffer, [this.offerId], transactionOptions);
     }
 
     /**
@@ -102,11 +98,7 @@ class Offer extends Model {
     public async enable(transactionOptions?: TransactionOptions) {
         checkIfActionAccountInitialized(transactionOptions);
 
-        await Offer.execute(
-            this.contract.methods.enableOffer,
-            [this.offerId],
-            await createTransactionOptions(transactionOptions),
-        );
+        await Offer.execute(this.contract.methods.enableOffer, [this.offerId], transactionOptions);
     }
 
     /**

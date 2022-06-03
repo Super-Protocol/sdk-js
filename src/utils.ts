@@ -45,7 +45,13 @@ export const createTransactionOptions = async (options?: TransactionOptions) => 
     if (!options) options = {};
     if (!options.from) options.from = store.actionAccount;
     if (!options.gas) options.gas = store.gasLimit;
-    if (!options.gasPrice) options.gasPrice = gasPrice;
+    if (!options.gasPrice) {
+        if (store.gasPrice) {
+            options.gasPrice = store.gasPrice;
+        } else {
+            options.gasPrice = gasPrice;
+        }
+    }
     delete options.web3;
     return options;
 };

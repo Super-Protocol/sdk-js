@@ -56,6 +56,7 @@ class SuperproToken extends Model {
             contract.methods.transfer,
             [to, amount],
             await createTransactionOptions(transactionOptions),
+            SuperproToken.address,
         );
 
         return store.web3!.eth.getTransaction(receipt.transactionHash);
@@ -79,6 +80,7 @@ class SuperproToken extends Model {
             contract.methods.approve,
             [address, amount],
             await createTransactionOptions(transactionOptions),
+            SuperproToken.address,
         );
     }
 }

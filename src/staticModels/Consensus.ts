@@ -193,9 +193,11 @@ class Consensus extends Model {
         const contract = this.checkInit(transactionOptions);
         checkIfActionAccountInitialized();
 
-        await contract.methods
-            .unlockRewards(tcbAddress, unlockAmount)
-            .send(await createTransactionOptions(transactionOptions));
+        await this.execute(
+            contract.methods.unlockRewards,
+            [tcbAddress, unlockAmount],
+            await createTransactionOptions(transactionOptions),
+        );
     }
 
     /**

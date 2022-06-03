@@ -1,5 +1,10 @@
 import store from "../store";
 
+type NonceResult = {
+    nextNonce: number;
+    done: () => void;
+};
+
 class NonceTracker {
     private static store: Record<string, number> = {};
 
@@ -13,15 +18,32 @@ class NonceTracker {
         return txCount;
     }
 
-    public static getNonce(address: string): number {
-        return this.store[address] || 0;
+    public static async getNonce(address: string): Promise<number> {
+        const txCount = await this.getTransactionCount(address);
+        const txInProgress = this.store[address] || 0;
+
+        return txCount + txInProgress;
     }
 
-    public static async generateNextNonce(address: string): Promise<number> {
-        const txCount = await this.getTransactionCount(address);
-        this.store[address] = Math.max(txCount, this.store[address] || 0);
+    public static async generateNextNonce(address: string): Promise<NonceResult> {
+        if (!this.store[address]) {
+            this.store[address] = 0;
+        }
 
-        return this.store[address]++;
+        const txCount = await this.getTransactionCount(address);
+        const nextNonce = txCount + (this.store[address] | 0);
+        this.store[address]++;
+        let used = false;
+
+        return {
+            nextNonce,
+            done: () => {
+                if (!used) {
+                    used = true;
+                    this.store[address]--;
+                }
+            },
+        };
     }
 }
 

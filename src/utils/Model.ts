@@ -19,6 +19,7 @@ abstract class Model {
         method: (...args: ArgumentsType) => MethodReturnType,
         args: ArgumentsType,
         transactionOptions?: TransactionOptions,
+        to: string = Superpro.address,
     ): Promise<TransactionReceipt> {
         checkIfInitialized();
         checkIfActionAccountInitialized(transactionOptions);
@@ -40,7 +41,7 @@ abstract class Model {
 
         try {
             const options = {
-                to: Superpro.address,
+                to,
                 data: transaction.encodeABI(),
                 nonce: nonce.nextNonce,
                 ...rawOptions,

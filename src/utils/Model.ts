@@ -47,9 +47,6 @@ abstract class Model {
                 ...rawOptions,
             };
 
-            console.log(options);
-
-            let tx: TransactionReceipt;
             if (store.keys[rawOptions.from]) {
                 const key = store.keys[rawOptions.from];
                 const signed = await web3.eth.accounts.signTransaction(options, key);
@@ -57,17 +54,12 @@ abstract class Model {
                     throw new Error("Failed to sign transaction");
                 }
 
-                tx = await web3.eth.sendSignedTransaction(signed.rawTransaction);
+                return await web3.eth.sendSignedTransaction(signed.rawTransaction);
             } else {
-                tx = await web3.eth.sendTransaction(options);
+                return await web3.eth.sendTransaction(options);
             }
-
+        } finally {
             nonce.done();
-
-            return tx;
-        } catch (error) {
-            nonce.done();
-            throw error;
         }
     }
 }

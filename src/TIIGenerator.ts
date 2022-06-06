@@ -78,7 +78,7 @@ class TIIGenerator {
                 Buffer.from(compressedTri).toString(Encoding.base64),
                 {
                     algo: CryptoAlgorithm.ECIES,
-                    key: tlb.data.teePubKeyData.toString("base64"),
+                    key: Buffer.from(tlb.data.teePubKeyData).toString("base64"),
                     encoding: Encoding.base64,
                 },
             ),

@@ -112,19 +112,21 @@ class BlockchainConnector {
                 blocksNumbersToFetch[i].map(async (blockNumber) => {
                     const block = await store.web3!.eth.getBlock(blockNumber, true);
 
-                    block.transactions.forEach((transaction) => {
-                        let address: string | null = null;
-                        if (addresses.includes(transaction.from)) address = transaction.from;
-                        else if (transaction.to && addresses.includes(transaction.to)) address = transaction.to;
+                    if (block && block.transactions) {
+                        block.transactions.forEach((transaction) => {
+                            let address: string | null = null;
+                            if (addresses.includes(transaction.from)) address = transaction.from;
+                            else if (transaction.to && addresses.includes(transaction.to)) address = transaction.to;
 
-                        if (address) {
-                            transactionsByAddress[address].push({
-                                ...transaction,
-                                timestamp: +block.timestamp * 1000,
-                                input: transaction.input,
-                            });
-                        }
-                    });
+                            if (address) {
+                                transactionsByAddress[address].push({
+                                    ...transaction,
+                                    timestamp: +block.timestamp * 1000,
+                                    input: transaction.input,
+                                });
+                            }
+                        });
+                    }
                 }),
             );
         }

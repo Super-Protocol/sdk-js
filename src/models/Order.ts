@@ -44,6 +44,17 @@ class Order extends Model {
     }
 
     /**
+     * Checks if contract has been initialized, if not - initialize contract
+     */
+    private checkInitOrder(transactionOptions: TransactionOptions) {
+        if (transactionOptions?.web3) {
+            checkIfInitialized();
+
+            return new transactionOptions.web3.eth.Contract(<AbiItem[]>OrdersJSON.abi, Superpro.address);
+        }
+    }
+
+    /**
      * Check if order exist
      */
     public async isExist(): Promise<boolean> {
@@ -131,6 +142,7 @@ class Order extends Model {
      * Function for fetching parent order from blockchain
      */
     public async setAwaitingPayment(value: boolean, transactionOptions?: TransactionOptions): Promise<void> {
+        transactionOptions ?? this.checkInitOrder(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
         await Order.execute(this.contract.methods.setAwaitingPayment, [this.orderId, value], transactionOptions);
@@ -140,6 +152,7 @@ class Order extends Model {
      * Updates order price
      */
     public async updateOrderPrice(price: string, transactionOptions?: TransactionOptions): Promise<void> {
+        transactionOptions ?? this.checkInitOrder(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
         await Order.execute(this.contract.methods.updateOrderPrice, [this.orderId, price], transactionOptions);
@@ -149,6 +162,7 @@ class Order extends Model {
      * Sets deposit spent
      */
     public async setDepositSpent(value: string, transactionOptions?: TransactionOptions): Promise<void> {
+        transactionOptions ?? this.checkInitOrder(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
         await Order.execute(this.contract.methods.setDepositSpent, [this.orderId, value], transactionOptions);
@@ -158,6 +172,7 @@ class Order extends Model {
      * Function for updating status of contract
      */
     public async updateStatus(status: OrderStatus, price?: number, transactionOptions?: TransactionOptions) {
+        transactionOptions ?? this.checkInitOrder(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
         if (status === OrderStatus.Processing) {
@@ -171,6 +186,7 @@ class Order extends Model {
      * Function for updating status of contract
      */
     public async cancelOrder(transactionOptions?: TransactionOptions) {
+        transactionOptions ?? this.checkInitOrder(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
         await Order.execute(this.contract.methods.cancelOrder, [this.orderId], transactionOptions);
@@ -180,6 +196,7 @@ class Order extends Model {
      * Starts suspended order
      */
     public async start(transactionOptions?: TransactionOptions) {
+        transactionOptions ?? this.checkInitOrder(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
         await Order.execute(this.contract.methods.startOrder, [this.orderId], transactionOptions);
@@ -189,6 +206,7 @@ class Order extends Model {
      * Updates order result
      */
     public async updateOrderResult(encryptedResult = "", transactionOptions?: TransactionOptions) {
+        transactionOptions ?? this.checkInitOrder(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
         await Order.execute(
@@ -207,6 +225,7 @@ class Order extends Model {
         encryptedError = "", // for SDK compatibility
         transactionOptions?: TransactionOptions,
     ) {
+        transactionOptions ?? this.checkInitOrder(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
         await Order.execute(
@@ -227,9 +246,10 @@ class Order extends Model {
         subOrderInfo: OrderInfo,
         blocking: boolean,
         externalId = "default",
-        holdSum: number = 0,
+        holdSum = 0,
         transactionOptions?: TransactionOptions,
     ) {
+        transactionOptions ?? this.checkInitOrder(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
         const tupleSubOrder = objectToTuple(subOrderInfo, OrderInfoStructure);
@@ -265,6 +285,7 @@ class Order extends Model {
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
     public async withdrawProfit(transactionOptions?: TransactionOptions) {
+        transactionOptions ?? this.checkInitOrder(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
         await Order.execute(this.contract.methods.withdrawProfit, [this.orderId], transactionOptions);
@@ -275,6 +296,7 @@ class Order extends Model {
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
     public async withdrawChange(transactionOptions?: TransactionOptions) {
+        transactionOptions ?? this.checkInitOrder(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
         await Order.execute(this.contract.methods.withdrawChange, [this.orderId], transactionOptions);

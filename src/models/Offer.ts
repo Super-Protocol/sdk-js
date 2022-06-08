@@ -34,6 +34,17 @@ class Offer extends Model {
     }
 
     /**
+     * Checks if contract has been initialized, if not - initialize contract
+     */
+    private checkInitOffer(transactionOptions: TransactionOptions) {
+        if (transactionOptions?.web3) {
+            checkIfInitialized();
+
+            return new transactionOptions.web3.eth.Contract(<AbiItem[]>OffersJSON.abi, Superpro.address);
+        }
+    }
+
+    /**
      * Function for fetching offer info from blockchain
      */
     public async getInfo(): Promise<OfferInfo> {
@@ -78,7 +89,7 @@ class Offer extends Model {
         origins.createdDate = +origins.createdDate * 1000;
         origins.modifiedDate = +origins.modifiedDate * 1000;
 
-        return this.origins = origins;
+        return (this.origins = origins);
     }
 
     /**
@@ -86,6 +97,7 @@ class Offer extends Model {
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
     public async disable(transactionOptions?: TransactionOptions) {
+        transactionOptions ?? this.checkInitOffer(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
         await Offer.execute(this.contract.methods.disableOffer, [this.offerId], transactionOptions);
@@ -96,6 +108,7 @@ class Offer extends Model {
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
     public async enable(transactionOptions?: TransactionOptions) {
+        transactionOptions ?? this.checkInitOffer(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
         await Offer.execute(this.contract.methods.enableOffer, [this.offerId], transactionOptions);

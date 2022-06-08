@@ -41,6 +41,17 @@ class TeeOffer extends Model {
     }
 
     /**
+     * Checks if contract has been initialized, if not - initialize contract
+     */
+    private checkInitTeeOffer(transactionOptions: TransactionOptions) {
+        if (transactionOptions?.web3) {
+            checkIfInitialized();
+
+            return new transactionOptions.web3.eth.Contract(<AbiItem[]>OffersJSON.abi, Superpro.address);
+        }
+    }
+
+    /**
      * Function for fetching TEE offer info from blockchain
      */
     public async getInfo(): Promise<TeeOfferInfo> {
@@ -157,6 +168,7 @@ class TeeOffer extends Model {
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
     public async addTlb(tlb: string, transactionOptions?: TransactionOptions): Promise<void> {
+        transactionOptions ?? this.checkInitTeeOffer(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
         await TeeOffer.execute(this.contract.methods.setTeeOfferTlb, [this.offerId, tlb], transactionOptions);
@@ -169,6 +181,7 @@ class TeeOffer extends Model {
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
     public async setName(name: string, transactionOptions?: TransactionOptions): Promise<void> {
+        transactionOptions ?? this.checkInitTeeOffer(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
         await TeeOffer.execute(this.contract.methods.setOfferName, [this.offerId, name], transactionOptions);
@@ -181,6 +194,7 @@ class TeeOffer extends Model {
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
     public async setDescription(description: string, transactionOptions?: TransactionOptions): Promise<void> {
+        transactionOptions ?? this.checkInitTeeOffer(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
         await TeeOffer.execute(
@@ -197,6 +211,7 @@ class TeeOffer extends Model {
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
     public async setKeys(argsPublicKey: string, transactionOptions?: TransactionOptions): Promise<void> {
+        transactionOptions ?? this.checkInitTeeOffer(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
         await TeeOffer.execute(
@@ -214,6 +229,7 @@ class TeeOffer extends Model {
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
     public async disable(transactionOptions?: TransactionOptions) {
+        transactionOptions ?? this.checkInitTeeOffer(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
         await TeeOffer.execute(this.contract.methods.disableOffer, [this.offerId], transactionOptions);
@@ -224,6 +240,7 @@ class TeeOffer extends Model {
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
     public async enable(transactionOptions?: TransactionOptions) {
+        transactionOptions ?? this.checkInitTeeOffer(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
         await TeeOffer.execute(this.contract.methods.enableOffer, [this.offerId], transactionOptions);

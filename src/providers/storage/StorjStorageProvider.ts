@@ -8,8 +8,8 @@ import { isNodeJS } from "../../utils";
 import StorageObject from "../../types/storage/StorageObject";
 
 export default class StorJStorageProvider implements IStorageProvider {
-    static UPLOAD_BUFFER_SIZE: number = 4194304; // 4 mb
-    static DOWNLOAD_BUFFER_SIZE: number = 4194304; // 4mb
+    static UPLOAD_BUFFER_SIZE = 4194304; // 4 mb
+    static DOWNLOAD_BUFFER_SIZE = 4194304; // 4mb
 
     private storageName: string;
     private accessToken: string;
@@ -27,33 +27,34 @@ export default class StorJStorageProvider implements IStorageProvider {
     }
 
     async calculateStorageDepostit(offer: Offer, sizeMb: number, hours: number): Promise<number> {
-        let offerInfo = await offer.getInfo();
-        let properties = JSON.parse(offerInfo.properties);
+        const offerInfo = await offer.getInfo();
+        const properties = JSON.parse(offerInfo.properties);
+
         return properties.priceMbPerHour * sizeMb * hours;
     }
 
     async uploadFile(
         localPath: string,
         remotePath: string,
-        progressListener?: (total: number, current: number) => void
+        progressListener?: (total: number, current: number) => void,
     ): Promise<void> {
         const storj = await this.lazyStorj();
 
-        let options = new storj.UploadOptions();
-        let project = await this.lazyProject();
-        let uploader = await project.uploadObject(this.storageName, remotePath, options);
+        const options = new storj.UploadOptions();
+        const project = await this.lazyProject();
+        const uploader = await project.uploadObject(this.storageName, remotePath, options);
 
-        let file = await fs.open(localPath, "r");
-        let contentLength = (await file.stat()).size;
+        const file = await fs.open(localPath, "r");
+        const contentLength = (await file.stat()).size;
         let totalWritten = 0;
 
         while (totalWritten < contentLength) {
-            let remaining = contentLength - totalWritten;
-            let buffer = Buffer.alloc(Math.min(remaining, StorJStorageProvider.UPLOAD_BUFFER_SIZE));
-            let bytesRead = (await file.read(buffer, 0, buffer.length)).bytesRead;
+            const remaining = contentLength - totalWritten;
+            const buffer = Buffer.alloc(Math.min(remaining, StorJStorageProvider.UPLOAD_BUFFER_SIZE));
+            const bytesRead = (await file.read(buffer, 0, buffer.length)).bytesRead;
             await uploader.write(buffer, bytesRead);
             totalWritten += bytesRead;
-            if (typeof progressListener != "undefined") {
+            if (!!progressListener) {
                 progressListener(contentLength, totalWritten);
             }
         }
@@ -65,26 +66,26 @@ export default class StorJStorageProvider implements IStorageProvider {
     async downloadFile(
         remotePath: string,
         localPath: string,
-        progressListener?: (total: number, current: number) => void
+        progressListener?: (total: number, current: number) => void,
     ): Promise<void> {
         const storj = await this.lazyStorj();
 
-        let contentLength = await this.getSize(remotePath);
-        let project = await this.lazyProject();
-        let options = new storj.DownloadOptions(0, contentLength);
-        let downloader = await project.downloadObject(this.storageName, remotePath, options);
+        const contentLength = await this.getSize(remotePath);
+        const project = await this.lazyProject();
+        const options = new storj.DownloadOptions(0, contentLength);
+        const downloader = await project.downloadObject(this.storageName, remotePath, options);
 
-        let file = await fs.open(localPath, "w");
+        const file = await fs.open(localPath, "w");
         let totalWritten = 0;
 
         while (totalWritten < contentLength) {
-            let remaining = contentLength - totalWritten;
-            let buffer = Buffer.alloc(Math.min(remaining, StorJStorageProvider.DOWNLOAD_BUFFER_SIZE));
-            let bytesRead = ((await downloader.read(buffer, buffer.length)) as any).bytes_read;
+            const remaining = contentLength - totalWritten;
+            const buffer = Buffer.alloc(Math.min(remaining, StorJStorageProvider.DOWNLOAD_BUFFER_SIZE));
+            const bytesRead = ((await downloader.read(buffer, buffer.length)) as any).bytes_read;
             await file.write(buffer, 0, bytesRead);
             totalWritten += bytesRead;
 
-            if (typeof progressListener != "undefined") {
+            if (!!progressListener) {
                 progressListener(contentLength, totalWritten);
             }
         }
@@ -94,19 +95,23 @@ export default class StorJStorageProvider implements IStorageProvider {
     }
 
     async deleteFile(remotePath: string): Promise<void> {
-        let project = await this.lazyProject();
+        const project = await this.lazyProject();
         await project.deleteObject(this.storageName, remotePath);
     }
 
     async listObjects(storagePath: string): Promise<StorageObject[]> {
         const storj = await this.lazyStorj();
-
-        let options = new storj.ListObjectsOptions(undefined, undefined, false, true, true);
-        let project = await this.lazyProject();
-        let objects = await project.listObjects(`${this.storageName}${storagePath}`, options);
-        let result = [];
-        for (let key in Object.keys(objects)) {
-            let value = objects[key];
+        const project = await this.lazyProject();
+        const objects = await project.listObjects(this.storageName, {
+            recursive: true,
+            cursor: "",
+            prefix: storagePath,
+            system: true,
+            custom: true,
+        });
+        const result = [];
+        for (const key in Object.keys(objects)) {
+            const value = objects[key];
             result.push({
                 name: value.key,
                 size: value.system.content_length,
@@ -115,16 +120,18 @@ export default class StorJStorageProvider implements IStorageProvider {
                 createdAt: new Date(value.system.created * 1000), // TODO: check timezone
             });
         }
+
         return result;
     }
 
     async getSize(remotePath: string): Promise<number> {
-        let project = await this.lazyProject();
-        let objectInfo = await project.statObject(this.storageName, remotePath);
+        const project = await this.lazyProject();
+        const objectInfo = await project.statObject(this.storageName, remotePath);
+
         return objectInfo.system.content_length;
     }
     private async lazyStorj(): Promise<any> {
-        if (typeof this._storj == "undefined") {
+        if (!this._storj) {
             this._storj = await require("uplink-nodejs");
         }
 
@@ -132,7 +139,7 @@ export default class StorJStorageProvider implements IStorageProvider {
     }
 
     private async lazyAccess(): Promise<Access> {
-        if (typeof this._access == "undefined") {
+        if (!this._access) {
             const storj = await this.lazyStorj();
             const uplink = new storj.Uplink();
             this._access = await uplink.parseAccess(this.accessToken);
@@ -142,7 +149,7 @@ export default class StorJStorageProvider implements IStorageProvider {
     }
 
     private async lazyProject(): Promise<Project> {
-        if (typeof this._project == "undefined") {
+        if (!this._project) {
             const access = await this.lazyAccess();
             this._project = await access.openProject();
         }

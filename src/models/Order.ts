@@ -3,6 +3,7 @@ import {
     OrderInfoStructure,
     OrderResult,
     OrderResultStructure,
+    ExtendedOrderInfo,
     OrderStatus,
     SubOrderParams,
 } from "../types/Order";
@@ -18,6 +19,7 @@ import { SubOrderCreatedEvent } from "../types/Events";
 import { formatBytes32String } from "ethers/lib/utils";
 import Superpro from "../staticModels/Superpro";
 import Model from "../utils/Model";
+import { TransactionReceipt } from "@ethersproject/providers";
 
 class Order extends Model {
     private contract: Contract;
@@ -264,6 +266,43 @@ class Order extends Model {
             [this.orderId, tupleSubOrder, params],
             transactionOptions,
         );
+    }
+
+    public async createSubOrders(
+        subOrdersInfo: ExtendedOrderInfo[],
+        transactionOptions: TransactionOptions,
+    ): Promise<TransactionReceipt[]> {
+        this.checkInitOrder(transactionOptions);
+        checkIfActionAccountInitialized(transactionOptions);
+
+        const account = (await transactionOptions.web3!.eth.getAccounts())[0];
+        const batch = new transactionOptions.web3!.BatchRequest();
+
+        const promises: any = subOrdersInfo.map((subOrderInfo) => {
+            return new Promise((res, rej) => {
+                const tupleSubOrder = objectToTuple(subOrderInfo, OrderInfoStructure);
+                const formattedExternalId = formatBytes32String(subOrderInfo.externalId);
+                const params: SubOrderParams = {
+                    blockParentOrder: subOrderInfo.blocking,
+                    externalId: formattedExternalId,
+                    holdSum: subOrderInfo.holdSum,
+                };
+
+                const request = this.contract.methods
+                    .createSubOrder(this.orderId, tupleSubOrder, params)
+                    .send.request({ from: account }, (err: any, data: any) => {
+                        err ?? rej(err);
+                        res(data);
+                    });
+
+                batch.add(request);
+            });
+        });
+
+        batch.execute();
+        const txs = await Promise.all(promises);
+
+        return txs.reduce((a: any, b: any) => a.concat(b), []) as TransactionReceipt[];
     }
 
     public async getSubOrder(consumer: string, externalId: string): Promise<SubOrderCreatedEvent> {

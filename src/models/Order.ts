@@ -275,9 +275,7 @@ class Order extends Model {
         this.checkInitOrder(transactionOptions);
         checkIfActionAccountInitialized(transactionOptions);
 
-        const account = (await transactionOptions.web3!.eth.getAccounts())[0];
         const batch = new transactionOptions.web3!.BatchRequest();
-
         const promises: any = subOrdersInfo.map((subOrderInfo) => {
             return new Promise((res, rej) => {
                 const tupleSubOrder = objectToTuple(subOrderInfo, OrderInfoStructure);
@@ -290,7 +288,7 @@ class Order extends Model {
 
                 const request = this.contract.methods
                     .createSubOrder(this.orderId, tupleSubOrder, params)
-                    .send.request({ from: account }, (err: any, data: any) => {
+                    .send.request(transactionOptions, (err: any, data: any) => {
                         err ?? rej(err);
                         res(data);
                     });

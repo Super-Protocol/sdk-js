@@ -293,11 +293,10 @@ class Order extends Model {
                         gas: store.gasLimit,
                     },
                     (err: any, data: any) => {
-                        err ?? rej(err);
-                        res(data);
+                        if (data) res(data);
+                        if (err) rej(err);
                     },
                 );
-
                 batch.add(request);
             });
         });

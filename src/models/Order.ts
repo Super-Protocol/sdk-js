@@ -268,10 +268,16 @@ class Order extends Model {
         );
     }
 
+    /**
+     * Function for creating pack of sub orders (wokflow) for current order
+     * @param {Array<subOrderInfo>} - orders info for new subOrders
+     * @param transactionOptions - object what contains action account and web3 instance
+     * @returns {Promise<string[]>} - tx hashes
+     */
     public async createSubOrders(
         subOrdersInfo: ExtendedOrderInfo[],
         transactionOptions: TransactionOptions,
-    ): Promise<TransactionReceipt[]> {
+    ): Promise<string[]> {
         this.checkInitOrder(transactionOptions);
         checkIfActionAccountInitialized(transactionOptions);
 
@@ -304,7 +310,7 @@ class Order extends Model {
         batch.execute();
         const txs = await Promise.all(promises);
 
-        return txs.reduce((a: any, b: any) => a.concat(b), []) as TransactionReceipt[];
+        return txs.reduce((a: any, b: any) => a.concat(b), []) as string[];
     }
 
     public async getSubOrder(consumer: string, externalId: string): Promise<SubOrderCreatedEvent> {

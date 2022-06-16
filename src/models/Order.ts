@@ -275,7 +275,6 @@ class Order extends Model {
         this.checkInitOrder(transactionOptions);
         checkIfActionAccountInitialized(transactionOptions);
 
-        const batch = new transactionOptions.web3!.BatchRequest();
         const promises: any = subOrdersInfo.map((subOrderInfo) => {
             return new Promise((res, rej) => {
                 const tupleSubOrder = objectToTuple(subOrderInfo, OrderInfoStructure);
@@ -297,12 +296,8 @@ class Order extends Model {
                         res(data);
                     },
                 );
-
-                batch.add(request);
             });
         });
-
-        batch.execute();
         const txs = await Promise.all(promises);
 
         return txs.reduce((a: any, b: any) => a.concat(b), []) as TransactionReceipt[];

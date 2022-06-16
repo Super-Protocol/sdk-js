@@ -39,6 +39,11 @@ export type OrderInfo = {
     status: OrderStatus;
     args: OrderArgs;
 };
+export type ExtendedOrderInfo = OrderInfo & {
+    blocking: boolean;
+    externalId: string;
+    holdSum: number;
+};
 
 // Order of keys and type conversion functions for this object in blockchain contract
 export const OrderResultStructure = {

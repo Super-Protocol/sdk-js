@@ -12,9 +12,9 @@ import { ONE_DAY } from "../constants";
 import { PublicData, LType } from "../types/TcbData";
 import { TransactionOptions } from "../types/Web3";
 import Superpro from "./Superpro";
-import Model from "../utils/Model";
+import TxManager from "../utils/TxManager";
 
-class Consensus extends Model {
+class Consensus {
     public static address: string;
     private static contract: Contract;
     private static logger: typeof rootLogger;
@@ -47,14 +47,14 @@ class Consensus extends Model {
     }
 
     private static async initTcb(teeOfferAddress: string, transactionOptions?: TransactionOptions): Promise<TCB> {
-        await this.execute(this.contract.methods.initTcb, [teeOfferAddress], transactionOptions);
+        await TxManager.execute(this.contract.methods.initTcb, [teeOfferAddress], transactionOptions);
 
         const tcbAddress = await this.getInitedTcb(teeOfferAddress);
         return new TCB(tcbAddress);
     }
 
     private static async addToSupply(tcbAddress: string, transactionOptions?: TransactionOptions) {
-        await this.execute(this.contract.methods.addToSupply, [tcbAddress], transactionOptions);
+        await TxManager.execute(this.contract.methods.addToSupply, [tcbAddress], transactionOptions);
     }
 
     private static async addMarks(
@@ -168,7 +168,7 @@ class Consensus extends Model {
         const contract = this.checkInit(transactionOptions);
         checkIfActionAccountInitialized();
 
-        await this.execute(contract.methods.claimRewards, [tcbAddress], transactionOptions);
+        await TxManager.execute(contract.methods.claimRewards, [tcbAddress], transactionOptions);
     }
 
     /**
@@ -185,7 +185,7 @@ class Consensus extends Model {
         const contract = this.checkInit(transactionOptions);
         checkIfActionAccountInitialized();
 
-        await this.execute(contract.methods.unlockRewards, [tcbAddress, unlockAmount], transactionOptions);
+        await TxManager.execute(contract.methods.unlockRewards, [tcbAddress, unlockAmount], transactionOptions);
     }
 
     /**

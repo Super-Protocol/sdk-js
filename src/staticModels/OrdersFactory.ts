@@ -9,9 +9,9 @@ import { formatBytes32String } from "ethers/lib/utils";
 import { ContractEvent, TransactionOptions } from "../types/Web3";
 import { OrderCreatedEvent } from "../types/Events";
 import Superpro from "./Superpro";
-import Model from "../utils/Model";
+import TxManager from "../utils/TxManager";
 
-class OrdersFactory extends Model {
+class OrdersFactory {
     private static contract: Contract;
     private static logger: typeof rootLogger;
 
@@ -183,7 +183,7 @@ class OrdersFactory extends Model {
 
         const orderInfoArguments = objectToTuple(orderInfo, OrderInfoStructure);
         const formattedExternalId = formatBytes32String(externalId);
-        await this.execute(
+        await TxManager.execute(
             contract.methods.createOrder,
             [orderInfoArguments, holdDeposit, suspended, formattedExternalId],
             transactionOptions,
@@ -219,7 +219,7 @@ class OrdersFactory extends Model {
         const contract = this.checkInit(transactionOptions);
         checkIfActionAccountInitialized(transactionOptions);
 
-        await this.execute(contract.methods.refillOrder, [orderAddress, amount], transactionOptions);
+        await TxManager.execute(contract.methods.refillOrder, [orderAddress, amount], transactionOptions);
     }
 }
 

@@ -10,9 +10,9 @@ import { TeeOfferInfo, TeeOfferInfoStructure } from "../types/TeeOffer";
 import { OfferType } from "../types/Offer";
 import { OfferCreatedEvent } from "../types/Events";
 import Superpro from "./Superpro";
-import Model from "../utils/Model";
+import TxManager from "../utils/TxManager";
 
-class TeeOffersFactory extends Model {
+class TeeOffersFactory {
     private static contract: Contract;
     private static logger: typeof rootLogger;
 
@@ -77,7 +77,7 @@ class TeeOffersFactory extends Model {
         // Converts offer info to array of arrays (used in blockchain)
         const teeOfferInfoParams = objectToTuple(teeOfferInfo, TeeOfferInfoStructure);
         const formattedExternalId = formatBytes32String(externalId);
-        await this.execute(
+        await TxManager.execute(
             contract.methods.createTeeOffer,
             [providerAuthorityAccount, teeOfferInfoParams, formattedExternalId],
             transactionOptions,

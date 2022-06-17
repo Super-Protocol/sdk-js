@@ -9,9 +9,9 @@ import { formatBytes32String } from "ethers/lib/utils";
 import { ContractEvent, TransactionOptions } from "../types/Web3";
 import { OfferCreatedEvent } from "../types/Events";
 import Superpro from "./Superpro";
-import Model from "../utils/Model";
+import TxManager from "../utils/TxManager";
 
-class OffersFactory extends Model {
+class OffersFactory {
     private static contract: Contract;
     private static logger: typeof rootLogger;
 
@@ -80,7 +80,7 @@ class OffersFactory extends Model {
 
         const offerInfoParams = objectToTuple(offerInfo, OfferInfoStructure);
         const formattedExternalId = formatBytes32String(externalId);
-        await this.execute(
+        await TxManager.execute(
             contract.methods.createValueOffer,
             [providerAuthorityAccount, offerInfoParams, formattedExternalId],
             transactionOptions,

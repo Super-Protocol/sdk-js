@@ -9,9 +9,9 @@ import { ProviderInfo, ProviderInfoStructure } from "../types/Provider";
 import { formatBytes32String } from "ethers/lib/utils";
 import { ContractEvent, TransactionOptions } from "../types/Web3";
 import Superpro from "./Superpro";
-import Model from "../utils/Model";
+import TxManager from "../utils/TxManager";
 
-class ProviderRegistry extends Model {
+class ProviderRegistry {
     private static contract: Contract;
     private static logger: typeof rootLogger;
 
@@ -84,7 +84,7 @@ class ProviderRegistry extends Model {
         checkIfActionAccountInitialized(transactionOptions);
 
         const providerInfoParams = objectToTuple(providerInfo, ProviderInfoStructure);
-        await this.execute(contract.methods.registerProvider, [providerInfoParams], transactionOptions);
+        await TxManager.execute(contract.methods.registerProvider, [providerInfoParams], transactionOptions);
     }
 
     /**
@@ -97,7 +97,7 @@ class ProviderRegistry extends Model {
         const contract = this.checkInitProviders(transactionOptions);
         checkIfActionAccountInitialized(transactionOptions);
 
-        await this.execute(contract.methods.refillProviderSecurityDepo, [amount], transactionOptions);
+        await TxManager.execute(contract.methods.refillProviderSecurityDepo, [amount], transactionOptions);
     }
 
     /**
@@ -110,7 +110,7 @@ class ProviderRegistry extends Model {
         const contract = this.checkInitProviders(transactionOptions);
         checkIfActionAccountInitialized(transactionOptions);
 
-        await this.execute(contract.methods.returnProviderSecurityDepo, [amount], transactionOptions);
+        await TxManager.execute(contract.methods.returnProviderSecurityDepo, [amount], transactionOptions);
     }
 
     /**

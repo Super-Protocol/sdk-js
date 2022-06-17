@@ -9,9 +9,9 @@ import { TransactionOptions } from "../types/Web3";
 import { OfferType } from "../types/Offer";
 import { Origins, OriginsStructure } from "../types/Origins";
 import Superpro from "../staticModels/Superpro";
-import Model from "../utils/Model";
+import TxManager from "../utils/TxManager";
 
-class TeeOffer extends Model {
+class TeeOffer {
     private contract: Contract;
     private logger: typeof rootLogger;
 
@@ -30,7 +30,6 @@ class TeeOffer extends Model {
     public address: string;
 
     constructor(offerId: string) {
-        super();
         checkIfInitialized();
 
         this.offerId = +offerId;
@@ -171,7 +170,7 @@ class TeeOffer extends Model {
         transactionOptions ?? this.checkInitTeeOffer(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
-        await TeeOffer.execute(this.contract.methods.setTeeOfferTlb, [this.offerId, tlb], transactionOptions);
+        await TxManager.execute(this.contract.methods.setTeeOfferTlb, [this.offerId, tlb], transactionOptions);
         if (this.offerInfo) this.offerInfo.tlb = tlb;
     }
 
@@ -184,7 +183,7 @@ class TeeOffer extends Model {
         transactionOptions ?? this.checkInitTeeOffer(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
-        await TeeOffer.execute(this.contract.methods.setOfferName, [this.offerId, name], transactionOptions);
+        await TxManager.execute(this.contract.methods.setOfferName, [this.offerId, name], transactionOptions);
         if (this.offerInfo) this.offerInfo.name = name;
     }
 
@@ -197,7 +196,7 @@ class TeeOffer extends Model {
         transactionOptions ?? this.checkInitTeeOffer(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
-        await TeeOffer.execute(
+        await TxManager.execute(
             this.contract.methods.setOfferDescription,
             [this.offerId, description],
             transactionOptions,
@@ -214,7 +213,7 @@ class TeeOffer extends Model {
         transactionOptions ?? this.checkInitTeeOffer(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
-        await TeeOffer.execute(
+        await TxManager.execute(
             this.contract.methods.setOfferPublicKey,
             [this.offerId, argsPublicKey],
             transactionOptions,
@@ -232,7 +231,7 @@ class TeeOffer extends Model {
         transactionOptions ?? this.checkInitTeeOffer(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
-        await TeeOffer.execute(this.contract.methods.disableOffer, [this.offerId], transactionOptions);
+        await TxManager.execute(this.contract.methods.disableOffer, [this.offerId], transactionOptions);
     }
 
     /**
@@ -243,7 +242,7 @@ class TeeOffer extends Model {
         transactionOptions ?? this.checkInitTeeOffer(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
-        await TeeOffer.execute(this.contract.methods.enableOffer, [this.offerId], transactionOptions);
+        await TxManager.execute(this.contract.methods.enableOffer, [this.offerId], transactionOptions);
     }
 }
 

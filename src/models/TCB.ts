@@ -12,9 +12,9 @@ import LastBlocks from "../staticModels/LastBlocks";
 import { formatBytes32String, parseBytes32String } from "ethers/lib/utils";
 import { TcbStatus } from "./../types/Epoch";
 import Superpro from "../staticModels/Superpro";
-import Model from "../utils/Model";
+import TxManager from "../utils/TxManager";
 
-class TCB extends Model {
+class TCB {
     public address: string;
     private contract: Contract;
     private logger: typeof rootLogger;
@@ -29,7 +29,6 @@ class TCB extends Model {
     public quote?: string;
 
     constructor(address: string) {
-        super();
         checkIfInitialized();
 
         this.address = address;
@@ -115,7 +114,7 @@ class TCB extends Model {
 
         const fromattedDeviceId = formatBytes32String((Buffer.from(pb.deviceID, 'hex')).toString('base64'));
 
-        await TCB.execute(
+        await TxManager.execute(
             this.contract.methods.addData,
             [pb.benchmark, pb.properties, fromattedDeviceId, quote],
             transactionOptions,
@@ -172,7 +171,7 @@ class TCB extends Model {
         checkIfActionAccountInitialized(transactionOptions);
 
         if (marks.length > 0) {
-            await TCB.execute(this.contract.methods.addMarks, [lType, marks], transactionOptions);
+            await TxManager.execute(this.contract.methods.addMarks, [lType, marks], transactionOptions);
         } // else nothing
     }
 }

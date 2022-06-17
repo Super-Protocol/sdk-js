@@ -8,6 +8,7 @@ import { Transaction } from "./types/Web3";
 import Superpro from "./staticModels/Superpro";
 import SuperproToken from "./staticModels/SuperproToken";
 import BlockchainTransaction from "./types/blockchainConnector/StorageAccess";
+import TxManager from "./utils/TxManager";
 
 class BlockchainConnector {
     private static logger = rootLogger.child({ className: "BlockchainConnector" });
@@ -45,6 +46,7 @@ class BlockchainConnector {
 
         Superpro.address = config.contractAddress;
         SuperproToken.address = await Superpro.getTokenAddress();
+        TxManager.init(store.web3);
 
         store.isInitialized = true;
     }
@@ -53,12 +55,13 @@ class BlockchainConnector {
      * Function for connecting provider action account
      * Needs to run this function before using any set methods in blockchain connector
      */
-    public static initActionAccount(actionAccountKey: string): string {
+    public static async initActionAccount(actionAccountKey: string): Promise<string> {
         checkIfInitialized();
         const actionAccount = store.web3!.eth.accounts.wallet.add(actionAccountKey).address;
         if (!store.actionAccount) store.actionAccount = actionAccount;
         if (!store.keys[actionAccount]) store.keys[actionAccount] = actionAccountKey;
         if (!this.defaultActionAccount) this.defaultActionAccount = actionAccount;
+        await TxManager.initAccount(actionAccount);
 
         return actionAccount;
     }

@@ -1,49 +1,39 @@
-import store from "../store";
-
-type NonceResult = {
-    nextNonce: number;
-    done: () => void;
-};
+import Web3 from "web3";
 
 class NonceTracker {
-    private static store: Record<string, number> = {};
+    private store: Record<string, number> = {};
 
-    public static async getTransactionCount(address: string): Promise<number> {
-        if (!store.web3) {
-            throw new Error("web3 is undefined, needs to run 'await BlockchainConnector.init(CONFIG)' first");
+    constructor(private web3: Web3) {}
+
+    public async initAccount(address: string): Promise<void> {
+        if (address in this.store) {
+            return;
         }
 
-        const txCount = await store.web3.eth.getTransactionCount(address, "pending");
-
-        return txCount;
-    }
-
-    public static async getNonce(address: string): Promise<number> {
-        const txCount = await this.getTransactionCount(address);
-        const txInProgress = this.store[address] || 0;
-
-        return txCount + txInProgress;
-    }
-
-    public static async generateNextNonce(address: string): Promise<NonceResult> {
-        if (!this.store[address]) {
-            this.store[address] = 0;
+        const txCount = await this.web3.eth.getTransactionCount(address);
+        if (address in this.store) {
+            return;
         }
+        this.store[address] = txCount;
+    }
 
-        const txCount = await this.getTransactionCount(address);
-        const nextNonce = txCount + (this.store[address] | 0);
-        this.store[address]++;
-        let used = false;
+    private checkAccount(address: string) {
+        if (address in this.store) {
+            return;
+        }
+        throw Error(`${address} account is not initialized. You must call initAccount before using it.`);
+    }
 
-        return {
-            nextNonce,
-            done: () => {
-                if (!used) {
-                    used = true;
-                    this.store[address]--;
-                }
-            },
-        };
+    public getNonce(address: string): number {
+        this.checkAccount(address);
+
+        return this.store[address];
+    }
+
+    public consumeNonce(address: string): number {
+        this.checkAccount(address);
+
+        return this.store[address]++;
     }
 }
 

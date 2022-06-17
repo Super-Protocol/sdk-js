@@ -18,10 +18,8 @@ import { Origins, OriginsStructure } from "../types/Origins";
 import { SubOrderCreatedEvent } from "../types/Events";
 import { formatBytes32String } from "ethers/lib/utils";
 import Superpro from "../staticModels/Superpro";
-import Model from "../utils/Model";
-import { TransactionReceipt } from "@ethersproject/providers";
-
-class Order extends Model {
+import TxManager from "../utils/TxManager";
+class Order {
     private contract: Contract;
     private logger: typeof rootLogger;
 
@@ -35,7 +33,6 @@ class Order extends Model {
     public address: string;
 
     constructor(orderId: string) {
-        super();
         checkIfInitialized();
 
         this.orderId = +orderId;
@@ -147,7 +144,7 @@ class Order extends Model {
         transactionOptions ?? this.checkInitOrder(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
-        await Order.execute(this.contract.methods.setAwaitingPayment, [this.orderId, value], transactionOptions);
+        await TxManager.execute(this.contract.methods.setAwaitingPayment, [this.orderId, value], transactionOptions);
     }
 
     /**
@@ -157,7 +154,7 @@ class Order extends Model {
         transactionOptions ?? this.checkInitOrder(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
-        await Order.execute(this.contract.methods.updateOrderPrice, [this.orderId, price], transactionOptions);
+        await TxManager.execute(this.contract.methods.updateOrderPrice, [this.orderId, price], transactionOptions);
     }
 
     /**
@@ -167,7 +164,7 @@ class Order extends Model {
         transactionOptions ?? this.checkInitOrder(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
-        await Order.execute(this.contract.methods.setDepositSpent, [this.orderId, value], transactionOptions);
+        await TxManager.execute(this.contract.methods.setDepositSpent, [this.orderId, value], transactionOptions);
     }
 
     /**
@@ -178,7 +175,7 @@ class Order extends Model {
         checkIfActionAccountInitialized(transactionOptions);
 
         if (status === OrderStatus.Processing) {
-            await Order.execute(this.contract.methods.processOrder, [this.orderId], transactionOptions);
+            await TxManager.execute(this.contract.methods.processOrder, [this.orderId], transactionOptions);
         }
 
         if (this.orderInfo) this.orderInfo.status = status;
@@ -191,7 +188,7 @@ class Order extends Model {
         transactionOptions ?? this.checkInitOrder(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
-        await Order.execute(this.contract.methods.cancelOrder, [this.orderId], transactionOptions);
+        await TxManager.execute(this.contract.methods.cancelOrder, [this.orderId], transactionOptions);
     }
 
     /**
@@ -201,7 +198,7 @@ class Order extends Model {
         transactionOptions ?? this.checkInitOrder(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
-        await Order.execute(this.contract.methods.startOrder, [this.orderId], transactionOptions);
+        await TxManager.execute(this.contract.methods.startOrder, [this.orderId], transactionOptions);
     }
 
     /**
@@ -211,7 +208,7 @@ class Order extends Model {
         transactionOptions ?? this.checkInitOrder(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
-        await Order.execute(
+        await TxManager.execute(
             this.contract.methods.updateOrderResult,
             [this.orderId, encryptedResult],
             transactionOptions,
@@ -230,7 +227,7 @@ class Order extends Model {
         transactionOptions ?? this.checkInitOrder(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
-        await Order.execute(
+        await TxManager.execute(
             this.contract.methods.completeOrder,
             [this.orderId, status, status === OrderStatus.Error ? encryptedError : encryptedResult],
             transactionOptions,
@@ -261,7 +258,7 @@ class Order extends Model {
             externalId: formattedExternalId,
             holdSum,
         };
-        await Order.execute(
+        await TxManager.execute(
             this.contract.methods.createSubOrder,
             [this.orderId, tupleSubOrder, params],
             transactionOptions,
@@ -335,7 +332,7 @@ class Order extends Model {
         transactionOptions ?? this.checkInitOrder(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
-        await Order.execute(this.contract.methods.withdrawProfit, [this.orderId], transactionOptions);
+        await TxManager.execute(this.contract.methods.withdrawProfit, [this.orderId], transactionOptions);
     }
 
     /**
@@ -346,7 +343,7 @@ class Order extends Model {
         transactionOptions ?? this.checkInitOrder(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
-        await Order.execute(this.contract.methods.withdrawChange, [this.orderId], transactionOptions);
+        await TxManager.execute(this.contract.methods.withdrawChange, [this.orderId], transactionOptions);
     }
 
     /**

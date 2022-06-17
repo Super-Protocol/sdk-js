@@ -6,9 +6,9 @@ import SuperproTokenJSON from "../contracts/SuperproToken.json";
 import store from "../store";
 import { checkIfActionAccountInitialized, checkIfInitialized } from "../utils";
 import { TransactionOptions } from "../types/Web3";
-import Model from "../utils/Model";
+import TxManager from "../utils/TxManager";
 
-class SuperproToken extends Model {
+class SuperproToken {
     public static address: string;
     private static contract: Contract;
     private static logger: typeof rootLogger;
@@ -52,7 +52,7 @@ class SuperproToken extends Model {
         const contract = this.checkInit(transactionOptions);
         checkIfActionAccountInitialized(transactionOptions);
 
-        const receipt = await this.execute(
+        const receipt = await TxManager.execute(
             contract.methods.transfer,
             [to, amount],
             transactionOptions,
@@ -76,7 +76,7 @@ class SuperproToken extends Model {
         const contract = this.checkInit(transactionOptions);
         checkIfActionAccountInitialized(transactionOptions);
 
-        await this.execute(contract.methods.approve, [address, amount], transactionOptions, SuperproToken.address);
+        await TxManager.execute(contract.methods.approve, [address, amount], transactionOptions, SuperproToken.address);
     }
 }
 

@@ -26,6 +26,14 @@ export const checkIfActionAccountInitialized = (transactionOptions?: Transaction
 };
 
 /**
+ * Function for checking if current configuration supposed to use external transaction manager like MetaMask and etc.
+ */
+export const checkForUsingExternalTxManager = (transactionOptions?: TransactionOptions): boolean => {
+    // TODO: Agree on more proper way of signaling, that we use an external transaction manager, than just passing a web3 instance.
+    return !!transactionOptions?.web3;
+};
+
+/**
  * Updates gas price determined by the last few blocks median
  */
 export const getGasPrice = async (web3: Web3): Promise<string> => {

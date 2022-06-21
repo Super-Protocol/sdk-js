@@ -4,7 +4,12 @@ import NonceTracker from "./NonceTracker";
 import rootLogger from "../logger";
 import store from "../store";
 import { TransactionOptions } from "../types/Web3";
-import { checkIfActionAccountInitialized, checkIfInitialized, createTransactionOptions } from "../utils";
+import {
+    checkForUsingExternalTxManager,
+    checkIfActionAccountInitialized,
+    checkIfInitialized,
+    createTransactionOptions,
+} from "../utils";
 import Superpro from "../staticModels/Superpro";
 import lodash from "lodash";
 import Web3 from "web3";
@@ -50,9 +55,7 @@ class TxManager {
             throw new Error("From account is undefined");
         }
 
-        const nonce = this.nonceTracker.consumeNonce(from);
-
-        return TxManager.publishTransaction(web3, transaction, from, to, options, nonce);
+        return TxManager.publishTransaction(web3, transaction, from, to, options);
     }
 
     private static async publishTransaction(
@@ -61,14 +64,18 @@ class TxManager {
         from: string,
         to: string,
         options: TransactionOptions,
-        nonce: number,
     ): Promise<TransactionReceipt> {
-        const txData = {
+        const txData: Record<string, any> = {
             to,
             data: transaction.encodeABI(),
-            nonce: nonce,
             ...options,
         };
+
+        // TODO: Consider a better way to organize different strategies for publishing transactions.
+        if (checkForUsingExternalTxManager(options)) {
+            txData.nonce = this.nonceTracker.consumeNonce(from);
+        }
+
         const signingKey = store.keys[from];
         if (signingKey) {
             const signed = await web3.eth.accounts.signTransaction(txData, signingKey);

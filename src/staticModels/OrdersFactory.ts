@@ -56,6 +56,15 @@ class OrdersFactory {
     }
 
     /**
+     * Function for fetching orders count
+     */
+    public static async getOrdersCount(): Promise<number> {
+        this.checkInit();
+
+        return await this.contract.methods.getOrdersCount().call();
+    }
+
+    /**
      * Function for fetching order hold deposit for specific order
      * @param orderAddress - address of order for fetching hold deposit
      */

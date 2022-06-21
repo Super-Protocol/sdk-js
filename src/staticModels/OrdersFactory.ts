@@ -5,7 +5,7 @@ import { AbiItem } from "web3-utils";
 import OrdersJSON from "../contracts/Orders.json";
 import { checkIfActionAccountInitialized, checkIfInitialized, objectToTuple } from "../utils";
 import { OrderInfo, OrderInfoStructure, OrderStatus } from "../types/Order";
-import { formatBytes32String } from "ethers/lib/utils";
+import { formatBytes32String, parseBytes32String } from "ethers/lib/utils";
 import { ContractEvent, TransactionOptions } from "../types/Web3";
 import { OrderCreatedEvent } from "../types/Events";
 import Superpro from "./Superpro";
@@ -76,7 +76,13 @@ class OrdersFactory {
         const subscription = this.contract.events
             .OrderCreated()
             .on("data", async (event: ContractEvent) => {
-                callback(<string>event.returnValues.orderId);
+                //consumer: string, externalId: string, offerId: string, orderId: string
+                callback(
+                    <string>event.returnValues.consumer,
+                    parseBytes32String(<string>event.returnValues.externalId),
+                    <string>event.returnValues.offerId,
+                    <string>event.returnValues.orderId,
+                );
             })
             .on("error", (error: Error, receipt: string) => {
                 if (receipt) return; // Used to avoid logging of transaction rejected
@@ -153,7 +159,7 @@ class OrdersFactory {
                 callback(
                     <string>event.returnValues.orderId,
                     <string>event.returnValues.consumer,
-                    <string>event.returnValues.amount
+                    <string>event.returnValues.amount,
                 );
             })
             .on("error", (error: Error, receipt: string) => {
@@ -223,7 +229,7 @@ class OrdersFactory {
     }
 }
 
-export type onOrderCreatedCallback = (orderId: string) => void;
+export type onOrderCreatedCallback = (consumer: string, externalId: string, offerId: string, orderId: string) => void;
 export type onSubOrderCreatedCallback = (orderId: string) => void;
 export type onOrderStartedCallback = (orderId: string, consumer: string) => void;
 export type onOrdersStatusUpdatedCallback = (orderId: string, status: OrderStatus) => void;

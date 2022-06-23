@@ -61,7 +61,7 @@ class OrdersFactory {
     public static async getOrdersCount(): Promise<number> {
         this.checkInit();
 
-        return await this.contract.methods.getOrdersCount().call();
+        return Number(await this.contract.methods.getOrdersCount().call());
     }
 
     /**

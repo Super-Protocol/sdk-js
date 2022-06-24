@@ -74,6 +74,9 @@ class TxManager {
         // TODO: Consider a better way to organize different strategies for publishing transactions.
         if (checkForUsingExternalTxManager(options)) {
             txData.nonce = this.nonceTracker.consumeNonce(from);
+
+            const estimatedGas = await transaction.estimateGas(txData);
+            txData.gas = estimatedGas * store.gasLimitMultiplier;
         }
 
         const signingKey = store.keys[from];

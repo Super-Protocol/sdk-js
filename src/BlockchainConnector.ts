@@ -41,8 +41,9 @@ class BlockchainConnector {
             store.web3 = new Web3(this.provider);
         }
 
-        if (config?.gasLimit) store.gasLimit = config.gasLimit;
         if (config?.gasPrice) store.gasPrice = config.gasPrice;
+        if (config?.gasLimit) store.gasLimit = config.gasLimit;
+        if (config?.gasLimitMultiplier) store.gasLimitMultiplier = config.gasLimitMultiplier;
 
         Superpro.address = config.contractAddress;
         SuperproToken.address = await Superpro.getTokenAddress();
@@ -150,8 +151,9 @@ class BlockchainConnector {
 export type Config = {
     contractAddress: string;
     blockchainUrl?: string;
-    gasLimit?: number;
     gasPrice?: string;
+    gasLimit?: number;
+    gasLimitMultiplier?: number;
 };
 
 export default BlockchainConnector;

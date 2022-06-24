@@ -3,12 +3,13 @@ import Web3 from "web3";
 import { HttpProviderBase, WebsocketProviderBase } from "web3-core-helpers";
 import store from "./store";
 import { BLOCK_SIZE_TO_FETCH_TRANSACTION, defaultBlockchainUrl } from "./constants";
-import { checkIfInitialized } from "./utils";
-import { Transaction } from "./types/Web3";
+import {checkIfActionAccountInitialized, checkIfInitialized} from "./utils";
+import {Transaction, TransactionOptions} from "./types/Web3";
 import Superpro from "./staticModels/Superpro";
 import SuperproToken from "./staticModels/SuperproToken";
 import BlockchainTransaction from "./types/blockchainConnector/StorageAccess";
 import TxManager from "./utils/TxManager";
+import {TransactionReceipt} from "web3-core";
 
 class BlockchainConnector {
     private static logger = rootLogger.child({ className: "BlockchainConnector" });
@@ -73,6 +74,25 @@ class BlockchainConnector {
     public static async getBalance(address: string): Promise<string> {
         checkIfInitialized();
         return store.web3!.eth.getBalance(address);
+    }
+
+    /**
+     * Returns balance of blockchain platform tokens in wei
+     */
+    public static async transfer(
+        to: string,
+        amount: string,
+        transactionOptions?: TransactionOptions
+    ): Promise<TransactionReceipt> {
+        checkIfInitialized();
+        checkIfActionAccountInitialized(transactionOptions);
+
+        const transaction = {
+            to,
+            value: amount,
+        };
+
+        return TxManager.publishTransaction(transaction, transactionOptions);
     }
 
     /**

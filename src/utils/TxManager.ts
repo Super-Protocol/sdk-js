@@ -1,4 +1,4 @@
-import { TransactionReceipt, PromiEvent } from "web3-core";
+import { TransactionReceipt } from "web3-core";
 import { ContractSendMethod } from "web3-eth-contract";
 import NonceTracker from "./NonceTracker";
 import rootLogger from "../logger";
@@ -13,7 +13,6 @@ import {
 import Superpro from "../staticModels/Superpro";
 import lodash from "lodash";
 import Web3 from "web3";
-import BN from "bn.js";
 
 type ArgumentsType = any | any[];
 
@@ -33,6 +32,12 @@ class TxManager {
         this.nonceTracker = new NonceTracker(web3);
     }
 
+    private static checkIfInitialized() {
+        if (!this.web3) {
+            throw Error("TxManager should be initialized before using.");
+        }
+    }
+
     public static async initAccount(address: string): Promise<void> {
         return this.nonceTracker.initAccount(address);
     }
@@ -43,43 +48,46 @@ class TxManager {
         transactionOptions?: TransactionOptions,
         to: string = Superpro.address,
     ): Promise<TransactionReceipt> {
+        const transaction = method(...args);
+        const txData: Record<string, any> = {
+            to,
+            data: transaction.encodeABI(),
+        };
+
+        return TxManager.publishTransaction(txData, transactionOptions, transaction);
+    }
+
+    public static async publishTransaction(
+        txData: Record<string, any>,
+        transactionOptions?: TransactionOptions,
+        transactionCall?: MethodReturnType,
+    ): Promise<TransactionReceipt> {
+        this.checkIfInitialized();
         checkIfInitialized();
         checkIfActionAccountInitialized(transactionOptions);
 
         const web3 = transactionOptions?.web3 || this.web3;
-        const transaction = method(...args);
-        const options = await createTransactionOptions(transactionOptions);
-        const from = options.from;
-
-        if (!from) {
-            throw new Error("From account is undefined");
+        const options = await createTransactionOptions({ ...transactionOptions });
+        if (!options.from) {
+            throw Error("From account is undefined. You should pass it to transactionOptions or init action account.");
         }
 
-        return TxManager.publishTransaction(web3, transaction, from, to, options);
-    }
-
-    private static async publishTransaction(
-        web3: Web3,
-        transaction: MethodReturnType,
-        from: string,
-        to: string,
-        options: TransactionOptions,
-    ): Promise<TransactionReceipt> {
-        const txData: Record<string, any> = {
-            to,
-            data: transaction.encodeABI(),
+        txData = {
             ...options,
+            ...txData,
         };
 
         // TODO: Consider a better way to organize different strategies for publishing transactions.
-        if (checkForUsingExternalTxManager(options)) {
-            txData.nonce = this.nonceTracker.consumeNonce(from);
+        if (!checkForUsingExternalTxManager(transactionOptions)) {
+            if (transactionCall) {
+                const estimatedGas = await transactionCall.estimateGas(txData);
+                txData.gas = Math.floor(estimatedGas * store.gasLimitMultiplier);
+            }
 
-            const estimatedGas = await transaction.estimateGas(txData);
-            txData.gas = estimatedGas * store.gasLimitMultiplier;
+            txData.nonce = this.nonceTracker.consumeNonce(options.from);
         }
 
-        const signingKey = store.keys[from];
+        const signingKey = store.keys[options.from];
         if (signingKey) {
             const signed = await web3.eth.accounts.signTransaction(txData, signingKey);
             if (!signed.rawTransaction) {

@@ -3,13 +3,13 @@ import Web3 from "web3";
 import { HttpProviderBase, WebsocketProviderBase } from "web3-core-helpers";
 import store from "./store";
 import { BLOCK_SIZE_TO_FETCH_TRANSACTION, defaultBlockchainUrl } from "./constants";
-import {checkIfActionAccountInitialized, checkIfInitialized} from "./utils";
-import {Transaction, TransactionOptions} from "./types/Web3";
+import { checkIfActionAccountInitialized, checkIfInitialized } from "./utils";
+import { Transaction, TransactionOptions } from "./types/Web3";
 import Superpro from "./staticModels/Superpro";
 import SuperproToken from "./staticModels/SuperproToken";
 import BlockchainTransaction from "./types/blockchainConnector/StorageAccess";
 import TxManager from "./utils/TxManager";
-import {TransactionReceipt} from "web3-core";
+import { TransactionReceipt } from "web3-core";
 
 class BlockchainConnector {
     private static logger = rootLogger.child({ className: "BlockchainConnector" });
@@ -57,13 +57,15 @@ class BlockchainConnector {
      * Function for connecting provider action account
      * Needs to run this function before using any set methods in blockchain connector
      */
-    public static async initActionAccount(actionAccountKey: string): Promise<string> {
+    public static async initActionAccount(actionAccountKey: string, manageNonce = true): Promise<string> {
         checkIfInitialized();
         const actionAccount = store.web3!.eth.accounts.wallet.add(actionAccountKey).address;
         if (!store.actionAccount) store.actionAccount = actionAccount;
         if (!store.keys[actionAccount]) store.keys[actionAccount] = actionAccountKey;
         if (!this.defaultActionAccount) this.defaultActionAccount = actionAccount;
-        await TxManager.initAccount(actionAccount);
+        if (manageNonce) {
+            await TxManager.initAccount(actionAccount);
+        }
 
         return actionAccount;
     }
@@ -82,7 +84,7 @@ class BlockchainConnector {
     public static async transfer(
         to: string,
         amount: string,
-        transactionOptions?: TransactionOptions
+        transactionOptions?: TransactionOptions,
     ): Promise<TransactionReceipt> {
         checkIfInitialized();
         checkIfActionAccountInitialized(transactionOptions);

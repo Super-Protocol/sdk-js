@@ -17,8 +17,12 @@ class NonceTracker {
         this.store[address] = txCount;
     }
 
+    public isManaged(address: string): boolean {
+        return address in this.store;
+    }
+
     private checkAccount(address: string) {
-        if (address in this.store) {
+        if (this.isManaged(address)) {
             return;
         }
         throw Error(`${address} account is not initialized. You must call initAccount before using it.`);

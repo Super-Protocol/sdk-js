@@ -84,7 +84,9 @@ class TxManager {
                 txData.gas = Math.floor(estimatedGas * store.gasLimitMultiplier);
             }
 
-            txData.nonce = this.nonceTracker.consumeNonce(options.from);
+            if (this.nonceTracker.isManaged(options.from)) {
+                txData.nonce = this.nonceTracker.consumeNonce(options.from);
+            }
         }
 
         const signingKey = store.keys[options.from];

@@ -20,6 +20,12 @@ export * from "./staticModels/Suspicious";
 export { default as OrdersFactory } from "./staticModels/OrdersFactory";
 export * from "./staticModels/OrdersFactory";
 
+export { default as ActiveOrders } from "./staticModels/ActiveOrders";
+export * from "./staticModels/ActiveOrders";
+
+export { default as ActiveOffers } from "./staticModels/ActiveOffers";
+export * from "./staticModels/ActiveOffers";
+
 export { default as OffersFactory } from "./staticModels/OffersFactory";
 export * from "./staticModels/OffersFactory";
 

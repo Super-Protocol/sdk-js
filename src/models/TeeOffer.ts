@@ -54,7 +54,7 @@ class TeeOffer {
      * Function for fetching TEE offer info from blockchain
      */
     public async getInfo(): Promise<TeeOfferInfo> {
-        const [teeOfferInfoParams, ,] = await this.contract.methods.getTeeOffer(this.offerId).call();
+        const [, , teeOfferInfoParams] = await this.contract.methods.getTeeOffer(this.offerId).call();
 
         return (this.offerInfo = tupleToObject(teeOfferInfoParams, TeeOfferInfoStructure));
     }

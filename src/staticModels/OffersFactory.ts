@@ -6,6 +6,7 @@ import OffersJSON from "../contracts/Offers.json";
 import { checkIfActionAccountInitialized, checkIfInitialized, objectToTuple } from "../utils";
 import { OfferInfo, OfferInfoV1, OfferInfoStructure, OfferType } from "../types/Offer";
 import { formatBytes32String } from "ethers/lib/utils";
+import { BigNumber } from "ethers";
 import { ContractEvent, TransactionOptions } from "../types/Web3";
 import { OfferCreatedEvent } from "../types/Events";
 import Superpro from "./Superpro";
@@ -26,6 +27,7 @@ class OffersFactory {
     private static checkInit(transactionOptions?: TransactionOptions) {
         if (transactionOptions?.web3) {
             checkIfInitialized();
+
             return new transactionOptions.web3.eth.Contract(<AbiItem[]>OffersJSON.abi, Superpro.address);
         }
 
@@ -33,7 +35,8 @@ class OffersFactory {
         checkIfInitialized();
 
         this.logger = rootLogger.child({ className: "OffersFactory" });
-        return this.contract = new store.web3!.eth.Contract(<AbiItem[]>OffersJSON.abi, Superpro.address);
+
+        return (this.contract = new store.web3!.eth.Contract(<AbiItem[]>OffersJSON.abi, Superpro.address));
     }
 
     /**
@@ -44,12 +47,11 @@ class OffersFactory {
     public static async getAllOffers(): Promise<string[]> {
         this.checkInit();
 
-        // TODO: offerId start at 1 in next smart-contract deployment
-        const count = await this.contract.methods.getOffersCount().call();
+        const count = await this.contract.methods.getOffersTotalCount().call();
         this.offers = this.offers || [];
         const offersSet = new Set(this.offers);
 
-        for (let offerId = offersSet.size; offerId < count; ++offerId) {
+        for (let offerId = offersSet.size + 1; offerId <= count; ++offerId) {
             const offerType = (await this.contract.methods.getOfferType(offerId).call()) as OfferType;
             if (offerType !== OfferType.TeeOffer) {
                 offersSet.add(offerId.toString());
@@ -97,7 +99,11 @@ class OffersFactory {
         const response: OfferCreatedEvent =
             foundIds.length > 0
                 ? (foundIds[0].returnValues as OfferCreatedEvent)
-                : { creator, externalId, offerId: -1 };
+                : {
+                      creator,
+                      externalId,
+                      offerId: -1,
+                  };
 
         return response;
     }
@@ -114,7 +120,53 @@ class OffersFactory {
         const subscription = this.contract.events
             .OfferCreated()
             .on("data", async (event: ContractEvent) => {
-                callback(<string>event.returnValues.offerId);
+                callback(
+                    <string>event.returnValues.offerId,
+                    <string>event.returnValues.creator,
+                    <string>event.returnValues.externalId,
+                );
+            })
+            .on("error", (error: Error, receipt: string) => {
+                if (receipt) return; // Used to avoid logging of transaction rejected
+                logger.warn(error);
+            });
+
+        return () => subscription.unsubscribe();
+    }
+
+    public static onOfferEnabled(callback: onOfferEnabledCallback): () => void {
+        this.checkInit();
+        const logger = this.logger.child({ method: "onOfferEnabled" });
+
+        const subscription = this.contract.events
+            .OfferEnabled()
+            .on("data", async (event: ContractEvent) => {
+                callback(
+                    <string>event.returnValues.providerAuth,
+                    <string>event.returnValues.offerId,
+                    <OfferType>event.returnValues.offerType,
+                );
+            })
+            .on("error", (error: Error, receipt: string) => {
+                if (receipt) return; // Used to avoid logging of transaction rejected
+                logger.warn(error);
+            });
+
+        return () => subscription.unsubscribe();
+    }
+
+    public static onOfferDisabled(callback: onOfferDisbledCallback): () => void {
+        this.checkInit();
+        const logger = this.logger.child({ method: "onOfferDisabled" });
+
+        const subscription = this.contract.events
+            .OfferEnabled()
+            .on("data", async (event: ContractEvent) => {
+                callback(
+                    <string>event.returnValues.providerAuth,
+                    <string>event.returnValues.offerId,
+                    <OfferType>event.returnValues.offerType,
+                );
             })
             .on("error", (error: Error, receipt: string) => {
                 if (receipt) return; // Used to avoid logging of transaction rejected
@@ -125,6 +177,9 @@ class OffersFactory {
     }
 }
 
-export type onOfferCreatedCallback = (address: string) => void;
+// address -> offerId
+export type onOfferCreatedCallback = (address: string, creator: string, externalId: string) => void;
+export type onOfferEnabledCallback = (providerAuth: string, address: string, offerType: OfferType) => void;
+export type onOfferDisbledCallback = (providerAuth: string, address: string, offerType: OfferType) => void;
 
 export default OffersFactory;

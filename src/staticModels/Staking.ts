@@ -3,7 +3,7 @@ import { AbiItem } from "web3-utils";
 import StakingJSON from "../contracts/Staking.json";
 import store from "../store";
 import { checkIfActionAccountInitialized, checkIfInitialized, tupleToObject } from "../utils";
-import { LockInfo, LockInfoStructure, StakeInfo, StakeInfoStructure } from "../types/Staking";
+import { LockInfo, LockInfoStructure, StakeInfo, StakeInfoStructure, Purpose } from "../types/Staking";
 import { ContractName } from "../types/Superpro";
 import { Contract } from "web3-eth-contract";
 import { TransactionOptions } from "../types/Web3";
@@ -47,10 +47,10 @@ class Staking {
     /**
      * Fetching locked tokens info by owner address and contract name from blockchain
      */
-    public static async getLockInfo(ownerAddress: string, contractName: ContractName): Promise<LockInfo> {
+    public static async getLockInfo(purpose: Purpose, ownerAddress: string): Promise<LockInfo> {
         this.checkInit();
 
-        const lockInfoParams = await this.contract.methods.getLockedTokensInfo(ownerAddress).call();
+        const lockInfoParams = await this.contract.methods.getLockedTokensInfo(purpose, ownerAddress).call();
         return tupleToObject(lockInfoParams, LockInfoStructure);
     }
 

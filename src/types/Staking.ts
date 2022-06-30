@@ -23,3 +23,9 @@ export type LockInfo = {
     toDate: number;
     amount: number;
 };
+
+export enum Purpose {
+    Providers = "0",
+    Orders = "1",
+    Consensus = "2",
+}

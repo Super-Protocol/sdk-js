@@ -7,7 +7,8 @@ export enum OfferType {
 
 export enum OfferGroup {
     Input = "0",
-    Output = "1",
+    Processing = "1",
+    Output = "2",
 }
 
 // Order of keys and type conversion functions for this object in blockchain contract

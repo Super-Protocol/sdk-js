@@ -6,7 +6,7 @@ import ProvidersJSON from "../contracts/Providers.json";
 import ProvidersOffersJSON from "../contracts/ProvidersOffers.json";
 import { checkIfInitialized, checkIfActionAccountInitialized, objectToTuple } from "../utils";
 import { ProviderInfo, ProviderInfoStructure } from "../types/Provider";
-import { formatBytes32String } from "ethers/lib/utils";
+import { BigNumber } from "ethers";
 import { ContractEvent, TransactionOptions } from "../types/Web3";
 import Superpro from "./Superpro";
 import TxManager from "../utils/TxManager";
@@ -23,6 +23,7 @@ class ProviderRegistry {
     private static checkInitProviders(transactionOptions?: TransactionOptions) {
         if (transactionOptions?.web3) {
             checkIfInitialized();
+
             return new transactionOptions.web3.eth.Contract(<AbiItem[]>ProvidersJSON.abi, Superpro.address);
         }
 
@@ -30,12 +31,14 @@ class ProviderRegistry {
         checkIfInitialized();
 
         this.logger = rootLogger.child({ className: "Providers" });
-        return this.contract = new store.web3!.eth.Contract(<AbiItem[]>ProvidersJSON.abi, Superpro.address);
+
+        return (this.contract = new store.web3!.eth.Contract(<AbiItem[]>ProvidersJSON.abi, Superpro.address));
     }
 
     private static checkInitProvidersOffers(transactionOptions?: TransactionOptions) {
         if (transactionOptions?.web3) {
             checkIfInitialized();
+
             return new transactionOptions.web3.eth.Contract(<AbiItem[]>ProvidersOffersJSON.abi, Superpro.address);
         }
 
@@ -43,7 +46,8 @@ class ProviderRegistry {
         checkIfInitialized();
 
         this.logger = rootLogger.child({ className: "ProvidersOffers" });
-        return this.contract = new store.web3!.eth.Contract(<AbiItem[]>ProvidersOffersJSON.abi, Superpro.address);
+
+        return (this.contract = new store.web3!.eth.Contract(<AbiItem[]>ProvidersOffersJSON.abi, Superpro.address));
     }
 
     /**
@@ -52,6 +56,7 @@ class ProviderRegistry {
     public static async getAllProviders(): Promise<string[]> {
         this.checkInitProviders();
         this.providers = await this.contract.methods.getProvidersAuths().call();
+
         return this.providers!;
     }
 
@@ -67,6 +72,7 @@ class ProviderRegistry {
      */
     public static async getSecurityDeposit(providerAuthority: string): Promise<number> {
         this.checkInitProviders();
+
         return +(await this.contract.methods.getProviderSecurityDeposit(providerAuthority).call());
     }
 
@@ -134,8 +140,101 @@ class ProviderRegistry {
 
         return () => subscription.unsubscribe();
     }
+
+    /**
+     * Function for adding event listeners on provider modified event in provider registry
+     * @param callback - function for processing modified provider
+     * @returns unsubscribe - unsubscribe function from event
+     */
+    public static onProviderModified(callback: onProviderModifiedCallback): () => void {
+        this.checkInitProviders();
+        const logger = this.logger.child({ method: "onProviderModified" });
+
+        const subscription = this.contract.events
+            .ProviderModified()
+            .on("data", async (event: ContractEvent) => {
+                callback(<string>event.returnValues.auth);
+            })
+            .on("error", (error: Error, receipt: string) => {
+                if (receipt) return; // Used to avoid logging of transaction rejected
+                logger.warn(error);
+            });
+
+        return () => subscription.unsubscribe();
+    }
+
+    /**
+     * Function for adding event listeners on provider violation rate incremented event in provider registry
+     * @param callback - function for processing new violation rate
+     * @returns unsubscribe - unsubscribe function from event
+     */
+    public static onProviderViolationRateIncremented(callback: onProviderViolationRateIncrementedCallback): () => void {
+        this.checkInitProviders();
+        const logger = this.logger.child({ method: "onProviderViolationRateIncremented" });
+
+        const subscription = this.contract.events
+            .ProviderViolationRateIncremented()
+            .on("data", async (event: ContractEvent) => {
+                callback(<string>event.returnValues.auth, <BigNumber>event.returnValues.newViolationRate);
+            })
+            .on("error", (error: Error, receipt: string) => {
+                if (receipt) return; // Used to avoid logging of transaction rejected
+                logger.warn(error);
+            });
+
+        return () => subscription.unsubscribe();
+    }
+
+    /**
+     * Function for adding event listeners on provider security deposit refilled event in provider registry
+     * @param callback - function for processing refilled security deposit
+     * @returns unsubscribe - unsubscribe function from event
+     */
+    public static onProviderSecurityDepoRefilled(callback: onProviderSecurityDepoRefilledCallback): () => void {
+        this.checkInitProviders();
+        const logger = this.logger.child({ method: "onProviderSecurityDepoRefilled" });
+
+        const subscription = this.contract.events
+            .ProviderSecurityDepoRefilled()
+            .on("data", async (event: ContractEvent) => {
+                callback(<string>event.returnValues.auth, <BigNumber>event.returnValues.amount);
+            })
+            .on("error", (error: Error, receipt: string) => {
+                if (receipt) return; // Used to avoid logging of transaction rejected
+                logger.warn(error);
+            });
+
+        return () => subscription.unsubscribe();
+    }
+
+    /**
+     * Function for adding event listeners on provider security deposit unlocked event in provider registry
+     * @param callback - function for processing unlocked security deposit
+     * @returns unsubscribe - unsubscribe function from event
+     */
+    public static onProviderSecurityDepoUnlocked(callback: onProviderSecurityDepoUnlockedCallback): () => void {
+        this.checkInitProviders();
+        const logger = this.logger.child({ method: "onProviderSecurityDepoUnlocked" });
+
+        const subscription = this.contract.events
+            .ProviderSecurityDepoUnlocked()
+            .on("data", async (event: ContractEvent) => {
+                callback(<string>event.returnValues.auth, <BigNumber>event.returnValues.amount);
+            })
+            .on("error", (error: Error, receipt: string) => {
+                if (receipt) return; // Used to avoid logging of transaction rejected
+                logger.warn(error);
+            });
+
+        return () => subscription.unsubscribe();
+    }
 }
 
+// address -> AuthorityAccount
 export type onProviderRegisteredCallback = (address: string) => void;
+export type onProviderModifiedCallback = (address: string) => void;
+export type onProviderViolationRateIncrementedCallback = (address: string, newViolationRate: BigNumber) => void;
+export type onProviderSecurityDepoRefilledCallback = (address: string, amount: BigNumber) => void;
+export type onProviderSecurityDepoUnlockedCallback = (address: string, amount: BigNumber) => void;
 
 export default ProviderRegistry;

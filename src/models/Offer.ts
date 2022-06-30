@@ -47,8 +47,9 @@ class Offer {
      * Function for fetching offer info from blockchain
      */
     public async getInfo(): Promise<OfferInfo> {
-        const orderInfoParams = await this.contract.methods.getValueOffer(this.offerId).call();
-        return (this.offerInfo = tupleToObject(orderInfoParams[0], OfferInfoStructure));
+        const [, , orderInfoParams] = await this.contract.methods.getValueOffer(this.offerId).call();
+
+        return (this.offerInfo = tupleToObject(orderInfoParams, OfferInfoStructure));
     }
 
     /**
@@ -89,6 +90,10 @@ class Offer {
         origins.modifiedDate = +origins.modifiedDate * 1000;
 
         return (this.origins = origins);
+    }
+
+    public async isOfferExists(): Promise<boolean> {
+        return await this.contract.methods.isOfferExists(this.offerId).call();
     }
 
     /**

@@ -6,6 +6,7 @@ import OrdersJSON from "../contracts/Orders.json";
 import { checkIfActionAccountInitialized, checkIfInitialized, objectToTuple } from "../utils";
 import { OrderInfo, OrderInfoStructure, OrderStatus } from "../types/Order";
 import { formatBytes32String, parseBytes32String } from "ethers/lib/utils";
+import { BigNumber } from "ethers";
 import { ContractEvent, TransactionOptions } from "../types/Web3";
 import { OrderCreatedEvent } from "../types/Events";
 import Superpro from "./Superpro";
@@ -13,6 +14,7 @@ import TxManager from "../utils/TxManager";
 
 class OrdersFactory {
     private static contract: Contract;
+    private static activeOrders: Contract;
     private static logger: typeof rootLogger;
 
     public static orders?: string[];
@@ -26,20 +28,24 @@ class OrdersFactory {
     private static checkInit(transactionOptions?: TransactionOptions) {
         if (transactionOptions?.web3) {
             checkIfInitialized();
+
             return new transactionOptions.web3.eth.Contract(<AbiItem[]>OrdersJSON.abi, Superpro.address);
         }
 
         if (this.contract) return this.contract;
         checkIfInitialized();
 
-        this.logger = rootLogger.child({ className: "OrdersFactory", address: Superpro.address });
-        return this.contract = new store.web3!.eth.Contract(<AbiItem[]>OrdersJSON.abi, Superpro.address);
+        this.logger = rootLogger.child({
+            className: "OrdersFactory",
+            address: Superpro.address,
+        });
+
+        return (this.contract = new store.web3!.eth.Contract(<AbiItem[]>OrdersJSON.abi, Superpro.address));
     }
 
     /**
      * Function for fetching list of all orders addresses
-     * @param fromBlock - Number|String (optional): The block number (greater than or equal to) from which to get events on. Pre-defined block numbers as "earliest", "latest" and "pending" can also be used.
-     * @param toBlock - Number|String (optional): The block number (less than or equal to) to get events up to (Defaults to "latest"). Pre-defined block numbers as "earliest", "latest" and "pending" can also be used.
+     * @returns list of orders addresses
      */
     public static async getAllOrders(): Promise<string[]> {
         this.checkInit();
@@ -70,113 +76,8 @@ class OrdersFactory {
      */
     public static async getOrderHoldDeposit(orderAddress: string): Promise<number> {
         this.checkInit();
+
         return await this.contract.methods.getOrderHoldDeposit(orderAddress).call();
-    }
-
-    /**
-     * Function for adding event listeners on order created event in orders factory contract
-     * @param callback - function for processing created order
-     * @return unsubscribe - unsubscribe function from event
-     */
-    public static onOrderCreated(callback: onOrderCreatedCallback): () => void {
-        this.checkInit();
-        const logger = this.logger.child({ method: "onOrderCreated" });
-
-        const subscription = this.contract.events
-            .OrderCreated()
-            .on("data", async (event: ContractEvent) => {
-                //consumer: string, externalId: string, offerId: string, orderId: string
-                callback(
-                    <string>event.returnValues.consumer,
-                    parseBytes32String(<string>event.returnValues.externalId),
-                    <string>event.returnValues.offerId,
-                    <string>event.returnValues.orderId,
-                );
-            })
-            .on("error", (error: Error, receipt: string) => {
-                if (receipt) return; // Used to avoid logging of transaction rejected
-                logger.warn(error);
-            });
-
-        return () => subscription.unsubscribe();
-    }
-
-    public static onSubOrderCreated(callback: onSubOrderCreatedCallback): () => void {
-        this.checkInit();
-        const logger = this.logger.child({ method: "onSubOrderCreated" });
-
-        const subscription = this.contract.events
-            .SubOrderCreated()
-            .on("data", async (event: ContractEvent) => {
-                callback(<string>event.returnValues.subOrderId);
-            })
-            .on("error", (error: Error, receipt: string) => {
-                if (receipt) return; // Used to avoid logging of transaction rejected
-                logger.warn(error);
-            });
-
-        return () => subscription.unsubscribe();
-    }
-
-    public static onOrderStarted(callback: onOrderStartedCallback, orderId?: string): () => void {
-        const logger = this.logger.child({ method: "onOrderStarted" });
-
-        const subscription = this.contract.events
-            .OrderStarted()
-            .on("data", async (event: ContractEvent) => {
-                if (orderId && event.returnValues.orderId != orderId) {
-                    return;
-                }
-                callback(<string>event.returnValues.orderId, <string>event.returnValues.consumer);
-            })
-            .on("error", (error: Error, receipt: string) => {
-                if (receipt) return; // Used to avoid logging of transaction rejected
-                logger.warn(error);
-            });
-
-        return () => subscription.unsubscribe();
-    }
-
-    public static onOrdersStatusUpdated(callback: onOrdersStatusUpdatedCallback, orderId?: string): () => void {
-        const logger = this.logger.child({ method: "onOrdersStatusUpdated" });
-
-        const subscription = this.contract.events
-            .OrderStatusUpdated()
-            .on("data", async (event: ContractEvent) => {
-                if (orderId && event.returnValues.orderId != orderId) {
-                    return;
-                }
-                callback(<string>event.returnValues.orderId, <OrderStatus>event.returnValues.status);
-            })
-            .on("error", (error: Error, receipt: string) => {
-                if (receipt) return; // Used to avoid logging of transaction rejected
-                logger.warn(error);
-            });
-
-        return () => subscription.unsubscribe();
-    }
-
-    public static onOrderDepositRefilled(callback: onOrderDepositRefilledCallback, orderId?: string): () => void {
-        const logger = this.logger.child({ method: "onOrderDepositRefilled" });
-
-        const subscription = this.contract.events
-            .OrderDepositRefilled()
-            .on("data", async (event: ContractEvent) => {
-                if (orderId && event.returnValues.orderId != orderId) {
-                    return;
-                }
-                callback(
-                    <string>event.returnValues.orderId,
-                    <string>event.returnValues.consumer,
-                    <string>event.returnValues.amount,
-                );
-            })
-            .on("error", (error: Error, receipt: string) => {
-                if (receipt) return; // Used to avoid logging of transaction rejected
-                logger.warn(error);
-            });
-
-        return () => subscription.unsubscribe();
     }
 
     /**
@@ -212,7 +113,12 @@ class OrdersFactory {
             externalId: formatBytes32String(externalId),
         };
         const foundIds = await contract.getPastEvents("OrderCreated", { filter });
-        const notFound = { consumer, externalId, offerId: -1, orderId: -1 };
+        const notFound = {
+            consumer,
+            externalId,
+            offerId: -1,
+            orderId: -1,
+        };
 
         const response: OrderCreatedEvent =
             foundIds.length > 0 ? (foundIds[0].returnValues as OrderCreatedEvent) : notFound;
@@ -236,12 +142,369 @@ class OrdersFactory {
 
         await TxManager.execute(contract.methods.refillOrder, [orderAddress, amount], transactionOptions);
     }
+
+    /**
+     * Function for adding event listeners on order created event in orders factory contract
+     * @param callback - function for processing created order
+     * @returns unsubscribe - unsubscribe function from event
+     */
+    public static onOrderCreated(callback: onOrderCreatedCallback): () => void {
+        this.checkInit();
+        const logger = this.logger.child({ method: "onOrderCreated" });
+
+        const subscription = this.contract.events
+            .OrderCreated()
+            .on("data", async (event: ContractEvent) => {
+                //consumer: string, externalId: string, offerId: string, orderId: string
+                callback(
+                    <string>event.returnValues.consumer,
+                    parseBytes32String(<string>event.returnValues.externalId),
+                    <string>event.returnValues.offerId,
+                    <string>event.returnValues.orderId,
+                );
+            })
+            .on("error", (error: Error, receipt: string) => {
+                if (receipt) return; // Used to avoid logging of transaction rejected
+                logger.warn(error);
+            });
+
+        return () => subscription.unsubscribe();
+    }
+
+    /**
+     * Function for adding event listeners on suborder created event in orders contract
+     * @param callback - function for processing created suborder
+     * @param parentOrderId - parent order id
+     * @return unsubscribe - unsubscribe function from event
+     */
+    public static onSubOrderCreated(callback: onSubOrderCreatedCallback, parentOrderId?: string): () => void {
+        this.checkInit();
+        const logger = this.logger.child({ method: "onSubOrderCreated" });
+
+        const subscription = this.contract.events
+            .SubOrderCreated()
+            .on("data", async (event: ContractEvent) => {
+                if (parentOrderId && event.returnValues.parentOrderId != parentOrderId) {
+                    return;
+                }
+                callback(<string>event.returnValues.parentOrderId, <string>event.returnValues.subOrderId);
+            })
+            .on("error", (error: Error, receipt: string) => {
+                if (receipt) return; // Used to avoid logging of transaction rejected
+                logger.warn(error);
+            });
+
+        return () => subscription.unsubscribe();
+    }
+
+    /**
+     * Function for adding event listeners on order started event in orders contract
+     * @param callback - function for processing suborder filled event
+     * @param orderId - order id
+     * @returns unsubscribe - unsubscribe function from event
+     */
+    public static onOrderStarted(callback: onOrderStartedCallback, orderId?: string): () => void {
+        const logger = this.logger.child({ method: "onOrderStarted" });
+
+        const subscription = this.contract.events
+            .OrderStarted()
+            .on("data", async (event: ContractEvent) => {
+                if (orderId && event.returnValues.orderId != orderId) {
+                    return;
+                }
+                callback(<string>event.returnValues.orderId, <string>event.returnValues.consumer);
+            })
+            .on("error", (error: Error, receipt: string) => {
+                if (receipt) return; // Used to avoid logging of transaction rejected
+                logger.warn(error);
+            });
+
+        return () => subscription.unsubscribe();
+    }
+
+    /**
+     * Function for adding event listeners on order updated status event in orders contract
+     * @param callback - function for processing order updated status event
+     * @param orderId - order id
+     * @returns unsubscribe - unsubscribe function from event
+     */
+    public static onOrdersStatusUpdated(callback: onOrdersStatusUpdatedCallback, orderId?: string): () => void {
+        const logger = this.logger.child({ method: "onOrdersStatusUpdated" });
+
+        const subscription = this.contract.events
+            .OrderStatusUpdated()
+            .on("data", async (event: ContractEvent) => {
+                if (orderId && event.returnValues.orderId != orderId) {
+                    return;
+                }
+                callback(<string>event.returnValues.orderId, <OrderStatus>event.returnValues.status);
+            })
+            .on("error", (error: Error, receipt: string) => {
+                if (receipt) return; // Used to avoid logging of transaction rejected
+                logger.warn(error);
+            });
+
+        return () => subscription.unsubscribe();
+    }
+
+    /**
+     * Function for adding event listeners on order refilled event in orders contract
+     * @param callback - function for processing order refilled event
+     * @param consumer - consumer address
+     * @param orderId - order id
+     * @returns unsubscribe - unsubscribe function from event
+     */
+    public static onOrderDepositRefilled(
+        callback: onOrderDepositRefilledCallback,
+        consumer?: string,
+        orderId?: string,
+    ): () => void {
+        const logger = this.logger.child({ method: "onOrderDepositRefilled" });
+
+        const subscription = this.contract.events
+            .OrderDepositRefilled()
+            .on("data", async (event: ContractEvent) => {
+                if (orderId && event.returnValues.orderId != orderId) {
+                    return;
+                }
+                if (consumer && event.returnValues.consumer != consumer) {
+                    return;
+                }
+                callback(
+                    <string>event.returnValues.orderId,
+                    <string>event.returnValues.consumer,
+                    <BigNumber>event.returnValues.amount,
+                );
+            })
+            .on("error", (error: Error, receipt: string) => {
+                if (receipt) return; // Used to avoid logging of transaction rejected
+                logger.warn(error);
+            });
+
+        return () => subscription.unsubscribe();
+    }
+
+    /**
+     * Function for adding event listeners on order price updated event in orders contract
+     * @param callback - function for processing order price updated event
+     * @param orderId - order id
+     * @returns unsubscribe - unsubscribe function from event
+     */
+    public static onOrderPriceUpdated(callback: onOrderPriceUpdatedCallback, orderId?: string): () => void {
+        const logger = this.logger.child({ method: "onOrderPriceUpdated" });
+
+        const subscription = this.contract.events
+            .OrderPriceUpdated()
+            .on("data", async (event: ContractEvent) => {
+                if (orderId && event.returnValues.orderId != orderId) {
+                    return;
+                }
+                callback(<string>event.returnValues.orderId, <BigNumber>event.returnValues.price);
+            })
+            .on("error", (error: Error, receipt: string) => {
+                if (receipt) return; // Used to avoid logging of transaction rejected
+                logger.warn(error);
+            });
+
+        return () => subscription.unsubscribe();
+    }
+
+    /**
+     * Function for adding event listeners on order changed withdrawn event in orders contract
+     * @param callback - function for processing order changed withdrawn event
+     * @param orderId - order id
+     * @returns unsubscribe - unsubscribe function from event
+     */
+    public static onOrderChangedWithdrawn(callback: onOrderChangedWithdrawnCallback, orderId?: string): () => void {
+        const logger = this.logger.child({ method: "onOrderChangedWithdrawn" });
+
+        const subscription = this.contract.events
+            .OrderChangedWithdrawn()
+            .on("data", async (event: ContractEvent) => {
+                if (orderId && event.returnValues.orderId != orderId) {
+                    return;
+                }
+                callback(
+                    <string>event.returnValues.orderId,
+                    <string>event.returnValues.consumer,
+                    <BigNumber>event.returnValues.change,
+                );
+            })
+            .on("error", (error: Error, receipt: string) => {
+                if (receipt) return; // Used to avoid logging of transaction rejected
+                logger.warn(error);
+            });
+
+        return () => subscription.unsubscribe();
+    }
+
+    /**
+     * Function for adding event listeners on order changed refunded event in orders contract
+     * @param callback - function for processing order changed refunded event
+     * @param tokenReceiver - token receiver address
+     * @param orderId - order id
+     * @returns unsubscribe - unsubscribe function from event
+     */
+    public static onOrderProfitWithdrawn(
+        callback: onOrderProfitWithdrawnCallback,
+        orderId?: string,
+        tokenReceiver?: string,
+    ): () => void {
+        const logger = this.logger.child({ method: "onOrderProfitWithdrawn" });
+
+        const subscription = this.contract.events
+            .OrderProfitWithdrawn()
+            .on("data", async (event: ContractEvent) => {
+                if (orderId && event.returnValues.orderId != orderId) {
+                    return;
+                }
+                if (tokenReceiver && event.returnValues.tokenReceiver != tokenReceiver) {
+                    return;
+                }
+                callback(
+                    <string>event.returnValues.orderId,
+                    <string>event.returnValues.tokenReceiver,
+                    <BigNumber>event.returnValues.profit,
+                );
+            })
+            .on("error", (error: Error, receipt: string) => {
+                if (receipt) return; // Used to avoid logging of transaction rejected
+                logger.warn(error);
+            });
+
+        return () => subscription.unsubscribe();
+    }
+
+    /**
+     * Function for adding event listeners on order awaiting payment event in orders contract
+     * @param callback - function for processing order awaiting payment event
+     * @param consumer - order creator address
+     * @param orderId - order id
+     * @returns unsubscribe - unsubscribe function from event
+     */
+    public static onOrderAwaitingPaymentChanged(
+        callback: onOrderAwaitingPaymentChangedCallback,
+        consumer?: string,
+        orderId?: string,
+    ): () => void {
+        const logger = this.logger.child({ method: "onOrderAwaitingPaymentChanged" });
+
+        const subscription = this.contract.events
+            .OrderAwaitingPaymentChanged()
+            .on("data", async (event: ContractEvent) => {
+                if (orderId && event.returnValues.orderId != orderId) {
+                    return;
+                }
+                if (consumer && event.returnValues.consumer != consumer) {
+                    return;
+                }
+                callback(
+                    <string>event.returnValues.orderId,
+                    <string>event.returnValues.consumer,
+                    <boolean>event.returnValues.awaitingPayment,
+                );
+            })
+            .on("error", (error: Error, receipt: string) => {
+                if (receipt) return; // Used to avoid logging of transaction rejected
+                logger.warn(error);
+            });
+
+        return () => subscription.unsubscribe();
+    }
+
+    /**
+     * Function for adding event listeners on order deposit spent event in orders contract
+     * @param callback - function for processing order deposit spent event
+     * @param consumer - order creator address
+     * @param orderId - order id
+     * @returns unsubscribe - unsubscribe function from event
+     */
+    public static onOrderDepositSpentChanged(
+        callback: onOrderDepositSpentChangedCallback,
+        consumer?: string,
+        orderId?: string,
+    ): () => void {
+        const logger = this.logger.child({ method: "onOrderDepositSpentChanged" });
+
+        const subscription = this.contract.events
+            .OrderDepositSpentChanged()
+            .on("data", async (event: ContractEvent) => {
+                if (orderId && event.returnValues.orderId != orderId) {
+                    return;
+                }
+                if (consumer && event.returnValues.consumer != consumer) {
+                    return;
+                }
+                callback(
+                    <string>event.returnValues.orderId,
+                    <string>event.returnValues.consumer,
+                    <BigNumber>event.returnValues.value,
+                );
+            })
+            .on("error", (error: Error, receipt: string) => {
+                if (receipt) return; // Used to avoid logging of transaction rejected
+                logger.warn(error);
+            });
+
+        return () => subscription.unsubscribe();
+    }
+
+    /**
+     * Function for adding event listeners on order encrypted result updated event in orders contract
+     * @param callback - function for processing order encrypted result updated event
+     * @param consumer - order creator address
+     * @param orderId - order id
+     * @returns unsubscribe - unsubscribe function from event
+     */
+    public static onOrderEncryptedResultUpdated(
+        callback: onOrderEncryptedResultUpdatedCallback,
+        consumer?: string,
+        orderId?: string,
+    ): () => void {
+        const logger = this.logger.child({ method: "onOrderEncryptedResultUpdated" });
+
+        const subscription = this.contract.events
+            .OrderEncryptedResultUpdated()
+            .on("data", async (event: ContractEvent) => {
+                if (orderId && event.returnValues.orderId != orderId) {
+                    return;
+                }
+                if (consumer && event.returnValues.consumer != consumer) {
+                    return;
+                }
+                callback(
+                    <string>event.returnValues.orderId,
+                    <string>event.returnValues.consumer,
+                    <string>event.returnValues.encryptedResult,
+                );
+            })
+            .on("error", (error: Error, receipt: string) => {
+                if (receipt) return; // Used to avoid logging of transaction rejected
+                logger.warn(error);
+            });
+
+        return () => subscription.unsubscribe();
+    }
 }
 
 export type onOrderCreatedCallback = (consumer: string, externalId: string, offerId: string, orderId: string) => void;
-export type onSubOrderCreatedCallback = (orderId: string) => void;
+export type onSubOrderCreatedCallback = (parentOrderId: string, subOrderId: string) => void;
 export type onOrderStartedCallback = (orderId: string, consumer: string) => void;
 export type onOrdersStatusUpdatedCallback = (orderId: string, status: OrderStatus) => void;
-export type onOrderDepositRefilledCallback = (orderId: string, consumer: string, amount: string) => void;
+export type onOrderDepositRefilledCallback = (orderId: string, consumer: string, amount: BigNumber) => void;
+export type onOrderPriceUpdatedCallback = (orderId: string, price: BigNumber) => void;
+export type onOrderChangedWithdrawnCallback = (orderId: string, consumer: string, change: BigNumber) => void;
+export type onOrderProfitWithdrawnCallback = (orderId: string, tokenReceiver: string, profit: BigNumber) => void;
+export type onOrderDepositSpentChangedCallback = (orderId: string, consumer: string, spent: BigNumber) => void;
+export type onOrderAwaitingPaymentChangedCallback = (
+    orderId: string,
+    consumer: string,
+    awaitingPaymentFlag: boolean,
+) => void;
+export type onOrderEncryptedResultUpdatedCallback = (
+    orderId: string,
+    consumer: string,
+    encryptedResult: string,
+) => void;
 
 export default OrdersFactory;

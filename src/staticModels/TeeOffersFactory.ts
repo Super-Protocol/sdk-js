@@ -27,6 +27,7 @@ class TeeOffersFactory {
     private static checkInit(transactionOptions?: TransactionOptions) {
         if (transactionOptions?.web3) {
             checkIfInitialized();
+
             return new transactionOptions.web3.eth.Contract(<AbiItem[]>OffersJSON.abi, Superpro.address);
         }
 
@@ -34,7 +35,8 @@ class TeeOffersFactory {
         checkIfInitialized();
 
         this.logger = rootLogger.child({ className: "TeeOffersFactory" });
-        return this.contract = new store.web3!.eth.Contract(<AbiItem[]>OffersJSON.abi, Superpro.address);
+
+        return (this.contract = new store.web3!.eth.Contract(<AbiItem[]>OffersJSON.abi, Superpro.address));
     }
 
     /**
@@ -43,12 +45,11 @@ class TeeOffersFactory {
     public static async getAllTeeOffers(): Promise<string[]> {
         this.checkInit();
 
-        // TODO: offerId start at 1 in next smart-contract deployment
-        const count = await this.contract.methods.getOffersCount().call();
+        const count = await this.contract.methods.getOffersTotalCount().call();
         this.teeOffers = this.teeOffers || [];
         const teeOfffersSet = new Set(this.teeOffers);
 
-        for (let offerId = teeOfffersSet.size; offerId < count; ++offerId) {
+        for (let offerId = teeOfffersSet.size + 1; offerId <= count; ++offerId) {
             const offerType = (await this.contract.methods.getOfferType(offerId).call()) as OfferType;
             if (offerType === OfferType.TeeOffer) {
                 teeOfffersSet.add(offerId.toString());
@@ -92,7 +93,11 @@ class TeeOffersFactory {
             externalId: formatBytes32String(externalId),
         };
         const foundIds = await contract.getPastEvents("TeeOfferCreated", { filter });
-        const notFound = { creator, externalId, offerId: -1 };
+        const notFound = {
+            creator,
+            externalId,
+            offerId: -1,
+        };
         const response: OfferCreatedEvent =
             foundIds.length > 0 ? (foundIds[0].returnValues as OfferCreatedEvent) : notFound;
 
@@ -111,7 +116,32 @@ class TeeOffersFactory {
         const subscription = this.contract.events
             .OfferCreated()
             .on("data", async (event: ContractEvent) => {
-                callback(<string>event.returnValues.offerId);
+                callback(
+                    <string>event.returnValues.offerId,
+                    <string>event.returnValues.providerAuth,
+                    <OfferType>event.returnValues.offerType,
+                );
+            })
+            .on("error", (error: Error, receipt: string) => {
+                if (receipt) return; // Used to avoid logging of transaction rejected
+                logger.warn(error);
+            });
+
+        return () => subscription.unsubscribe();
+    }
+
+    public static onTeeOfferViolationRateChanged(callback: onTeeOfferViolationRateChangedCallback): () => void {
+        this.checkInit();
+        const logger = this.logger.child({ method: "onTeeOfferViolationRateChanged" });
+
+        const subscription = this.contract.events
+            .OfferCreated()
+            .on("data", async (event: ContractEvent) => {
+                callback(
+                    <string>event.returnValues.offerId,
+                    <string>event.returnValues.providerAuth,
+                    <number>event.returnValues.violationRate,
+                );
             })
             .on("error", (error: Error, receipt: string) => {
                 if (receipt) return; // Used to avoid logging of transaction rejected
@@ -122,6 +152,12 @@ class TeeOffersFactory {
     }
 }
 
-export type onTeeOfferCreatedCallback = (address: string) => void;
+// address -> TEE offerId
+export type onTeeOfferCreatedCallback = (address: string, providerAuth: string, offerType: OfferType) => void;
+export type onTeeOfferViolationRateChangedCallback = (
+    address: string,
+    providerAuth: string,
+    violationRate: number,
+) => void;
 
 export default TeeOffersFactory;

@@ -15,20 +15,11 @@ export enum ContractName {
 
 export enum ParamName {
     OrderMinimumDeposit = "0",
-    ProfitWithdrawDelayDays = "1",
+    ProfitWithdrawDelaySeconds = "1",
     MinSecDeposit = "2",
     StakingPercentPerDay = "3",
-    StopDelayDays = "4",
+    StopDelaySeconds = "4",
     TeeOfferSecDeposit = "5",
     OfferSecDeposit = "6",
     TeeRewardPerEpoch = "7",
-    VotingDeposit = "8",
-    VotingDurationDays = "9",
-    VotingExecutionTimeoutDays = "10",
-    VotingHoldDays = "11",
-    VotingMinimumTurnout = "12",
-    L1 = "13",
-    L2 = "14",
-    Threshold = "15",
-    EpochDurationSeconds = "16",
 }

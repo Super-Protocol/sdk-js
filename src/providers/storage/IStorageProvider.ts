@@ -1,17 +1,23 @@
 import Offer from "../../models/Offer";
 import StorageObject from "../../types/storage/StorageObject";
+import stream from "stream";
 
+export type DownloadConfig = {
+    offset?: number;
+    length?: number;
+};
 export default interface IStorageProvider {
     uploadFile(
-        localPath: string,
+        inputStream: stream.Readable,
         remotePath: string,
-        progressListener?: (total: number, current: number) => void
+        contentLength: number,
+        progressListener?: (total: number, current: number) => void,
     ): Promise<void>;
     downloadFile(
         remotePath: string,
-        localPath: string,
-        progressListener?: (total: number, current: number) => void
-    ): Promise<void>;
+        config: DownloadConfig,
+        progressListener?: (total: number, current: number) => void,
+    ): Promise<stream.Readable>;
     deleteFile(remotePath: string): Promise<void>;
     listObjects(remotePath: string): Promise<StorageObject[]>;
     getSize(remotePath: string): Promise<number>;

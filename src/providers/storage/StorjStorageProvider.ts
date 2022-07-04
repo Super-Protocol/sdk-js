@@ -1,16 +1,17 @@
-import { promises as fs } from "fs";
-import { AccessResultStruct as Access } from "uplink-nodejs/access";
-import { ProjectResultStruct as Project } from "uplink-nodejs/project";
+import { AccessResultStruct as Access } from "@super-protocol/uplink-nodejs/access";
+import { ProjectResultStruct as Project } from "@super-protocol/uplink-nodejs/project";
 import { Buffer } from "buffer";
-import IStorageProvider from "./IStorageProvider";
+import IStorageProvider, { DownloadConfig } from "./IStorageProvider";
 import Offer from "../../models/Offer";
 import { isNodeJS } from "../../utils";
 import StorageObject from "../../types/storage/StorageObject";
+import stream from "stream";
+import logger from "../../logger";
 
 export default class StorJStorageProvider implements IStorageProvider {
-    static UPLOAD_BUFFER_SIZE = 4194304; // 4 mb
     static DOWNLOAD_BUFFER_SIZE = 4194304; // 4mb
 
+    private logger = logger.child({ className: "StorJStorageProvider" });
     private storageName: string;
     private accessToken: string;
     private _access?: Access;
@@ -34,64 +35,71 @@ export default class StorJStorageProvider implements IStorageProvider {
     }
 
     async uploadFile(
-        localPath: string,
+        inputStream: stream.Readable,
         remotePath: string,
+        contentLength: number,
         progressListener?: (total: number, current: number) => void,
     ): Promise<void> {
         const storj = await this.lazyStorj();
-
         const options = new storj.UploadOptions();
         const project = await this.lazyProject();
         const uploader = await project.uploadObject(this.storageName, remotePath, options);
 
-        const file = await fs.open(localPath, "r");
-        const contentLength = (await file.stat()).size;
         let totalWritten = 0;
 
-        while (totalWritten < contentLength) {
-            const remaining = contentLength - totalWritten;
-            const buffer = Buffer.alloc(Math.min(remaining, StorJStorageProvider.UPLOAD_BUFFER_SIZE));
-            const bytesRead = (await file.read(buffer, 0, buffer.length)).bytesRead;
-            await uploader.write(buffer, bytesRead);
-            totalWritten += bytesRead;
-            if (!!progressListener) {
-                progressListener(contentLength, totalWritten);
+        try {
+            for await (const buffer of inputStream) {
+                await uploader.write(buffer, buffer.length);
+                totalWritten += buffer.length;
+                if (!!progressListener) {
+                    progressListener(totalWritten, contentLength);
+                }
             }
-        }
 
-        await uploader.commit();
-        await file.close();
+            await uploader.commit();
+        } catch (uploadingError) {
+            try {
+                await uploader.abort();
+            } catch (abortingError) {
+                logger.error({ err: abortingError }, "Failed to abort file uploading");
+            }
+
+            throw uploadingError;
+        }
     }
 
     async downloadFile(
         remotePath: string,
-        localPath: string,
+        config: DownloadConfig,
         progressListener?: (total: number, current: number) => void,
-    ): Promise<void> {
+    ): Promise<stream.Readable> {
         const storj = await this.lazyStorj();
-
-        const contentLength = await this.getSize(remotePath);
         const project = await this.lazyProject();
-        const options = new storj.DownloadOptions(0, contentLength);
+        const length = config.length || (await this.getSize(remotePath));
+        const options = new storj.DownloadOptions(config.offset || 0, length);
+
         const downloader = await project.downloadObject(this.storageName, remotePath, options);
 
-        const file = await fs.open(localPath, "w");
-        let totalWritten = 0;
+        const loader = async function* () {
+            const readBuffer = Buffer.alloc(StorJStorageProvider.DOWNLOAD_BUFFER_SIZE, undefined, "binary");
+            let current = 0;
+            while (current < length) {
+                // We have to cast result to any, because of the wrong type declartion in uplink-nodejs.
+                const downloadResult: any = await downloader.read(readBuffer, readBuffer.length);
+                const bytesRead = downloadResult.bytes_read;
+                current += bytesRead;
 
-        while (totalWritten < contentLength) {
-            const remaining = contentLength - totalWritten;
-            const buffer = Buffer.alloc(Math.min(remaining, StorJStorageProvider.DOWNLOAD_BUFFER_SIZE));
-            const bytesRead = ((await downloader.read(buffer, buffer.length)) as any).bytes_read;
-            await file.write(buffer, 0, bytesRead);
-            totalWritten += bytesRead;
+                yield Buffer.from(readBuffer.subarray(0, bytesRead));
 
-            if (!!progressListener) {
-                progressListener(contentLength, totalWritten);
+                if (!!progressListener) {
+                    progressListener(length, current);
+                }
             }
-        }
+        };
 
-        await downloader.close();
-        await file.close();
+        return stream.Readable.from(loader(), { encoding: "binary" }).on("close", async () => {
+            await downloader.close();
+        });
     }
 
     async deleteFile(remotePath: string): Promise<void> {
@@ -132,7 +140,7 @@ export default class StorJStorageProvider implements IStorageProvider {
     }
     private async lazyStorj(): Promise<any> {
         if (!this._storj) {
-            this._storj = await require("uplink-nodejs");
+            this._storj = await require("@super-protocol/uplink-nodejs");
         }
 
         return this._storj;

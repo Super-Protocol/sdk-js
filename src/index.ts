@@ -83,6 +83,7 @@ export * from "./types/Superpro";
 export * from "./types/TcbData";
 export * from "./types/Origins";
 
+export * as ChunkedStorageProvider from "./providers/storage/ChunksDownloadDecorator";
 export { default as StorageFileAccess } from "./types/storage/StorageFileAccess";
 export { default as StorageObject } from "./types/storage/StorageObject";
 export { default as StorageAccess } from "./types/storage/StorageAccess";

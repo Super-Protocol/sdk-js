@@ -1038,10 +1038,10 @@
     buffer "^6.0.3"
     gzip-js "^0.3.2"
 
-"@super-protocol/uplink-nodejs@^1.2.10":
-  version "1.2.10"
-  resolved "https://npm.pkg.github.com/download/@super-protocol/uplink-nodejs/1.2.10/927d73d94171ccdaa64470bc0f360529bd750f6296e9a39c7b469d6361350df5#c51ecca2201c1e59809a3771dae1c9dca5932afe"
-  integrity sha512-e5O66yiXdVykGb1u8ifGFhlZQRj4GkCSTzG9MY7mC8Ymo3jYztsjYyEnRY9Vb2qYccwsiX3Ym0F3hfMrH0Thag==
+"@super-protocol/uplink-nodejs@1.2.12":
+  version "1.2.12"
+  resolved "https://npm.pkg.github.com/download/@super-protocol/uplink-nodejs/1.2.12/a458b6605b9addf720a012b7b0930c2504c51b06082b7533209924bae096cf19#c1bb67ff366135d04c7621e74950dc1455ca5487"
+  integrity sha512-vA+KZbAKV8QKDbzZPdeVyiMFJzdhDtR+8Iw4VsS2zoPf4zrMNjfBhmQqGXc3VhrMJIrvRS57ThKWqfqs1vwDbg==
   dependencies:
     "@types/bindings" "^1.3.0"
     "@types/node" "^14.14.10"

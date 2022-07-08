@@ -47,7 +47,7 @@
   "dependencies": {
     "@super-protocol/sp-dto-js": "0.0.13",
     "@super-protocol/tee-lib": "^0.1.2",
-    "@super-protocol/uplink-nodejs": "^1.2.10",
+    "@super-protocol/uplink-nodejs": "1.2.12",
     "eccrypto": "^1.1.6",
     "ethers": "^5.5.3",
     "hybrid-crypto-js": "^0.2.4",

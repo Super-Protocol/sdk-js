@@ -100,8 +100,8 @@ export const downloadChunkMethod = async (
         length: chunk.length,
     });
 
-    dataStream.on("data", (data: string) => {
-        Buffer.from(data, "binary").copy(buffer, position);
+    dataStream.on("data", (data: Buffer) => {
+        data.copy(buffer, position);
         position += data.length;
 
         if (position > chunk.length) {

@@ -52,7 +52,7 @@ export default class StorJStorageProvider implements IStorageProvider {
                 await uploader.write(buffer, buffer.length);
                 totalWritten += buffer.length;
                 if (!!progressListener) {
-                    progressListener(totalWritten, contentLength);
+                    progressListener(contentLength, totalWritten);
                 }
             }
 
@@ -81,7 +81,7 @@ export default class StorJStorageProvider implements IStorageProvider {
         const downloader = await project.downloadObject(this.storageName, remotePath, options);
 
         const loader = async function* () {
-            const readBuffer = Buffer.alloc(StorJStorageProvider.DOWNLOAD_BUFFER_SIZE, undefined, "binary");
+            const readBuffer = Buffer.alloc(StorJStorageProvider.DOWNLOAD_BUFFER_SIZE);
             let current = 0;
             while (current < length) {
                 // We have to cast result to any, because of the wrong type declartion in uplink-nodejs.
@@ -97,7 +97,7 @@ export default class StorJStorageProvider implements IStorageProvider {
             }
         };
 
-        return stream.Readable.from(loader(), { encoding: "binary" }).on("close", async () => {
+        return stream.Readable.from(loader()).on("close", async () => {
             await downloader.close();
         });
     }

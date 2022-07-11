@@ -70,10 +70,10 @@ class ProviderRegistry {
     /**
      * Fetch provider security deposit by provider authority account
      */
-    public static async getSecurityDeposit(providerAuthority: string): Promise<number> {
+    public static async getSecurityDeposit(providerAuthority: string): Promise<string> {
         this.checkInitProviders();
 
-        return +(await this.contract.methods.getProviderSecurityDeposit(providerAuthority).call());
+        return await this.contract.methods.getProviderSecurityDeposit(providerAuthority).call();
     }
 
     /**
@@ -99,7 +99,7 @@ class ProviderRegistry {
      * @param amount - amount of additional tokens
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
-    public static async refillSecurityDeposit(amount: number, transactionOptions?: TransactionOptions): Promise<void> {
+    public static async refillSecurityDeposit(amount: string, transactionOptions?: TransactionOptions): Promise<void> {
         const contract = this.checkInitProviders(transactionOptions);
         checkIfActionAccountInitialized(transactionOptions);
 
@@ -112,7 +112,7 @@ class ProviderRegistry {
      * @param amount - amount of tokens to return
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
-    public static async returnSecurityDeposit(amount: number, transactionOptions?: TransactionOptions): Promise<void> {
+    public static async returnSecurityDeposit(amount: string, transactionOptions?: TransactionOptions): Promise<void> {
         const contract = this.checkInitProviders(transactionOptions);
         checkIfActionAccountInitialized(transactionOptions);
 
@@ -197,7 +197,7 @@ class ProviderRegistry {
         const subscription = this.contract.events
             .ProviderSecurityDepoRefilled()
             .on("data", async (event: ContractEvent) => {
-                callback(<string>event.returnValues.auth, <BigNumber>event.returnValues.amount);
+                callback(<string>event.returnValues.auth, <string>event.returnValues.amount);
             })
             .on("error", (error: Error, receipt: string) => {
                 if (receipt) return; // Used to avoid logging of transaction rejected
@@ -219,7 +219,7 @@ class ProviderRegistry {
         const subscription = this.contract.events
             .ProviderSecurityDepoUnlocked()
             .on("data", async (event: ContractEvent) => {
-                callback(<string>event.returnValues.auth, <BigNumber>event.returnValues.amount);
+                callback(<string>event.returnValues.auth, <string>event.returnValues.amount);
             })
             .on("error", (error: Error, receipt: string) => {
                 if (receipt) return; // Used to avoid logging of transaction rejected
@@ -234,7 +234,7 @@ class ProviderRegistry {
 export type onProviderRegisteredCallback = (address: string) => void;
 export type onProviderModifiedCallback = (address: string) => void;
 export type onProviderViolationRateIncrementedCallback = (address: string, newViolationRate: BigNumber) => void;
-export type onProviderSecurityDepoRefilledCallback = (address: string, amount: BigNumber) => void;
-export type onProviderSecurityDepoUnlockedCallback = (address: string, amount: BigNumber) => void;
+export type onProviderSecurityDepoRefilledCallback = (address: string, amount: string) => void;
+export type onProviderSecurityDepoUnlockedCallback = (address: string, amount: string) => void;
 
 export default ProviderRegistry;

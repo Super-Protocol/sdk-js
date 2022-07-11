@@ -125,7 +125,7 @@ class TIIGenerator {
 
                     const restrictions = _
                         .intersection(offerInfo.restrictions.offers, inputOffers)
-                        .filter(restrictedOfferAddress => restrictedOfferAddress !== offer.address);
+                        .filter(restrictedOfferAddress => restrictedOfferAddress !== offer.id);
                     if (restrictions.length) {
                         solutionLinkage = offerInfo.linkage;
                     } else {

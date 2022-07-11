@@ -96,7 +96,7 @@ class TeeOffersFactory {
         const notFound = {
             creator,
             externalId,
-            offerId: -1,
+            offerId: '-1',
         };
         const response: OfferCreatedEvent =
             foundIds.length > 0 ? (foundIds[0].returnValues as OfferCreatedEvent) : notFound;

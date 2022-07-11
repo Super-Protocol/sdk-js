@@ -42,23 +42,23 @@ export type OrderInfo = {
 export type ExtendedOrderInfo = OrderInfo & {
     blocking: boolean;
     externalId: string;
-    holdSum: number;
+    holdSum: string;
 };
 
 // Order of keys and type conversion functions for this object in blockchain contract
 export const OrderResultStructure = {
     encryptedResult: String,
     encryptedError: String, // TODO Remove
-    orderPrice: Number,
+    orderPrice: String,
 };
 export type OrderResult = {
     encryptedResult: string;
     encryptedError: string; // TODO Remove
-    orderPrice: number;
+    orderPrice: string;
 };
 
 export type SubOrderParams = {
     blockParentOrder: Boolean;
     externalId: string;
-    holdSum: number;
+    holdSum: string;
 }

@@ -6,7 +6,6 @@ import OffersJSON from "../contracts/Offers.json";
 import { checkIfActionAccountInitialized, checkIfInitialized, objectToTuple } from "../utils";
 import { OfferInfo, OfferInfoV1, OfferInfoStructure, OfferType } from "../types/Offer";
 import { formatBytes32String } from "ethers/lib/utils";
-import { BigNumber } from "ethers";
 import { ContractEvent, TransactionOptions } from "../types/Web3";
 import { OfferCreatedEvent } from "../types/Events";
 import Superpro from "./Superpro";
@@ -41,8 +40,6 @@ class OffersFactory {
 
     /**
      * Function for fetching list of all offers addresses
-     * @param fromBlock - Number|String (optional): The block number (greater than or equal to) from which to get events on. Pre-defined block numbers as "earliest", "latest" and "pending" can also be used.
-     * @param toBlock - Number|String (optional): The block number (less than or equal to) to get events up to (Defaults to "latest"). Pre-defined block numbers as "earliest", "latest" and "pending" can also be used.
      */
     public static async getAllOffers(): Promise<string[]> {
         this.checkInit();
@@ -102,7 +99,7 @@ class OffersFactory {
                 : {
                       creator,
                       externalId,
-                      offerId: -1,
+                      offerId: '-1',
                   };
 
         return response;

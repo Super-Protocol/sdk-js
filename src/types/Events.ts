@@ -1,20 +1,20 @@
 export type OfferCreatedEvent = {
     creator: string;
     externalId: string;
-    offerId: number;
+    offerId: string;
 };
 
 export type OrderCreatedEvent = {
     consumer: string;
     externalId: string;
-    offerId: number;
-    orderId: number;
+    offerId: string;
+    orderId: string;
 };
 
 export type SubOrderCreatedEvent = {
     consumer: string;
     externalId: string;
-    subOfferId: number;
-    subOrderId: number;
-    parentOrderId: number;
+    subOfferId: string;
+    subOrderId: string;
+    parentOrderId: string;
 };

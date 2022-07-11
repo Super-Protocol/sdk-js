@@ -40,9 +40,9 @@ class Superpro {
     /**
      * Fetching config parameter value by name
      */
-    public static async getParam(name: ParamName): Promise<number> {
+    public static async getParam(name: ParamName): Promise<string> {
         this.checkInit();
-        return +(await this.contract.methods.getConfigParam(name).call());
+        return await this.contract.methods.getConfigParam(name).call();
     }
 }
 

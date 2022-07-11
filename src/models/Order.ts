@@ -19,6 +19,7 @@ import { SubOrderCreatedEvent } from "../types/Events";
 import { formatBytes32String } from "ethers/lib/utils";
 import Superpro from "../staticModels/Superpro";
 import TxManager from "../utils/TxManager";
+
 class Order {
     private contract: Contract;
     private logger: typeof rootLogger;
@@ -29,17 +30,15 @@ class Order {
     public parentOrder?: string;
     public consumer?: string;
     public origins?: Origins;
-    public orderId: number;
-    public address: string;
+    public id: string;
 
     constructor(orderId: string) {
         checkIfInitialized();
 
-        this.orderId = +orderId;
-        this.address = orderId;
+        this.id = orderId;
         this.contract = new store.web3!.eth.Contract(<AbiItem[]>OrdersJSON.abi, Superpro.address);
 
-        this.logger = rootLogger.child({ className: "Order", orderId: this.orderId });
+        this.logger = rootLogger.child({ className: "Order", orderId: this.id });
     }
 
     /**
@@ -57,20 +56,20 @@ class Order {
      * Check if order exist
      */
     public async isExist(): Promise<boolean> {
-        return await this.contract.methods.isOrderValid(this.orderId).call();
+        return await this.contract.methods.isOrderValid(this.id).call();
     }
 
     /**
      * Function for fetching order info from blockchain
      */
     public async getOrderInfo(): Promise<OrderInfo> {
-        const orderInfoParams = await this.contract.methods.getOrder(this.orderId).call();
+        const orderInfoParams = await this.contract.methods.getOrder(this.id).call();
 
         return (this.orderInfo = tupleToObject(orderInfoParams[1], OrderInfoStructure));
     }
 
     public async getConsumer(): Promise<string> {
-        const orderInfoParams = await this.contract.methods.getOrder(this.orderId).call();
+        const orderInfoParams = await this.contract.methods.getOrder(this.id).call();
         this.consumer = orderInfoParams[0];
         return this.consumer!;
     }
@@ -79,7 +78,7 @@ class Order {
      * Function for fetching order result from blockchain
      */
     public async getOrderResult(): Promise<OrderResult> {
-        const orderInfoParams = await this.contract.methods.getOrder(this.orderId).call();
+        const orderInfoParams = await this.contract.methods.getOrder(this.id).call();
 
         // for SDK compatibility
         const result = ['', '', orderInfoParams[2][1]];
@@ -95,7 +94,7 @@ class Order {
      * Function for fetching sub orders from blockchain
      */
     public async getSubOrders(): Promise<string[]> {
-        this.subOrders = await this.contract.methods.getOrderSubOrders(this.orderId).call();
+        this.subOrders = await this.contract.methods.getOrderSubOrders(this.id).call();
         return this.subOrders!;
     }
 
@@ -103,7 +102,7 @@ class Order {
      * Function for fetching parent order from blockchain
      */
     public async getParentOrder(): Promise<string> {
-        this.parentOrder = await this.contract.methods.getOrderParentOrder(this.orderId).call();
+        this.parentOrder = await this.contract.methods.getOrderParentOrder(this.id).call();
         return this.parentOrder!;
     }
 
@@ -111,14 +110,14 @@ class Order {
      * Function for fetching order deposit spent from blockchain
      */
     public async getDepositSpent(): Promise<string> {
-        return this.contract.methods.getDepositSpent(this.orderId).call();
+        return this.contract.methods.getDepositSpent(this.id).call();
     }
 
     /**
      * Fetch new Origins (createdDate, createdBy, modifiedDate and modifiedBy)
      */
     public async getOrigins(): Promise<Origins> {
-        let origins = await this.contract.methods.getOrderOrigins(this.orderId).call();
+        let origins = await this.contract.methods.getOrderOrigins(this.id).call();
 
         // Converts blockchain array into object
         origins = tupleToObject(origins, OriginsStructure);
@@ -134,7 +133,7 @@ class Order {
      * Function for fetching parent order from blockchain
      */
     public async getAwaitingPayment(): Promise<boolean> {
-        return this.contract.methods.getAwaitingPayment(this.orderId).call();
+        return this.contract.methods.getAwaitingPayment(this.id).call();
     }
 
     /**
@@ -144,7 +143,7 @@ class Order {
         transactionOptions ?? this.checkInitOrder(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
-        await TxManager.execute(this.contract.methods.setAwaitingPayment, [this.orderId, value], transactionOptions);
+        await TxManager.execute(this.contract.methods.setAwaitingPayment, [this.id, value], transactionOptions);
     }
 
     /**
@@ -154,7 +153,7 @@ class Order {
         transactionOptions ?? this.checkInitOrder(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
-        await TxManager.execute(this.contract.methods.updateOrderPrice, [this.orderId, price], transactionOptions);
+        await TxManager.execute(this.contract.methods.updateOrderPrice, [this.id, price], transactionOptions);
     }
 
     /**
@@ -164,7 +163,7 @@ class Order {
         transactionOptions ?? this.checkInitOrder(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
-        await TxManager.execute(this.contract.methods.setDepositSpent, [this.orderId, value], transactionOptions);
+        await TxManager.execute(this.contract.methods.setDepositSpent, [this.id, value], transactionOptions);
     }
 
     /**
@@ -175,7 +174,7 @@ class Order {
         checkIfActionAccountInitialized(transactionOptions);
 
         if (status === OrderStatus.Processing) {
-            await TxManager.execute(this.contract.methods.processOrder, [this.orderId], transactionOptions);
+            await TxManager.execute(this.contract.methods.processOrder, [this.id], transactionOptions);
         }
 
         if (this.orderInfo) this.orderInfo.status = status;
@@ -188,7 +187,7 @@ class Order {
         transactionOptions ?? this.checkInitOrder(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
-        await TxManager.execute(this.contract.methods.cancelOrder, [this.orderId], transactionOptions);
+        await TxManager.execute(this.contract.methods.cancelOrder, [this.id], transactionOptions);
     }
 
     /**
@@ -198,7 +197,7 @@ class Order {
         transactionOptions ?? this.checkInitOrder(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
-        await TxManager.execute(this.contract.methods.startOrder, [this.orderId], transactionOptions);
+        await TxManager.execute(this.contract.methods.startOrder, [this.id], transactionOptions);
     }
 
     /**
@@ -210,7 +209,7 @@ class Order {
 
         await TxManager.execute(
             this.contract.methods.updateOrderResult,
-            [this.orderId, encryptedResult],
+            [this.id, encryptedResult],
             transactionOptions,
         );
     }
@@ -229,7 +228,7 @@ class Order {
 
         await TxManager.execute(
             this.contract.methods.completeOrder,
-            [this.orderId, status, status === OrderStatus.Error ? encryptedError : encryptedResult],
+            [this.id, status, status === OrderStatus.Error ? encryptedError : encryptedResult],
             transactionOptions,
         );
     }
@@ -245,7 +244,7 @@ class Order {
         subOrderInfo: OrderInfo,
         blocking: boolean,
         externalId = "default",
-        holdSum = 0,
+        holdSum = '0',
         transactionOptions?: TransactionOptions,
     ) {
         transactionOptions ?? this.checkInitOrder(transactionOptions!);
@@ -260,7 +259,7 @@ class Order {
         };
         await TxManager.execute(
             this.contract.methods.createSubOrder,
-            [this.orderId, tupleSubOrder, params],
+            [this.id, tupleSubOrder, params],
             transactionOptions,
         );
     }
@@ -289,7 +288,7 @@ class Order {
                     holdSum: subOrderInfo.holdSum,
                 };
 
-                const request = this.contract.methods.createSubOrder(this.orderId, tupleSubOrder, params).send.request(
+                const request = this.contract.methods.createSubOrder(this.id, tupleSubOrder, params).send.request(
                     {
                         from: transactionOptions.from,
                         gasPrice: store.gasPrice,
@@ -316,7 +315,7 @@ class Order {
             externalId: formatBytes32String(externalId),
         };
         const foundIds = await this.contract.getPastEvents("SubOrderCreated", { filter });
-        const notFound = { consumer, externalId, subOfferId: -1, subOrderId: -1, parentOrderId: -1 };
+        const notFound = { consumer, externalId, subOfferId: '-1', subOrderId: '-1', parentOrderId: '-1' };
 
         const response: SubOrderCreatedEvent =
             foundIds.length > 0 ? (foundIds[0].returnValues as SubOrderCreatedEvent) : notFound;
@@ -332,7 +331,7 @@ class Order {
         transactionOptions ?? this.checkInitOrder(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
-        await TxManager.execute(this.contract.methods.withdrawProfit, [this.orderId], transactionOptions);
+        await TxManager.execute(this.contract.methods.withdrawProfit, [this.id], transactionOptions);
     }
 
     /**
@@ -343,7 +342,7 @@ class Order {
         transactionOptions ?? this.checkInitOrder(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
-        await TxManager.execute(this.contract.methods.withdrawChange, [this.orderId], transactionOptions);
+        await TxManager.execute(this.contract.methods.withdrawChange, [this.id], transactionOptions);
     }
 
     /**
@@ -357,7 +356,7 @@ class Order {
         const subscription = this.contract.events
             .OrderStatusUpdated()
             .on("data", async (event: ContractEvent) => {
-                if (event.returnValues.orderId != this.orderId) {
+                if (event.returnValues.orderId != this.id) {
                     return;
                 }
                 if (this.orderInfo) this.orderInfo.status = <OrderStatus>event.returnValues.status;

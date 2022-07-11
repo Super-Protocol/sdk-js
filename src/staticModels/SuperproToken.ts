@@ -46,7 +46,7 @@ class SuperproToken {
      */
     public static async transfer(
         to: string,
-        amount: number,
+        amount: string,
         transactionOptions?: TransactionOptions,
     ): Promise<Transaction> {
         const contract = this.checkInit(transactionOptions);
@@ -70,7 +70,7 @@ class SuperproToken {
      */
     public static async approve(
         address: string,
-        amount: number,
+        amount: string,
         transactionOptions?: TransactionOptions
     ): Promise<void> {
         const contract = this.checkInit(transactionOptions);

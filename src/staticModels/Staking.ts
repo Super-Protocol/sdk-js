@@ -56,10 +56,10 @@ class Staking {
 
     /**
      * Stakes tokens
-     * @param amount - number of tokens to be staked
+     * @param amount - tokens to be staked
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
-    public static async stake(amount: number, transactionOptions?: TransactionOptions): Promise<void> {
+    public static async stake(amount: string, transactionOptions?: TransactionOptions): Promise<void> {
         const contract = this.checkInit(transactionOptions);
         checkIfActionAccountInitialized(transactionOptions);
 

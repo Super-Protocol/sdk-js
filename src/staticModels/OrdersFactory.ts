@@ -6,7 +6,6 @@ import OrdersJSON from "../contracts/Orders.json";
 import { checkIfActionAccountInitialized, checkIfInitialized, objectToTuple } from "../utils";
 import { OrderInfo, OrderInfoStructure, OrderStatus } from "../types/Order";
 import { formatBytes32String, parseBytes32String } from "ethers/lib/utils";
-import { BigNumber } from "ethers";
 import { ContractEvent, TransactionOptions } from "../types/Web3";
 import { OrderCreatedEvent } from "../types/Events";
 import Superpro from "./Superpro";
@@ -74,7 +73,7 @@ class OrdersFactory {
      * Function for fetching order hold deposit for specific order
      * @param orderAddress - address of order for fetching hold deposit
      */
-    public static async getOrderHoldDeposit(orderAddress: string): Promise<number> {
+    public static async getOrderHoldDeposit(orderAddress: string): Promise<string> {
         this.checkInit();
 
         return await this.contract.methods.getOrderHoldDeposit(orderAddress).call();
@@ -89,7 +88,7 @@ class OrdersFactory {
      */
     public static async createOrder(
         orderInfo: OrderInfo,
-        holdDeposit = 0,
+        holdDeposit = '0',
         suspended = false,
         externalId = "default",
         transactionOptions?: TransactionOptions,
@@ -116,8 +115,8 @@ class OrdersFactory {
         const notFound = {
             consumer,
             externalId,
-            offerId: -1,
-            orderId: -1,
+            offerId: '-1',
+            orderId: '-1',
         };
 
         const response: OrderCreatedEvent =
@@ -134,7 +133,7 @@ class OrdersFactory {
      */
     public static async refillOrderDeposit(
         orderAddress: string,
-        amount: number,
+        amount: string,
         transactionOptions?: TransactionOptions,
     ) {
         const contract = this.checkInit(transactionOptions);
@@ -273,7 +272,7 @@ class OrdersFactory {
                 callback(
                     <string>event.returnValues.orderId,
                     <string>event.returnValues.consumer,
-                    <BigNumber>event.returnValues.amount,
+                    <string>event.returnValues.amount,
                 );
             })
             .on("error", (error: Error, receipt: string) => {
@@ -299,7 +298,7 @@ class OrdersFactory {
                 if (orderId && event.returnValues.orderId != orderId) {
                     return;
                 }
-                callback(<string>event.returnValues.orderId, <BigNumber>event.returnValues.price);
+                callback(<string>event.returnValues.orderId, <string>event.returnValues.price);
             })
             .on("error", (error: Error, receipt: string) => {
                 if (receipt) return; // Used to avoid logging of transaction rejected
@@ -327,7 +326,7 @@ class OrdersFactory {
                 callback(
                     <string>event.returnValues.orderId,
                     <string>event.returnValues.consumer,
-                    <BigNumber>event.returnValues.change,
+                    <string>event.returnValues.change,
                 );
             })
             .on("error", (error: Error, receipt: string) => {
@@ -364,7 +363,7 @@ class OrdersFactory {
                 callback(
                     <string>event.returnValues.orderId,
                     <string>event.returnValues.tokenReceiver,
-                    <BigNumber>event.returnValues.profit,
+                    <string>event.returnValues.profit,
                 );
             })
             .on("error", (error: Error, receipt: string) => {
@@ -438,7 +437,7 @@ class OrdersFactory {
                 callback(
                     <string>event.returnValues.orderId,
                     <string>event.returnValues.consumer,
-                    <BigNumber>event.returnValues.value,
+                    <string>event.returnValues.value,
                 );
             })
             .on("error", (error: Error, receipt: string) => {
@@ -491,11 +490,11 @@ export type onOrderCreatedCallback = (consumer: string, externalId: string, offe
 export type onSubOrderCreatedCallback = (parentOrderId: string, subOrderId: string) => void;
 export type onOrderStartedCallback = (orderId: string, consumer: string) => void;
 export type onOrdersStatusUpdatedCallback = (orderId: string, status: OrderStatus) => void;
-export type onOrderDepositRefilledCallback = (orderId: string, consumer: string, amount: BigNumber) => void;
-export type onOrderPriceUpdatedCallback = (orderId: string, price: BigNumber) => void;
-export type onOrderChangedWithdrawnCallback = (orderId: string, consumer: string, change: BigNumber) => void;
-export type onOrderProfitWithdrawnCallback = (orderId: string, tokenReceiver: string, profit: BigNumber) => void;
-export type onOrderDepositSpentChangedCallback = (orderId: string, consumer: string, spent: BigNumber) => void;
+export type onOrderDepositRefilledCallback = (orderId: string, consumer: string, amount: string) => void;
+export type onOrderPriceUpdatedCallback = (orderId: string, price: string) => void;
+export type onOrderChangedWithdrawnCallback = (orderId: string, consumer: string, change: string) => void;
+export type onOrderProfitWithdrawnCallback = (orderId: string, tokenReceiver: string, profit: string) => void;
+export type onOrderDepositSpentChangedCallback = (orderId: string, consumer: string, spent: string) => void;
 export type onOrderAwaitingPaymentChangedCallback = (
     orderId: string,
     consumer: string,

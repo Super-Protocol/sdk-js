@@ -55,7 +55,7 @@
     "node-gzip": "^1.1.2",
     "pino": "^7.2.0",
     "protobufjs": "^6.11.2",
-    "web3": "^1.6.1"
+    "web3": "^1.7.1"
   },
   "repository": "git://github.com/Super-Protocol/sp-sdk-js.git"
 }

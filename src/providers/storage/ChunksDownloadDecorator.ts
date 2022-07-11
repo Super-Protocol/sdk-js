@@ -1,5 +1,4 @@
 import { Readable, Transform, TransformCallback } from "stream";
-import { finished } from "stream/promises";
 import Offer from "../../models/Offer";
 import StorageObject from "../../types/storage/StorageObject";
 import IStorageProvider, { DownloadConfig } from "./IStorageProvider";
@@ -100,16 +99,14 @@ export const downloadChunkMethod = async (
         length: chunk.length,
     });
 
-    dataStream.on("data", (data: Buffer) => {
+    for await (const data of dataStream) {
         data.copy(buffer, position);
         position += data.length;
 
         if (position > chunk.length) {
-            dataStream.emit("error", new Error("Chunk buffer is overflow, read data is more than requested for chunk"));
+            throw new Error("Chunk buffer is overflow, read data is more than requested for chunk");
         }
-    });
-
-    await finished(dataStream);
+    }
 
     return buffer;
 };

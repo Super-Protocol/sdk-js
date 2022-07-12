@@ -207,7 +207,7 @@ export class DownloadDecorator implements IStorageProvider {
         return this.provider.getSize(remotePath);
     }
 
-    calculateStorageDepostit(offer: Offer, sizeMb: number, hours: number): Promise<number> {
+    calculateStorageDepostit(offer: Offer, sizeMb: number, hours: number): Promise<string> {
         return this.provider.calculateStorageDepostit(offer, sizeMb, hours);
     }
 }

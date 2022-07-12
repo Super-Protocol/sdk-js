@@ -7,6 +7,7 @@ import { isNodeJS } from "../../utils";
 import StorageObject from "../../types/storage/StorageObject";
 import stream from "stream";
 import logger from "../../logger";
+import { BigNumber } from "ethers";
 
 export default class StorJStorageProvider implements IStorageProvider {
     static DOWNLOAD_BUFFER_SIZE = 4194304; // 4mb
@@ -27,11 +28,10 @@ export default class StorJStorageProvider implements IStorageProvider {
         this.accessToken = credentials.token;
     }
 
-    async calculateStorageDepostit(offer: Offer, sizeMb: number, hours: number): Promise<number> {
+    async calculateStorageDepostit(offer: Offer, sizeMb: number, hours: number): Promise<string> {
         const offerInfo = await offer.getInfo();
         const properties = JSON.parse(offerInfo.properties);
-
-        return properties.priceMbPerHour * sizeMb * hours;
+        return BigNumber.from(properties.priceMbPerHour).mul(sizeMb).mul(hours).toString();
     }
 
     async uploadFile(

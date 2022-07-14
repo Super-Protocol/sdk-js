@@ -203,6 +203,7 @@ class OrdersFactory {
      * @returns unsubscribe - unsubscribe function from event
      */
     public static onOrderStarted(callback: onOrderStartedCallback, orderId?: string): () => void {
+        this.checkInit();
         const logger = this.logger.child({ method: "onOrderStarted" });
 
         const subscription = this.contract.events
@@ -228,6 +229,7 @@ class OrdersFactory {
      * @returns unsubscribe - unsubscribe function from event
      */
     public static onOrdersStatusUpdated(callback: onOrdersStatusUpdatedCallback, orderId?: string): () => void {
+        this.checkInit();
         const logger = this.logger.child({ method: "onOrdersStatusUpdated" });
 
         const subscription = this.contract.events
@@ -258,6 +260,7 @@ class OrdersFactory {
         consumer?: string,
         orderId?: string,
     ): () => void {
+        this.checkInit();
         const logger = this.logger.child({ method: "onOrderDepositRefilled" });
 
         const subscription = this.contract.events
@@ -290,6 +293,7 @@ class OrdersFactory {
      * @returns unsubscribe - unsubscribe function from event
      */
     public static onOrderPriceUpdated(callback: onOrderPriceUpdatedCallback, orderId?: string): () => void {
+        this.checkInit();
         const logger = this.logger.child({ method: "onOrderPriceUpdated" });
 
         const subscription = this.contract.events
@@ -315,6 +319,7 @@ class OrdersFactory {
      * @returns unsubscribe - unsubscribe function from event
      */
     public static onOrderChangedWithdrawn(callback: onOrderChangedWithdrawnCallback, orderId?: string): () => void {
+        this.checkInit();
         const logger = this.logger.child({ method: "onOrderChangedWithdrawn" });
 
         const subscription = this.contract.events
@@ -349,6 +354,7 @@ class OrdersFactory {
         orderId?: string,
         tokenReceiver?: string,
     ): () => void {
+        this.checkInit();
         const logger = this.logger.child({ method: "onOrderProfitWithdrawn" });
 
         const subscription = this.contract.events
@@ -386,6 +392,7 @@ class OrdersFactory {
         consumer?: string,
         orderId?: string,
     ): () => void {
+        this.checkInit();
         const logger = this.logger.child({ method: "onOrderAwaitingPaymentChanged" });
 
         const subscription = this.contract.events
@@ -423,6 +430,7 @@ class OrdersFactory {
         consumer?: string,
         orderId?: string,
     ): () => void {
+        this.checkInit();
         const logger = this.logger.child({ method: "onOrderDepositSpentChanged" });
 
         const subscription = this.contract.events
@@ -460,6 +468,7 @@ class OrdersFactory {
         consumer?: string,
         orderId?: string,
     ): () => void {
+        this.checkInit();
         const logger = this.logger.child({ method: "onOrderEncryptedResultUpdated" });
 
         const subscription = this.contract.events

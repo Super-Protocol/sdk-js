@@ -12,7 +12,7 @@ import Superpro from "../staticModels/Superpro";
 import TxManager from "../utils/TxManager";
 
 class TeeOffer {
-    private contract: Contract;
+    private static contract: Contract;
     private logger: typeof rootLogger;
 
     public violationRate?: number;
@@ -32,7 +32,9 @@ class TeeOffer {
         checkIfInitialized();
 
         this.id = offerId;
-        this.contract = new store.web3!.eth.Contract(<AbiItem[]>OffersJSON.abi, Superpro.address);
+        if (!TeeOffer.contract) {
+            TeeOffer.contract = new store.web3!.eth.Contract(<AbiItem[]>OffersJSON.abi, Superpro.address);            
+        }
 
         this.logger = rootLogger.child({ className: "TeeOffer" });
     }
@@ -52,7 +54,7 @@ class TeeOffer {
      * Function for fetching TEE offer info from blockchain
      */
     public async getInfo(): Promise<TeeOfferInfo> {
-        const [, , teeOfferInfoParams] = await this.contract.methods.getTeeOffer(this.id).call();
+        const [, , teeOfferInfoParams] = await TeeOffer.contract.methods.getTeeOffer(this.id).call();
 
         return (this.offerInfo = tupleToObject(teeOfferInfoParams, TeeOfferInfoStructure));
     }
@@ -61,7 +63,7 @@ class TeeOffer {
      * Function for fetching TEE offer provider from blockchain
      */
     public async getProvider(): Promise<string> {
-        this.providerAuthority = await this.contract.methods.getOfferProviderAuthority(this.id).call();
+        this.providerAuthority = await TeeOffer.contract.methods.getOfferProviderAuthority(this.id).call();
         return this.providerAuthority!;
     }
 
@@ -69,7 +71,7 @@ class TeeOffer {
      * Function for fetching TEE offer provider authority account from blockchain
      */
     public async getProviderAuthority(): Promise<string> {
-        this.providerAuthority = await this.contract.methods.getOfferProviderAuthority(this.id).call();
+        this.providerAuthority = await TeeOffer.contract.methods.getOfferProviderAuthority(this.id).call();
         return this.providerAuthority!;
     }
 
@@ -77,7 +79,7 @@ class TeeOffer {
      * Fetch offer type from blockchain (works for TEE and Value offers)
      */
     public async getOfferType(): Promise<OfferType> {
-        this.type = await this.contract.methods.getOfferType(this.id).call();
+        this.type = await TeeOffer.contract.methods.getOfferType(this.id).call();
 
         return this.type!;
     }
@@ -86,7 +88,7 @@ class TeeOffer {
      * Function for fetching offer provider from blockchain
      */
     public async getDisabledAfter(): Promise<number> {
-        this.disabledAfter = +(await this.contract.methods.getOfferDisabledAfter(this.id).call());
+        this.disabledAfter = +(await TeeOffer.contract.methods.getOfferDisabledAfter(this.id).call());
 
         return this.disabledAfter!;
     }
@@ -111,7 +113,7 @@ class TeeOffer {
      * Function for fetching last TLB addition time for this TEE offer
      */
     public async getLastTlbAddedTime(): Promise<number> {
-        this.tlbAddedTime = await this.contract.methods.getTeeOfferLastTlbAddedTime().call();
+        this.tlbAddedTime = await TeeOffer.contract.methods.getTeeOfferLastTlbAddedTime().call();
         return this.tlbAddedTime!;
     }
 
@@ -119,7 +121,7 @@ class TeeOffer {
      * Function for fetching last TCB addition time for this TEE offer
      */
     public async getLastTcbAddedTime(): Promise<number> {
-        // this.tcbAddedTime = await this.contract.methods.getLastTcbAddedTime().call();
+        // this.tcbAddedTime = await TeeOffer.contract.methods.getLastTcbAddedTime().call();
         // return this.tcbAddedTime!;
         // TODO: stub
         return 0;
@@ -129,7 +131,7 @@ class TeeOffer {
      * Function for fetching violationRate for this TEE offer
      */
     public async getViolationRate(): Promise<number> {
-        this.violationRate = await this.contract.methods.getTeeOfferViolationRate(this.id).call();
+        this.violationRate = await TeeOffer.contract.methods.getTeeOfferViolationRate(this.id).call();
         return this.violationRate!;
     }
 
@@ -137,7 +139,7 @@ class TeeOffer {
      * Function for fetching amount of total locked tokens
      */
     public async getTotalLocked(): Promise<number> {
-        // this.totalLocked = await this.contract.methods.getTotalLocked().call();
+        // this.totalLocked = await TeeOffer.contract.methods.getTotalLocked().call();
         // return this.totalLocked!;
         // TODO: stub
         return 0;
@@ -147,7 +149,7 @@ class TeeOffer {
      * Fetch new Origins (createdDate, createdBy, modifiedDate and modifiedBy)
      */
     public async getOrigins(): Promise<Origins> {
-        let origins = await this.contract.methods.getOfferOrigins(this.id).call();
+        let origins = await TeeOffer.contract.methods.getOfferOrigins(this.id).call();
 
         // Converts blockchain array into object
         origins = tupleToObject(origins, OriginsStructure);
@@ -168,7 +170,7 @@ class TeeOffer {
         transactionOptions ?? this.checkInitTeeOffer(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
-        await TxManager.execute(this.contract.methods.setTeeOfferTlb, [this.id, tlb], transactionOptions);
+        await TxManager.execute(TeeOffer.contract.methods.setTeeOfferTlb, [this.id, tlb], transactionOptions);
         if (this.offerInfo) this.offerInfo.tlb = tlb;
     }
 
@@ -181,7 +183,7 @@ class TeeOffer {
         transactionOptions ?? this.checkInitTeeOffer(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
-        await TxManager.execute(this.contract.methods.setOfferName, [this.id, name], transactionOptions);
+        await TxManager.execute(TeeOffer.contract.methods.setOfferName, [this.id, name], transactionOptions);
         if (this.offerInfo) this.offerInfo.name = name;
     }
 
@@ -195,7 +197,7 @@ class TeeOffer {
         checkIfActionAccountInitialized(transactionOptions);
 
         await TxManager.execute(
-            this.contract.methods.setOfferDescription,
+            TeeOffer.contract.methods.setOfferDescription,
             [this.id, description],
             transactionOptions,
         );
@@ -212,7 +214,7 @@ class TeeOffer {
         checkIfActionAccountInitialized(transactionOptions);
 
         await TxManager.execute(
-            this.contract.methods.setOfferPublicKey,
+            TeeOffer.contract.methods.setOfferPublicKey,
             [this.id, argsPublicKey],
             transactionOptions,
         );
@@ -229,7 +231,7 @@ class TeeOffer {
         transactionOptions ?? this.checkInitTeeOffer(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
-        await TxManager.execute(this.contract.methods.disableOffer, [this.id], transactionOptions);
+        await TxManager.execute(TeeOffer.contract.methods.disableOffer, [this.id], transactionOptions);
     }
 
     /**
@@ -240,7 +242,7 @@ class TeeOffer {
         transactionOptions ?? this.checkInitTeeOffer(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
-        await TxManager.execute(this.contract.methods.enableOffer, [this.id], transactionOptions);
+        await TxManager.execute(TeeOffer.contract.methods.enableOffer, [this.id], transactionOptions);
     }
 }
 

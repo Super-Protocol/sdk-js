@@ -11,7 +11,7 @@ import Superpro from "../staticModels/Superpro";
 import TxManager from "../utils/TxManager";
 
 class Offer {
-    private contract: Contract;
+    private static contract: Contract;
     private logger: typeof rootLogger;
 
     public offerInfo?: OfferInfo;
@@ -26,7 +26,9 @@ class Offer {
         checkIfInitialized();
 
         this.id = offerId;
-        this.contract = new store.web3!.eth.Contract(<AbiItem[]>OffersJSON.abi, Superpro.address);
+        if (!Offer.contract) {
+            Offer.contract = new store.web3!.eth.Contract(<AbiItem[]>OffersJSON.abi, Superpro.address);            
+        }
         this.logger = rootLogger.child({ className: "Offer", offerId: this.id });
     }
 
@@ -45,7 +47,7 @@ class Offer {
      * Function for fetching offer info from blockchain
      */
     public async getInfo(): Promise<OfferInfo> {
-        const [, , orderInfoParams] = await this.contract.methods.getValueOffer(this.id).call();
+        const [, , orderInfoParams] = await Offer.contract.methods.getValueOffer(this.id).call();
 
         return (this.offerInfo = tupleToObject(orderInfoParams, OfferInfoStructure));
     }
@@ -54,7 +56,7 @@ class Offer {
      * Function for fetching offer provider from blockchain (works for TEE and Value offers)
      */
     public async getProvider(): Promise<string> {
-        this.provider = await this.contract.methods.getOfferProviderAuthority(this.id).call();
+        this.provider = await Offer.contract.methods.getOfferProviderAuthority(this.id).call();
         return this.provider!;
     }
 
@@ -62,7 +64,7 @@ class Offer {
      * Fetch offer type from blockchain (works for TEE and Value offers)
      */
     public async getOfferType(): Promise<OfferType> {
-        this.type = await this.contract.methods.getOfferType(this.id).call();
+        this.type = await Offer.contract.methods.getOfferType(this.id).call();
         return this.type!;
     }
 
@@ -70,7 +72,7 @@ class Offer {
      * Function for fetching TEE offer provider authority account from blockchain
      */
     public async getProviderAuthority(): Promise<string> {
-        this.providerAuthority = await this.contract.methods.getOfferProviderAuthority(this.id).call();
+        this.providerAuthority = await Offer.contract.methods.getOfferProviderAuthority(this.id).call();
         return this.providerAuthority!;
     }
 
@@ -78,7 +80,7 @@ class Offer {
      * Fetch new Origins (createdDate, createdBy, modifiedDate and modifiedBy)
      */
     public async getOrigins(): Promise<Origins> {
-        let origins = await this.contract.methods.getOfferOrigins(this.id).call();
+        let origins = await Offer.contract.methods.getOfferOrigins(this.id).call();
 
         // Converts blockchain array into object
         origins = tupleToObject(origins, OriginsStructure);
@@ -91,7 +93,7 @@ class Offer {
     }
 
     public async isOfferExists(): Promise<boolean> {
-        return await this.contract.methods.isOfferExists(this.id).call();
+        return await Offer.contract.methods.isOfferExists(this.id).call();
     }
 
     /**
@@ -102,7 +104,7 @@ class Offer {
         transactionOptions ?? this.checkInitOffer(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
-        await TxManager.execute(this.contract.methods.disableOffer, [this.id], transactionOptions);
+        await TxManager.execute(Offer.contract.methods.disableOffer, [this.id], transactionOptions);
     }
 
     /**
@@ -113,7 +115,7 @@ class Offer {
         transactionOptions ?? this.checkInitOffer(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
-        await TxManager.execute(this.contract.methods.enableOffer, [this.id], transactionOptions);
+        await TxManager.execute(Offer.contract.methods.enableOffer, [this.id], transactionOptions);
     }
 
     /**
@@ -121,7 +123,7 @@ class Offer {
      * @param offerAddress - address of offer what needs to be checked
      */
     public async isRestrictionsPermitThatOffer(offerAddress: string) {
-        return await this.contract.methods.isOfferRestrictionsPermitOtherOffer(this.id, +offerAddress).call();
+        return await Offer.contract.methods.isOfferRestrictionsPermitOtherOffer(this.id, +offerAddress).call();
     }
 
     /**
@@ -129,14 +131,14 @@ class Offer {
      * @param type - address of offer what needs to be checked
      */
     public async isRestrictedByOfferType(type: OfferType) {
-        return await this.contract.methods.isOfferRestrictedByOfferType(this.id, type).call();
+        return await Offer.contract.methods.isOfferRestrictedByOfferType(this.id, type).call();
     }
 
     /**
      * Function for fetching offer provider from blockchain
      */
     public async getDisabledAfter(): Promise<number> {
-        this.disabledAfter = +(await this.contract.methods.getOfferDisabledAfter(this.id).call());
+        this.disabledAfter = +(await Offer.contract.methods.getOfferDisabledAfter(this.id).call());
 
         return this.disabledAfter!;
     }

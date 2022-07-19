@@ -57,7 +57,7 @@ export type OfferInfo = {
     allowedArgs: string;
     allowedAccounts: string[];
     argsPublicKey: string;
-    resultUrl: string;
+    resultResource: string;
     linkage: string;
     hash: string;
 };

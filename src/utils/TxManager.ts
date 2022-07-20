@@ -78,15 +78,13 @@ class TxManager {
         };
 
         // TODO: Consider a better way to organize different strategies for publishing transactions.
-        if (!checkForUsingExternalTxManager(transactionOptions)) {
-            if (transactionCall) {
-                const estimatedGas = await transactionCall.estimateGas(txData);
-                txData.gas = Math.floor(estimatedGas * store.gasLimitMultiplier);
-            }
+        if (transactionCall) {
+            const estimatedGas = await transactionCall.estimateGas(txData);
+            txData.gas = Math.floor(estimatedGas * store.gasLimitMultiplier);
+        }
 
-            if (this.nonceTracker.isManaged(options.from)) {
-                txData.nonce = this.nonceTracker.consumeNonce(options.from);
-            }
+        if (this.nonceTracker.isManaged(options.from)) {
+            txData.nonce = this.nonceTracker.consumeNonce(options.from);
         }
 
         const signingKey = store.keys[options.from];

@@ -77,16 +77,17 @@ class TxManager {
             ...txData,
         };
 
-        // TODO: Consider a better way to organize different strategies for publishing transactions.
         if (transactionCall) {
             const estimatedGas = await transactionCall.estimateGas(txData);
             txData.gas = Math.floor(estimatedGas * store.gasLimitMultiplier);
         }
 
-        if (this.nonceTracker.isManaged(options.from)) {
-            txData.nonce = this.nonceTracker.consumeNonce(options.from);
+        // TODO: Consider a better way to organize different strategies for publishing transactions.
+        if (!checkForUsingExternalTxManager(transactionOptions)) {
+            if (this.nonceTracker.isManaged(options.from)) {
+                txData.nonce = this.nonceTracker.consumeNonce(options.from);
+            }
         }
-
         const signingKey = store.keys[options.from];
         if (signingKey) {
             const signed = await web3.eth.accounts.signTransaction(txData, signingKey);

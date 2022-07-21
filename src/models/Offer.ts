@@ -21,6 +21,7 @@ class Offer {
     public origins?: Origins;
     public id: string;
     public disabledAfter?: number;
+    public closingPrice?: string;
 
     constructor(offerId: string) {
         checkIfInitialized();
@@ -90,6 +91,14 @@ class Offer {
         origins.modifiedDate = +origins.modifiedDate * 1000;
 
         return (this.origins = origins);
+    }
+
+    /**
+     * Function for offer closing price calculation
+     */
+     public async getOfferClosingPrice(): Promise<string> {
+        this.closingPrice = await Offer.contract.methods.getOfferClosingPrice().call();
+        return this.closingPrice!;
     }
 
     public async isOfferExists(): Promise<boolean> {

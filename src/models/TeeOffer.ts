@@ -23,6 +23,7 @@ class TeeOffer {
     public provider?: string;
     public disabledAfter?: number;
     public tcb?: string;
+    public closingPrice?: string;
     public tlbAddedTime?: number;
     public tcbAddedTime?: number;
     public origins?: Origins;
@@ -107,6 +108,14 @@ class TeeOffer {
     public async getTlb(): Promise<string> {
         const offerInfo = await this.getInfo();
         return offerInfo.tlb;
+    }
+
+    /**
+     * Function for offer closing price calculation
+     */
+    public async getOfferClosingPrice(): Promise<string> {
+        this.closingPrice = await TeeOffer.contract.methods.getOfferClosingPrice().call();
+        return this.closingPrice!;
     }
 
     /**

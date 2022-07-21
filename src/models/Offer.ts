@@ -96,8 +96,8 @@ class Offer {
     /**
      * Function for offer closing price calculation
      */
-     public async getOfferClosingPrice(): Promise<string> {
-        this.closingPrice = await Offer.contract.methods.getOfferClosingPrice().call();
+     public async getClosingPrice(startDate: number, orderPrice: string): Promise<string> {
+        this.closingPrice = await Offer.contract.methods.getOfferClosingPrice(this.id, startDate, orderPrice).call();
         return this.closingPrice!;
     }
 

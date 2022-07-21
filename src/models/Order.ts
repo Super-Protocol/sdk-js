@@ -30,6 +30,7 @@ class Order {
     public parentOrder?: string;
     public consumer?: string;
     public origins?: Origins;
+    public startDate?: number;
     public id: string;
 
     constructor(orderId: string) {
@@ -136,6 +137,13 @@ class Order {
      */
     public async getAwaitingPayment(): Promise<boolean> {
         return Order.contract.methods.getAwaitingPayment(this.id).call();
+    }
+
+    /**
+     * Function for fetching start of processing date
+     */
+    public async getStartDate(): Promise<number> {
+        return <number>Order.contract.methods.getStartDate(this.id).call();
     }
 
     /**

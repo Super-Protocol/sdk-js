@@ -37,7 +37,7 @@ export const OfferInfoStructure = {
     allowedArgs: String,
     allowedAccounts: [String],
     argsPublicKey: String,
-    resultUrl: String,
+    resultResource: String,
     linkage: String,
     hash: String,
 };

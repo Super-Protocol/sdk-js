@@ -11,6 +11,7 @@ import {
     createTransactionOptions,
 } from "../utils";
 import Superpro from "../staticModels/Superpro";
+import { defaultGasLimit } from "../constants";
 import lodash from "lodash";
 import Web3 from "web3";
 
@@ -78,8 +79,14 @@ class TxManager {
         };
 
         if (transactionCall) {
-            const estimatedGas = await transactionCall.estimateGas(txData);
-            txData.gas = Math.floor(estimatedGas * store.gasLimitMultiplier);
+            let estimatedGas;
+            try {
+                estimatedGas = await transactionCall.estimateGas(txData);
+            } catch (e) {
+                TxManager.logger.debug({ error: e }, "Fail to calculate estimated gas");
+                estimatedGas = defaultGasLimit;
+            }
+            txData.gas = Math.ceil(estimatedGas * store.gasLimitMultiplier);
         }
 
         // TODO: Consider a better way to organize different strategies for publishing transactions.

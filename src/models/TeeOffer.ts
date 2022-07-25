@@ -15,6 +15,7 @@ class TeeOffer {
     private static contract: Contract;
     private logger: typeof rootLogger;
 
+    public id: string;
     public violationRate?: number;
     public totalLocked?: number;
     public offerInfo?: TeeOfferInfo;
@@ -27,7 +28,7 @@ class TeeOffer {
     public tlbAddedTime?: number;
     public tcbAddedTime?: number;
     public origins?: Origins;
-    public id: string;
+    public isCancelable?: boolean;
 
     constructor(offerId: string) {
         checkIfInitialized();
@@ -38,6 +39,14 @@ class TeeOffer {
         }
 
         this.logger = rootLogger.child({ className: "TeeOffer" });
+    }
+
+    /**
+     * @returns True if offer is cancelable.
+     */
+    public async isOfferCancelable(): Promise<boolean> {
+        this.isCancelable = await TeeOffer.contract.methods.isOfferCancelable(this.id).call();
+        return this.isCancelable!;
     }
 
     /**

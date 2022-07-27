@@ -1,6 +1,6 @@
 {
   "name": "@super-protocol/sp-sdk-js",
-  "version": "0.4.8",
+  "version": "0.4.11",
   "main": "build/index.js",
   "license": "MIT",
   "files": [
@@ -18,7 +18,13 @@
     "prepare": "npm run build",
     "docs": "typedoc src/index.ts --excludePrivate --plugin typedoc-plugin-markdown --out ./auto-docs",
     "docs-cleanup": "rm -rf auto-docs",
-    "bump": "npm version patch && git push && git push --tags",
+    "bump": "npm version prerelease --preid=beta && git push && git push --tags",
+    "patch:beta": "npm version prepatch --preid=beta && git push && git push --tags",
+    "minor:beta": "npm version preminor --preid=beta && git push && git push --tags",
+    "major:beta": "npm version premajor --preid=beta && git push && git push --tags",
+    "patch": "npm version patch && git push && git push --tags",
+    "minor": "npm version minor && git push && git push --tags",
+    "major": "npm version major && git push && git push --tags",
     "dto:update": "npm run dto:clean && npm run dto:generate",
     "dto:clean": "rm -rf ./src/proto/*",
     "dto:generate": "cd ./dto/src && protoc --plugin=../../node_modules/.bin/protoc-gen-ts_proto --ts_proto_opt=esModuleInterop=true --ts_proto_opt=unrecognizedEnum=false --ts_proto_out=../../src/proto ./*"

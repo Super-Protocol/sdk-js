@@ -1,32 +1,41 @@
 # This workflow will run tests using node and then publish a package to GitHub Packages when a release is created
 # For more information see: https://help.github.com/actions/language-and-framework-guides/publishing-nodejs-packages
 
-name: Node.js Package
+name: Build and publish npm package
 
 on:
   push:
     tags:
-        - v0.**
+        - v*.*.*
+  workflow_dispatch:
+    inputs:
+        release_type:
+          description: 'Type of release'
+          required: true
+          default: '' 
+          type: choice
+          options:
+          - final
+          - beta
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
         with:
           node-version: 16
-          registry-url: https://npm.pkg.github.com/
           scope: super-protocol
           always-auth: true
       - run: yarn --frozen-lock --ignore-scripts
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN_GH }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - run: yarn run prepare --if-present
       - run: npm test
 
-  publish-gpr:
-    needs: build
+  publish:
+    needs: test
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -36,13 +45,23 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: 16
-          registry-url: https://npm.pkg.github.com/
           scope: super-protocol
-          always-auth: true
+          registry-url: 'https://registry.npmjs.org'
+      - run: echo "release_type=${{github.event.inputs.release_type}}"
       - run: yarn --frozen-lock --ignore-scripts
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN_GH }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - run: yarn run prepare --if-present
-      - run: npm publish
+      - run: npm publish --beta --access public
+        if: |
+          contains(github.ref_name, 'beta') ||
+          github.event.inputs.release_type == 'beta'
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - run: npm publish --access public
+        if: |
+          contains(github.ref_name, 'beta') == false ||
+          github.event.inputs.release_type == 'final'
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+

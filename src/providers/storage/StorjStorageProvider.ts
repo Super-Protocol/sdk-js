@@ -43,6 +43,7 @@ export default class StorJStorageProvider implements IStorageProvider {
         const storj = await this.lazyStorj();
         const options = new storj.UploadOptions();
         const project = await this.lazyProject();
+        //await project.createBucket(this.storageName);
         const uploader = await project.uploadObject(this.storageName, remotePath, options);
 
         let totalWritten = 0;
@@ -138,6 +139,14 @@ export default class StorJStorageProvider implements IStorageProvider {
 
         return objectInfo.system.content_length;
     }
+
+    async getLastModified (remotePath: string): Promise<Date> {
+        const project = await this.lazyProject();
+        const objectInfo = await project.statObject(this.storageName, remotePath);
+
+        return new Date(objectInfo.system.created * 1000);
+    }
+
     private async lazyStorj(): Promise<any> {
         if (!this._storj) {
             this._storj = await require("@super-protocol/uplink-nodejs");

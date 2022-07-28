@@ -21,5 +21,6 @@ export default interface IStorageProvider {
     deleteFile(remotePath: string): Promise<void>;
     listObjects(remotePath: string): Promise<StorageObject[]>;
     getSize(remotePath: string): Promise<number>;
+    getLastModified(remotePath: string): Promise<Date>;
     calculateStorageDepostit(offer: Offer, sizeMb: number, hours: number): Promise<string>;
 }

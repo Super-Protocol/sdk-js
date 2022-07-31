@@ -1,6 +1,6 @@
 {
   "name": "@super-protocol/sp-sdk-js",
-  "version": "0.4.12-beta.1",
+  "version": "0.5.0",
   "main": "build/index.js",
   "license": "MIT",
   "files": [

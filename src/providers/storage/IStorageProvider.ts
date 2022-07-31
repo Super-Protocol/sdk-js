@@ -18,9 +18,9 @@ export default interface IStorageProvider {
         config: DownloadConfig,
         progressListener?: (total: number, current: number) => void,
     ): Promise<stream.Readable>;
-    deleteFile(remotePath: string): Promise<void>;
+    deleteObject(remotePath: string): Promise<void>;
     listObjects(remotePath: string): Promise<StorageObject[]>;
-    getSize(remotePath: string): Promise<number>;
+    getObjectSize(remotePath: string): Promise<number>;
     getLastModified(remotePath: string): Promise<Date>;
-    calculateStorageDepostit(offer: Offer, sizeMb: number, hours: number): Promise<string>;
+    calculateStorageDeposit(offer: Offer, sizeMb: number, hours: number): Promise<string>;
 }

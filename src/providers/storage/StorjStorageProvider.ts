@@ -13,7 +13,8 @@ export default class StorJStorageProvider implements IStorageProvider {
     static DOWNLOAD_BUFFER_SIZE = 4194304; // 4mb
 
     private logger = logger.child({ className: "StorJStorageProvider" });
-    private storageName: string;
+    private bucket: string;
+    private prefix: string;
     private accessToken: string;
     private _access?: Access;
     private _project?: Project;
@@ -24,11 +25,23 @@ export default class StorJStorageProvider implements IStorageProvider {
             throw Error("StorageProvider: StorJ is supported only in the node.js execution environment");
         }
 
-        this.storageName = credentials.storageId;
+        if (credentials.bucket) {
+            this.bucket = credentials.bucket;
+            this.prefix = credentials.prefix;
+
+        } else if (credentials.storageId) {
+            // back compatibility
+            this.bucket = credentials.storageId;
+            this.prefix = "";
+
+        } else {
+            throw Error("StorageProvider: Invalid StorJ credetials");
+        }
+
         this.accessToken = credentials.token;
     }
 
-    async calculateStorageDepostit(offer: Offer, sizeMb: number, hours: number): Promise<string> {
+    async calculateStorageDeposit(offer: Offer, sizeMb: number, hours: number): Promise<string> {
         const offerInfo = await offer.getInfo();
         const properties = JSON.parse(offerInfo.properties);
         return BigNumber.from(properties.priceMbPerHour).mul(sizeMb).mul(hours).toString();
@@ -43,8 +56,7 @@ export default class StorJStorageProvider implements IStorageProvider {
         const storj = await this.lazyStorj();
         const options = new storj.UploadOptions();
         const project = await this.lazyProject();
-        //await project.createBucket(this.storageName);
-        const uploader = await project.uploadObject(this.storageName, remotePath, options);
+        const uploader = await project.uploadObject(this.bucket, this.prefix + remotePath, options);
 
         let totalWritten = 0;
 
@@ -76,10 +88,10 @@ export default class StorJStorageProvider implements IStorageProvider {
     ): Promise<stream.Readable> {
         const storj = await this.lazyStorj();
         const project = await this.lazyProject();
-        const length = config.length || (await this.getSize(remotePath));
+        const length = config.length || (await this.getObjectSize(remotePath));
         const options = new storj.DownloadOptions(config.offset || 0, length);
 
-        const downloader = await project.downloadObject(this.storageName, remotePath, options);
+        const downloader = await project.downloadObject(this.bucket, this.prefix + remotePath, options);
 
         const loader = async function* () {
             const readBuffer = Buffer.alloc(StorJStorageProvider.DOWNLOAD_BUFFER_SIZE);
@@ -103,18 +115,18 @@ export default class StorJStorageProvider implements IStorageProvider {
         });
     }
 
-    async deleteFile(remotePath: string): Promise<void> {
+    async deleteObject(remotePath: string): Promise<void> {
         const project = await this.lazyProject();
-        await project.deleteObject(this.storageName, remotePath);
+        await project.deleteObject(this.bucket, this.prefix + remotePath);
     }
 
-    async listObjects(storagePath: string): Promise<StorageObject[]> {
+    async listObjects(remotePath: string): Promise<StorageObject[]> {
         const storj = await this.lazyStorj();
         const project = await this.lazyProject();
-        const objects = await project.listObjects(this.storageName, {
+        const objects = await project.listObjects(this.bucket, {
             recursive: true,
             cursor: "",
-            prefix: storagePath,
+            prefix: this.prefix + remotePath,
             system: true,
             custom: true,
         });
@@ -133,16 +145,16 @@ export default class StorJStorageProvider implements IStorageProvider {
         return result;
     }
 
-    async getSize(remotePath: string): Promise<number> {
+    async getObjectSize(remotePath: string): Promise<number> {
         const project = await this.lazyProject();
-        const objectInfo = await project.statObject(this.storageName, remotePath);
+        const objectInfo = await project.statObject(this.bucket, this.prefix + remotePath);
 
         return objectInfo.system.content_length;
     }
 
     async getLastModified (remotePath: string): Promise<Date> {
         const project = await this.lazyProject();
-        const objectInfo = await project.statObject(this.storageName, remotePath);
+        const objectInfo = await project.statObject(this.bucket, this.prefix + remotePath);
 
         return new Date(objectInfo.system.created * 1000);
     }

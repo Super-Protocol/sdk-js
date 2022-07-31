@@ -173,7 +173,7 @@ export class DownloadDecorator implements IStorageProvider {
         }
 
         const offset = BigInt(this.options.offset ?? 0);
-        const objectSize = await this.provider.getSize(remotePath);
+        const objectSize = await this.provider.getObjectSize(remotePath);
         const chunksStream = Readable.from(generateChunks(BigInt(objectSize), this.options.chunkSize, offset));
 
         const downloadStream = new ChunkedReadableTransform(
@@ -195,23 +195,23 @@ export class DownloadDecorator implements IStorageProvider {
             .pipe(chainedStream);
     }
 
-    deleteFile(remotePath: string): Promise<void> {
-        return this.provider.deleteFile(remotePath);
+    deleteObject(remotePath: string): Promise<void> {
+        return this.provider.deleteObject(remotePath);
     }
 
     listObjects(remotePath: string): Promise<StorageObject[]> {
         return this.provider.listObjects(remotePath);
     }
 
+    getObjectSize(remotePath: string): Promise<number> {
+        return this.provider.getObjectSize(remotePath);
+    }
+
     getLastModified(remotePath: string): Promise<Date> {
         return this.provider.getLastModified(remotePath);
     }
 
-    getSize(remotePath: string): Promise<number> {
-        return this.provider.getSize(remotePath);
-    }
-
-    calculateStorageDepostit(offer: Offer, sizeMb: number, hours: number): Promise<string> {
-        return this.provider.calculateStorageDepostit(offer, sizeMb, hours);
+    calculateStorageDeposit(offer: Offer, sizeMb: number, hours: number): Promise<string> {
+        return this.provider.calculateStorageDeposit(offer, sizeMb, hours);
     }
 }

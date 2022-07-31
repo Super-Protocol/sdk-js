@@ -35,7 +35,7 @@ export default class StorJStorageProvider implements IStorageProvider {
             this.prefix = "";
 
         } else {
-            throw Error("StorageProvider: Invalid StorJ credetials");
+            throw Error(`StorageProvider: Invalid StorJ credentials: ${JSON.stringify(credentials)}`);
         }
 
         this.accessToken = credentials.token;

@@ -25,6 +25,9 @@ export default class StorJStorageProvider implements IStorageProvider {
             throw Error("StorageProvider: StorJ is supported only in the node.js execution environment");
         }
 
+        this.bucket = "";
+        this.prefix = "";
+
         if (credentials.bucket) {
             this.bucket = credentials.bucket;
             this.prefix = credentials.prefix;
@@ -32,8 +35,6 @@ export default class StorJStorageProvider implements IStorageProvider {
         } else if (credentials.storageId) {
             // back compatibility
             this.bucket = credentials.storageId;
-            this.prefix = "";
-
         }
 
         this.accessToken = credentials.token;

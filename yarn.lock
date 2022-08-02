@@ -1008,10 +1008,10 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
-"@super-protocol/sp-dto-js@0.0.13":
+"@super-protocol/dto-js@0.0.13":
   version "0.0.13"
-  resolved "https://registry.yarnpkg.com/@super-protocol/sp-dto-js/-/sp-dto-js-0.0.13.tgz#f8f8488ff608e3b3eb252efc0a58ea57e0957cf2"
-  integrity sha512-rnZs0OkA06yPtY+KmC3NepScgeWSBEr68o9Mysj5Fwis7AMw5aUuHEM9ONV98N++CMncl2bAnHPRKzn3x2eCZQ==
+  resolved "https://registry.yarnpkg.com/@super-protocol/dto-js/-/dto-js-0.0.13.tgz#476b0b223d8f722b9a770f7f8cf6ae59ae93219a"
+  integrity sha512-xwg3oHS3gGYXrhejFlBlr1EgSXh7ACH907pd4ItjTQ4uaxbURwyDHxSE7wCALV4OT2jNIrE+xRgORVeYPSeicQ==
 
 "@super-protocol/tee-lib@^0.1.2":
   version "0.1.2"
@@ -3811,6 +3811,11 @@ glogg@^1.0.0:
   integrity sha512-5mwUoSuBk44Y4EshyiqcH95ZntbDdTQqA3QYSrxmzj28Ai0vXBGMH1ApSANH14j2sIRtqCEyg6PfsuP7ElOEDA==
   dependencies:
     sparkles "^1.0.0"
+
+google-protobuf@^3.15.5:
+  version "3.21.0"
+  resolved "https://registry.yarnpkg.com/google-protobuf/-/google-protobuf-3.21.0.tgz#8dfa3fca16218618d373d414d3c1139e28034d6e"
+  integrity sha512-byR7MBTK4tZ5PZEb+u5ZTzpt4SfrTxv5682MjPlHN16XeqgZE2/8HOIWeiXe8JKnT9OVbtBGhbq8mtvkK8cd5g==
 
 got@9.6.0:
   version "9.6.0"
@@ -7501,6 +7506,13 @@ ts-proto@^1.110.4:
     protobufjs "^6.11.3"
     ts-poet "^4.15.0"
     ts-proto-descriptors "1.7.1"
+
+ts-protoc-gen@^0.15.0:
+  version "0.15.0"
+  resolved "https://registry.yarnpkg.com/ts-protoc-gen/-/ts-protoc-gen-0.15.0.tgz#2fec5930b46def7dcc9fa73c060d770b7b076b7b"
+  integrity sha512-TycnzEyrdVDlATJ3bWFTtra3SCiEP0W0vySXReAuEygXCUr1j2uaVyL0DhzjwuUdQoW5oXPwk6oZWeA0955V+g==
+  dependencies:
+    google-protobuf "^3.15.5"
 
 tslib@^1.8.1:
   version "1.14.1"

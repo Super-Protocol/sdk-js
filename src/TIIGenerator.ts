@@ -18,7 +18,7 @@ import {
     Linkage,
     Resource,
     UrlResource,
-} from "@super-protocol/sp-dto-js";
+} from "@super-protocol/dto-js";
 import { TLBlockSerializerV1, TLBlockUnserializeResultType } from "@super-protocol/tee-lib";
 import { TeeOfferInfo } from "./types/TeeOffer";
 

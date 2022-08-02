@@ -1,4 +1,4 @@
-import { StorageType } from "@super-protocol/sp-dto-js";
+import { StorageType } from "@super-protocol/dto-js";
 import StorageAccess from "../../types/storage/StorageAccess";
 import IStorageProvider from "./IStorageProvider";
 import StorjStorageProvider from "./StorjStorageProvider";

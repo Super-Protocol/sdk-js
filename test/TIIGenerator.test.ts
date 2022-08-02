@@ -7,7 +7,7 @@ import {
     ResourceType,
     StorageProviderResource,
     StorageType,
-} from "@super-protocol/sp-dto-js";
+} from "@super-protocol/dto-js";
 
 const fileEncryptionAlgo = CryptoAlgorithm.AES;
 const key = "12345789";

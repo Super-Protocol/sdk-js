@@ -5,7 +5,7 @@ import {
     ECIESEncryption,
     Encryption,
     RSAHybridEncryption,
-} from "@super-protocol/sp-dto-js";
+} from "@super-protocol/dto-js";
 import fs from "fs";
 import AES from "./nodejs/AES";
 import ARIA from "./nodejs/ARIA";

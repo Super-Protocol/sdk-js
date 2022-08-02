@@ -4,7 +4,7 @@ import {
     ARIAEncryptionWithMac,
     Encoding,
     Cipher, Encryption,
-} from "@super-protocol/sp-dto-js";
+} from "@super-protocol/dto-js";
 import {
     ReadStream,
     WriteStream,

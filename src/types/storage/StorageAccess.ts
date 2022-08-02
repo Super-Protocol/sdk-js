@@ -1,4 +1,4 @@
-import { StorageType } from "@super-protocol/sp-dto-js";
+import { StorageType } from "@super-protocol/dto-js";
 
 type StorageAccess = {
     storageType: StorageType;

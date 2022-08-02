@@ -1,5 +1,5 @@
 import Crypto from "../../src/crypto";
-import { CryptoAlgorithm, Encoding } from "@super-protocol/sp-dto-js";
+import { CryptoAlgorithm, Encoding } from "@super-protocol/dto-js";
 
 const rsaPrivateKey = `-----BEGIN RSA PRIVATE KEY-----
 MIICWwIBAAKBgG0Bpb0BMgdCnKvuAJKB9qGDwXokta0sGrExwQFMTmW48r2hM28Y

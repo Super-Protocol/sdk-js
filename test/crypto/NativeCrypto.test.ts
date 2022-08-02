@@ -4,7 +4,7 @@ import {
 } from 'crypto';
 
 import NativeCrypto from '../../src/crypto/nodejs/NativeCrypto';
-import { Encoding } from "@super-protocol/sp-dto-js";
+import { Encoding } from "@super-protocol/dto-js";
 
 const inputEncoding = 'binary';
 const outputEncoding = Encoding.base64;

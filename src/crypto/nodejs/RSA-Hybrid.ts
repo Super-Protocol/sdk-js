@@ -5,7 +5,7 @@ import {
     Encryption,
     EncryptionWithMacIV,
     RSAHybridEncryption,
-} from "@super-protocol/sp-dto-js";
+} from "@super-protocol/dto-js";
 import {
     createPublicKey,
     createPrivateKey,

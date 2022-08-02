@@ -18,7 +18,7 @@ import { once } from "events";
 import {
     Encoding,
     EncryptionWithMacIV,
-} from "@super-protocol/sp-dto-js";
+} from "@super-protocol/dto-js";
 
 /**
  *

@@ -1,5 +1,5 @@
 {
-  "name": "@super-protocol/sp-sdk-js",
+  "name": "@super-protocol/sdk-js",
   "version": "0.5.2",
   "main": "build/index.js",
   "license": "MIT",
@@ -48,10 +48,11 @@
     "ts-proto": "^1.110.4",
     "typedoc": "^0.22.11",
     "typedoc-plugin-markdown": "^3.11.12",
-    "typescript": "^4.4.4"
+    "typescript": "^4.4.4",
+    "ts-protoc-gen": "^0.15.0"
   },
   "dependencies": {
-    "@super-protocol/sp-dto-js": "0.0.13",
+    "@super-protocol/dto-js": "0.0.13",
     "@super-protocol/tee-lib": "^0.1.2",
     "@super-protocol/uplink-nodejs": "1.2.12",
     "eccrypto": "^1.1.6",
@@ -63,5 +64,5 @@
     "protobufjs": "^6.11.2",
     "web3": "^1.7.1"
   },
-  "repository": "git://github.com/Super-Protocol/sp-sdk-js.git"
+  "repository": "git://github.com/Super-Protocol/sdk-js.git"
 }

@@ -1,4 +1,4 @@
-import {CryptoAlgorithm, ECIESEncryption, Encryption} from "@super-protocol/sp-dto-js";
+import {CryptoAlgorithm, ECIESEncryption, Encryption} from "@super-protocol/dto-js";
 import eccrypto from "eccrypto";
 
 class ECIES {

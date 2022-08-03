@@ -42,17 +42,17 @@ const tii = JSON.stringify({
 });
 
 jest.mock("../src/models/Order", () => {
-    return jest.fn().mockImplementation((address) => {
+    return jest.fn().mockImplementation((id) => {
         if (
-            address !== "order" &&
-            address !== "parentOrder" &&
-            address !== "teeOrder"
+            id !== "order" &&
+            id !== "parentOrder" &&
+            id !== "teeOrder"
         ) {
             throw new Error("Order doesnot exists");
         }
         return {
             async getParentOrder() {
-                return address === "teeOrder" ? null : "parentOrder";
+                return id === "teeOrder" ? null : "parentOrder";
             },
             async getOrderInfo() {
                 return {

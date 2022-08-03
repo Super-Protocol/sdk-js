@@ -128,16 +128,16 @@ class Offer {
     }
 
     /**
-     * Checks if offer (offerAddress) match restrictions in this offer
-     * @param offerAddress - address of offer what needs to be checked
+     * Checks if passed offer match restrictions in this offer
+     * @param offerId - id of offer what needs to be checked
      */
-    public async isRestrictionsPermitThatOffer(offerAddress: string) {
-        return await Offer.contract.methods.isOfferRestrictionsPermitOtherOffer(this.id, +offerAddress).call();
+    public async isRestrictionsPermitThatOffer(offerId: string) {
+        return await Offer.contract.methods.isOfferRestrictionsPermitOtherOffer(this.id, offerId).call();
     }
 
     /**
      * Checks if this offer contains restrictions of a certain type
-     * @param type - address of offer what needs to be checked
+     * @param type - type of offer which needs to be checked
      */
     public async isRestrictedByOfferType(type: OfferType) {
         return await Offer.contract.methods.isOfferRestrictedByOfferType(this.id, type).call();

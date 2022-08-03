@@ -248,7 +248,7 @@ class Order {
      * @param subOrderInfo - order info for new subOrder
      * @param blocking - is sub order blocking
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
-     * @returns {Promise<void>} - Does not return address of created contract!
+     * @returns {Promise<void>} - Does not return id of created sub order!
      */
     public async createSubOrder(
         subOrderInfo: OrderInfo,
@@ -256,7 +256,7 @@ class Order {
         externalId = "default",
         holdSum = '0',
         transactionOptions?: TransactionOptions,
-    ) {
+    ): Promise<void> {
         transactionOptions ?? this.checkInitOrder(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
@@ -276,7 +276,7 @@ class Order {
 
     /**
      * Function for creating pack of sub orders (wokflow) for current order
-     * @param {Array<subOrderInfo>} - orders info for new subOrders
+     * @param subOrdersInfo - orders info for new subOrders
      * @param transactionOptions - object what contains action account and web3 instance
      * @returns {Promise<string[]>} - tx hashes
      */

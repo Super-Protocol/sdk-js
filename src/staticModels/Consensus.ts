@@ -46,15 +46,15 @@ class Consensus {
         return this.contract;
     }
 
-    private static async initTcb(teeOfferAddress: string, transactionOptions?: TransactionOptions): Promise<TCB> {
-        await TxManager.execute(this.contract.methods.initTcb, [teeOfferAddress], transactionOptions);
+    private static async initTcb(teeOfferId: string, transactionOptions?: TransactionOptions): Promise<TCB> {
+        await TxManager.execute(this.contract.methods.initTcb, [teeOfferId], transactionOptions);
 
-        const tcbAddress = await this.getInitedTcb(teeOfferAddress);
-        return new TCB(tcbAddress);
+        const tcbId = await this.getInitedTcb(teeOfferId);
+        return new TCB(tcbId);
     }
 
-    private static async addToSupply(tcbAddress: string, transactionOptions?: TransactionOptions) {
-        await TxManager.execute(this.contract.methods.addToSupply, [tcbAddress], transactionOptions);
+    private static async addToSupply(tcbId: string, transactionOptions?: TransactionOptions) {
+        await TxManager.execute(this.contract.methods.addToSupply, [tcbId], transactionOptions);
     }
 
     private static async addMarks(
@@ -91,33 +91,33 @@ class Consensus {
     }
 
     /**
-     * Function initialize TCB and returns two lists of anothers' TCB addresses for their checking
-     * @param teeOfferAddress
+     * Function initialize TCB and returns two lists of anothers' TCB ids for their checking
+     * @param teeOfferId
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
-     * @returns two lists of anothers' TCB addresses for their checking
+     * @returns two lists of anothers' TCB ids for their checking
      */
     public static async getListsForVerification(
-        teeOfferAddress: string,
+        teeOfferId: string,
         transactionOptions?: TransactionOptions,
     ): Promise<{ L1: string[]; L2: string[] }> {
         this.checkInit();
         checkIfActionAccountInitialized();
 
-        const alreadyInited = await this.getInitedTcb(teeOfferAddress);
-        const tcbTimeInited = await this.getTimeInited(teeOfferAddress);
+        const alreadyInited = await this.getInitedTcb(teeOfferId);
+        const tcbTimeInited = await this.getTimeInited(teeOfferId);
         const timestamp = await getTimestamp();
 
         const tcb =
             tcbTimeInited !== 0 && tcbTimeInited + ONE_DAY > timestamp
                 ? new TCB(alreadyInited)
-                : await this.initTcb(teeOfferAddress, transactionOptions);
+                : await this.initTcb(teeOfferId, transactionOptions);
 
         if (!(await this.LEnough(tcb))) {
             // counted how many L2 are missing to complete TCB
             const numberOfMissingL2 = +(await tcb.needL2toCompleted());
 
-            await LastBlocks.getRandomL1(tcb.address, transactionOptions);
-            await Suspicious.getRandomL2(tcb.address, numberOfMissingL2, transactionOptions);
+            await LastBlocks.getRandomL1(tcb.id, transactionOptions);
+            await Suspicious.getRandomL2(tcb.id, numberOfMissingL2, transactionOptions);
         }
 
         const L1 = await tcb.getL1();
@@ -131,14 +131,14 @@ class Consensus {
 
     /**
      * Add data to TeeConfirmationBlock and push it to Consensus
-     * @param teeOfferAddress - TCB's device offer, as key
+     * @param teeOfferId - TCB's device offer, as key
      * @param L1Marks - marks of LastBlocks
      * @param L2Marks - marks of SuspiciousBlocks
      * @param tcbData - TEE generated
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
     public static async addTCB(
-        teeOfferAddress: string,
+        teeOfferId: string,
         L1Marks: number[],
         L2Marks: number[],
         tcbData: { publicData: PublicData; quote: string },
@@ -148,7 +148,7 @@ class Consensus {
         checkIfActionAccountInitialized();
         const logger = this.logger.child({ method: "addTCB" });
 
-        const tcb = new TCB(await this.getInitedTcb(teeOfferAddress));
+        const tcb = new TCB(await this.getInitedTcb(teeOfferId));
         if (!(await this.LEnough(tcb))) logger.error("L is not enough to complite TCB");
 
         // Can be upgraded to completion of TCB
@@ -156,55 +156,55 @@ class Consensus {
 
         await this.addMarks(L1Marks, L2Marks, tcb, transactionOptions);
 
-        await this.addToSupply(tcb.address, transactionOptions);
+        await this.addToSupply(tcb.id, transactionOptions);
     }
 
     /**
      * Function stake and lock TCB's reward
-     * @param tcbAddress - TEE Offer's completed and valid TCB contract
+     * @param tcbId - TEE Offer's completed and valid TCB contract
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
-    public static async claimRewards(tcbAddress: string, transactionOptions?: TransactionOptions): Promise<void> {
+    public static async claimRewards(tcbId: string, transactionOptions?: TransactionOptions): Promise<void> {
         const contract = this.checkInit(transactionOptions);
         checkIfActionAccountInitialized();
 
-        await TxManager.execute(contract.methods.claimRewards, [tcbAddress], transactionOptions);
+        await TxManager.execute(contract.methods.claimRewards, [tcbId], transactionOptions);
     }
 
     /**
      * Function unlock previously locked TCB rewards (by claimRewards)
-     * @param tcbAddress - TCB contract address
-     * @param unlockAmount - amount of tokens to unlock, max available amount = TeeOffer.getLockInfo(tcbAddress)
+     * @param tcbId - TCB id
+     * @param unlockAmount - amount of tokens to unlock, max available amount = TeeOffer.getLockInfo(tcbId)
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
     public static async unlockRewards(
-        tcbAddress: string,
+        tcbId: string,
         unlockAmount: number,
         transactionOptions?: TransactionOptions,
     ): Promise<void> {
         const contract = this.checkInit(transactionOptions);
         checkIfActionAccountInitialized();
 
-        await TxManager.execute(contract.methods.unlockRewards, [tcbAddress, unlockAmount], transactionOptions);
+        await TxManager.execute(contract.methods.unlockRewards, [tcbId, unlockAmount], transactionOptions);
     }
 
     /**
      * Function return last inited TCB of TEE offer
-     * @param teeOfferAddress
+     * @param teeOfferId
      * */
-    public static async getInitedTcb(teeOfferAddress: string): Promise<string> {
+    public static async getInitedTcb(teeOfferId: string): Promise<string> {
         this.checkInit();
-        const tcbAddress = await this.contract.methods.getInitedTcb(teeOfferAddress).call();
-        return tcbAddress!;
+        const tcbId = await this.contract.methods.getInitedTcb(teeOfferId).call();
+        return tcbId!;
     }
 
     /**
      * Function return last inited TCB of TEE offer
-     * @param teeOfferAddress
+     * @param teeOfferId
      * */
-    public static async getTimeInited(teeOfferAddress: string): Promise<number> {
+    public static async getTimeInited(teeOfferId: string): Promise<number> {
         this.checkInit();
-        const tcbTimeInited = +(await this.contract.methods.getTimeInited(teeOfferAddress).call());
+        const tcbTimeInited = +(await this.contract.methods.getTimeInited(teeOfferId).call());
         return tcbTimeInited!;
     }
 }

@@ -93,8 +93,8 @@ class TIIGenerator {
     ): Promise<string> {
         const order: Order = new Order(orderId);
 
-        const parentOrderAddress: string = await order.getParentOrder();
-        const parentOrder: Order = new Order(parentOrderAddress);
+        const parentOrderId: string = await order.getParentOrder();
+        const parentOrder: Order = new Order(parentOrderId);
         const parentOrderInfo: OrderInfo = await parentOrder.getOrderInfo();
 
         const { hashes, linkage } = await this.getSolutionHashesAndLinkage(parentOrderInfo.args.inputOffers);
@@ -115,8 +115,8 @@ class TIIGenerator {
         let anyLinkage: string|undefined;
         await Promise.all(
             inputOffers.map(
-                async (offerAddress: string): Promise<void> => {
-                    const offer: Offer = new Offer(offerAddress);
+                async (offerId: string): Promise<void> => {
+                    const offer: Offer = new Offer(offerId);
                     const offerInfo: OfferInfo = await offer.getInfo();
 
                     if (offerInfo.hash) {
@@ -125,7 +125,7 @@ class TIIGenerator {
 
                     const restrictions = _
                         .intersection(offerInfo.restrictions.offers, inputOffers)
-                        .filter(restrictedOfferAddress => restrictedOfferAddress !== offer.id);
+                        .filter(restrictedOfferId => restrictedOfferId !== offer.id);
                     if (restrictions.length) {
                         solutionLinkage = offerInfo.linkage;
                     } else {

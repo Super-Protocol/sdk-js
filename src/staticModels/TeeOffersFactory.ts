@@ -152,10 +152,9 @@ class TeeOffersFactory {
     }
 }
 
-// address -> TEE offerId
-export type onTeeOfferCreatedCallback = (address: string, providerAuth: string, offerType: OfferType) => void;
+export type onTeeOfferCreatedCallback = (offerId: string, providerAuth: string, offerType: OfferType) => void;
 export type onTeeOfferViolationRateChangedCallback = (
-    address: string,
+    offerId: string,
     providerAuth: string,
     violationRate: number,
 ) => void;

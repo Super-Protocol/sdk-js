@@ -39,7 +39,7 @@ class OffersFactory {
     }
 
     /**
-     * Function for fetching list of all offers addresses
+     * Function for fetching list of all offers ids
      */
     public static async getAllOffers(): Promise<string[]> {
         this.checkInit();
@@ -175,8 +175,8 @@ class OffersFactory {
 }
 
 // address -> offerId
-export type onOfferCreatedCallback = (address: string, creator: string, externalId: string) => void;
-export type onOfferEnabledCallback = (providerAuth: string, address: string, offerType: OfferType) => void;
-export type onOfferDisbledCallback = (providerAuth: string, address: string, offerType: OfferType) => void;
+export type onOfferCreatedCallback = (id: string, creator: string, externalId: string) => void;
+export type onOfferEnabledCallback = (providerAuth: string, id: string, offerType: OfferType) => void;
+export type onOfferDisbledCallback = (providerAuth: string, id: string, offerType: OfferType) => void;
 
 export default OffersFactory;

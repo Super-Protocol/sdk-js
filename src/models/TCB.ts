@@ -15,7 +15,7 @@ import Superpro from "../staticModels/Superpro";
 import TxManager from "../utils/TxManager";
 
 class TCB {
-    public address: string;
+    public id: string;
     private contract: Contract;
     private logger: typeof rootLogger;
 
@@ -28,15 +28,15 @@ class TCB {
     public negative?: number;
     public quote?: string;
 
-    constructor(address: string) {
+    constructor(tcbId: string) {
         checkIfInitialized();
 
-        this.address = address;
-        // this.contract = new store.web3!.eth.Contract(<AbiItem[]>TcbJSON.abi, address);
+        this.id = tcbId;
+        // this.contract = new store.web3!.eth.Contract(<AbiItem[]>TcbJSON.abi, tcbId);
         // TODO: stub
         this.contract = new store.web3!.eth.Contract(<AbiItem[]>OffersJSON.abi, Superpro.address);
 
-        this.logger = rootLogger.child({ className: "TCB", address });
+        this.logger = rootLogger.child({ className: "TCB", tcbId });
     }
 
     /**

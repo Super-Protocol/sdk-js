@@ -43,8 +43,8 @@ class OrdersFactory {
     }
 
     /**
-     * Function for fetching list of all orders addresses
-     * @returns list of orders addresses
+     * Function for fetching list of all orders ids
+     * @returns list of orders ids
      */
     public static async getAllOrders(): Promise<string[]> {
         this.checkInit();
@@ -71,12 +71,12 @@ class OrdersFactory {
 
     /**
      * Function for fetching order hold deposit for specific order
-     * @param orderAddress - address of order for fetching hold deposit
+     * @param orderId - order for fetching hold deposit
      */
-    public static async getOrderHoldDeposit(orderAddress: string): Promise<string> {
+    public static async getOrderHoldDeposit(orderId: string): Promise<string> {
         this.checkInit();
 
-        return await this.contract.methods.getOrderHoldDeposit(orderAddress).call();
+        return await this.contract.methods.getOrderHoldDeposit(orderId).call();
     }
 
     /**
@@ -84,7 +84,7 @@ class OrdersFactory {
      * @param orderInfo - order info for new order
      * @param suspended - is orders suspended
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
-     * @returns {Promise<void>} - Does not return address of created contract!
+     * @returns {Promise<void>} - Does not return id of created order!
      */
     public static async createOrder(
         orderInfo: OrderInfo,
@@ -92,7 +92,7 @@ class OrdersFactory {
         suspended = false,
         externalId = "default",
         transactionOptions?: TransactionOptions,
-    ) {
+    ): Promise<void> {
         const contract = this.checkInit(transactionOptions);
         checkIfActionAccountInitialized(transactionOptions);
 
@@ -127,19 +127,19 @@ class OrdersFactory {
 
     /**
      * Function for refilling order deposit
-     * @param orderAddress - address of order
+     * @param orderId - order id
      * @param amount - amount of tokens to refilling
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
     public static async refillOrderDeposit(
-        orderAddress: string,
+        orderId: string,
         amount: string,
         transactionOptions?: TransactionOptions,
     ) {
         const contract = this.checkInit(transactionOptions);
         checkIfActionAccountInitialized(transactionOptions);
 
-        await TxManager.execute(contract.methods.refillOrder, [orderAddress, amount], transactionOptions);
+        await TxManager.execute(contract.methods.refillOrder, [orderId, amount], transactionOptions);
     }
 
     /**

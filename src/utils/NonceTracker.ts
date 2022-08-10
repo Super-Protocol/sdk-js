@@ -1,9 +1,13 @@
 import Web3 from "web3";
+import rootLogger from "../logger";
 
 class NonceTracker {
     private store: Record<string, number> = {};
+    private static logger = rootLogger.child({ className: "NonceTracker" });
 
-    constructor(private web3: Web3) {}
+    constructor(private web3: Web3) {
+        NonceTracker.logger.trace("Created NonceTracker");
+    }
 
     public async initAccount(address: string): Promise<void> {
         if (address in this.store) {
@@ -14,6 +18,9 @@ class NonceTracker {
         if (address in this.store) {
             return;
         }
+
+        NonceTracker.logger.trace(`Initialized ${address} account with nonce: ${txCount}`);
+
         this.store[address] = txCount;
     }
 
@@ -31,11 +38,15 @@ class NonceTracker {
     public getNonce(address: string): number {
         this.checkAccount(address);
 
+        NonceTracker.logger.trace(`Get nonce: ${this.store[address]}`);
+
         return this.store[address];
     }
 
     public consumeNonce(address: string): number {
         this.checkAccount(address);
+
+        NonceTracker.logger.trace(`Consume nonce: ${this.store[address] + 1}`);
 
         return this.store[address]++;
     }

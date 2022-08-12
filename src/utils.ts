@@ -99,6 +99,7 @@ export const tupleToObject = <T>(data: unknown[], format: Format): T => {
     if (isArray(format)) {
         const result = data.map((dataItem, index) => {
             const formatItem = index < format.length ? format[index] : format[format.length - 1];
+
             return processItem(dataItem, formatItem);
         });
 
@@ -130,19 +131,22 @@ export const objectToTuple = (data: unknown, format: Format): unknown[] => {
     if (isArray(format)) {
         return (data as unknown[]).map((dataItem, index) => {
             const formatItem = index < format.length ? format[index] : format[format.length - 1];
+
             return processItem(dataItem, formatItem);
         });
     } else {
         return Object.keys(format).map((key) => {
             const dataItem = (data as { [key: string]: unknown })[key];
             const formatItem = format[key];
+
             return processItem(dataItem, formatItem);
         });
     }
 };
 
-export const getTimestamp = async () => {
+export const getTimestamp = async (): Promise<number> => {
     const endBlockIndex = await store.web3!.eth.getBlockNumber();
     const block = await store.web3!.eth.getBlock(endBlockIndex, true);
-    return block.timestamp;
+
+    return Number(block.timestamp);
 };

@@ -19,14 +19,19 @@ class SuperproToken {
     private static checkInit(transactionOptions?: TransactionOptions) {
         if (transactionOptions?.web3) {
             checkIfInitialized();
+
             return new transactionOptions.web3.eth.Contract(<AbiItem[]>SuperproTokenJSON.abi, this.address);
         }
 
         if (this.contract) return this.contract;
         checkIfInitialized();
 
-        this.logger = rootLogger.child({ className: "SuperproToken", address: this.address });
-        return this.contract = new store.web3!.eth.Contract(<AbiItem[]>SuperproTokenJSON.abi, this.address);
+        this.logger = rootLogger.child({
+            className: "SuperproToken",
+            address: this.address,
+        });
+
+        return (this.contract = new store.web3!.eth.Contract(<AbiItem[]>SuperproTokenJSON.abi, this.address));
     }
 
     /**
@@ -36,6 +41,15 @@ class SuperproToken {
         this.checkInit();
 
         return await this.contract.methods.balanceOf(address).call();
+    }
+
+    /**
+     * Fetching allowance of SuperProtocol tokens on address
+     */
+    public static async allowance(from: string, to: string): Promise<string> {
+        this.checkInit();
+
+        return await this.contract.methods.allowance(from, to).call();
     }
 
     /**

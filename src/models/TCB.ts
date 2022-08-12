@@ -1,143 +1,146 @@
 import { Contract } from "web3-eth-contract";
 import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
-// import TcbJSON from "../contracts/TCB.json";
-import OffersJSON from "../contracts/Offers.json";
+import ConsensusJSON from "../contracts/Consensus.json";
 import store from "../store";
-import { PublicData, LType, TcbEpochInfo, PublicDataStructure, TcbEpochInfoStructure } from "../types/TcbData";
 import { checkIfActionAccountInitialized, checkIfInitialized, tupleToObject } from "../utils";
 import { TransactionOptions } from "../types/Web3";
-import Suspicious from "../staticModels/Suspicious";
-import LastBlocks from "../staticModels/LastBlocks";
 import { formatBytes32String, parseBytes32String } from "ethers/lib/utils";
-import { TcbStatus } from "./../types/Epoch";
 import Superpro from "../staticModels/Superpro";
 import TxManager from "../utils/TxManager";
+import {
+    TcbStatus,
+    PublicData,
+    TcbEpochInfo,
+    PublicDataStructure,
+    TcbEpochInfoStructure,
+    TcbVerifiedStatus,
+} from "../types/Consensus";
 
 class TCB {
-    public id: string;
+    public tcbId: string;
     private contract: Contract;
     private logger: typeof rootLogger;
-
-    public L1?: string[];
-    public L2?: string[];
-    public L1_statusess?: number[];
-    public L2_statusess?: number[];
-    public epoch?: TcbEpochInfo;
-    public positive?: number;
-    public negative?: number;
-    public quote?: string;
 
     constructor(tcbId: string) {
         checkIfInitialized();
 
-        this.id = tcbId;
-        // this.contract = new store.web3!.eth.Contract(<AbiItem[]>TcbJSON.abi, tcbId);
-        // TODO: stub
-        this.contract = new store.web3!.eth.Contract(<AbiItem[]>OffersJSON.abi, Superpro.address);
+        this.logger = rootLogger.child({
+            className: "TCB",
+            tcbId,
+        });
 
-        this.logger = rootLogger.child({ className: "TCB", tcbId });
+        this.tcbId = tcbId;
+        this.contract = new store.web3!.eth.Contract(<AbiItem[]>ConsensusJSON.abi, Superpro.address);
     }
 
-    /**
-     * Function for fetching number of TCB's to request for verifying from LastBlocksTable
-     */
-    public async needL1toCompleted(): Promise<number> {
-        const lbtSzie = await LastBlocks.count();
-        const l1Completed = await this.contract.methods.needL1toCompleted(lbtSzie).call();
-        return l1Completed;
+    private checkInitTcb(transactionOptions?: TransactionOptions) {
+        if (transactionOptions?.web3) {
+            checkIfInitialized();
+
+            return new transactionOptions.web3.eth.Contract(<AbiItem[]>ConsensusJSON.abi, Superpro.address);
+        }
+
+        return this.contract;
     }
 
-    /**
-     * Function for fetching number of TCB's to request for verifying from SuspiciousBlocksTable
-     */
-    public async needL2toCompleted(): Promise<number> {
-        const sbtSize = await Suspicious.count();
-        const l2Completed = await this.contract.methods.needL2toCompleted(sbtSize).call();
-        return l2Completed;
+    private async applyTcbMarks(marks: TcbVerifiedStatus[], transactionOptions?: TransactionOptions): Promise<void> {
+        await TxManager.execute(this.contract.methods.applyTcbMarks, [marks, this.tcbId], transactionOptions);
     }
 
-    /**
-     * Function for fetching list of TCBs from LastBlocksTable formed for veirifying
-     */
-    public async getL1(): Promise<string[]> {
-        this.L1 = await this.contract.methods.getL1().call();
-        return this.L1!;
-    }
-
-    /**
-     * Function for fetching list of TCBs from SuspiciousBlocksTable formed for veirifying
-     */
-    public async getL2(): Promise<string[]> {
-        this.L2 = await this.contract.methods.getL2().call();
-        return this.L2!;
-    }
-
-    /**
-     * Function for fetching the given marks for recruited TCBs from the LastBlocksTable
-     */
-    public async getL1Marks(): Promise<number[]> {
-        this.L1_statusess = await this.contract.methods.getL1Marks().call();
-        return this.L1_statusess!;
-    }
-
-    /**
-     * Function for fetching the given marks for recruited TCBs from the SuspiciousBlocksTable
-     */
-    public async getL2Marks(): Promise<number[]> {
-        this.L2_statusess = await this.contract.methods.getL2Marks().call();
-        return this.L2_statusess!;
-    }
-
-    /**
-     * Function for fetching TCB status
-     */
-    public async getTcbStatus(): Promise<TcbStatus> {
-        return await this.contract.methods.getTcbStatus().call();
-    }
-
-    /**
-     * Function for fetching calimed amount of TCB reward
-     */
-    public async getPaidAmount(): Promise<number> {
-        return await this.contract.methods.getPaidAmount().call();
-    }
-
-    /**
-     * Add processed TCB data to smart-contract
-     * @param used - struct of 'processed' data
-     * @param quote - data generated from Enclave
-     * @param transactionOptions - object what contains alternative action account or gas limit (optional)
-     */
-    public async addData(pb: PublicData, quote: string, transactionOptions?: TransactionOptions) {
+    private async setTcbData(pb: PublicData, quote: string, transactionOptions?: TransactionOptions) {
         checkIfActionAccountInitialized(transactionOptions);
 
-        const fromattedDeviceId = formatBytes32String((Buffer.from(pb.deviceID, 'hex')).toString('base64'));
+        const fromattedDeviceId = formatBytes32String(Buffer.from(pb.deviceID, "hex").toString("base64"));
 
         await TxManager.execute(
-            this.contract.methods.addData,
-            [pb.benchmark, pb.properties, fromattedDeviceId, quote],
+            this.contract.methods.setTcbData,
+            [this.tcbId, pb.benchmark, pb.properties, fromattedDeviceId, quote],
             transactionOptions,
         );
     }
 
-    public async getEpochInfo(): Promise<TcbEpochInfo> {
-        const epoch = await this.contract.methods.getEpochInfo().call();
-        this.epoch = tupleToObject(epoch, TcbEpochInfoStructure);
+    /**
+     * Add data to TeeConfirmationBlock and push it to Consensus
+     * @param pb - struct of 'processed' data
+     * @param quote - data generated from Enclave
+     * @param marks - list of marks
+     * @param transactionOptions - object what contains alternative action account or gas limit (optional)
+     */
+    public async addToSupply(
+        pb: PublicData,
+        quote: string,
+        marks: TcbVerifiedStatus[],
+        transactionOptions?: TransactionOptions,
+    ) {
+        checkIfActionAccountInitialized(transactionOptions);
 
-        return this.epoch;
+        await this.setTcbData(pb, quote, transactionOptions);
+        await this.applyTcbMarks(marks, transactionOptions);
+        await TxManager.execute(this.contract.methods.addTcbToSupply, [this.tcbId], transactionOptions);
     }
 
     /**
-     * Function for fetching marks of TCB (from Consensus)
+     * Assign TCB from SuspiciousBlocks table to check
+     * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
-    public async getOwnMarks(): Promise<{ positive: number; negative: number }> {
-        const [positive, negative] = await this.contract.methods.getOwnMarks().call();
-        this.positive = positive;
-        this.negative = negative;
+    public async assignSuspiciousBlocksToCheck(transactionOptions?: TransactionOptions) {
+        await TxManager.execute(this.contract.methods.assignSuspiciousBlocksToCheck, [this.tcbId], transactionOptions);
+    }
+
+    /**
+     * Assign TCB from LastBlocks table to check
+     * @param transactionOptions - object what contains alternative action account or gas limit (optional)
+     */
+    public async assignLastBlocksToCheck(transactionOptions?: TransactionOptions) {
+        await TxManager.execute(this.contract.methods.assignLastBlocksToCheck, [this.tcbId], transactionOptions);
+    }
+
+    /**
+     * Function stake and lock TCB's reward
+     * @param tcbId - TEE Offer's completed and valid TCB contract
+     * @param transactionOptions - object what contains alternative action account or gas limit (optional)
+     */
+    public async claimRewards(tcbId: string, transactionOptions?: TransactionOptions): Promise<void> {
+        const contract = this.checkInitTcb(transactionOptions);
+        checkIfActionAccountInitialized();
+
+        await TxManager.execute(contract.methods.claimRewards, [tcbId], transactionOptions);
+    }
+
+    /**
+     * Function unlock previously locked TCB rewards (by claimRewards)
+     * @param tcbId - TCB contract address
+     * @param unlockAmount - amount of tokens to unlock, max available amount = TeeOffer.getLockInfo(tcbAddress)
+     * @param transactionOptions - object what contains alternative action account or gas limit (optional)
+     */
+    public async unlockRewards(
+        tcbId: string,
+        unlockAmount: number,
+        transactionOptions?: TransactionOptions,
+    ): Promise<void> {
+        const contract = this.checkInitTcb(transactionOptions);
+        checkIfActionAccountInitialized();
+
+        await TxManager.execute(contract.methods.unlockRewards, [tcbId, unlockAmount], transactionOptions);
+    }
+
+    /**
+     * Function for fetching all TCB data
+     */
+    public async get(): Promise<any> {
+        return this.contract.methods.getTcbById(this.tcbId).call();
+    }
+
+    /**
+     * Function for fetching the given marks for recruited TCBs from the Tables of Consensus
+     */
+    public async getCheckingBlocksMarks(): Promise<{ blocksIds: string[]; marks: TcbVerifiedStatus[] }> {
+        const tcb = await this.contract.methods.getTcbById(this.tcbId).call();
+
         return {
-            positive,
-            negative,
+            blocksIds: tcb.utilData.checkingBlocks,
+            marks: tcb.utilData.checkingBlockMarks,
         };
     }
 
@@ -148,31 +151,25 @@ class TCB {
         const publicDataParams = await this.contract.methods.getPublicData().call();
 
         const publicData: PublicData = tupleToObject(publicDataParams, PublicDataStructure);
-        publicData.deviceID = (Buffer.from(parseBytes32String(publicData.deviceID), 'base64')).toString('hex');
+        publicData.deviceID = Buffer.from(parseBytes32String(publicData.deviceID), "base64").toString("hex");
 
         return publicData;
     }
 
     /**
-     * Function for fetching stored TCB data
+     * Function for fetching TCB status
      */
-    public async getQuote(): Promise<string> {
-        this.quote = await this.contract.methods.getQuote().call();
-        return this.quote!;
+    public async getStatus(): Promise<TcbStatus> {
+        return this.contract.methods.getTcbStatus().call();
     }
 
     /**
-     * Append marks for selected TCBs
-     * @param lType - type of appending marks
-     * @param marks - list of marks
-     * @param transactionOptions - object what contains alternative action account or gas limit (optional)
+     * Function for fetching TCB status
      */
-    public async addMarks(lType: LType, marks: number[], transactionOptions?: TransactionOptions): Promise<void> {
-        checkIfActionAccountInitialized(transactionOptions);
+    public async getEpochInfo(): Promise<TcbEpochInfo> {
+        const epoch = await this.contract.methods.getEpochInfo().call();
 
-        if (marks.length > 0) {
-            await TxManager.execute(this.contract.methods.addMarks, [lType, marks], transactionOptions);
-        } // else nothing
+        return tupleToObject(epoch, TcbEpochInfoStructure);
     }
 }
 

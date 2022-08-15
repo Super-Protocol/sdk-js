@@ -98,6 +98,12 @@ class Consensus {
         return this.contract.methods.getInitializedTcbId(teeOfferId).call();
     }
 
+    public static async getEpochIndex(): Promise<number> {
+        this.checkInit();
+
+        return +(await this.contract.methods.getEpochIndex().call());
+    }
+
     public static async getActualTcbId(teeOfferId: string): Promise<string> {
         this.checkInit();
 

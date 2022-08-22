@@ -79,6 +79,17 @@ class BlockchainConnector {
     }
 
     /**
+     * Returns transactions receipt
+     * @param txHash - transaction hash
+     * @returns {Promise<TransactionReceipt>} - Transaction receipt
+     */
+    public static async getTransactionReceipt(txHash: string): Promise<TransactionReceipt> {
+        checkIfInitialized();
+
+        return await store.web3!.eth.getTransactionReceipt(txHash);
+    }
+
+    /**
      * Returns balance of blockchain platform tokens in wei
      */
     public static async transfer(

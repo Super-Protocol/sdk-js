@@ -76,6 +76,12 @@ class ProviderRegistry {
         return await this.contract.methods.getProviderSecurityDeposit(providerAuthority).call();
     }
 
+    public static async isProviderRegistered(providerAuthority: string): Promise<boolean> {
+        this.checkInitProviders();
+
+        return await this.contract.methods.isProviderRegistered(providerAuthority).call();
+    }
+
     /**
      * Reg new provider
      * @param providerInfo - data of new provider

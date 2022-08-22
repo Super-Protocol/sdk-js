@@ -11,12 +11,6 @@ export * from "./TIIGenerator";
 export { default as Consensus } from "./staticModels/Consensus";
 export * from "./staticModels/Consensus";
 
-export { default as LastBlocks } from "./staticModels/LastBlocks";
-export * from "./staticModels/LastBlocks";
-
-export { default as Suspicious } from "./staticModels/Suspicious";
-export * from "./staticModels/Suspicious";
-
 export { default as OrdersFactory } from "./staticModels/OrdersFactory";
 export * from "./staticModels/OrdersFactory";
 
@@ -47,9 +41,6 @@ export * from "./staticModels/SuperproToken";
 export { default as Superpro } from "./staticModels/Superpro";
 export * from "./staticModels/Superpro";
 
-export { default as Epochs } from "./staticModels/Epochs";
-export * from "./staticModels/Epochs";
-
 export { default as Marks } from "./staticModels/Marks";
 export * from "./staticModels/Marks";
 
@@ -72,7 +63,6 @@ export { default as TCB } from "./models/TCB";
 export * from "./models/TCB";
 
 export * from "./types/Offer";
-export * from "./types/Epoch";
 export * from "./types/Marks";
 export * from "./types/Order";
 export * from "./types/TeeOffer";
@@ -80,7 +70,7 @@ export * from "./types/Provider";
 export * from "./types/Staking";
 export * from "./types/Ballot";
 export * from "./types/Superpro";
-export * from "./types/TcbData";
+export * from "./types/Consensus";
 export * from "./types/Origins";
 
 export * as ChunkedStorageProvider from "./providers/storage/ChunksDownloadDecorator";

@@ -28,7 +28,7 @@ class Offer {
 
         this.id = offerId;
         if (!Offer.contract) {
-            Offer.contract = new store.web3!.eth.Contract(<AbiItem[]>OffersJSON.abi, Superpro.address);            
+            Offer.contract = new store.web3!.eth.Contract(<AbiItem[]>OffersJSON.abi, Superpro.address);
         }
         this.logger = rootLogger.child({ className: "Offer", offerId: this.id });
     }
@@ -42,6 +42,32 @@ class Offer {
 
             return new transactionOptions.web3.eth.Contract(<AbiItem[]>OffersJSON.abi, Superpro.address);
         }
+    }
+
+    /**
+     * Updates name in order info
+     * @param name - new name
+     * @param transactionOptions - object what contains alternative action account or gas limit (optional)
+     */
+    public async setName(name: string, transactionOptions?: TransactionOptions): Promise<void> {
+        transactionOptions ?? this.checkInitOffer(transactionOptions!);
+        checkIfActionAccountInitialized(transactionOptions);
+
+        await TxManager.execute(Offer.contract.methods.setOfferName, [this.id, name], transactionOptions);
+        if (this.offerInfo) this.offerInfo.name = name;
+    }
+
+    /**
+     * Updates description in order info
+     * @param description - new description
+     * @param transactionOptions - object what contains alternative action account or gas limit (optional)
+     */
+    public async setDescription(description: string, transactionOptions?: TransactionOptions): Promise<void> {
+        transactionOptions ?? this.checkInitOffer(transactionOptions!);
+        checkIfActionAccountInitialized(transactionOptions);
+
+        await TxManager.execute(Offer.contract.methods.setOfferDescription, [this.id, description], transactionOptions);
+        if (this.offerInfo) this.offerInfo.description = description;
     }
 
     /**
@@ -96,7 +122,7 @@ class Offer {
     /**
      * Function for offer closing price calculation
      */
-     public async getClosingPrice(startDate: number, orderPrice: string): Promise<string> {
+    public async getClosingPrice(startDate: number, orderPrice: string): Promise<string> {
         this.closingPrice = await Offer.contract.methods.getOfferClosingPrice(this.id, startDate, orderPrice).call();
         return this.closingPrice!;
     }

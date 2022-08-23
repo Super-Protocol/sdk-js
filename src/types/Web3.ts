@@ -5,6 +5,12 @@ export type ContractEvent = {
     returnValues: { [key: string]: unknown };
 };
 
+export type EventData = {
+    contract: string;
+    name: string;
+    data: any;
+};
+
 export type TransactionOptions = {
     from?: string;
     gas?: number;

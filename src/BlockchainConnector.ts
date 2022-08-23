@@ -2,13 +2,14 @@ import rootLogger from "./logger";
 import Web3 from "web3";
 import { HttpProviderBase, WebsocketProviderBase } from "web3-core-helpers";
 import store from "./store";
-import { BLOCK_SIZE_TO_FETCH_TRANSACTION, defaultBlockchainUrl } from "./constants";
+import { BLOCK_SIZE_TO_FETCH_TRANSACTION, POLYGON_MATIC_EVENT_PATH, defaultBlockchainUrl } from "./constants";
 import { checkIfActionAccountInitialized, checkIfInitialized } from "./utils";
-import { Transaction, TransactionOptions } from "./types/Web3";
+import { Transaction, TransactionOptions, EventData } from "./types/Web3";
 import Superpro from "./staticModels/Superpro";
 import SuperproToken from "./staticModels/SuperproToken";
 import BlockchainTransaction from "./types/blockchainConnector/StorageAccess";
 import TxManager from "./utils/TxManager";
+import appJSON from "./contracts/app.json";
 import { TransactionReceipt } from "web3-core";
 
 class BlockchainConnector {
@@ -79,14 +80,40 @@ class BlockchainConnector {
     }
 
     /**
-     * Returns transactions receipt
+     * Returns transactions events info
      * @param txHash - transaction hash
-     * @returns {Promise<TransactionReceipt>} - Transaction receipt
+     * @returns {Promise<EventData[]>} - Transaction events info
      */
-    public static async getTransactionReceipt(txHash: string): Promise<TransactionReceipt> {
+    public static async getTransactionEvents(txHash: string): Promise<EventData[]> {
         checkIfInitialized();
+        const parseReceiptEvents = require("web3-parse-receipt-events");
+        const receipt = await store.web3!.eth.getTransactionReceipt(txHash);
+        const tokenEvents = parseReceiptEvents(appJSON.abi, SuperproToken.address, receipt);
+        parseReceiptEvents(appJSON.abi, Superpro.address, receipt); // don't remove
+        const events = Object.values(tokenEvents.events || {});
 
-        return await store.web3!.eth.getTransactionReceipt(txHash);
+        const eventData: EventData[] = [];
+        for (const event of events) {
+            if ((event as any).address === POLYGON_MATIC_EVENT_PATH) {
+                continue;
+            }
+
+            const data = (event as any).returnValues;
+            const dataValues = Object.values(data);
+            if (dataValues.length !== 0) {
+                for (let i = 0; i < dataValues.length / 2; i++) {
+                    delete data[i];
+                }
+            }
+
+            eventData.push({
+                contract: (event as any).address,
+                name: (event as any).event,
+                data,
+            });
+        }
+
+        return eventData;
     }
 
     /**

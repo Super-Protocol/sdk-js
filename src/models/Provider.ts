@@ -1,8 +1,7 @@
 import { Contract } from "web3-eth-contract";
 import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
-import ProvidersJSON from "../contracts/Providers.json";
-import ProvidersOffersJSON from "../contracts/ProvidersOffers.json";
+import appJSON from "../contracts/app.json";
 import store from "../store";
 import { checkIfActionAccountInitialized, checkIfInitialized, tupleToObject, objectToTuple } from "../utils";
 import { ProviderInfo, ProviderInfoStructure } from "../types/Provider";
@@ -13,7 +12,6 @@ import TxManager from "../utils/TxManager";
 
 class Provider {
     private static contractProviders: Contract;
-    private static contractProvidersOffers: Contract;
     private logger: typeof rootLogger;
 
     public providerInfo?: ProviderInfo;
@@ -28,12 +26,8 @@ class Provider {
         checkIfInitialized();
 
         this.providerId = providerId;
-        if (!Provider.contractProviders || !Provider.contractProvidersOffers) {
-            Provider.contractProviders = new store.web3!.eth.Contract(<AbiItem[]>ProvidersJSON.abi, Superpro.address);
-            Provider.contractProvidersOffers = new store.web3!.eth.Contract(
-                <AbiItem[]>ProvidersOffersJSON.abi,
-                Superpro.address,
-            );
+        if (!Provider.contractProviders) {
+            Provider.contractProviders = new store.web3!.eth.Contract(<AbiItem[]>appJSON.abi, Superpro.address);
         }
 
         this.logger = rootLogger.child({
@@ -46,7 +40,7 @@ class Provider {
         if (transactionOptions?.web3) {
             checkIfInitialized();
 
-            return new transactionOptions.web3.eth.Contract(<AbiItem[]>ProvidersJSON.abi, Superpro.address);
+            return new transactionOptions.web3.eth.Contract(<AbiItem[]>appJSON.abi, Superpro.address);
         }
     }
 
@@ -83,9 +77,7 @@ class Provider {
      * Function for fetching all value offers for this provider
      */
     public async getValueOffers(): Promise<string[]> {
-        this.valueOffers = await Provider.contractProvidersOffers.methods
-            .getProviderValueOffers(this.providerId)
-            .call();
+        this.valueOffers = await Provider.contractProviders.methods.getProviderValueOffers(this.providerId).call();
 
         return this.valueOffers!;
     }
@@ -94,7 +86,7 @@ class Provider {
      * Function for fetching all TEE offers for this provider
      */
     public async getTeeOffers(): Promise<string[]> {
-        this.teeOffers = await Provider.contractProvidersOffers.methods.getProviderTeeOffers(this.providerId).call();
+        this.teeOffers = await Provider.contractProviders.methods.getProviderTeeOffers(this.providerId).call();
 
         return this.teeOffers!;
     }

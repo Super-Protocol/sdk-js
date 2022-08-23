@@ -1,7 +1,7 @@
 import { Contract } from "web3-eth-contract";
 import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
-import SuperproJSON from "../contracts/Superpro.json";
+import appJSON from "../contracts/app.json";
 import store from "../store";
 import { ContractName, ParamName } from "../types/Superpro";
 
@@ -20,7 +20,7 @@ class Superpro {
                 "BlockchainConnector is not initialized, needs to run 'await BlockchainConnector.init(CONFIG)' first"
             );
 
-        this.contract = new store.web3!.eth.Contract(<AbiItem[]>SuperproJSON.abi, this.address);
+        this.contract = new store.web3!.eth.Contract(<AbiItem[]>appJSON.abi, this.address);
         this.logger = rootLogger.child({ className: "Superpro", address: this.address });
     }
 

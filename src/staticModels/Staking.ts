@@ -1,6 +1,6 @@
 import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
-import StakingJSON from "../contracts/Staking.json";
+import appJSON from "../contracts/app.json";
 import store from "../store";
 import { checkIfActionAccountInitialized, checkIfInitialized, tupleToObject } from "../utils";
 import { LockInfo, LockInfoStructure, StakeInfo, StakeInfoStructure, Purpose } from "../types/Staking";
@@ -24,14 +24,14 @@ class Staking {
     private static checkInit(transactionOptions?: TransactionOptions) {
         if (transactionOptions?.web3) {
             checkIfInitialized();
-            return new transactionOptions.web3.eth.Contract(<AbiItem[]>StakingJSON.abi, Superpro.address);
+            return new transactionOptions.web3.eth.Contract(<AbiItem[]>appJSON.abi, Superpro.address);
         }
 
         if (this.contract) return this.contract;
         checkIfInitialized();
 
         this.logger = rootLogger.child({ className: "Staking" });
-        return this.contract = new store.web3!.eth.Contract(<AbiItem[]>StakingJSON.abi, Superpro.address);
+        return this.contract = new store.web3!.eth.Contract(<AbiItem[]>appJSON.abi, Superpro.address);
     }
 
     /**

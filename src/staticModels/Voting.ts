@@ -2,7 +2,7 @@ import store from "../store";
 import { Contract } from "web3-eth-contract";
 import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
-// import VotingJSON from "../contracts/Voting.json";
+// import appJSON from "../contracts/app.json";
 import { checkIfActionAccountInitialized, checkIfInitialized, createTransactionOptions } from "../utils";
 import { ContractName, ParamName } from "../types/Superpro";
 import { TransactionOptions } from "../types/Web3";
@@ -19,14 +19,14 @@ class Voting {
     private static checkInit(transactionOptions?: TransactionOptions) {
         if (transactionOptions?.web3) {
             checkIfInitialized();
-            // return new transactionOptions.web3.eth.Contract(<AbiItem[]>VotingJSON.abi, this.address);
+            // return new transactionOptions.web3.eth.Contract(<AbiItem[]>appJSON.abi, this.address);
         }
 
         if (this.contract) return this.contract;
         checkIfInitialized();
 
         this.logger = rootLogger.child({ className: "Voting" });
-        // return this.contract = new store.web3!.eth.Contract(<AbiItem[]>VotingJSON.abi, this.address);
+        // return this.contract = new store.web3!.eth.Contract(<AbiItem[]>appJSON.abi, this.address);
     }
 
     /**

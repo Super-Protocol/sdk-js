@@ -2,7 +2,7 @@ import store from "../store";
 import { Contract } from "web3-eth-contract";
 import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
-import ActiveOrdersJSON from "../contracts/ActiveOrdersList.json";
+import appJSON from "../contracts/app.json";
 import { checkIfInitialized } from "../utils";
 import { TransactionOptions } from "../types/Web3";
 import Superpro from "./Superpro";
@@ -22,7 +22,7 @@ class ActiveOrders {
         if (transactionOptions?.web3) {
             checkIfInitialized();
 
-            return new transactionOptions.web3.eth.Contract(<AbiItem[]>ActiveOrdersJSON.abi, Superpro.address);
+            return new transactionOptions.web3.eth.Contract(<AbiItem[]>appJSON.abi, Superpro.address);
         }
 
         if (this.contract) return this.contract;
@@ -33,7 +33,7 @@ class ActiveOrders {
             address: Superpro.address,
         });
 
-        return (this.contract = new store.web3!.eth.Contract(<AbiItem[]>ActiveOrdersJSON.abi, Superpro.address));
+        return (this.contract = new store.web3!.eth.Contract(<AbiItem[]>appJSON.abi, Superpro.address));
     }
 
     /**

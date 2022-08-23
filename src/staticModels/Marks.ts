@@ -5,7 +5,7 @@ import store from "../store";
 import { TransactionOptions } from "../types/Web3";
 import { checkIfInitialized } from "../utils";
 import Superpro from "./Superpro";
-import MarksJSON from "../contracts/Marks.json";
+import appJSON from "../contracts/app.json";
 import { Mark } from "../types/Marks";
 
 class Marks {
@@ -20,13 +20,13 @@ class Marks {
     private static checkInit(transactionOptions?: TransactionOptions): Contract {
         if (transactionOptions?.web3) {
             checkIfInitialized();
-            return new transactionOptions.web3.eth.Contract(<AbiItem[]>MarksJSON.abi, Superpro.address);
+            return new transactionOptions.web3.eth.Contract(<AbiItem[]>appJSON.abi, Superpro.address);
         }
 
         if (this.contract) return this.contract;
         checkIfInitialized();
 
-        return this.contract = new store.web3!.eth.Contract(<AbiItem[]>MarksJSON.abi, Superpro.address);
+        return this.contract = new store.web3!.eth.Contract(<AbiItem[]>appJSON.abi, Superpro.address);
     }
 
     static async getProviderMarks(providerAddress: string) {

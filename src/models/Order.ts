@@ -11,7 +11,7 @@ import { Contract } from "web3-eth-contract";
 import rootLogger from "../logger";
 import { ContractEvent, TransactionOptions } from "../types/Web3";
 import { AbiItem } from "web3-utils";
-import OrdersJSON from "../contracts/Orders.json";
+import appJSON from "../contracts/app.json";
 import store from "../store";
 import { checkIfActionAccountInitialized, checkIfInitialized, objectToTuple, tupleToObject } from "../utils";
 import { Origins, OriginsStructure } from "../types/Origins";
@@ -38,7 +38,7 @@ class Order {
 
         this.id = orderId;
         if (!Order.contract) {
-            Order.contract = new store.web3!.eth.Contract(<AbiItem[]>OrdersJSON.abi, Superpro.address);            
+            Order.contract = new store.web3!.eth.Contract(<AbiItem[]>appJSON.abi, Superpro.address);
         }
 
         this.logger = rootLogger.child({ className: "Order", orderId: this.id });
@@ -51,7 +51,7 @@ class Order {
         if (transactionOptions?.web3) {
             checkIfInitialized();
 
-            return new transactionOptions.web3.eth.Contract(<AbiItem[]>OrdersJSON.abi, Superpro.address);
+            return new transactionOptions.web3.eth.Contract(<AbiItem[]>appJSON.abi, Superpro.address);
         }
     }
 
@@ -84,7 +84,7 @@ class Order {
         const orderInfoParams = await Order.contract.methods.getOrder(this.id).call();
 
         // for SDK compatibility
-        const result = ['', '', orderInfoParams[2][1]];
+        const result = ["", "", orderInfoParams[2][1]];
         if (orderInfoParams[1][4] === OrderStatus.Error)
             result[1] = orderInfoParams[2][0];
         else

@@ -2,8 +2,7 @@ import store from "../store";
 import { Contract } from "web3-eth-contract";
 import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
-import ProvidersJSON from "../contracts/Providers.json";
-import ProvidersOffersJSON from "../contracts/ProvidersOffers.json";
+import appJSON from "../contracts/app.json";
 import { checkIfInitialized, checkIfActionAccountInitialized, objectToTuple } from "../utils";
 import { ProviderInfo, ProviderInfoStructure } from "../types/Provider";
 import { BigNumber } from "ethers";
@@ -24,7 +23,7 @@ class ProviderRegistry {
         if (transactionOptions?.web3) {
             checkIfInitialized();
 
-            return new transactionOptions.web3.eth.Contract(<AbiItem[]>ProvidersJSON.abi, Superpro.address);
+            return new transactionOptions.web3.eth.Contract(<AbiItem[]>appJSON.abi, Superpro.address);
         }
 
         if (this.contract) return this.contract;
@@ -32,14 +31,14 @@ class ProviderRegistry {
 
         this.logger = rootLogger.child({ className: "Providers" });
 
-        return (this.contract = new store.web3!.eth.Contract(<AbiItem[]>ProvidersJSON.abi, Superpro.address));
+        return (this.contract = new store.web3!.eth.Contract(<AbiItem[]>appJSON.abi, Superpro.address));
     }
 
     private static checkInitProvidersOffers(transactionOptions?: TransactionOptions) {
         if (transactionOptions?.web3) {
             checkIfInitialized();
 
-            return new transactionOptions.web3.eth.Contract(<AbiItem[]>ProvidersOffersJSON.abi, Superpro.address);
+            return new transactionOptions.web3.eth.Contract(<AbiItem[]>appJSON.abi, Superpro.address);
         }
 
         if (this.contract) return this.contract;
@@ -47,7 +46,7 @@ class ProviderRegistry {
 
         this.logger = rootLogger.child({ className: "ProvidersOffers" });
 
-        return (this.contract = new store.web3!.eth.Contract(<AbiItem[]>ProvidersOffersJSON.abi, Superpro.address));
+        return (this.contract = new store.web3!.eth.Contract(<AbiItem[]>appJSON.abi, Superpro.address));
     }
 
     /**

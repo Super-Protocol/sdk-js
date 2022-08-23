@@ -2,7 +2,7 @@ import store from "../store";
 import { Contract } from "web3-eth-contract";
 import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
-import OrdersJSON from "../contracts/Orders.json";
+import appJSON from "../contracts/app.json";
 import { checkIfActionAccountInitialized, checkIfInitialized, objectToTuple } from "../utils";
 import { OrderInfo, OrderInfoStructure, OrderStatus } from "../types/Order";
 import { formatBytes32String, parseBytes32String } from "ethers/lib/utils";
@@ -28,7 +28,7 @@ class OrdersFactory {
         if (transactionOptions?.web3) {
             checkIfInitialized();
 
-            return new transactionOptions.web3.eth.Contract(<AbiItem[]>OrdersJSON.abi, Superpro.address);
+            return new transactionOptions.web3.eth.Contract(<AbiItem[]>appJSON.abi, Superpro.address);
         }
 
         if (this.contract) return this.contract;
@@ -39,7 +39,7 @@ class OrdersFactory {
             address: Superpro.address,
         });
 
-        return (this.contract = new store.web3!.eth.Contract(<AbiItem[]>OrdersJSON.abi, Superpro.address));
+        return (this.contract = new store.web3!.eth.Contract(<AbiItem[]>appJSON.abi, Superpro.address));
     }
 
     /**

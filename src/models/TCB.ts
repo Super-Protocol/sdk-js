@@ -1,7 +1,7 @@
 import { Contract } from "web3-eth-contract";
 import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
-import ConsensusJSON from "../contracts/Consensus.json";
+import appJSON from "../contracts/app.json";
 import store from "../store";
 import { checkIfActionAccountInitialized, checkIfInitialized, tupleToObject } from "../utils";
 import { TransactionOptions } from "../types/Web3";
@@ -31,14 +31,14 @@ class TCB {
         });
 
         this.tcbId = tcbId;
-        this.contract = new store.web3!.eth.Contract(<AbiItem[]>ConsensusJSON.abi, Superpro.address);
+        this.contract = new store.web3!.eth.Contract(<AbiItem[]>appJSON.abi, Superpro.address);
     }
 
     private checkInitTcb(transactionOptions?: TransactionOptions) {
         if (transactionOptions?.web3) {
             checkIfInitialized();
 
-            return new transactionOptions.web3.eth.Contract(<AbiItem[]>ConsensusJSON.abi, Superpro.address);
+            return new transactionOptions.web3.eth.Contract(<AbiItem[]>appJSON.abi, Superpro.address);
         }
 
         return this.contract;

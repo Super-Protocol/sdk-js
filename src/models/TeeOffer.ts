@@ -1,7 +1,7 @@
 import { Contract } from "web3-eth-contract";
 import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
-import OffersJSON from "../contracts/Offers.json";
+import appJSON from "../contracts/app.json";
 import store from "../store";
 import { checkIfActionAccountInitialized, checkIfInitialized, tupleToObject } from "../utils";
 import { TeeOfferInfo, TeeOfferInfoStructure } from "../types/TeeOffer";
@@ -35,7 +35,7 @@ class TeeOffer {
 
         this.id = offerId;
         if (!TeeOffer.contract) {
-            TeeOffer.contract = new store.web3!.eth.Contract(<AbiItem[]>OffersJSON.abi, Superpro.address);            
+            TeeOffer.contract = new store.web3!.eth.Contract(<AbiItem[]>appJSON.abi, Superpro.address);
         }
 
         this.logger = rootLogger.child({ className: "TeeOffer" });
@@ -56,7 +56,7 @@ class TeeOffer {
         if (transactionOptions?.web3) {
             checkIfInitialized();
 
-            return new transactionOptions.web3.eth.Contract(<AbiItem[]>OffersJSON.abi, Superpro.address);
+            return new transactionOptions.web3.eth.Contract(<AbiItem[]>appJSON.abi, Superpro.address);
         }
     }
 

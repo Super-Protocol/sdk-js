@@ -2,7 +2,7 @@ import store from "../store";
 import { Contract } from "web3-eth-contract";
 import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
-import ConsensusJSON from "../contracts/Consensus.json";
+import appJSON from "../contracts/app.json";
 import TCB from "../models/TCB";
 import { checkIfActionAccountInitialized, checkIfInitialized, getTimestamp } from "../utils";
 import { ONE_DAY } from "../constants";
@@ -23,7 +23,7 @@ class Consensus {
         if (transactionOptions?.web3) {
             checkIfInitialized();
 
-            return new transactionOptions.web3.eth.Contract(<AbiItem[]>ConsensusJSON.abi, this.address);
+            return new transactionOptions.web3.eth.Contract(<AbiItem[]>appJSON.abi, this.address);
         }
 
         if (this.contract) return this.contract;
@@ -31,7 +31,7 @@ class Consensus {
 
         this.logger = rootLogger.child({ className: "Consensus" });
 
-        return (this.contract = new store.web3!.eth.Contract(<AbiItem[]>ConsensusJSON.abi, Superpro.address));
+        return (this.contract = new store.web3!.eth.Contract(<AbiItem[]>appJSON.abi, Superpro.address));
     }
 
     private static async initializeTcb(teeOfferId: string, transactionOptions?: TransactionOptions): Promise<TCB> {

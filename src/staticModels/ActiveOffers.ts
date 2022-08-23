@@ -2,7 +2,7 @@ import store from "../store";
 import { Contract } from "web3-eth-contract";
 import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
-import ActiveOffersJSON from "../contracts/ActiveOffersList.json";
+import appJSON from "../contracts/app.json";
 import { checkIfInitialized } from "../utils";
 import { BigNumber } from "ethers";
 import { TransactionOptions } from "../types/Web3";
@@ -26,7 +26,7 @@ class ActiveOffers {
         if (transactionOptions?.web3) {
             checkIfInitialized();
 
-            return new transactionOptions.web3.eth.Contract(<AbiItem[]>ActiveOffersJSON.abi, Superpro.address);
+            return new transactionOptions.web3.eth.Contract(<AbiItem[]>appJSON.abi, Superpro.address);
         }
 
         if (this.contract) return this.contract;
@@ -34,7 +34,7 @@ class ActiveOffers {
 
         this.logger = rootLogger.child({ className: "ActiveOffers" });
 
-        return (this.contract = new store.web3!.eth.Contract(<AbiItem[]>ActiveOffersJSON.abi, Superpro.address));
+        return (this.contract = new store.web3!.eth.Contract(<AbiItem[]>appJSON.abi, Superpro.address));
     }
 
     public static async getListOfActiveOffersSize(): Promise<BigNumber> {

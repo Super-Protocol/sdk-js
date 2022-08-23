@@ -94,7 +94,7 @@ class BlockchainConnector {
 
         const eventData: EventData[] = [];
         for (const event of events) {
-            if ((event as any).address === POLYGON_MATIC_EVENT_PATH) {
+            if ((event as any).address === POLYGON_MATIC_EVENT_PATH || !(event as any).event) {
                 continue;
             }
 

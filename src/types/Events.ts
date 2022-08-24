@@ -18,3 +18,10 @@ export type SubOrderCreatedEvent = {
     subOrderId: string;
     parentOrderId: string;
 };
+
+export type WorkflowCreatedEvent = {
+    consumer: string;
+    externalId: string;
+    offerId: string;
+    orderId: string;
+};

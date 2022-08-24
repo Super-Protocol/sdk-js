@@ -4,7 +4,7 @@ import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
 import appJSON from "../contracts/app.json";
 import { checkIfActionAccountInitialized, checkIfInitialized, objectToTuple } from "../utils";
-import { OrderInfo, OrderInfoStructure, OrderStatus } from "../types/Order";
+import { OrderInfo, OrderInfoStructure, OrderInfoStructureArray, OrderStatus } from "../types/Order";
 import { formatBytes32String, parseBytes32String } from "ethers/lib/utils";
 import { ContractEvent, TransactionOptions } from "../types/Web3";
 import { OrderCreatedEvent } from "../types/Events";
@@ -126,6 +126,33 @@ class OrdersFactory {
     }
 
     /**
+     * Function for create workflow
+     * @param parentOrderInfo - order info for new order
+     * @param subOrdersInfo - array of sub orders infos
+     * @param externalId - external id
+     * @param transactionOptions - object what contains alternative action account or gas limit (optional)
+     * @returns {Promise<void>} - Does not return id of created order!
+     */
+     public static async createWorkflow(
+        perentOrderInfo: OrderInfo,
+        subOrdersInfo: OrderInfo[],
+        externalId = "default",
+        transactionOptions?: TransactionOptions,
+    ): Promise<void> {
+        const contract = this.checkInit(transactionOptions);
+        checkIfActionAccountInitialized(transactionOptions);
+
+        const perentOrderInfoArgs = objectToTuple(perentOrderInfo, OrderInfoStructure);
+        const formattedExternalId = formatBytes32String(externalId);
+        const subOrdersInfoArgs = objectToTuple(subOrdersInfo, OrderInfoStructureArray);
+        await TxManager.execute(
+            contract.methods.createWorkflow,
+            [perentOrderInfoArgs, formattedExternalId, subOrdersInfoArgs],
+            transactionOptions,
+        );
+    }
+
+    /**
      * Function for refilling order deposit
      * @param orderId - order id
      * @param amount - amount of tokens to refilling
@@ -140,6 +167,34 @@ class OrdersFactory {
         checkIfActionAccountInitialized(transactionOptions);
 
         await TxManager.execute(contract.methods.refillOrder, [orderId, amount], transactionOptions);
+    }
+
+    /**
+     * Function for adding event listeners on order created event in orders factory contract
+     * @param callback - function for processing created order
+     * @returns unsubscribe - unsubscribe function from event
+     */
+     public static onWorkflowCreated(callback: onWorkflowCreatedCallback): () => void {
+        this.checkInit();
+        const logger = this.logger.child({ method: "onWorkflowCreated" });
+
+        const subscription = this.contract.events
+            .WorkflowCreated()
+            .on("data", async (event: ContractEvent) => {
+                //consumer: string, externalId: string, offerId: string, orderId: string
+                callback(
+                    <string>event.returnValues.consumer,
+                    parseBytes32String(<string>event.returnValues.externalId),
+                    <string>event.returnValues.offerId,
+                    <string>event.returnValues.orderId,
+                );
+            })
+            .on("error", (error: Error, receipt: string) => {
+                if (receipt) return; // Used to avoid logging of transaction rejected
+                logger.warn(error);
+            });
+
+        return () => subscription.unsubscribe();
     }
 
     /**
@@ -495,6 +550,7 @@ class OrdersFactory {
     }
 }
 
+
 export type onOrderCreatedCallback = (consumer: string, externalId: string, offerId: string, orderId: string) => void;
 export type onSubOrderCreatedCallback = (parentOrderId: string, subOrderId: string) => void;
 export type onOrderStartedCallback = (orderId: string, consumer: string) => void;
@@ -513,6 +569,12 @@ export type onOrderEncryptedResultUpdatedCallback = (
     orderId: string,
     consumer: string,
     encryptedResult: string,
+) => void;
+export type onWorkflowCreatedCallback = (
+    consumer: string,
+    externalId: string,
+    offerId: string,
+    orderId: string,
 ) => void;
 
 export default OrdersFactory;

@@ -45,6 +45,9 @@ export type ExtendedOrderInfo = OrderInfo & {
     holdSum: string;
 };
 
+// Array of order info structures
+export const OrderInfoStructureArray = [];
+
 // Order of keys and type conversion functions for this object in blockchain contract
 export const OrderResultStructure = {
     encryptedResult: String,

@@ -136,6 +136,7 @@ class OrdersFactory {
      public static async createWorkflow(
         perentOrderInfo: OrderInfo,
         subOrdersInfo: OrderInfo[],
+        holdDeposit: number,
         externalId = "default",
         transactionOptions?: TransactionOptions,
     ): Promise<void> {
@@ -147,7 +148,7 @@ class OrdersFactory {
         const subOrdersInfoArgs = objectToTuple(subOrdersInfo, OrderInfoStructureArray);
         await TxManager.execute(
             contract.methods.createWorkflow,
-            [perentOrderInfoArgs, formattedExternalId, subOrdersInfoArgs],
+            [perentOrderInfoArgs, holdDeposit, formattedExternalId, subOrdersInfoArgs],
             transactionOptions,
         );
     }

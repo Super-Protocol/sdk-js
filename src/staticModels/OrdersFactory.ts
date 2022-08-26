@@ -88,7 +88,7 @@ class OrdersFactory {
      */
     public static async createOrder(
         orderInfo: OrderInfo,
-        holdDeposit = '0',
+        holdDeposit = "0",
         suspended = false,
         externalId = "default",
         transactionOptions?: TransactionOptions,
@@ -115,8 +115,8 @@ class OrdersFactory {
         const notFound = {
             consumer,
             externalId,
-            offerId: '-1',
-            orderId: '-1',
+            offerId: "-1",
+            orderId: "-1",
         };
 
         const response: OrderCreatedEvent =
@@ -133,10 +133,10 @@ class OrdersFactory {
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      * @returns {Promise<void>} - Does not return id of created order!
      */
-     public static async createWorkflow(
+    public static async createWorkflow(
         perentOrderInfo: OrderInfo,
         subOrdersInfo: OrderInfo[],
-        holdDeposit: number,
+        holdDeposit = "0",
         externalId = "default",
         transactionOptions?: TransactionOptions,
     ): Promise<void> {
@@ -159,11 +159,7 @@ class OrdersFactory {
      * @param amount - amount of tokens to refilling
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
-    public static async refillOrderDeposit(
-        orderId: string,
-        amount: string,
-        transactionOptions?: TransactionOptions,
-    ) {
+    public static async refillOrderDeposit(orderId: string, amount: string, transactionOptions?: TransactionOptions) {
         const contract = this.checkInit(transactionOptions);
         checkIfActionAccountInitialized(transactionOptions);
 
@@ -175,7 +171,7 @@ class OrdersFactory {
      * @param callback - function for processing created order
      * @returns unsubscribe - unsubscribe function from event
      */
-     public static onWorkflowCreated(callback: onWorkflowCreatedCallback): () => void {
+    public static onWorkflowCreated(callback: onWorkflowCreatedCallback): () => void {
         this.checkInit();
         const logger = this.logger.child({ method: "onWorkflowCreated" });
 
@@ -550,7 +546,6 @@ class OrdersFactory {
         return () => subscription.unsubscribe();
     }
 }
-
 
 export type onOrderCreatedCallback = (consumer: string, externalId: string, offerId: string, orderId: string) => void;
 export type onSubOrderCreatedCallback = (parentOrderId: string, subOrderId: string) => void;

@@ -5714,6 +5714,11 @@
           "type": "tuple"
         },
         {
+          "internalType": "uint256",
+          "name": "holdDeposit",
+          "type": "uint256"
+        },
+        {
           "internalType": "bytes32",
           "name": "externalId",
           "type": "bytes32"

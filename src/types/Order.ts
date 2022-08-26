@@ -31,6 +31,10 @@ export const OrderInfoStructure = {
     status: OrderStatus,
     args: OrderArgsStructure,
 };
+
+// Array of order info structures
+export const OrderInfoStructureArray = [OrderInfoStructure];
+
 export type OrderInfo = {
     offer: string;
     resultPublicKey: string;
@@ -44,9 +48,6 @@ export type ExtendedOrderInfo = OrderInfo & {
     externalId: string;
     holdSum: string;
 };
-
-// Array of order info structures
-export const OrderInfoStructureArray = [];
 
 // Order of keys and type conversion functions for this object in blockchain contract
 export const OrderResultStructure = {

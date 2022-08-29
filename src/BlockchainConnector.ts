@@ -11,6 +11,7 @@ import BlockchainTransaction from "./types/blockchainConnector/StorageAccess";
 import TxManager from "./utils/TxManager";
 import appJSON from "./contracts/app.json";
 import { TransactionReceipt } from "web3-core";
+import { Wallet } from "ethers";
 
 class BlockchainConnector {
     private static logger = rootLogger.child({ className: "BlockchainConnector" });
@@ -147,6 +148,10 @@ class BlockchainConnector {
         } else {
             return store.web3!.eth.getTransactionCount(address);
         }
+    }
+
+    public static getAddressByKey(pk: string): string {
+        return new Wallet(pk).address;
     }
 
     /**

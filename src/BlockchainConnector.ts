@@ -136,6 +136,20 @@ class BlockchainConnector {
     }
 
     /**
+     * Returns transactions count
+     * @param address - wallet address
+     * @returns {Promise<number>} - Transactions count
+     */
+    public static async getTransactionCount(address: string, status?: string): Promise<number> {
+        checkIfInitialized();
+        if (status) {
+            return store.web3!.eth.getTransactionCount(address, status);
+        } else {
+            return store.web3!.eth.getTransactionCount(address);
+        }
+    }
+
+    /**
      * Fetch transactions for specific addresses starting with specific block until last block
      * @param addresses - array of addresses to fetch transactions (from these addresses and to these addresses)
      * @param startBlock - number of block to start fetching transactions (if empty fetch only for last block)

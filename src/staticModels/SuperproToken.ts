@@ -92,6 +92,71 @@ class SuperproToken {
 
         await TxManager.execute(contract.methods.approve, [address, amount], transactionOptions, SuperproToken.address);
     }
+
+    public static onTokenApprove(callback: onTokenApproveCallback, owner?: string, spender?: string): () => void {
+        const contract = this.checkInit();
+        const logger = this.logger.child({ method: "onTokenApprove" });
+
+        const subscription = contract.events
+            .Approval()
+            .on("data", async (event: ContractEvent) => {
+                if (owner && event.returnValues.owner != owner) {
+                    return;
+                }
+                if (spender && event.returnValues.spender != spender) {
+                    return;
+                }
+                callback(
+                    <string>event.returnValues.owner,
+                    <string>event.returnValues.spender,
+                    <string>event.returnValues.value,
+                    {
+                        index: <number>event.blockNumber,
+                        hash: <string>event.blockHash,
+                    },
+                );
+            })
+            .on("error", (error: Error, receipt: string) => {
+                if (receipt) return; // Used to avoid logging of transaction rejected
+                logger.warn(error);
+            });
+
+        return () => subscription.unsubscribe();
+    }
+
+    public static onTokenTransfer(callback: onTokenTransferCallback, from?: string, to?: string): () => void {
+        const contract = this.checkInit();
+        const logger = this.logger.child({ method: "onTokenTransfer" });
+
+        const subscription = contract.events
+            .Approval()
+            .on("data", async (event: ContractEvent) => {
+                if (from && event.returnValues.from != from) {
+                    return;
+                }
+                if (to && event.returnValues.to != to) {
+                    return;
+                }
+                callback(
+                    <string>event.returnValues.from,
+                    <string>event.returnValues.to,
+                    <string>event.returnValues.value,
+                    {
+                        index: <number>event.blockNumber,
+                        hash: <string>event.blockHash,
+                    },
+                );
+            })
+            .on("error", (error: Error, receipt: string) => {
+                if (receipt) return; // Used to avoid logging of transaction rejected
+                logger.warn(error);
+            });
+
+        return () => subscription.unsubscribe();
+    }
 }
+
+export type onTokenApproveCallback = (owner: string, spender: string, value: string, block?: BlockInfo) => void;
+export type onTokenTransferCallback = (from: string, to: string, value: string, block?: BlockInfo) => void;
 
 export default SuperproToken;

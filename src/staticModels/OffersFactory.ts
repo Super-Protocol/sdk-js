@@ -6,7 +6,7 @@ import appJSON from "../contracts/app.json";
 import { checkIfActionAccountInitialized, checkIfInitialized, objectToTuple } from "../utils";
 import { OfferInfo, OfferInfoV1, OfferInfoStructure, OfferType } from "../types/Offer";
 import { formatBytes32String } from "ethers/lib/utils";
-import { ContractEvent, TransactionOptions } from "../types/Web3";
+import { BlockInfo, ContractEvent, TransactionOptions } from "../types/Web3";
 import { OfferCreatedEvent } from "../types/Events";
 import Superpro from "./Superpro";
 import TxManager from "../utils/TxManager";
@@ -121,6 +121,10 @@ class OffersFactory {
                     <string>event.returnValues.offerId,
                     <string>event.returnValues.creator,
                     <string>event.returnValues.externalId,
+                    <BlockInfo>{
+                        index: <number>event.blockNumber,
+                        hash: <string>event.blockHash,
+                    },
                 );
             })
             .on("error", (error: Error, receipt: string) => {
@@ -142,6 +146,10 @@ class OffersFactory {
                     <string>event.returnValues.providerAuth,
                     <string>event.returnValues.offerId,
                     <OfferType>event.returnValues.offerType,
+                    <BlockInfo>{
+                        index: <number>event.blockNumber,
+                        hash: <string>event.blockHash,
+                    },
                 );
             })
             .on("error", (error: Error, receipt: string) => {
@@ -163,6 +171,10 @@ class OffersFactory {
                     <string>event.returnValues.providerAuth,
                     <string>event.returnValues.offerId,
                     <OfferType>event.returnValues.offerType,
+                    <BlockInfo>{
+                        index: <number>event.blockNumber,
+                        hash: <string>event.blockHash,
+                    },
                 );
             })
             .on("error", (error: Error, receipt: string) => {
@@ -175,8 +187,18 @@ class OffersFactory {
 }
 
 // address -> offerId
-export type onOfferCreatedCallback = (id: string, creator: string, externalId: string) => void;
-export type onOfferEnabledCallback = (providerAuth: string, id: string, offerType: OfferType) => void;
-export type onOfferDisbledCallback = (providerAuth: string, id: string, offerType: OfferType) => void;
+export type onOfferCreatedCallback = (id: string, creator: string, externalId: string, block?: BlockInfo) => void;
+export type onOfferEnabledCallback = (
+    providerAuth: string,
+    id: string,
+    offerType: OfferType,
+    block?: BlockInfo,
+) => void;
+export type onOfferDisbledCallback = (
+    providerAuth: string,
+    id: string,
+    offerType: OfferType,
+    block?: BlockInfo,
+) => void;
 
 export default OffersFactory;

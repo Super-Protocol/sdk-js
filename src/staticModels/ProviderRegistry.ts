@@ -6,7 +6,7 @@ import appJSON from "../contracts/app.json";
 import { checkIfInitialized, checkIfActionAccountInitialized, objectToTuple } from "../utils";
 import { ProviderInfo, ProviderInfoStructure } from "../types/Provider";
 import { BigNumber } from "ethers";
-import { ContractEvent, TransactionOptions } from "../types/Web3";
+import { BlockInfo, ContractEvent, TransactionOptions } from "../types/Web3";
 import Superpro from "./Superpro";
 import TxManager from "../utils/TxManager";
 
@@ -136,7 +136,13 @@ class ProviderRegistry {
         const subscription = this.contract.events
             .ProviderRegistred()
             .on("data", async (event: ContractEvent) => {
-                callback(<string>event.returnValues.providerInfo);
+                callback(
+                    <string>event.returnValues.providerInfo,
+                    <BlockInfo>{
+                        index: <number>event.blockNumber,
+                        hash: <string>event.blockHash,
+                    },
+                );
             })
             .on("error", (error: Error, receipt: string) => {
                 if (receipt) return; // Used to avoid logging of transaction rejected
@@ -158,7 +164,13 @@ class ProviderRegistry {
         const subscription = this.contract.events
             .ProviderModified()
             .on("data", async (event: ContractEvent) => {
-                callback(<string>event.returnValues.auth);
+                callback(
+                    <string>event.returnValues.auth,
+                    <BlockInfo>{
+                        index: <number>event.blockNumber,
+                        hash: <string>event.blockHash,
+                    },
+                );
             })
             .on("error", (error: Error, receipt: string) => {
                 if (receipt) return; // Used to avoid logging of transaction rejected
@@ -180,7 +192,14 @@ class ProviderRegistry {
         const subscription = this.contract.events
             .ProviderViolationRateIncremented()
             .on("data", async (event: ContractEvent) => {
-                callback(<string>event.returnValues.auth, <BigNumber>event.returnValues.newViolationRate);
+                callback(
+                    <string>event.returnValues.auth,
+                    <BigNumber>event.returnValues.newViolationRate,
+                    <BlockInfo>{
+                        index: <number>event.blockNumber,
+                        hash: <string>event.blockHash,
+                    },
+                );
             })
             .on("error", (error: Error, receipt: string) => {
                 if (receipt) return; // Used to avoid logging of transaction rejected
@@ -202,7 +221,14 @@ class ProviderRegistry {
         const subscription = this.contract.events
             .ProviderSecurityDepoRefilled()
             .on("data", async (event: ContractEvent) => {
-                callback(<string>event.returnValues.auth, <string>event.returnValues.amount);
+                callback(
+                    <string>event.returnValues.auth,
+                    <string>event.returnValues.amount,
+                    <BlockInfo>{
+                        index: <number>event.blockNumber,
+                        hash: <string>event.blockHash,
+                    },
+                );
             })
             .on("error", (error: Error, receipt: string) => {
                 if (receipt) return; // Used to avoid logging of transaction rejected
@@ -224,7 +250,14 @@ class ProviderRegistry {
         const subscription = this.contract.events
             .ProviderSecurityDepoUnlocked()
             .on("data", async (event: ContractEvent) => {
-                callback(<string>event.returnValues.auth, <string>event.returnValues.amount);
+                callback(
+                    <string>event.returnValues.auth,
+                    <string>event.returnValues.amount,
+                    <BlockInfo>{
+                        index: <number>event.blockNumber,
+                        hash: <string>event.blockHash,
+                    },
+                );
             })
             .on("error", (error: Error, receipt: string) => {
                 if (receipt) return; // Used to avoid logging of transaction rejected
@@ -236,10 +269,14 @@ class ProviderRegistry {
 }
 
 // address -> AuthorityAccount
-export type onProviderRegisteredCallback = (address: string) => void;
-export type onProviderModifiedCallback = (address: string) => void;
-export type onProviderViolationRateIncrementedCallback = (address: string, newViolationRate: BigNumber) => void;
-export type onProviderSecurityDepoRefilledCallback = (address: string, amount: string) => void;
-export type onProviderSecurityDepoUnlockedCallback = (address: string, amount: string) => void;
+export type onProviderRegisteredCallback = (address: string, block?: BlockInfo) => void;
+export type onProviderModifiedCallback = (address: string, block?: BlockInfo) => void;
+export type onProviderSecurityDepoRefilledCallback = (address: string, amount: string, block?: BlockInfo) => void;
+export type onProviderSecurityDepoUnlockedCallback = (address: string, amount: string, block?: BlockInfo) => void;
+export type onProviderViolationRateIncrementedCallback = (
+    address: string,
+    newViolationRate: BigNumber,
+    block?: BlockInfo,
+) => void;
 
 export default ProviderRegistry;

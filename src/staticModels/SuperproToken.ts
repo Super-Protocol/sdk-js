@@ -5,7 +5,7 @@ import { Transaction } from "web3-core";
 import appJSON from "../contracts/app.json";
 import store from "../store";
 import { checkIfActionAccountInitialized, checkIfInitialized } from "../utils";
-import { TransactionOptions } from "../types/Web3";
+import { TransactionOptions, ContractEvent, BlockInfo } from "../types/Web3";
 import TxManager from "../utils/TxManager";
 
 class SuperproToken {
@@ -85,7 +85,7 @@ class SuperproToken {
     public static async approve(
         address: string,
         amount: string,
-        transactionOptions?: TransactionOptions
+        transactionOptions?: TransactionOptions,
     ): Promise<void> {
         const contract = this.checkInit(transactionOptions);
         checkIfActionAccountInitialized(transactionOptions);

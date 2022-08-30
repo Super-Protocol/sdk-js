@@ -1,10 +1,11 @@
 import rootLogger from "./logger";
 import Web3 from "web3";
+import { BlockHeader } from "web3-eth/types";
 import { HttpProviderBase, WebsocketProviderBase } from "web3-core-helpers";
 import store from "./store";
 import { BLOCK_SIZE_TO_FETCH_TRANSACTION, POLYGON_MATIC_EVENT_PATH, defaultBlockchainUrl } from "./constants";
 import { checkIfActionAccountInitialized, checkIfInitialized } from "./utils";
-import { Transaction, TransactionOptions, EventData } from "./types/Web3";
+import { Transaction, TransactionOptions, EventData, BlockInfo } from "./types/Web3";
 import Superpro from "./staticModels/Superpro";
 import SuperproToken from "./staticModels/SuperproToken";
 import BlockchainTransaction from "./types/blockchainConnector/StorageAccess";
@@ -118,6 +119,34 @@ class BlockchainConnector {
     }
 
     /**
+     * Function for adding event listeners on TEE offer created event in TEE offers factory contract
+     * @param callback - function for processing created TEE offer
+     * @return unsubscribe - unsubscribe function from event
+     */
+    public static async getLastBlockInfo(): Promise<BlockInfo> {
+        checkIfInitialized();
+
+        const index = await store.web3!.eth.getBlockNumber();
+        const hash = (await store.web3!.eth.getBlock(index)).hash;
+
+        return {
+            index,
+            hash,
+        };
+    }
+
+    /**
+     * Returns transactions reciept
+     * @param txHash - transaction hash
+     * @returns {Promise<TransactionReceipt>} - Transaction reciept
+     */
+    public static async getTransactionReceipt(txHash: string): Promise<TransactionReceipt> {
+        checkIfInitialized();
+
+        return store.web3!.eth.getTransactionReceipt(txHash);
+    }
+
+    /**
      * Returns balance of blockchain platform tokens in wei
      */
     public static async transfer(
@@ -226,6 +255,8 @@ class BlockchainConnector {
         store.web3 = undefined;
     }
 }
+
+export type onNewBlockCallback = (blockInfo: BlockInfo) => void;
 
 export type Config = {
     contractAddress: string;

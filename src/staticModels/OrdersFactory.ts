@@ -6,7 +6,7 @@ import appJSON from "../contracts/app.json";
 import { checkIfActionAccountInitialized, checkIfInitialized, objectToTuple } from "../utils";
 import { OrderInfo, OrderInfoStructure, OrderInfoStructureArray, OrderStatus } from "../types/Order";
 import { formatBytes32String, parseBytes32String } from "ethers/lib/utils";
-import { ContractEvent, TransactionOptions } from "../types/Web3";
+import { BlockInfo, ContractEvent, TransactionOptions } from "../types/Web3";
 import { OrderCreatedEvent } from "../types/Events";
 import Superpro from "./Superpro";
 import TxManager from "../utils/TxManager";
@@ -184,6 +184,10 @@ class OrdersFactory {
                     parseBytes32String(<string>event.returnValues.externalId),
                     <string>event.returnValues.offerId,
                     <string>event.returnValues.orderId,
+                    <BlockInfo>{
+                        index: <number>event.blockNumber,
+                        hash: <string>event.blockHash,
+                    },
                 );
             })
             .on("error", (error: Error, receipt: string) => {
@@ -212,6 +216,10 @@ class OrdersFactory {
                     parseBytes32String(<string>event.returnValues.externalId),
                     <string>event.returnValues.offerId,
                     <string>event.returnValues.orderId,
+                    <BlockInfo>{
+                        index: <number>event.blockNumber,
+                        hash: <string>event.blockHash,
+                    },
                 );
             })
             .on("error", (error: Error, receipt: string) => {
@@ -238,7 +246,14 @@ class OrdersFactory {
                 if (parentOrderId && event.returnValues.parentOrderId != parentOrderId) {
                     return;
                 }
-                callback(<string>event.returnValues.parentOrderId, <string>event.returnValues.subOrderId);
+                callback(
+                    <string>event.returnValues.parentOrderId,
+                    <string>event.returnValues.subOrderId,
+                    <BlockInfo>{
+                        index: <number>event.blockNumber,
+                        hash: <string>event.blockHash,
+                    },
+                );
             })
             .on("error", (error: Error, receipt: string) => {
                 if (receipt) return; // Used to avoid logging of transaction rejected
@@ -264,7 +279,14 @@ class OrdersFactory {
                 if (orderId && event.returnValues.orderId != orderId) {
                     return;
                 }
-                callback(<string>event.returnValues.orderId, <string>event.returnValues.consumer);
+                callback(
+                    <string>event.returnValues.orderId,
+                    <string>event.returnValues.consumer,
+                    <BlockInfo>{
+                        index: <number>event.blockNumber,
+                        hash: <string>event.blockHash,
+                    },
+                );
             })
             .on("error", (error: Error, receipt: string) => {
                 if (receipt) return; // Used to avoid logging of transaction rejected
@@ -290,7 +312,14 @@ class OrdersFactory {
                 if (orderId && event.returnValues.orderId != orderId) {
                     return;
                 }
-                callback(<string>event.returnValues.orderId, <OrderStatus>event.returnValues.status);
+                callback(
+                    <string>event.returnValues.orderId,
+                    <OrderStatus>event.returnValues.status,
+                    <BlockInfo>{
+                        index: <number>event.blockNumber,
+                        hash: <string>event.blockHash,
+                    },
+                );
             })
             .on("error", (error: Error, receipt: string) => {
                 if (receipt) return; // Used to avoid logging of transaction rejected
@@ -328,6 +357,10 @@ class OrdersFactory {
                     <string>event.returnValues.orderId,
                     <string>event.returnValues.consumer,
                     <string>event.returnValues.amount,
+                    <BlockInfo>{
+                        index: <number>event.blockNumber,
+                        hash: <string>event.blockHash,
+                    },
                 );
             })
             .on("error", (error: Error, receipt: string) => {
@@ -354,7 +387,14 @@ class OrdersFactory {
                 if (orderId && event.returnValues.orderId != orderId) {
                     return;
                 }
-                callback(<string>event.returnValues.orderId, <string>event.returnValues.price);
+                callback(
+                    <string>event.returnValues.orderId,
+                    <string>event.returnValues.price,
+                    <BlockInfo>{
+                        index: <number>event.blockNumber,
+                        hash: <string>event.blockHash,
+                    },
+                );
             })
             .on("error", (error: Error, receipt: string) => {
                 if (receipt) return; // Used to avoid logging of transaction rejected
@@ -384,6 +424,10 @@ class OrdersFactory {
                     <string>event.returnValues.orderId,
                     <string>event.returnValues.consumer,
                     <string>event.returnValues.change,
+                    <BlockInfo>{
+                        index: <number>event.blockNumber,
+                        hash: <string>event.blockHash,
+                    },
                 );
             })
             .on("error", (error: Error, receipt: string) => {
@@ -422,6 +466,10 @@ class OrdersFactory {
                     <string>event.returnValues.orderId,
                     <string>event.returnValues.tokenReceiver,
                     <string>event.returnValues.profit,
+                    <BlockInfo>{
+                        index: <number>event.blockNumber,
+                        hash: <string>event.blockHash,
+                    },
                 );
             })
             .on("error", (error: Error, receipt: string) => {
@@ -460,6 +508,10 @@ class OrdersFactory {
                     <string>event.returnValues.orderId,
                     <string>event.returnValues.consumer,
                     <boolean>event.returnValues.awaitingPayment,
+                    <BlockInfo>{
+                        index: <number>event.blockNumber,
+                        hash: <string>event.blockHash,
+                    },
                 );
             })
             .on("error", (error: Error, receipt: string) => {
@@ -498,6 +550,10 @@ class OrdersFactory {
                     <string>event.returnValues.orderId,
                     <string>event.returnValues.consumer,
                     <string>event.returnValues.value,
+                    <BlockInfo>{
+                        index: <number>event.blockNumber,
+                        hash: <string>event.blockHash,
+                    },
                 );
             })
             .on("error", (error: Error, receipt: string) => {
@@ -536,6 +592,10 @@ class OrdersFactory {
                     <string>event.returnValues.orderId,
                     <string>event.returnValues.consumer,
                     <string>event.returnValues.encryptedResult,
+                    <BlockInfo>{
+                        index: <number>event.blockNumber,
+                        hash: <string>event.blockHash,
+                    },
                 );
             })
             .on("error", (error: Error, receipt: string) => {
@@ -547,30 +607,59 @@ class OrdersFactory {
     }
 }
 
-export type onOrderCreatedCallback = (consumer: string, externalId: string, offerId: string, orderId: string) => void;
-export type onSubOrderCreatedCallback = (parentOrderId: string, subOrderId: string) => void;
-export type onOrderStartedCallback = (orderId: string, consumer: string) => void;
-export type onOrdersStatusUpdatedCallback = (orderId: string, status: OrderStatus) => void;
-export type onOrderDepositRefilledCallback = (orderId: string, consumer: string, amount: string) => void;
-export type onOrderPriceUpdatedCallback = (orderId: string, price: string) => void;
-export type onOrderChangedWithdrawnCallback = (orderId: string, consumer: string, change: string) => void;
-export type onOrderProfitWithdrawnCallback = (orderId: string, tokenReceiver: string, profit: string) => void;
-export type onOrderDepositSpentChangedCallback = (orderId: string, consumer: string, spent: string) => void;
+export type onSubOrderCreatedCallback = (parentOrderId: string, subOrderId: string, block?: BlockInfo) => void;
+export type onOrderStartedCallback = (orderId: string, consumer: string, block?: BlockInfo) => void;
+export type onOrdersStatusUpdatedCallback = (orderId: string, status: OrderStatus, block?: BlockInfo) => void;
+export type onOrderPriceUpdatedCallback = (orderId: string, price: string, block?: BlockInfo) => void;
+export type onOrderCreatedCallback = (
+    consumer: string,
+    externalId: string,
+    offerId: string,
+    orderId: string,
+    block?: BlockInfo,
+) => void;
+export type onOrderDepositRefilledCallback = (
+    orderId: string,
+    consumer: string,
+    amount: string,
+    block?: BlockInfo,
+) => void;
+export type onOrderChangedWithdrawnCallback = (
+    orderId: string,
+    consumer: string,
+    change: string,
+    block?: BlockInfo,
+) => void;
+export type onOrderProfitWithdrawnCallback = (
+    orderId: string,
+    tokenReceiver: string,
+    profit: string,
+    block?: BlockInfo,
+) => void;
+export type onOrderDepositSpentChangedCallback = (
+    orderId: string,
+    consumer: string,
+    spent: string,
+    block?: BlockInfo,
+) => void;
 export type onOrderAwaitingPaymentChangedCallback = (
     orderId: string,
     consumer: string,
     awaitingPaymentFlag: boolean,
+    block?: BlockInfo,
 ) => void;
 export type onOrderEncryptedResultUpdatedCallback = (
     orderId: string,
     consumer: string,
     encryptedResult: string,
+    block?: BlockInfo,
 ) => void;
 export type onWorkflowCreatedCallback = (
     consumer: string,
     externalId: string,
     offerId: string,
     orderId: string,
+    block?: BlockInfo,
 ) => void;
 
 export default OrdersFactory;

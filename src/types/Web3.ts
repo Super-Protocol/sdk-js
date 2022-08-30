@@ -2,7 +2,14 @@ import Web3 from "web3";
 
 // Event what used as payload for Web3 events
 export type ContractEvent = {
+    blockHash: string;
+    blockNumber: number;
     returnValues: { [key: string]: unknown };
+};
+
+export type BlockInfo = {
+    index: number;
+    hash: string;
 };
 
 export type EventData = {

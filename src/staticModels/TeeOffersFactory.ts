@@ -5,7 +5,7 @@ import { AbiItem } from "web3-utils";
 import appJSON from "../contracts/app.json";
 import { checkIfActionAccountInitialized, checkIfInitialized, objectToTuple } from "../utils";
 import { formatBytes32String } from "ethers/lib/utils";
-import { ContractEvent, TransactionOptions } from "../types/Web3";
+import { BlockInfo, ContractEvent, TransactionOptions } from "../types/Web3";
 import { TeeOfferInfo, TeeOfferInfoStructure } from "../types/TeeOffer";
 import { OfferType } from "../types/Offer";
 import { OfferCreatedEvent } from "../types/Events";
@@ -120,6 +120,10 @@ class TeeOffersFactory {
                     <string>event.returnValues.offerId,
                     <string>event.returnValues.providerAuth,
                     <OfferType>event.returnValues.offerType,
+                    <BlockInfo>{
+                        index: <number>event.blockNumber,
+                        hash: <string>event.blockHash,
+                    },
                 );
             })
             .on("error", (error: Error, receipt: string) => {
@@ -135,12 +139,16 @@ class TeeOffersFactory {
         const logger = this.logger.child({ method: "onTeeOfferViolationRateChanged" });
 
         const subscription = this.contract.events
-            .OfferCreated()
+            .TeeOfferViolationRateChanged()
             .on("data", async (event: ContractEvent) => {
                 callback(
                     <string>event.returnValues.offerId,
                     <string>event.returnValues.providerAuth,
                     <number>event.returnValues.violationRate,
+                    <BlockInfo>{
+                        index: <number>event.blockNumber,
+                        hash: <string>event.blockHash,
+                    },
                 );
             })
             .on("error", (error: Error, receipt: string) => {
@@ -152,11 +160,17 @@ class TeeOffersFactory {
     }
 }
 
-export type onTeeOfferCreatedCallback = (offerId: string, providerAuth: string, offerType: OfferType) => void;
+export type onTeeOfferCreatedCallback = (
+    offerId: string,
+    providerAuth: string,
+    offerType: OfferType,
+    block?: BlockInfo,
+) => void;
 export type onTeeOfferViolationRateChangedCallback = (
     offerId: string,
     providerAuth: string,
     violationRate: number,
+    block?: BlockInfo,
 ) => void;
 
 export default TeeOffersFactory;

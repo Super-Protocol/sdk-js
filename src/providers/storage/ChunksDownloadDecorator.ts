@@ -117,20 +117,20 @@ export const createDownloadChunkMethodWithRetry = (
 ): DownloadChunkMethodType => {
     return async (provider: IStorageProvider, objectPath: string, chunk: ChunkType): Promise<Buffer> => {
         const retryWaitTime = retryWaitTimeFactory();
-        let lastError: unknown = null;
+        //let lastError: unknown = null;
         let retryCount = retryMaxCount;
 
         while (retryCount > 0) {
             try {
                 return await downloadChunkMethod(provider, objectPath, chunk);
             } catch (error) {
-                lastError = error;
+                //lastError = error;
             }
 
             retryCount--;
 
             if (onRetry) {
-                onRetry(lastError, chunk, retryCount);
+                onRetry(null, chunk, retryCount);
             }
 
             if (retryCount !== 0) {
@@ -142,7 +142,7 @@ export const createDownloadChunkMethodWithRetry = (
             `Max retry attempts was reached for object path ${objectPath}, offset ${chunk.offset}, length ${
                 chunk.length
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            }: ${lastError} ${(<any>lastError)?.details}`,
+            }`,
         );
     };
 };

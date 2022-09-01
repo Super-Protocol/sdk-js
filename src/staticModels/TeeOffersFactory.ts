@@ -105,6 +105,17 @@ class TeeOffersFactory {
     }
 
     /**
+     * Function for fetching TEE offer id by TEE deviceId
+     * @param deviceId - unque TEE device id (unparsed, from blockchain)
+     * @return TEE offer id
+     */
+    public static getByDeviceId(deviceId: string): Promise<string> {
+        const contract = this.checkInit();
+
+        return contract.methods.getTeeOfferByDeviceId(deviceId);
+    }
+
+    /**
      * Function for adding event listeners on TEE offer created event in TEE offers factory contract
      * @param callback - function for processing created TEE offer
      * @return unsubscribe - unsubscribe function from event

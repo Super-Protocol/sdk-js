@@ -51,7 +51,7 @@ class TCB {
     private async setTcbData(pb: PublicData, quote: string, transactionOptions?: TransactionOptions) {
         checkIfActionAccountInitialized(transactionOptions);
 
-        const fromattedDeviceId = formatBytes32String(Buffer.from(pb.deviceID, "hex").toString("base64"));
+        const fromattedDeviceId = formatBytes32String(Buffer.from(pb.deviceID).toString("base64"));
 
         await TxManager.execute(
             this.contract.methods.setTcbData,

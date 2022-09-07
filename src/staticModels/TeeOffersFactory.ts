@@ -112,7 +112,7 @@ class TeeOffersFactory {
     public static getByDeviceId(deviceId: string): Promise<string> {
         const contract = this.checkInit();
 
-        return contract.methods.getTeeOfferByDeviceId(deviceId);
+        return contract.methods.getTeeOfferByDeviceId(deviceId).call();
     }
 
     /**

@@ -53,6 +53,14 @@ export type TcbEpochInfo = {
     valid: boolean;
 };
 
+export type EpochInfo = {
+    startDate: number;
+    endDate: number;
+    reward: number;
+    benchmark: number;
+    penaltyBenchmark: number;
+};
+
 export type CheckingTcbData = {
     deviceID: string;
     properties: string;

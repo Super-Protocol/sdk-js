@@ -81,6 +81,13 @@ class BlockchainConnector {
         return store.web3!.eth.getBalance(address);
     }
 
+    public static async getTimestamp(): Promise<number | string> {
+        checkIfInitialized();
+        const block = await store.web3?.eth.getBlock("latest");
+
+        return block!.timestamp;
+    }
+
     /**
      * Returns transactions events info
      * @param txHash - transaction hash

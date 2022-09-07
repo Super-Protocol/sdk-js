@@ -6,7 +6,7 @@ import appJSON from "../contracts/app.json";
 import TCB from "../models/TCB";
 import { checkIfActionAccountInitialized, checkIfInitialized, getTimestamp } from "../utils";
 import { ONE_DAY } from "../constants";
-import { CheckingTcbData } from "../types/Consensus";
+import { CheckingTcbData, TcbEpochInfo, EpochInfo } from "../types/Consensus";
 import { TransactionOptions } from "../types/Web3";
 import Superpro from "./Superpro";
 import TxManager from "../utils/TxManager";
@@ -34,13 +34,19 @@ class Consensus {
         return (this.contract = new store.web3!.eth.Contract(<AbiItem[]>appJSON.abi, Superpro.address));
     }
 
-    private static async initializeTcb(teeOfferId: string, transactionOptions?: TransactionOptions): Promise<TCB> {
+    private static async initializeTcbAndAssignBlocks(
+        teeOfferId: string,
+        transactionOptions?: TransactionOptions,
+    ): Promise<TCB> {
         let tcbId = await this.getInitializedTcbId(teeOfferId);
         let tcb = new TCB(tcbId);
 
-        const timeInitialized: number = (await tcb.get()).timeInitialized;
-        if (timeInitialized == 0 || timeInitialized > +(await getTimestamp()) + ONE_DAY) {
-            await TxManager.execute(this.contract.methods.initializeTcb, [teeOfferId], transactionOptions);
+        const timeInitialized: number = +(await tcb.get()).timeInitialized;
+        const isFirstOffersTcb = timeInitialized == 0;
+        const isCreatedMoreThenOneDayAgo = timeInitialized + ONE_DAY < +(await getTimestamp());
+
+        if (isFirstOffersTcb || isCreatedMoreThenOneDayAgo) {
+            await this.initializeTcb(teeOfferId, transactionOptions);
             tcbId = await this.getInitializedTcbId(teeOfferId);
             tcb = new TCB(tcbId);
             await tcb.assignLastBlocksToCheck(transactionOptions);
@@ -48,6 +54,13 @@ class Consensus {
         }
 
         return tcb;
+    }
+
+    public static async initializeTcb(teeOfferId: string, transactionOptions?: TransactionOptions): Promise<void> {
+        this.checkInit();
+        checkIfActionAccountInitialized();
+
+        await TxManager.execute(this.contract.methods.initializeTcb, [teeOfferId], transactionOptions);
     }
 
     /**
@@ -66,7 +79,7 @@ class Consensus {
         this.checkInit();
         checkIfActionAccountInitialized();
 
-        const tcb = await this.initializeTcb(teeOfferId, transactionOptions);
+        const tcb = await this.initializeTcbAndAssignBlocks(teeOfferId, transactionOptions);
         const { blocksIds } = await tcb.getCheckingBlocksMarks();
         const checkingTcbData = [];
 
@@ -74,7 +87,7 @@ class Consensus {
             const tcb = new TCB(blocksIds[blockIndex]);
             const tcbInfo = await tcb.get();
             checkingTcbData.push({
-                deviceID: tcbInfo.publicData.deviceId,
+                deviceID: tcbInfo.publicData.deviceID,
                 properties: tcbInfo.publicData.properties,
                 benchmark: tcbInfo.publicData.benchmark,
                 tcbQuote: tcbInfo.quote,
@@ -104,6 +117,12 @@ class Consensus {
         return +(await this.contract.methods.getEpochIndex().call());
     }
 
+    public static async getEpoch(epochIndex: number): Promise<EpochInfo> {
+        this.checkInit();
+
+        return await this.contract.methods.getEpoch(epochIndex).call();
+    }
+
     public static async getActualTcbId(teeOfferId: string): Promise<string> {
         this.checkInit();
 
@@ -116,10 +135,22 @@ class Consensus {
         return this.contract.methods.getSuspiciousBlockTable().call();
     }
 
+    public static async getSuspiciousBlockTableSize(): Promise<string[]> {
+        this.checkInit();
+
+        return this.contract.methods.getSuspiciousBlockTableSize().call();
+    }
+
     public static async getLastBlockTable(): Promise<string[]> {
         this.checkInit();
 
         return this.contract.methods.getLastBlockTable().call();
+    }
+
+    public static async getLastBlockTableSize(): Promise<string[]> {
+        this.checkInit();
+
+        return this.contract.methods.getLastBlockTableSize().call();
     }
 
     // TODO: get locked rewards info

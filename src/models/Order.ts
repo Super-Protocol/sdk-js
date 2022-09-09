@@ -117,6 +117,27 @@ class Order {
     }
 
     /**
+     * Function for fetching hold deposits sum of the order and its suborders
+     */
+    public async calculateTotalHoldDeposit(): Promise<string> {
+        return Order.contract.methods.calculateTotalHoldDeposit(this.id).call();
+    }
+
+    /**
+     * Function for fetching spent deposits sum of the order and its suborders
+     */
+    public async calculateTotalDepositSpent(): Promise<string> {
+        return Order.contract.methods.calculateTotalDepositSpent(this.id).call();
+    }
+
+    /**
+     * Function for fetching unspent deposits sum of the order and its suborders
+     */
+    public async calculateTotalDepositUnspent(): Promise<string> {
+        return Order.contract.methods.calculateTotalDepositUnspent(this.id).call();
+    }
+
+    /**
      * Fetch new Origins (createdDate, createdBy, modifiedDate and modifiedBy)
      */
     public async getOrigins(): Promise<Origins> {

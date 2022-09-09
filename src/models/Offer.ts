@@ -22,6 +22,7 @@ class Offer {
     public id: string;
     public disabledAfter?: number;
     public closingPrice?: string;
+    public holdDeposit?: string;
 
     constructor(offerId: string) {
         checkIfInitialized();
@@ -117,6 +118,14 @@ class Offer {
         origins.modifiedDate = +origins.modifiedDate * 1000;
 
         return (this.origins = origins);
+    }
+
+    /**
+     * Function for fetching offer hold deposit 
+     */
+    public async getHoldDeposit(): Promise<string> {
+        this.holdDeposit = await Offer.contract.methods.getOfferHoldDeposit(this.id).call();
+        return this.holdDeposit!;
     }
 
     /**

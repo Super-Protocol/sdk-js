@@ -1,37 +1,17 @@
 import store from "../store";
 import { Contract } from "web3-eth-contract";
-import rootLogger from "../logger";
-import { AbiItem } from "web3-utils";
-import appJSON from "../contracts/app.json";
 import TCB from "../models/TCB";
-import { checkIfActionAccountInitialized, checkIfInitialized, getTimestamp } from "../utils";
+import { checkIfActionAccountInitialized, getTimestamp } from "../utils";
 import { ONE_DAY } from "../constants";
 import { CheckingTcbData, TcbEpochInfo, EpochInfo } from "../types/Consensus";
 import { TransactionOptions } from "../types/Web3";
 import Superpro from "./Superpro";
+import BlockchainConnector from "../BlockchainConnector";
 import TxManager from "../utils/TxManager";
 
 class Consensus {
-    public static address: string;
-    private static contract: Contract;
-    private static logger: typeof rootLogger;
-
-    /**
-     * Checks if contract has been initialized, if not - initialize contract
-     */
-    private static checkInit(transactionOptions?: TransactionOptions) {
-        if (transactionOptions?.web3) {
-            checkIfInitialized();
-
-            return new transactionOptions.web3.eth.Contract(<AbiItem[]>appJSON.abi, this.address);
-        }
-
-        if (this.contract) return this.contract;
-        checkIfInitialized();
-
-        this.logger = rootLogger.child({ className: "Consensus" });
-
-        return (this.contract = new store.web3!.eth.Contract(<AbiItem[]>appJSON.abi, Superpro.address));
+    public static get address(): string {
+        return Superpro.address;
     }
 
     private static async initializeTcbAndAssignBlocks(
@@ -57,10 +37,10 @@ class Consensus {
     }
 
     public static async initializeTcb(teeOfferId: string, transactionOptions?: TransactionOptions): Promise<void> {
-        this.checkInit();
+        const contract = BlockchainConnector.getContractInstance();
         checkIfActionAccountInitialized();
 
-        await TxManager.execute(this.contract.methods.initializeTcb, [teeOfferId], transactionOptions);
+        await TxManager.execute(contract.methods.initializeTcb, [teeOfferId], transactionOptions);
     }
 
     /**
@@ -76,7 +56,6 @@ class Consensus {
         tcbId: string;
         checkingTcbData: CheckingTcbData[];
     }> {
-        this.checkInit();
         checkIfActionAccountInitialized();
 
         const tcb = await this.initializeTcbAndAssignBlocks(teeOfferId, transactionOptions);
@@ -106,15 +85,21 @@ class Consensus {
      * @param teeOfferId - id of TEE offer
      * */
     public static async getInitializedTcbId(teeOfferId: string): Promise<string> {
-        this.checkInit();
+        const contract = BlockchainConnector.getContractInstance();
 
-        return this.contract.methods.getInitializedTcbId(teeOfferId).call();
+        return contract.methods.getInitializedTcbId(teeOfferId).call();
     }
 
     public static async getEpochIndex(): Promise<number> {
-        this.checkInit();
+        const contract = BlockchainConnector.getContractInstance();
 
-        return +(await this.contract.methods.getEpochIndex().call());
+        return +(await contract.methods.getEpochIndex().call());
+    }
+
+    public static async getEpoch(epochIndex: number): Promise<EpochInfo> {
+        const contract = BlockchainConnector.getContractInstance();
+
+        return await contract.methods.getEpoch(epochIndex).call();
     }
 
     public static async getEpoch(epochIndex: number): Promise<EpochInfo> {
@@ -124,15 +109,21 @@ class Consensus {
     }
 
     public static async getActualTcbId(teeOfferId: string): Promise<string> {
-        this.checkInit();
+        const contract = BlockchainConnector.getContractInstance();
 
-        return this.contract.methods.getActualTcbId(teeOfferId).call();
+        return contract.methods.getActualTcbId(teeOfferId).call();
     }
 
     public static async getSuspiciousBlockTable(): Promise<string[]> {
-        this.checkInit();
+        const contract = BlockchainConnector.getContractInstance();
 
-        return this.contract.methods.getSuspiciousBlockTable().call();
+        return contract.methods.getSuspiciousBlockTable().call();
+    }
+
+    public static async getSuspiciousBlockTableSize(): Promise<string[]> {
+        const contract = BlockchainConnector.getContractInstance();
+
+        return contract.methods.getSuspiciousBlockTableSize().call();
     }
 
     public static async getSuspiciousBlockTableSize(): Promise<string[]> {
@@ -142,9 +133,15 @@ class Consensus {
     }
 
     public static async getLastBlockTable(): Promise<string[]> {
-        this.checkInit();
+        const contract = BlockchainConnector.getContractInstance();
 
-        return this.contract.methods.getLastBlockTable().call();
+        return contract.methods.getLastBlockTable().call();
+    }
+
+    public static async getLastBlockTableSize(): Promise<string[]> {
+        const contract = BlockchainConnector.getContractInstance();
+
+        return contract.methods.getLastBlockTableSize().call();
     }
 
     public static async getLastBlockTableSize(): Promise<string[]> {

@@ -7,33 +7,13 @@ import { checkIfInitialized } from "../utils";
 import { TransactionOptions } from "../types/Web3";
 import Superpro from "./Superpro";
 import { BigNumber } from "ethers";
+import BlockchainConnector from "../BlockchainConnector";
 
 class ActiveOrders {
-    private static contract: Contract;
     private static logger: typeof rootLogger;
 
     public static get address(): string {
         return Superpro.address;
-    }
-    /**
-     * Checks if contract has been initialized, if not - initialize contract
-     */
-    private static checkInit(transactionOptions?: TransactionOptions) {
-        if (transactionOptions?.web3) {
-            checkIfInitialized();
-
-            return new transactionOptions.web3.eth.Contract(<AbiItem[]>appJSON.abi, Superpro.address);
-        }
-
-        if (this.contract) return this.contract;
-        checkIfInitialized();
-
-        this.logger = rootLogger.child({
-            className: "ActiveOrder",
-            address: Superpro.address,
-        });
-
-        return (this.contract = new store.web3!.eth.Contract(<AbiItem[]>appJSON.abi, Superpro.address));
     }
 
     /**
@@ -41,9 +21,9 @@ class ActiveOrders {
      * @returns {Promise<BigNumber>}
      */
     public static async getListOfActiveOrdersSize(): Promise<BigNumber> {
-        this.checkInit();
+        const contract = BlockchainConnector.getContractInstance();
 
-        return await this.contract.methods.getListOfActiveOrdersSize().call();
+        return await contract.methods.getListOfActiveOrdersSize().call();
     }
 
     /**
@@ -54,13 +34,13 @@ class ActiveOrders {
         begin?: BigNumber | number,
         end?: BigNumber | number,
     ): Promise<string[]> {
-        this.checkInit();
+        const contract = BlockchainConnector.getContractInstance();
         const logger = this.logger.child({ method: "getListOfActiveOrdersRange" });
 
         begin = begin ?? 0;
-        end = end ?? (await this.contract.methods.getListOfActiveOrdersSize().call());
+        end = end ?? (await contract.methods.getListOfActiveOrdersSize().call());
 
-        return await this.contract.methods.getListOfActiveOrdersRange(begin, end).call();
+        return await contract.methods.getListOfActiveOrdersRange(begin, end).call();
     }
 }
 

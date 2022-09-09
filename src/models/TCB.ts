@@ -2,12 +2,12 @@ import { Contract } from "web3-eth-contract";
 import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
 import appJSON from "../contracts/app.json";
-import store from "../store";
 import { checkIfActionAccountInitialized, checkIfInitialized, tupleToObject } from "../utils";
 import { TransactionOptions } from "../types/Web3";
 import { formatBytes32String, parseBytes32String } from "ethers/lib/utils";
 import Superpro from "../staticModels/Superpro";
 import TxManager from "../utils/TxManager";
+import BlockchainConnector from "../BlockchainConnector";
 import {
     TcbStatus,
     PublicData,
@@ -31,7 +31,7 @@ class TCB {
         });
 
         this.tcbId = tcbId;
-        this.contract = new store.web3!.eth.Contract(<AbiItem[]>appJSON.abi, Superpro.address);
+        this.contract = BlockchainConnector.getContractInstance();
     }
 
     private checkInitTcb(transactionOptions?: TransactionOptions) {

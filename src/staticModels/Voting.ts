@@ -8,26 +8,9 @@ import { ContractName, ParamName } from "../types/Superpro";
 import { TransactionOptions } from "../types/Web3";
 
 class Voting {
-    private static contract: Contract;
     private static logger: typeof rootLogger;
 
     public static ballots?: string[];
-
-    /**
-     * Checks if contract has been initialized, if not - initialize contract
-     */
-    private static checkInit(transactionOptions?: TransactionOptions) {
-        if (transactionOptions?.web3) {
-            checkIfInitialized();
-            // return new transactionOptions.web3.eth.Contract(<AbiItem[]>appJSON.abi, this.address);
-        }
-
-        if (this.contract) return this.contract;
-        checkIfInitialized();
-
-        this.logger = rootLogger.child({ className: "Voting" });
-        // return this.contract = new store.web3!.eth.Contract(<AbiItem[]>appJSON.abi, this.address);
-    }
 
     /**
      * Creates ballot for replacing contract (updating address of contract in main config contract)

@@ -13,12 +13,28 @@ import TxManager from "./utils/TxManager";
 import appJSON from "./contracts/app.json";
 import { TransactionReceipt } from "web3-core";
 import { Wallet } from "ethers";
+import { Contract } from "web3-eth-contract";
+import { AbiItem } from "web3-utils";
 
 class BlockchainConnector {
     private static logger = rootLogger.child({ className: "BlockchainConnector" });
+    private static contract: Contract;
     private static provider?: HttpProviderBase | WebsocketProviderBase;
-
     public static defaultActionAccount?: string;
+
+    private static async initContracts() {
+        BlockchainConnector.contract = new store.web3!.eth.Contract(<AbiItem[]>appJSON.abi, Superpro.address);
+    }
+
+    public static getContractInstance(transactionOptions?: TransactionOptions) {
+        checkIfInitialized();
+
+        if (transactionOptions?.web3) {
+            return new transactionOptions.web3.eth.Contract(<AbiItem[]>appJSON.abi, Superpro.address);
+        }
+
+        return BlockchainConnector.contract;
+    }
 
     /**
      * Function for connecting to blockchain
@@ -26,9 +42,13 @@ class BlockchainConnector {
      * Needs to run this function before using blockchain connector
      */
     public static async init(config: Config): Promise<void> {
-        if (store.isInitialized) return;
-
         const url = config?.blockchainUrl || defaultBlockchainUrl;
+
+        if (this.provider) {
+            if (this.provider instanceof Web3.providers.WebsocketProvider) {
+                this.provider.reset();
+            }
+        }
 
         if (/^(ws)|(wss)/.test(url)) {
             this.provider = new Web3.providers.WebsocketProvider(url, {
@@ -50,10 +70,12 @@ class BlockchainConnector {
         if (config?.gasLimitMultiplier) store.gasLimitMultiplier = config.gasLimitMultiplier;
 
         Superpro.address = config.contractAddress;
-        SuperproToken.address = await Superpro.getTokenAddress();
-        TxManager.init(store.web3);
+        await this.initContracts();
 
+        TxManager.init(store.web3);
         store.isInitialized = true;
+
+        SuperproToken.address = await Superpro.getTokenAddress();
     }
 
     /**

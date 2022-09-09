@@ -8,9 +8,9 @@ import { BigNumber } from "ethers";
 import { TransactionOptions } from "../types/Web3";
 import Superpro from "./Superpro";
 import TxManager from "../utils/TxManager";
+import BlockchainConnector from "../BlockchainConnector";
 
 class ActiveOffers {
-    private static contract: Contract;
     private static logger: typeof rootLogger;
 
     public static offers?: string[];
@@ -19,34 +19,16 @@ class ActiveOffers {
         return Superpro.address;
     }
 
-    /**
-     * Checks if contract has been initialized, if not - initialize contract
-     */
-    private static checkInit(transactionOptions?: TransactionOptions) {
-        if (transactionOptions?.web3) {
-            checkIfInitialized();
-
-            return new transactionOptions.web3.eth.Contract(<AbiItem[]>appJSON.abi, Superpro.address);
-        }
-
-        if (this.contract) return this.contract;
-        checkIfInitialized();
-
-        this.logger = rootLogger.child({ className: "ActiveOffers" });
-
-        return (this.contract = new store.web3!.eth.Contract(<AbiItem[]>appJSON.abi, Superpro.address));
-    }
-
     public static async getListOfActiveOffersSize(): Promise<BigNumber> {
-        this.checkInit();
+        const contract = BlockchainConnector.getContractInstance();
 
-        return await this.contract.methods.getListOfActiveOffersSize().call();
+        return await contract.methods.getListOfActiveOffersSize().call();
     }
 
     public static async getActiveOffersEventsQueueLength(): Promise<BigNumber> {
-        this.checkInit();
+        const contract = BlockchainConnector.getContractInstance();
 
-        return this.contract.methods.getActiveOffersEventsQueueLength().call();
+        return contract.methods.getActiveOffersEventsQueueLength().call();
     }
 
     /**
@@ -60,13 +42,13 @@ class ActiveOffers {
         begin?: BigNumber | number,
         end?: BigNumber | number,
     ): Promise<string[]> {
-        this.checkInit();
+        const contract = BlockchainConnector.getContractInstance();
         const logger = this.logger.child({ method: "getListOfActiveOffersRange" });
 
         begin = begin ?? 0;
-        end = end ?? (await this.contract.methods.getListOfActiveOffersSize().call());
+        end = end ?? (await contract.methods.getListOfActiveOffersSize().call());
 
-        return await this.contract.methods.getListOfActiveOffersRange(begin, end).call();
+        return await contract.methods.getListOfActiveOffersRange(begin, end).call();
     }
 
     /**
@@ -78,13 +60,9 @@ class ActiveOffers {
         maxProcessedEvents: number,
         transactionOptions?: TransactionOptions,
     ): Promise<void> {
-        this.checkInit();
+        const contract = BlockchainConnector.getContractInstance();
 
-        await TxManager.execute(
-            this.contract.methods.updateListOfActiveOffers,
-            [maxProcessedEvents],
-            transactionOptions,
-        );
+        await TxManager.execute(contract.methods.updateListOfActiveOffers, [maxProcessedEvents], transactionOptions);
     }
 }
 

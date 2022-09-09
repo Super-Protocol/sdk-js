@@ -9,29 +9,30 @@ import { TransactionOptions, ContractEvent, BlockInfo } from "../types/Web3";
 import TxManager from "../utils/TxManager";
 
 class SuperproToken {
-    public static address: string;
+    private static _address: string;
     private static contract: Contract;
     private static logger: typeof rootLogger;
+
+    public static get address() {
+        return SuperproToken._address;
+    }
+
+    public static set address(newAddress: string) {
+        SuperproToken._address = newAddress;
+        SuperproToken.contract = new store.web3!.eth.Contract(<AbiItem[]>appJSON.abi, SuperproToken.address);
+    }
 
     /**
      * Checks if contract has been initialized, if not - initialize contract
      */
     private static checkInit(transactionOptions?: TransactionOptions) {
-        if (transactionOptions?.web3) {
-            checkIfInitialized();
-
-            return new transactionOptions.web3.eth.Contract(<AbiItem[]>appJSON.abi, this.address);
-        }
-
-        if (this.contract) return this.contract;
         checkIfInitialized();
 
-        this.logger = rootLogger.child({
-            className: "SuperproToken",
-            address: this.address,
-        });
+        if (transactionOptions?.web3) {
+            return new transactionOptions.web3.eth.Contract(<AbiItem[]>appJSON.abi, SuperproToken.address);
+        }
 
-        return (this.contract = new store.web3!.eth.Contract(<AbiItem[]>appJSON.abi, this.address));
+        return SuperproToken.contract;
     }
 
     /**

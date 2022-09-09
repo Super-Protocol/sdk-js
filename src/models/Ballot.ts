@@ -1,11 +1,8 @@
 import { Contract } from "web3-eth-contract";
 import rootLogger from "../logger";
-import { AbiItem } from "web3-utils";
-import appJSON from "../contracts/app.json";
-import store from "../store";
 import { checkIfInitialized, tupleToObject } from "../utils";
 import { BallotInfo, BallotInfoStructure } from "../types/Ballot";
-import Superpro from "../staticModels/Superpro";
+import BlockchainConnector from "../BlockchainConnector";
 
 class Ballot {
     public address: string;
@@ -18,7 +15,7 @@ class Ballot {
         checkIfInitialized();
 
         this.address = address;
-        this.contract = new store.web3!.eth.Contract(<AbiItem[]>appJSON.abi, Superpro.address);
+        this.contract = BlockchainConnector.getContractInstance();
 
         this.logger = rootLogger.child({ className: "Ballot", address });
     }

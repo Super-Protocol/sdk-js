@@ -10,9 +10,9 @@ import { BlockInfo, ContractEvent, TransactionOptions } from "../types/Web3";
 import { OfferCreatedEvent } from "../types/Events";
 import Superpro from "./Superpro";
 import TxManager from "../utils/TxManager";
+import BlockchainConnector from "../BlockchainConnector";
 
 class OffersFactory {
-    private static contract: Contract;
     private static logger: typeof rootLogger;
 
     public static offers?: string[];
@@ -20,36 +20,19 @@ class OffersFactory {
     public static get address(): string {
         return Superpro.address;
     }
-    /**
-     * Checks if contract has been initialized, if not - initialize contract
-     */
-    private static checkInit(transactionOptions?: TransactionOptions) {
-        if (transactionOptions?.web3) {
-            checkIfInitialized();
-
-            return new transactionOptions.web3.eth.Contract(<AbiItem[]>appJSON.abi, Superpro.address);
-        }
-
-        if (this.contract) return this.contract;
-        checkIfInitialized();
-
-        this.logger = rootLogger.child({ className: "OffersFactory" });
-
-        return (this.contract = new store.web3!.eth.Contract(<AbiItem[]>appJSON.abi, Superpro.address));
-    }
 
     /**
      * Function for fetching list of all offers ids
      */
     public static async getAllOffers(): Promise<string[]> {
-        this.checkInit();
+        const contract = BlockchainConnector.getContractInstance();
 
-        const count = await this.contract.methods.getOffersTotalCount().call();
+        const count = await contract.methods.getOffersTotalCount().call();
         this.offers = this.offers || [];
         const offersSet = new Set(this.offers);
 
         for (let offerId = offersSet.size + 1; offerId <= count; ++offerId) {
-            const offerType = (await this.contract.methods.getOfferType(offerId).call()) as OfferType;
+            const offerType = (await contract.methods.getOfferType(offerId).call()) as OfferType;
             if (offerType !== OfferType.TeeOffer) {
                 offersSet.add(offerId.toString());
             }
@@ -71,7 +54,7 @@ class OffersFactory {
         externalId = "default",
         transactionOptions?: TransactionOptions,
     ): Promise<void> {
-        const contract = this.checkInit(transactionOptions);
+        const contract = BlockchainConnector.getContractInstance(transactionOptions);
         checkIfActionAccountInitialized(transactionOptions);
 
         delete offerInfoV1.disabledAfter;
@@ -87,7 +70,7 @@ class OffersFactory {
     }
 
     public static async getOffer(creator: string, externalId: string): Promise<OfferCreatedEvent> {
-        const contract = this.checkInit();
+        const contract = BlockchainConnector.getContractInstance();
         const filter = {
             creator,
             externalId: formatBytes32String(externalId),
@@ -111,10 +94,10 @@ class OffersFactory {
      * @return unsubscribe - unsubscribe function from event
      */
     public static onOfferCreated(callback: onOfferCreatedCallback): () => void {
-        this.checkInit();
+        const contract = BlockchainConnector.getContractInstance();
         const logger = this.logger.child({ method: "onOfferCreated" });
 
-        const subscription = this.contract.events
+        const subscription = contract.events
             .OfferCreated()
             .on("data", async (event: ContractEvent) => {
                 callback(
@@ -136,10 +119,10 @@ class OffersFactory {
     }
 
     public static onOfferEnabled(callback: onOfferEnabledCallback): () => void {
-        this.checkInit();
+        const contract = BlockchainConnector.getContractInstance();
         const logger = this.logger.child({ method: "onOfferEnabled" });
 
-        const subscription = this.contract.events
+        const subscription = contract.events
             .OfferEnabled()
             .on("data", async (event: ContractEvent) => {
                 callback(
@@ -161,10 +144,10 @@ class OffersFactory {
     }
 
     public static onOfferDisabled(callback: onOfferDisbledCallback): () => void {
-        this.checkInit();
+        const contract = BlockchainConnector.getContractInstance();
         const logger = this.logger.child({ method: "onOfferDisabled" });
 
-        const subscription = this.contract.events
+        const subscription = contract.events
             .OfferEnabled()
             .on("data", async (event: ContractEvent) => {
                 callback(

@@ -2,11 +2,11 @@ import { Contract } from "web3-eth-contract";
 import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
 import appJSON from "../contracts/app.json";
-import store from "../store";
 import { checkIfActionAccountInitialized, checkIfInitialized, tupleToObject } from "../utils";
 import { OfferInfo, OfferInfoStructure, OfferType } from "../types/Offer";
 import { TransactionOptions } from "../types/Web3";
 import { Origins, OriginsStructure } from "../types/Origins";
+import BlockchainConnector from "../BlockchainConnector";
 import Superpro from "../staticModels/Superpro";
 import TxManager from "../utils/TxManager";
 
@@ -29,7 +29,7 @@ class Offer {
 
         this.id = offerId;
         if (!Offer.contract) {
-            Offer.contract = new store.web3!.eth.Contract(<AbiItem[]>appJSON.abi, Superpro.address);
+            Offer.contract = BlockchainConnector.getContractInstance();
         }
         this.logger = rootLogger.child({ className: "Offer", offerId: this.id });
     }

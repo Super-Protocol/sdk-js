@@ -17,6 +17,7 @@ import { checkIfActionAccountInitialized, checkIfInitialized, objectToTuple, tup
 import { Origins, OriginsStructure } from "../types/Origins";
 import { SubOrderCreatedEvent } from "../types/Events";
 import { formatBytes32String } from "ethers/lib/utils";
+import BlockchainConnector from "../BlockchainConnector";
 import Superpro from "../staticModels/Superpro";
 import TxManager from "../utils/TxManager";
 
@@ -38,7 +39,7 @@ class Order {
 
         this.id = orderId;
         if (!Order.contract) {
-            Order.contract = new store.web3!.eth.Contract(<AbiItem[]>appJSON.abi, Superpro.address);
+            Order.contract = BlockchainConnector.getContractInstance();
         }
 
         this.logger = rootLogger.child({ className: "Order", orderId: this.id });

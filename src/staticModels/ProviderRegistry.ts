@@ -7,54 +7,20 @@ import { checkIfInitialized, checkIfActionAccountInitialized, objectToTuple } fr
 import { ProviderInfo, ProviderInfoStructure } from "../types/Provider";
 import { BigNumber } from "ethers";
 import { BlockInfo, ContractEvent, TransactionOptions } from "../types/Web3";
-import Superpro from "./Superpro";
+import BlockchainConnector from "../BlockchainConnector";
 import TxManager from "../utils/TxManager";
 
 class ProviderRegistry {
-    private static contract: Contract;
     private static logger: typeof rootLogger;
 
     public static providers?: string[];
 
     /**
-     * Checks if contract has been initialized, if not - initialize contract
-     */
-    private static checkInitProviders(transactionOptions?: TransactionOptions) {
-        if (transactionOptions?.web3) {
-            checkIfInitialized();
-
-            return new transactionOptions.web3.eth.Contract(<AbiItem[]>appJSON.abi, Superpro.address);
-        }
-
-        if (this.contract) return this.contract;
-        checkIfInitialized();
-
-        this.logger = rootLogger.child({ className: "Providers" });
-
-        return (this.contract = new store.web3!.eth.Contract(<AbiItem[]>appJSON.abi, Superpro.address));
-    }
-
-    private static checkInitProvidersOffers(transactionOptions?: TransactionOptions) {
-        if (transactionOptions?.web3) {
-            checkIfInitialized();
-
-            return new transactionOptions.web3.eth.Contract(<AbiItem[]>appJSON.abi, Superpro.address);
-        }
-
-        if (this.contract) return this.contract;
-        checkIfInitialized();
-
-        this.logger = rootLogger.child({ className: "ProvidersOffers" });
-
-        return (this.contract = new store.web3!.eth.Contract(<AbiItem[]>appJSON.abi, Superpro.address));
-    }
-
-    /**
      * Function for fetching list of all providers addresses
      */
     public static async getAllProviders(): Promise<string[]> {
-        this.checkInitProviders();
-        this.providers = await this.contract.methods.getProvidersAuths().call();
+        const contract = BlockchainConnector.getContractInstance();
+        this.providers = await contract.methods.getProvidersAuths().call();
 
         return this.providers!;
     }
@@ -70,15 +36,15 @@ class ProviderRegistry {
      * Fetch provider security deposit by provider authority account
      */
     public static async getSecurityDeposit(providerAuthority: string): Promise<string> {
-        this.checkInitProviders();
+        const contract = BlockchainConnector.getContractInstance();
 
-        return await this.contract.methods.getProviderSecurityDeposit(providerAuthority).call();
+        return await contract.methods.getProviderSecurityDeposit(providerAuthority).call();
     }
 
     public static async isProviderRegistered(providerAuthority: string): Promise<boolean> {
-        this.checkInitProviders();
+        const contract = BlockchainConnector.getContractInstance();
 
-        return await this.contract.methods.isProviderRegistered(providerAuthority).call();
+        return await contract.methods.isProviderRegistered(providerAuthority).call();
     }
 
     /**
@@ -91,7 +57,7 @@ class ProviderRegistry {
         externalId = "default",
         transactionOptions?: TransactionOptions,
     ): Promise<void> {
-        const contract = this.checkInitProviders(transactionOptions);
+        const contract = BlockchainConnector.getContractInstance(transactionOptions);
         checkIfActionAccountInitialized(transactionOptions);
 
         const providerInfoParams = objectToTuple(providerInfo, ProviderInfoStructure);
@@ -105,7 +71,7 @@ class ProviderRegistry {
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
     public static async refillSecurityDeposit(amount: string, transactionOptions?: TransactionOptions): Promise<void> {
-        const contract = this.checkInitProviders(transactionOptions);
+        const contract = BlockchainConnector.getContractInstance(transactionOptions);
         checkIfActionAccountInitialized(transactionOptions);
 
         await TxManager.execute(contract.methods.refillProviderSecurityDepo, [amount], transactionOptions);
@@ -118,7 +84,7 @@ class ProviderRegistry {
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
     public static async returnSecurityDeposit(amount: string, transactionOptions?: TransactionOptions): Promise<void> {
-        const contract = this.checkInitProviders(transactionOptions);
+        const contract = BlockchainConnector.getContractInstance(transactionOptions);
         checkIfActionAccountInitialized(transactionOptions);
 
         await TxManager.execute(contract.methods.returnProviderSecurityDepo, [amount], transactionOptions);
@@ -130,10 +96,10 @@ class ProviderRegistry {
      * @return unsubscribe - unsubscribe function from event
      */
     public static onProviderRegistered(callback: onProviderRegisteredCallback): () => void {
-        this.checkInitProviders();
+        const contract = BlockchainConnector.getContractInstance();
         const logger = this.logger.child({ method: "onProviderRegistered" });
 
-        const subscription = this.contract.events
+        const subscription = contract.events
             .ProviderRegistred()
             .on("data", async (event: ContractEvent) => {
                 callback(
@@ -158,10 +124,10 @@ class ProviderRegistry {
      * @returns unsubscribe - unsubscribe function from event
      */
     public static onProviderModified(callback: onProviderModifiedCallback): () => void {
-        this.checkInitProviders();
+        const contract = BlockchainConnector.getContractInstance();
         const logger = this.logger.child({ method: "onProviderModified" });
 
-        const subscription = this.contract.events
+        const subscription = contract.events
             .ProviderModified()
             .on("data", async (event: ContractEvent) => {
                 callback(
@@ -186,10 +152,10 @@ class ProviderRegistry {
      * @returns unsubscribe - unsubscribe function from event
      */
     public static onProviderViolationRateIncremented(callback: onProviderViolationRateIncrementedCallback): () => void {
-        this.checkInitProviders();
+        const contract = BlockchainConnector.getContractInstance();
         const logger = this.logger.child({ method: "onProviderViolationRateIncremented" });
 
-        const subscription = this.contract.events
+        const subscription = contract.events
             .ProviderViolationRateIncremented()
             .on("data", async (event: ContractEvent) => {
                 callback(
@@ -215,10 +181,10 @@ class ProviderRegistry {
      * @returns unsubscribe - unsubscribe function from event
      */
     public static onProviderSecurityDepoRefilled(callback: onProviderSecurityDepoRefilledCallback): () => void {
-        this.checkInitProviders();
+        const contract = BlockchainConnector.getContractInstance();
         const logger = this.logger.child({ method: "onProviderSecurityDepoRefilled" });
 
-        const subscription = this.contract.events
+        const subscription = contract.events
             .ProviderSecurityDepoRefilled()
             .on("data", async (event: ContractEvent) => {
                 callback(
@@ -244,10 +210,10 @@ class ProviderRegistry {
      * @returns unsubscribe - unsubscribe function from event
      */
     public static onProviderSecurityDepoUnlocked(callback: onProviderSecurityDepoUnlockedCallback): () => void {
-        this.checkInitProviders();
+        const contract = BlockchainConnector.getContractInstance();
         const logger = this.logger.child({ method: "onProviderSecurityDepoUnlocked" });
 
-        const subscription = this.contract.events
+        const subscription = contract.events
             .ProviderSecurityDepoUnlocked()
             .on("data", async (event: ContractEvent) => {
                 callback(

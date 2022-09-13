@@ -102,12 +102,6 @@ class Consensus {
         return await contract.methods.getEpoch(epochIndex).call();
     }
 
-    public static async getEpoch(epochIndex: number): Promise<EpochInfo> {
-        this.checkInit();
-
-        return await this.contract.methods.getEpoch(epochIndex).call();
-    }
-
     public static async getActualTcbId(teeOfferId: string): Promise<string> {
         const contract = BlockchainConnector.getContractInstance();
 
@@ -126,12 +120,6 @@ class Consensus {
         return contract.methods.getSuspiciousBlockTableSize().call();
     }
 
-    public static async getSuspiciousBlockTableSize(): Promise<string[]> {
-        this.checkInit();
-
-        return this.contract.methods.getSuspiciousBlockTableSize().call();
-    }
-
     public static async getLastBlockTable(): Promise<string[]> {
         const contract = BlockchainConnector.getContractInstance();
 
@@ -142,12 +130,6 @@ class Consensus {
         const contract = BlockchainConnector.getContractInstance();
 
         return contract.methods.getLastBlockTableSize().call();
-    }
-
-    public static async getLastBlockTableSize(): Promise<string[]> {
-        this.checkInit();
-
-        return this.contract.methods.getLastBlockTableSize().call();
     }
 
     // TODO: get locked rewards info

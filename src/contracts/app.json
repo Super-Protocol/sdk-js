@@ -3597,6 +3597,94 @@
     {
       "inputs": [
         {
+          "internalType": "address",
+          "name": "consumer",
+          "type": "address"
+        },
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "offerId",
+              "type": "uint256"
+            },
+            {
+              "internalType": "string",
+              "name": "resultPublicKey",
+              "type": "string"
+            },
+            {
+              "internalType": "string",
+              "name": "encryptedRequirements",
+              "type": "string"
+            },
+            {
+              "internalType": "string",
+              "name": "encryptedArgs",
+              "type": "string"
+            },
+            {
+              "internalType": "enum OrderStatus",
+              "name": "status",
+              "type": "uint8"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "slots",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256[]",
+                  "name": "inputOffers",
+                  "type": "uint256[]"
+                },
+                {
+                  "internalType": "uint256[]",
+                  "name": "selectedOffers",
+                  "type": "uint256[]"
+                }
+              ],
+              "internalType": "struct OrderArgs",
+              "name": "args",
+              "type": "tuple"
+            }
+          ],
+          "internalType": "struct OrderInfo",
+          "name": "info",
+          "type": "tuple"
+        },
+        {
+          "internalType": "uint256",
+          "name": "holdDeposit",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bool",
+          "name": "suspended",
+          "type": "bool"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "externalId",
+          "type": "bytes32"
+        }
+      ],
+      "name": "createOrderByApp",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
           "internalType": "uint256",
           "name": "parentOrderId",
           "type": "uint256"
@@ -3692,6 +3780,106 @@
     {
       "inputs": [
         {
+          "internalType": "address",
+          "name": "sender",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "parentOrderId",
+          "type": "uint256"
+        },
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "offerId",
+              "type": "uint256"
+            },
+            {
+              "internalType": "string",
+              "name": "resultPublicKey",
+              "type": "string"
+            },
+            {
+              "internalType": "string",
+              "name": "encryptedRequirements",
+              "type": "string"
+            },
+            {
+              "internalType": "string",
+              "name": "encryptedArgs",
+              "type": "string"
+            },
+            {
+              "internalType": "enum OrderStatus",
+              "name": "status",
+              "type": "uint8"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "slots",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint256[]",
+                  "name": "inputOffers",
+                  "type": "uint256[]"
+                },
+                {
+                  "internalType": "uint256[]",
+                  "name": "selectedOffers",
+                  "type": "uint256[]"
+                }
+              ],
+              "internalType": "struct OrderArgs",
+              "name": "args",
+              "type": "tuple"
+            }
+          ],
+          "internalType": "struct OrderInfo",
+          "name": "suborderInfo",
+          "type": "tuple"
+        },
+        {
+          "components": [
+            {
+              "internalType": "bool",
+              "name": "blockParentOrder",
+              "type": "bool"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "externalId",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "uint256",
+              "name": "holdSum",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct SubOrderParams",
+          "name": "params",
+          "type": "tuple"
+        }
+      ],
+      "name": "createSubOrderByApp",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
           "internalType": "uint256",
           "name": "orderId",
           "type": "uint256"
@@ -3747,6 +3935,24 @@
         }
       ],
       "name": "startOrder",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "sender",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "orderId",
+          "type": "uint256"
+        }
+      ],
+      "name": "startOrderByApp",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
@@ -7391,6 +7597,11 @@
     {
       "inputs": [
         {
+          "internalType": "address",
+          "name": "consumer",
+          "type": "address"
+        },
+        {
           "components": [
             {
               "internalType": "uint256",
@@ -7460,7 +7671,7 @@
           "type": "bytes32"
         }
       ],
-      "name": "createOrder",
+      "name": "createOrderByApp",
       "outputs": [
         {
           "internalType": "uint256",
@@ -7473,6 +7684,11 @@
     },
     {
       "inputs": [
+        {
+          "internalType": "address",
+          "name": "consumer",
+          "type": "address"
+        },
         {
           "internalType": "uint256",
           "name": "parentOrderId",
@@ -7555,7 +7771,7 @@
           "type": "tuple"
         }
       ],
-      "name": "createSubOrder",
+      "name": "createSubOrderByApp",
       "outputs": [
         {
           "internalType": "uint256",
@@ -7659,12 +7875,17 @@
     {
       "inputs": [
         {
+          "internalType": "address",
+          "name": "consumer",
+          "type": "address"
+        },
+        {
           "internalType": "uint256",
           "name": "orderId",
           "type": "uint256"
         }
       ],
-      "name": "startOrder",
+      "name": "startOrderByApp",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"

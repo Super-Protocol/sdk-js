@@ -27,6 +27,8 @@ class TxManager {
     private static web3: Web3;
     private static nonceTracker: NonceTracker;
     private static logger = rootLogger.child({ className: "TxManager" });
+    private static awaitTransactions: (()=>void)[]|undefined;
+    private static countOfPendingTransactions = 0;
 
     public static init(web3: Web3) {
         this.web3 = web3;
@@ -67,6 +69,8 @@ class TxManager {
         checkIfInitialized();
         checkIfActionAccountInitialized(transactionOptions);
 
+        await this.onStartPublishing();
+
         const web3 = transactionOptions?.web3 || this.web3;
         const options = await createTransactionOptions({ ...transactionOptions });
         if (!options.from) {
@@ -96,30 +100,76 @@ class TxManager {
             }
         }
         const signingKey = store.keys[options.from];
-        if (signingKey) {
-            const signed = await web3.eth.accounts.signTransaction(txData, signingKey);
-            if (!signed.rawTransaction) {
-                throw new Error("Failed to sign transaction");
+        try {
+            if (signingKey) {
+                const signed = await web3.eth.accounts.signTransaction(txData, signingKey);
+                if (!signed.rawTransaction) {
+                    throw new Error("Failed to sign transaction");
+                }
+
+                TxManager.logger.debug(
+                    {
+                        txHash: signed.transactionHash,
+                        txData: lodash.omit(txData, ["data"]),
+                    },
+                    "Publishing signed transaction",
+                );
+
+                const data = await web3.eth.sendSignedTransaction(signed.rawTransaction);
+                this.onFinishPublishing();
+                return data;
+            } else {
+                TxManager.logger.debug(
+                    {
+                        txData: lodash.omit(txData, ["data"]),
+                    },
+                    "Publishing unsigned transaction",
+                );
+
+                const data = await web3.eth.sendTransaction(txData);
+                this.onFinishPublishing();
+                return data;
             }
+        } catch (e) {
+            TxManager.logger.error(e, "Error during transaction execution");
+            await this.onError();
+            throw e;
+        }
+    }
 
-            TxManager.logger.debug(
-                {
-                    txHash: signed.transactionHash,
-                    txData: lodash.omit(txData, ["data"]),
-                },
-                "Publishing signed transaction",
-            );
+    private static async onStartPublishing () {
+        this.countOfPendingTransactions++;
+        if (!this.awaitTransactions) return;
 
-            return web3.eth.sendSignedTransaction(signed.rawTransaction);
-        } else {
-            TxManager.logger.debug(
-                {
-                    txData: lodash.omit(txData, ["data"]),
-                },
-                "Publishing unsigned transaction",
-            );
+        // Wait for pending transactions
+        await new Promise<void>(resolve => {
+            this.awaitTransactions!.push(() => {
+                resolve();
+            });
+        });
+    }
 
-            return web3.eth.sendTransaction(txData);
+    private static async onError () {
+        this.countOfPendingTransactions--;
+        if (this.countOfPendingTransactions === 0) return;
+
+        // Wait for pending transactions
+        this.awaitTransactions = [];
+        await new Promise<void>(resolve => {
+            this.awaitTransactions!.push(() => {
+                resolve();
+            });
+        });
+    }
+
+    private static onFinishPublishing () {
+        this.countOfPendingTransactions--;
+
+        if (this.countOfPendingTransactions === 0 && this.awaitTransactions) {
+            this.nonceTracker.reinitialize().then(() => {
+                this.awaitTransactions!.forEach(callback => callback());
+                this.awaitTransactions = undefined;
+            });
         }
     }
 }

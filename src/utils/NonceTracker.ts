@@ -28,6 +28,15 @@ class NonceTracker {
         return address in this.store;
     }
 
+    public async reinitialize (): Promise<void> {
+        await Promise.all(Object.keys(this.store).map(async address => {
+            const txCount = await this.web3.eth.getTransactionCount(address);
+            NonceTracker.logger.trace(`Account ${address} has been reinitialized with nonce: ${txCount}`);
+            this.store[address] = txCount;
+        }));
+        NonceTracker.logger.trace("All accounts has been reinitialized");
+    }
+
     private checkAccount(address: string) {
         if (this.isManaged(address)) {
             return;

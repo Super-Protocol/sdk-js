@@ -1,9 +1,5 @@
-import store from "../store";
-import { Contract } from "web3-eth-contract";
 import rootLogger from "../logger";
-import { AbiItem } from "web3-utils";
-import appJSON from "../contracts/app.json";
-import { checkIfActionAccountInitialized, checkIfInitialized, objectToTuple } from "../utils";
+import { checkIfActionAccountInitialized, objectToTuple } from "../utils";
 import { OrderInfo, OrderInfoStructure, OrderInfoStructureArray, OrderStatus } from "../types/Order";
 import { formatBytes32String, parseBytes32String } from "ethers/lib/utils";
 import { BlockInfo, ContractEvent, TransactionOptions } from "../types/Web3";
@@ -13,7 +9,7 @@ import TxManager from "../utils/TxManager";
 import BlockchainConnector from "../BlockchainConnector";
 
 class OrdersFactory {
-    private static logger: typeof rootLogger;
+    private static readonly logger = rootLogger.child({ className: "OrdersFactory" });
 
     public static orders?: string[];
 

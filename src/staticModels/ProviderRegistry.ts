@@ -1,9 +1,5 @@
-import store from "../store";
-import { Contract } from "web3-eth-contract";
 import rootLogger from "../logger";
-import { AbiItem } from "web3-utils";
-import appJSON from "../contracts/app.json";
-import { checkIfInitialized, checkIfActionAccountInitialized, objectToTuple } from "../utils";
+import { checkIfActionAccountInitialized, objectToTuple } from "../utils";
 import { ProviderInfo, ProviderInfoStructure } from "../types/Provider";
 import { BigNumber } from "ethers";
 import { BlockInfo, ContractEvent, TransactionOptions } from "../types/Web3";
@@ -11,7 +7,7 @@ import BlockchainConnector from "../BlockchainConnector";
 import TxManager from "../utils/TxManager";
 
 class ProviderRegistry {
-    private static logger: typeof rootLogger;
+    private static readonly logger = rootLogger.child({ className: "ProviderRegistry" });
 
     public static providers?: string[];
 

@@ -11,7 +11,7 @@ import TxManager from "../utils/TxManager";
 class SuperproToken {
     private static _address: string;
     private static contract: Contract;
-    private static logger: typeof rootLogger;
+    private static readonly logger = rootLogger.child({ className: "SuperproToken" });
 
     public static get address() {
         return SuperproToken._address;

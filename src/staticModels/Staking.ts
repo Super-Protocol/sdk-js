@@ -1,4 +1,3 @@
-import rootLogger from "../logger";
 import { checkIfActionAccountInitialized, tupleToObject } from "../utils";
 import { LockInfo, LockInfoStructure, StakeInfo, StakeInfoStructure, Purpose } from "../types/Staking";
 import BlockchainConnector from "../BlockchainConnector";
@@ -7,8 +6,6 @@ import Superpro from "./Superpro";
 import TxManager from "../utils/TxManager";
 
 class Staking {
-    private static logger: typeof rootLogger;
-
     public static get address(): string {
         return Superpro.address;
     }

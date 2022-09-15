@@ -1,14 +1,8 @@
-import { Contract } from "web3-eth-contract";
-import rootLogger from "../logger";
-import { AbiItem } from "web3-utils";
-import appJSON from "../contracts/app.json";
-import store from "../store";
 import { ContractName, ParamName } from "../types/Superpro";
 import BlockchainConnector from "../BlockchainConnector";
 
 class Superpro {
     public static address: string;
-    private static logger: typeof rootLogger;
 
     /**
      * Fetching address of contract by name

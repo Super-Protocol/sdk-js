@@ -1,15 +1,7 @@
-import store from "../store";
-import { Contract } from "web3-eth-contract";
-import rootLogger from "../logger";
-import { AbiItem } from "web3-utils";
-// import appJSON from "../contracts/app.json";
-import { checkIfActionAccountInitialized, checkIfInitialized, createTransactionOptions } from "../utils";
 import { ContractName, ParamName } from "../types/Superpro";
 import { TransactionOptions } from "../types/Web3";
 
 class Voting {
-    private static logger: typeof rootLogger;
-
     public static ballots?: string[];
 
     /**

@@ -1,9 +1,5 @@
-import store from "../store";
-import { Contract } from "web3-eth-contract";
 import rootLogger from "../logger";
-import { AbiItem } from "web3-utils";
-import appJSON from "../contracts/app.json";
-import { checkIfActionAccountInitialized, checkIfInitialized, objectToTuple } from "../utils";
+import { checkIfActionAccountInitialized, objectToTuple } from "../utils";
 import { formatBytes32String } from "ethers/lib/utils";
 import { BlockInfo, ContractEvent, TransactionOptions } from "../types/Web3";
 import { TeeOfferInfo, TeeOfferInfoStructure } from "../types/TeeOffer";
@@ -14,7 +10,7 @@ import Superpro from "./Superpro";
 import TxManager from "../utils/TxManager";
 
 class TeeOffersFactory {
-    private static logger: typeof rootLogger;
+    private static readonly logger = rootLogger.child({ className: "TeeOffersFactory" });
 
     public static teeOffers?: string[];
 

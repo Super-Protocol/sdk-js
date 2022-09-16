@@ -27,7 +27,7 @@ class TxManager {
     private static web3: Web3;
     private static nonceTracker: NonceTracker;
     private static logger = rootLogger.child({ className: "TxManager" });
-    private static awaitTransactions: (()=>void)[]|undefined;
+    private static transactionsOnHold: (()=>void)[]|undefined;
     private static countOfPendingTransactions = 0;
 
     public static init(web3: Web3) {
@@ -139,11 +139,12 @@ class TxManager {
 
     private static async onStartPublishing () {
         this.countOfPendingTransactions++;
-        if (!this.awaitTransactions) return;
+        if (!this.transactionsOnHold) return;
 
         // Wait for pending transactions
         await new Promise<void>(resolve => {
-            this.awaitTransactions!.push(() => {
+            if (!this.transactionsOnHold) return resolve();
+            this.transactionsOnHold.push(() => {
                 resolve();
             });
         });
@@ -154,9 +155,10 @@ class TxManager {
         if (this.countOfPendingTransactions === 0) return;
 
         // Wait for pending transactions
-        this.awaitTransactions = [];
+        this.transactionsOnHold = [];
         await new Promise<void>(resolve => {
-            this.awaitTransactions!.push(() => {
+            if (!this.transactionsOnHold) return resolve();
+            this.transactionsOnHold.push(() => {
                 resolve();
             });
         });
@@ -165,10 +167,10 @@ class TxManager {
     private static onFinishPublishing () {
         this.countOfPendingTransactions--;
 
-        if (this.countOfPendingTransactions === 0 && this.awaitTransactions) {
+        if (this.countOfPendingTransactions === 0 && this.transactionsOnHold) {
             this.nonceTracker.reinitialize().then(() => {
-                this.awaitTransactions!.forEach(callback => callback());
-                this.awaitTransactions = undefined;
+                this.transactionsOnHold?.forEach(callback => callback());
+                this.transactionsOnHold = undefined;
             });
         }
     }

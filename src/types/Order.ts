@@ -42,10 +42,10 @@ export type OrderInfo = {
     encryptedArgs: string;
     status: OrderStatus;
     args: OrderArgs;
+    externalId: string;
 };
 export type ExtendedOrderInfo = OrderInfo & {
     blocking: boolean;
-    externalId: string;
     holdSum: string;
 };
 
@@ -63,6 +63,5 @@ export type OrderResult = {
 
 export type SubOrderParams = {
     blockParentOrder: Boolean;
-    externalId: string;
     holdSum: string;
 }

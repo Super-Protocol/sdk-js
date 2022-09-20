@@ -275,7 +275,6 @@ class Order {
     public async createSubOrder(
         subOrderInfo: OrderInfo,
         blocking: boolean,
-        externalId = "default",
         holdSum = '0',
         transactionOptions?: TransactionOptions,
     ): Promise<void> {
@@ -283,10 +282,8 @@ class Order {
         checkIfActionAccountInitialized(transactionOptions);
 
         const tupleSubOrder = objectToTuple(subOrderInfo, OrderInfoStructure);
-        const formattedExternalId = formatBytes32String(externalId);
         const params: SubOrderParams = {
             blockParentOrder: blocking,
-            externalId: formattedExternalId,
             holdSum,
         };
         await TxManager.execute(

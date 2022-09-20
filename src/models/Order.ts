@@ -310,10 +310,8 @@ class Order {
         const promises: any = subOrdersInfo.map((subOrderInfo) => {
             return new Promise((res, rej) => {
                 const tupleSubOrder = objectToTuple(subOrderInfo, OrderInfoStructure);
-                const formattedExternalId = formatBytes32String(subOrderInfo.externalId);
                 const params: SubOrderParams = {
                     blockParentOrder: subOrderInfo.blocking,
-                    externalId: formattedExternalId,
                     holdSum: subOrderInfo.holdSum,
                 };
 

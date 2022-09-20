@@ -141,27 +141,15 @@ class TxManager {
         this.countOfPendingTransactions++;
         if (!this.transactionsOnHold) return;
 
-        // Wait for pending transactions
-        await new Promise<void>(resolve => {
-            if (!this.transactionsOnHold) return resolve();
-            this.transactionsOnHold.push(() => {
-                resolve();
-            });
-        });
+        await this.waitForPendingTransactions();
     }
 
     private static async onError () {
         this.countOfPendingTransactions--;
         if (this.countOfPendingTransactions === 0) return;
 
-        // Wait for pending transactions
         this.transactionsOnHold = [];
-        await new Promise<void>(resolve => {
-            if (!this.transactionsOnHold) return resolve();
-            this.transactionsOnHold.push(() => {
-                resolve();
-            });
-        });
+        await this.waitForPendingTransactions();
     }
 
     private static onFinishPublishing () {
@@ -173,6 +161,15 @@ class TxManager {
                 this.transactionsOnHold = undefined;
             });
         }
+    }
+
+    private static async waitForPendingTransactions () {
+        await new Promise<void>(resolve => {
+            if (!this.transactionsOnHold) return resolve();
+            this.transactionsOnHold.push(() => {
+                resolve();
+            });
+        });
     }
 }
 

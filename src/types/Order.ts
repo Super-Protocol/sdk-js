@@ -30,6 +30,7 @@ export const OrderInfoStructure = {
     encryptedArgs: String,
     status: OrderStatus,
     args: OrderArgsStructure,
+    externalId: String,
 };
 
 // Array of order info structures

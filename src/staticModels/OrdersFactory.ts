@@ -69,8 +69,9 @@ class OrdersFactory {
     ): Promise<void> {
         const contract = BlockchainConnector.getContractInstance(transactionOptions);
         checkIfActionAccountInitialized(transactionOptions);
-
+        orderInfo.externalId = formatBytes32String(orderInfo.externalId);
         const orderInfoArguments = objectToTuple(orderInfo, OrderInfoStructure);
+
         await TxManager.execute(
             contract.methods.createOrder,
             [orderInfoArguments, holdDeposit, suspended],
@@ -115,8 +116,12 @@ class OrdersFactory {
         const contract = BlockchainConnector.getContractInstance(transactionOptions);
         checkIfActionAccountInitialized(transactionOptions);
 
+        perentOrderInfo.externalId = formatBytes32String(perentOrderInfo.externalId);
         const perentOrderInfoArgs = objectToTuple(perentOrderInfo, OrderInfoStructure);
+
+        subOrdersInfo.forEach(o => o.externalId = formatBytes32String(o.externalId))
         const subOrdersInfoArgs = objectToTuple(subOrdersInfo, OrderInfoStructureArray);
+
         await TxManager.execute(
             contract.methods.createWorkflow,
             [perentOrderInfoArgs, holdDeposit, subOrdersInfoArgs],

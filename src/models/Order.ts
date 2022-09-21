@@ -281,8 +281,11 @@ class Order {
         transactionOptions ?? this.checkInitOrder(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
-        subOrderInfo.externalId = formatBytes32String(subOrderInfo.externalId);
-        const tupleSubOrder = objectToTuple(subOrderInfo, OrderInfoStructure);
+        const preparedInfo = {
+            ...subOrderInfo,
+            externalId: formatBytes32String(subOrderInfo.externalId)
+        }
+        const tupleSubOrder = objectToTuple(preparedInfo, OrderInfoStructure);
         const params: SubOrderParams = {
             blockParentOrder: blocking,
             holdSum,
@@ -310,8 +313,11 @@ class Order {
         const batch = new transactionOptions.web3!.BatchRequest();
         const promises: any = subOrdersInfo.map((subOrderInfo) => {
             return new Promise((res, rej) => {
-                subOrderInfo.externalId = formatBytes32String(subOrderInfo.externalId);
-                const tupleSubOrder = objectToTuple(subOrderInfo, OrderInfoStructure);
+                const preparedInfo = {
+                    ...subOrderInfo,
+                    externalId: formatBytes32String(subOrderInfo.externalId)
+                }
+                const tupleSubOrder = objectToTuple(preparedInfo, OrderInfoStructure);
                 const params: SubOrderParams = {
                     blockParentOrder: subOrderInfo.blocking,
                     holdSum: subOrderInfo.holdSum,

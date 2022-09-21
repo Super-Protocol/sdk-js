@@ -69,8 +69,11 @@ class OrdersFactory {
     ): Promise<void> {
         const contract = BlockchainConnector.getContractInstance(transactionOptions);
         checkIfActionAccountInitialized(transactionOptions);
-        orderInfo.externalId = formatBytes32String(orderInfo.externalId);
-        const orderInfoArguments = objectToTuple(orderInfo, OrderInfoStructure);
+        const preparedInfo = {
+            ...orderInfo,
+            externalId: formatBytes32String(orderInfo.externalId)
+        }
+        const orderInfoArguments = objectToTuple(preparedInfo, OrderInfoStructure);
 
         await TxManager.execute(
             contract.methods.createOrder,
@@ -108,7 +111,7 @@ class OrdersFactory {
      * @returns {Promise<void>} - Does not return id of created order!
      */
     public static async createWorkflow(
-        perentOrderInfo: OrderInfo,
+        parentOrderInfo: OrderInfo,
         subOrdersInfo: OrderInfo[],
         holdDeposit = "0",
         transactionOptions?: TransactionOptions,
@@ -116,15 +119,22 @@ class OrdersFactory {
         const contract = BlockchainConnector.getContractInstance(transactionOptions);
         checkIfActionAccountInitialized(transactionOptions);
 
-        perentOrderInfo.externalId = formatBytes32String(perentOrderInfo.externalId);
-        const perentOrderInfoArgs = objectToTuple(perentOrderInfo, OrderInfoStructure);
+        const preparedInfo = {
+            ...parentOrderInfo,
+            externalId: formatBytes32String(parentOrderInfo.externalId)
+        }
+        const parentOrderInfoArgs = objectToTuple(preparedInfo, OrderInfoStructure);
 
         subOrdersInfo.forEach((o) => (o.externalId = formatBytes32String(o.externalId)));
-        const subOrdersInfoArgs = objectToTuple(subOrdersInfo, OrderInfoStructureArray);
+        const preparedSubOrdersInfo = subOrdersInfo.map((o) => ({
+            ...o,
+            externalId: formatBytes32String(o.externalId),
+        }));
+        const subOrdersInfoArgs = objectToTuple(preparedSubOrdersInfo, OrderInfoStructureArray);
 
         await TxManager.execute(
             contract.methods.createWorkflow,
-            [perentOrderInfoArgs, holdDeposit, subOrdersInfoArgs],
+            [parentOrderInfoArgs, holdDeposit, subOrdersInfoArgs],
             transactionOptions,
         );
     }

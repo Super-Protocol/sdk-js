@@ -119,7 +119,7 @@ class OrdersFactory {
         perentOrderInfo.externalId = formatBytes32String(perentOrderInfo.externalId);
         const perentOrderInfoArgs = objectToTuple(perentOrderInfo, OrderInfoStructure);
 
-        subOrdersInfo.forEach(o => o.externalId = formatBytes32String(o.externalId))
+        subOrdersInfo.forEach((o) => (o.externalId = formatBytes32String(o.externalId)));
         const subOrdersInfoArgs = objectToTuple(subOrdersInfo, OrderInfoStructureArray);
 
         await TxManager.execute(
@@ -127,6 +127,33 @@ class OrdersFactory {
             [perentOrderInfoArgs, holdDeposit, subOrdersInfoArgs],
             transactionOptions,
         );
+    }
+
+    /**
+     * Function for cancel workflow
+     * @param parentOrderId - Parent order id
+     * @returns {Promise<void>} - Does not return id of created order!
+     */
+    public static async cancelWorkflow(perentOrderId: string, transactionOptions?: TransactionOptions): Promise<void> {
+        const contract = BlockchainConnector.getContractInstance(transactionOptions);
+        checkIfActionAccountInitialized(transactionOptions);
+
+        await TxManager.execute(contract.methods.cancelWorkflow, [perentOrderId], transactionOptions);
+    }
+
+    /**
+     * Function for withdraw workflow change
+     * @param parentOrderId - Parent order id
+     * @returns {Promise<void>} - Does not return id of created order!
+     */
+    public static async withdrawWorkflowChange(
+        parentOrderId: string,
+        transactionOptions?: TransactionOptions,
+    ): Promise<void> {
+        const contract = BlockchainConnector.getContractInstance(transactionOptions);
+        checkIfActionAccountInitialized(transactionOptions);
+
+        await TxManager.execute(contract.methods.withdrawWorkflowChange, [parentOrderId], transactionOptions);
     }
 
     /**

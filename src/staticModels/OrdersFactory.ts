@@ -125,7 +125,6 @@ class OrdersFactory {
         }
         const parentOrderInfoArgs = objectToTuple(preparedInfo, OrderInfoStructure);
 
-        subOrdersInfo.forEach((o) => (o.externalId = formatBytes32String(o.externalId)));
         const preparedSubOrdersInfo = subOrdersInfo.map((o) => ({
             ...o,
             externalId: formatBytes32String(o.externalId),

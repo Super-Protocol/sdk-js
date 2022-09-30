@@ -96,10 +96,10 @@ class ProviderRegistry {
         const logger = this.logger.child({ method: "onProviderRegistered" });
 
         const subscription = contract.events
-            .ProviderRegistred()
+            .ProviderRegistered()
             .on("data", async (event: ContractEvent) => {
                 callback(
-                    <string>event.returnValues.providerInfo,
+                    <string>event.returnValues.auth,
                     <BlockInfo>{
                         index: <number>event.blockNumber,
                         hash: <string>event.blockHash,

@@ -1,6 +1,6 @@
 import rootLogger from "../logger";
 import { checkIfActionAccountInitialized, objectToTuple } from "../utils";
-import { formatBytes32String } from "ethers/lib/utils";
+import { BytesLike, formatBytes32String, parseBytes32String } from "ethers/lib/utils";
 import { BlockInfo, ContractEvent, TransactionOptions } from "../types/Web3";
 import { TeeOfferInfo, TeeOfferInfoStructure } from "../types/TeeOffer";
 import { OfferType } from "../types/Offer";
@@ -104,12 +104,12 @@ class TeeOffersFactory {
         const logger = this.logger.child({ method: "onTeeOfferCreated" });
 
         const subscription = contract.events
-            .OfferCreated()
+            .TeeOfferCreated()
             .on("data", async (event: ContractEvent) => {
                 callback(
                     <string>event.returnValues.offerId,
-                    <string>event.returnValues.providerAuth,
-                    <OfferType>event.returnValues.offerType,
+                    <string>event.returnValues.creator,
+                    parseBytes32String(<BytesLike>event.returnValues.externalId),
                     <BlockInfo>{
                         index: <number>event.blockNumber,
                         hash: <string>event.blockHash,
@@ -152,8 +152,8 @@ class TeeOffersFactory {
 
 export type onTeeOfferCreatedCallback = (
     offerId: string,
-    providerAuth: string,
-    offerType: OfferType,
+    creator: string,
+    externalId: string,
     block?: BlockInfo,
 ) => void;
 export type onTeeOfferViolationRateChangedCallback = (

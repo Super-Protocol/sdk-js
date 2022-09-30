@@ -1,7 +1,7 @@
 import rootLogger from "../logger";
 import { checkIfActionAccountInitialized, objectToTuple } from "../utils";
 import { OfferInfo, OfferInfoV1, OfferInfoStructure, OfferType } from "../types/Offer";
-import { formatBytes32String } from "ethers/lib/utils";
+import { BytesLike, formatBytes32String, parseBytes32String } from "ethers/lib/utils";
 import { BlockInfo, ContractEvent, TransactionOptions } from "../types/Web3";
 import { OfferCreatedEvent } from "../types/Events";
 import Superpro from "./Superpro";
@@ -99,7 +99,7 @@ class OffersFactory {
                 callback(
                     <string>event.returnValues.offerId,
                     <string>event.returnValues.creator,
-                    <string>event.returnValues.externalId,
+                    parseBytes32String(<BytesLike>event.returnValues.externalId),
                     <BlockInfo>{
                         index: <number>event.blockNumber,
                         hash: <string>event.blockHash,

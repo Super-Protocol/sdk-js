@@ -1,3 +1,5 @@
+import { parseBytes32String } from "ethers/lib/utils";
+
 export enum OrderStatus {
     New = "0",
     Processing = "1",
@@ -30,7 +32,7 @@ export const OrderInfoStructure = {
     encryptedArgs: String,
     status: OrderStatus,
     args: OrderArgsStructure,
-    externalId: String,
+    externalId: parseBytes32String,
 };
 
 // Array of order info structures
@@ -65,4 +67,4 @@ export type OrderResult = {
 export type SubOrderParams = {
     blockParentOrder: Boolean;
     holdSum: string;
-}
+};

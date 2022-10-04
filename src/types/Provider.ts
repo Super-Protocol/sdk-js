@@ -1,3 +1,5 @@
+import { parseBytes32String } from "ethers/lib/utils";
+
 // Order of keys and type conversion functions for this object in blockchain contract
 export const ProviderInfoStructure = {
     tokenReceiver: String,
@@ -12,7 +14,7 @@ export const ProviderInfoStructureV2 = {
     name: String,
     description: String,
     metadata: String,
-    externalId: String
+    externalId: parseBytes32String,
 };
 export type ProviderInfo = {
     tokenReceiver: string;

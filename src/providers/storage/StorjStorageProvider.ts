@@ -31,7 +31,6 @@ export default class StorJStorageProvider implements IStorageProvider {
         if (credentials.bucket) {
             this.bucket = credentials.bucket;
             this.prefix = credentials.prefix;
-
         } else if (credentials.storageId) {
             // back compatibility
             this.bucket = credentials.storageId;
@@ -151,7 +150,7 @@ export default class StorJStorageProvider implements IStorageProvider {
         return objectInfo.system.content_length;
     }
 
-    async getLastModified (remotePath: string): Promise<Date> {
+    async getLastModified(remotePath: string): Promise<Date> {
         const project = await this.lazyProject();
         const objectInfo = await project.statObject(this.bucket, this.prefix + remotePath);
 

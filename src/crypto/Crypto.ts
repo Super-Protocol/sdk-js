@@ -21,10 +21,7 @@ class Crypto {
      * @param encoding - encoding of key and output data
      * @return {Promise<Encryption>} - object what contains encrypted data, key and spec to decryption
      */
-    static async encrypt(
-        content: string,
-        encryption: Encryption,
-    ): Promise<Encryption> {
+    static async encrypt(content: string, encryption: Encryption): Promise<Encryption> {
         switch (encryption.algo) {
             case CryptoAlgorithm.AES:
                 return await AES.encrypt(content, encryption);
@@ -58,23 +55,11 @@ class Crypto {
     ): Promise<Encryption> {
         switch (encryption.algo) {
             case CryptoAlgorithm.AES:
-                return await AES.encryptStream(
-                    inputStream,
-                    outputStream,
-                    encryption,
-                );
+                return await AES.encryptStream(inputStream, outputStream, encryption);
             case CryptoAlgorithm.ARIA:
-                return await ARIA.encryptStream(
-                    inputStream,
-                    outputStream,
-                    encryption,
-                );
+                return await ARIA.encryptStream(inputStream, outputStream, encryption);
             case CryptoAlgorithm.RSAHybrid:
-                return await RSAHybrid.encryptStream(
-                    inputStream,
-                    outputStream,
-                    encryption,
-                );
+                return await RSAHybrid.encryptStream(inputStream, outputStream, encryption);
             default:
                 throw Error(`${encryption.algo} algorithm not supported`);
         }
@@ -97,9 +82,7 @@ class Crypto {
                 return await ECIES.decrypt(encryption as ECIESEncryption);
 
             case CryptoAlgorithm.RSAHybrid:
-                return await RSAHybrid.decrypt(
-                    encryption as RSAHybridEncryption
-                );
+                return await RSAHybrid.decrypt(encryption as RSAHybridEncryption);
 
             default:
                 throw Error(`${encryption.algo} algorithm not supported`);
@@ -115,27 +98,15 @@ class Crypto {
     public static async decryptStream(
         inputStream: fs.ReadStream,
         outputStream: fs.WriteStream,
-        encryption: Encryption
+        encryption: Encryption,
     ): Promise<void> {
         switch (encryption.algo) {
             case CryptoAlgorithm.AES:
-                return await AES.decryptStream(
-                    inputStream,
-                    outputStream,
-                    encryption as AESEncryption
-                );
+                return await AES.decryptStream(inputStream, outputStream, encryption as AESEncryption);
             case CryptoAlgorithm.ARIA:
-                return await ARIA.decryptStream(
-                    inputStream,
-                    outputStream,
-                    encryption as ARIAEncryption
-                );
+                return await ARIA.decryptStream(inputStream, outputStream, encryption as ARIAEncryption);
             case CryptoAlgorithm.RSAHybrid:
-                return await RSAHybrid.decryptStream(
-                    inputStream,
-                    outputStream,
-                    encryption as RSAHybridEncryption
-                );
+                return await RSAHybrid.decryptStream(inputStream, outputStream, encryption as RSAHybridEncryption);
             default:
                 throw Error(`${encryption.algo} algorithm not supported`);
         }

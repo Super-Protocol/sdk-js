@@ -122,7 +122,7 @@ class TeeOffer {
     /**
      * Function for offer closing price calculation
      */
-     public async getClosingPrice(startDate: number): Promise<string> {
+    public async getClosingPrice(startDate: number): Promise<string> {
         this.closingPrice = await TeeOffer.contract.methods.getOfferClosingPrice(this.id, startDate, 0).call();
         return this.closingPrice!;
     }

@@ -81,8 +81,8 @@ class OrdersFactory {
         checkIfActionAccountInitialized(transactionOptions);
         const preparedInfo = {
             ...orderInfo,
-            externalId: formatBytes32String(orderInfo.externalId)
-        }
+            externalId: formatBytes32String(orderInfo.externalId),
+        };
         const orderInfoArguments = objectToTuple(preparedInfo, OrderInfoStructure);
 
         await TxManager.execute(
@@ -131,8 +131,8 @@ class OrdersFactory {
 
         const preparedInfo = {
             ...parentOrderInfo,
-            externalId: formatBytes32String(parentOrderInfo.externalId)
-        }
+            externalId: formatBytes32String(parentOrderInfo.externalId),
+        };
         const parentOrderInfoArgs = objectToTuple(preparedInfo, OrderInfoStructure);
 
         const preparedSubOrdersInfo = subOrdersInfo.map((o) => ({

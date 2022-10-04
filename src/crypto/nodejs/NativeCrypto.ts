@@ -1,7 +1,4 @@
-import {
-    ReadStream,
-    WriteStream,
-} from 'fs';
+import { ReadStream, WriteStream } from "fs";
 import {
     createCipher,
     createCipheriv,
@@ -11,14 +8,12 @@ import {
     CipherGCMOptions,
     Decipher,
     DecipherGCM,
-    randomBytes, CipherGCM,
-} from 'crypto';
+    randomBytes,
+    CipherGCM,
+} from "crypto";
 import { once } from "events";
 
-import {
-    Encoding,
-    EncryptionWithMacIV,
-} from "@super-protocol/dto-js";
+import { Encoding, EncryptionWithMacIV } from "@super-protocol/dto-js";
 
 /**
  *
@@ -31,10 +26,11 @@ class NativeCrypto {
      * ```
      * but it doesn't work in browser
      */
-    public static readonly isCCM = (cipher: string): boolean => /ccm/i.test(cipher) || cipher === 'chacha20-poly1305';
+    public static readonly isCCM = (cipher: string): boolean => /ccm/i.test(cipher) || cipher === "chacha20-poly1305";
     public static readonly isGCM = (cipher: string): boolean => /gcm/i.test(cipher);
     public static readonly isOCB = (cipher: string): boolean => /ocb/i.test(cipher);
-    public static readonly isECB = (cipher: string): boolean => /ecb/i.test(cipher) || cipher === 'des-ede' || cipher === 'des-ede3';
+    public static readonly isECB = (cipher: string): boolean =>
+        /ecb/i.test(cipher) || cipher === "des-ede" || cipher === "des-ede3";
     public static readonly isRC4 = (cipher: string): boolean => /^rc4/i.test(cipher);
 
     /**
@@ -48,16 +44,10 @@ class NativeCrypto {
         if (/256\-xts/.test(cipher)) {
             return 64;
         }
-        if (
-            /256|128\-xts|chacha20/.test(cipher)
-            && cipher !== 'aes-128-cbc-hmac-sha256'
-        ) {
+        if (/256|128\-xts|chacha20/.test(cipher) && cipher !== "aes-128-cbc-hmac-sha256") {
             return 32;
         }
-        if (
-            /192|des\-ede3|desx|des3$/.test(cipher) ||
-            cipher === 'id-smime-alg-cms3deswrap'
-        ) {
+        if (/192|des\-ede3|desx|des3$/.test(cipher) || cipher === "id-smime-alg-cms3deswrap") {
             return 24;
         }
         if (/128|des\-ede/.test(cipher)) {
@@ -135,7 +125,7 @@ class NativeCrypto {
         cipherName: string,
         outputEncoding: Encoding = Encoding.base64,
         // TODO: replace BufferEncoding with Encoding
-        inputEncoding: BufferEncoding = 'binary',
+        inputEncoding: BufferEncoding = "binary",
     ): Partial<EncryptionWithMacIV> {
         const iv: Buffer = this.createIV(cipherName);
         const result: Partial<EncryptionWithMacIV> = {};
@@ -183,25 +173,16 @@ class NativeCrypto {
         content: string,
         cipherName: string,
         params?: {
-            iv: Buffer,
-            mac?: Buffer,
+            iv: Buffer;
+            mac?: Buffer;
         },
         inputEncoding: Encoding = Encoding.base64,
         // TODO: replace BufferEncoding with Encoding
-        outputEncoding: BufferEncoding = 'binary',
+        outputEncoding: BufferEncoding = "binary",
     ): string {
-        const decipher: Decipher = this.createDecipher(
-            cipherName,
-            key,
-            params?.iv,
-            params?.mac,
-        );
+        const decipher: Decipher = this.createDecipher(cipherName, key, params?.iv, params?.mac);
 
-        let decrypted: string = decipher.update(
-            content,
-            inputEncoding,
-            outputEncoding,
-        );
+        let decrypted: string = decipher.update(content, inputEncoding, outputEncoding);
         decrypted += decipher.final(outputEncoding);
 
         return decrypted;
@@ -213,16 +194,11 @@ class NativeCrypto {
         outputStream: WriteStream,
         cipherName: string,
         params?: {
-            iv: Buffer,
-            mac: Buffer,
+            iv: Buffer;
+            mac: Buffer;
         },
     ): Promise<void> {
-        const decipher: Decipher = this.createDecipher(
-            cipherName,
-            key,
-            params?.iv,
-            params?.mac,
-        );
+        const decipher: Decipher = this.createDecipher(cipherName, key, params?.iv, params?.mac);
 
         inputStream.pipe(decipher).pipe(outputStream);
         await once(outputStream, "finish");

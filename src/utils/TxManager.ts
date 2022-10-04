@@ -27,7 +27,7 @@ class TxManager {
     private static web3: Web3;
     private static nonceTracker: NonceTracker;
     private static logger = rootLogger.child({ className: "TxManager" });
-    private static transactionsOnHold: (()=>void)[]|undefined;
+    private static transactionsOnHold: (() => void)[] | undefined;
     private static countOfPendingTransactions = 0;
 
     public static init(web3: Web3) {
@@ -137,14 +137,14 @@ class TxManager {
         }
     }
 
-    private static async onStartPublishing () {
+    private static async onStartPublishing() {
         this.countOfPendingTransactions++;
         if (!this.transactionsOnHold) return;
 
         await this.waitForPendingTransactions();
     }
 
-    private static async onError () {
+    private static async onError() {
         this.countOfPendingTransactions--;
         if (this.countOfPendingTransactions === 0) return;
 
@@ -152,19 +152,19 @@ class TxManager {
         await this.waitForPendingTransactions();
     }
 
-    private static onFinishPublishing () {
+    private static onFinishPublishing() {
         this.countOfPendingTransactions--;
 
         if (this.countOfPendingTransactions === 0 && this.transactionsOnHold) {
             this.nonceTracker.reinitialize().then(() => {
-                this.transactionsOnHold?.forEach(callback => callback());
+                this.transactionsOnHold?.forEach((callback) => callback());
                 this.transactionsOnHold = undefined;
             });
         }
     }
 
-    private static async waitForPendingTransactions () {
-        await new Promise<void>(resolve => {
+    private static async waitForPendingTransactions() {
+        await new Promise<void>((resolve) => {
             if (!this.transactionsOnHold) return resolve();
             this.transactionsOnHold.push(() => {
                 resolve();

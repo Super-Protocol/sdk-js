@@ -86,12 +86,10 @@ class Order {
 
         // for SDK compatibility
         const result = ["", "", orderInfoParams[2][1]];
-        if (orderInfoParams[1][4] === OrderStatus.Error)
-            result[1] = orderInfoParams[2][0];
-        else
-            result[0] = orderInfoParams[2][0];
+        if (orderInfoParams[1][4] === OrderStatus.Error) result[1] = orderInfoParams[2][0];
+        else result[0] = orderInfoParams[2][0];
 
-        return this.orderResult = tupleToObject(result, OrderResultStructure);
+        return (this.orderResult = tupleToObject(result, OrderResultStructure));
     }
 
     /**
@@ -275,7 +273,7 @@ class Order {
     public async createSubOrder(
         subOrderInfo: OrderInfo,
         blocking: boolean,
-        holdSum = '0',
+        holdSum = "0",
         transactionOptions?: TransactionOptions,
     ): Promise<void> {
         transactionOptions ?? this.checkInitOrder(transactionOptions!);
@@ -283,8 +281,8 @@ class Order {
 
         const preparedInfo = {
             ...subOrderInfo,
-            externalId: formatBytes32String(subOrderInfo.externalId)
-        }
+            externalId: formatBytes32String(subOrderInfo.externalId),
+        };
         const tupleSubOrder = objectToTuple(preparedInfo, OrderInfoStructure);
         const params: SubOrderParams = {
             blockParentOrder: blocking,
@@ -315,8 +313,8 @@ class Order {
             return new Promise((res, rej) => {
                 const preparedInfo = {
                     ...subOrderInfo,
-                    externalId: formatBytes32String(subOrderInfo.externalId)
-                }
+                    externalId: formatBytes32String(subOrderInfo.externalId),
+                };
                 const tupleSubOrder = objectToTuple(preparedInfo, OrderInfoStructure);
                 const params: SubOrderParams = {
                     blockParentOrder: subOrderInfo.blocking,
@@ -350,7 +348,7 @@ class Order {
             externalId: formatBytes32String(externalId),
         };
         const foundIds = await Order.contract.getPastEvents("SubOrderCreated", { filter });
-        const notFound = { consumer, externalId, subOfferId: '-1', subOrderId: '-1', parentOrderId: '-1' };
+        const notFound = { consumer, externalId, subOfferId: "-1", subOrderId: "-1", parentOrderId: "-1" };
 
         const response: SubOrderCreatedEvent =
             foundIds.length > 0 ? (foundIds[0].returnValues as SubOrderCreatedEvent) : notFound;

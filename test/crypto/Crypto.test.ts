@@ -40,13 +40,12 @@ owo6lyCYNeUtdCbO1yfzfEa/mrUGCLC/Ikjk1r19
 
 // ECC keys in base64
 const eccPrivateKey = "6W6C+mZySBfsFKjiu3uOXsFlBwd1vXDL8QJHDdGlz5s=";
-const eccPublicKey =
-    "BHlWgcWngcGxGMoy/xvri5qY0aeddEt5JMnQpsNZQSbbd1OCfPLOnLDa0J5nhofA+/78DbBdBpo2g6XeDPQGZWA=";
+const eccPublicKey = "BHlWgcWngcGxGMoy/xvri5qY0aeddEt5JMnQpsNZQSbbd1OCfPLOnLDa0J5nhofA+/78DbBdBpo2g6XeDPQGZWA=";
 const eccPrivateKeyIncorrect = "KQ/00gBxyIpgyB73Cbxadi7TZiJKIpykrCMOU/FSRkQ=";
 
 // AES keys in base64
-const aesKey = 'Bf+uvMpBdwr0JdS6m057zf9TIjfcqTHBkqNtlNtzB9Q=';
-const aesKeyIncorrect = 'lzAkEIqprIYuR3p5CqkLi+6keblQH5+AyFywj+eJlww=';
+const aesKey = "Bf+uvMpBdwr0JdS6m057zf9TIjfcqTHBkqNtlNtzB9Q=";
+const aesKeyIncorrect = "lzAkEIqprIYuR3p5CqkLi+6keblQH5+AyFywj+eJlww=";
 
 const data = "I am a secret data!";
 
@@ -76,7 +75,8 @@ describe("Crypto", () => {
             // Replace center of encrypted content to random characters
             let ciphertext = encrypted.ciphertext!;
             const replacePosition = ciphertext.length / 2;
-            encrypted.ciphertext = ciphertext.substring(0, replacePosition) + 'oRHAW7' + ciphertext.substring(replacePosition + 6);
+            encrypted.ciphertext =
+                ciphertext.substring(0, replacePosition) + "oRHAW7" + ciphertext.substring(replacePosition + 6);
 
             encrypted.key = rsaPrivateKey;
             await expect(Crypto.decrypt(encrypted)).rejects.toThrowError();
@@ -119,7 +119,8 @@ describe("Crypto", () => {
             // Replace center of encrypted content to random characters
             let ciphertext = encrypted.ciphertext!;
             const replacePosition = ciphertext.length / 2;
-            encrypted.ciphertext = ciphertext.substring(0, replacePosition) + 'oRHAW7' + ciphertext.substring(replacePosition + 6);
+            encrypted.ciphertext =
+                ciphertext.substring(0, replacePosition) + "oRHAW7" + ciphertext.substring(replacePosition + 6);
 
             encrypted.key = eccPrivateKey;
             await expect(Crypto.decrypt(encrypted)).rejects.toThrowError();
@@ -162,7 +163,8 @@ describe("Crypto", () => {
             // Replace center of encrypted content to random characters
             let ciphertext = encrypted.ciphertext!;
             const replacePosition = ciphertext.length / 2;
-            encrypted.ciphertext = ciphertext.substring(0, replacePosition) + 'oRHAW7' + ciphertext.substring(replacePosition + 6);
+            encrypted.ciphertext =
+                ciphertext.substring(0, replacePosition) + "oRHAW7" + ciphertext.substring(replacePosition + 6);
 
             encrypted.key = aesKey;
             await expect(Crypto.decrypt(encrypted)).rejects.toThrowError();

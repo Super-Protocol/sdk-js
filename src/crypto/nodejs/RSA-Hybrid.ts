@@ -1,11 +1,5 @@
 import { ReadStream, WriteStream } from "fs";
-import {
-    Cipher,
-    CryptoAlgorithm,
-    Encryption,
-    EncryptionWithMacIV,
-    RSAHybridEncryption,
-} from "@super-protocol/dto-js";
+import { Cipher, CryptoAlgorithm, Encryption, EncryptionWithMacIV, RSAHybridEncryption } from "@super-protocol/dto-js";
 import {
     createPublicKey,
     createPrivateKey,

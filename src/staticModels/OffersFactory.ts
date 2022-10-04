@@ -78,7 +78,7 @@ class OffersFactory {
                 : {
                       creator,
                       externalId,
-                      offerId: '-1',
+                      offerId: "-1",
                   };
 
         return response;

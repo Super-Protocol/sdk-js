@@ -1,16 +1,13 @@
-import {
-    getCiphers,
-    randomBytes,
-} from 'crypto';
+import { getCiphers, randomBytes } from "crypto";
 
-import NativeCrypto from '../../src/crypto/nodejs/NativeCrypto';
+import NativeCrypto from "../../src/crypto/nodejs/NativeCrypto";
 import { Encoding } from "@super-protocol/dto-js";
 
-const inputEncoding = 'binary';
+const inputEncoding = "binary";
 const outputEncoding = Encoding.base64;
 const content: string = randomBytes(16).toString(inputEncoding);
 
-describe('NativeCrypto', () => {
+describe("NativeCrypto", () => {
     for (const cipher of getCiphers()) {
         if (/wrap/.test(cipher)) {
             continue;
@@ -18,14 +15,8 @@ describe('NativeCrypto', () => {
 
         const key: Buffer = NativeCrypto.createKey(cipher);
         describe(cipher, () => {
-            it('encrypt/decrypt string', async () => {
-                const encrypted = NativeCrypto.encrypt(
-                    key,
-                    content,
-                    cipher,
-                    outputEncoding,
-                    inputEncoding,
-                );
+            it("encrypt/decrypt string", async () => {
+                const encrypted = NativeCrypto.encrypt(key, content, cipher, outputEncoding, inputEncoding);
 
                 let params: any = {};
                 if (encrypted.iv) {

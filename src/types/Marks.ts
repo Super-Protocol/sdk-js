@@ -1,5 +1,5 @@
 export enum Mark {
     None,
     Positive,
-    Negative
+    Negative,
 }

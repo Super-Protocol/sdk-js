@@ -121,7 +121,7 @@ class Offer {
     }
 
     /**
-     * Function for fetching offer hold deposit 
+     * Function for fetching offer hold deposit
      */
     public async getHoldDeposit(): Promise<string> {
         this.holdDeposit = await Offer.contract.methods.getOfferHoldDeposit(this.id).call();

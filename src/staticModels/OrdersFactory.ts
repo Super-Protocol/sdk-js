@@ -55,6 +55,16 @@ class OrdersFactory {
     }
 
     /**
+     * Function for fetching status of order change
+     * @param orderId - order for fetching hold deposit
+     */
+    public static async getOrderChangeWithdrawn(orderId: string): Promise<boolean> {
+        const contract = BlockchainConnector.getContractInstance();
+
+        return await contract.methods.getOrderChangeWithdrawn(orderId).call();
+    }
+
+    /**
      * Function for creating orders
      * @param orderInfo - order info for new order
      * @param suspended - is orders suspended

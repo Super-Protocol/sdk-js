@@ -169,8 +169,6 @@ describe("TIIGenerator", () => {
 
             const tiiObj = JSON.parse(tii);
 
-            console.log(tiiObj.tri);
-
             expect(tiiObj).toHaveProperty("encryptedResource");
             expect(tiiObj).toHaveProperty("tri");
         });

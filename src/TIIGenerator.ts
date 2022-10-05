@@ -49,7 +49,7 @@ class TIIGenerator {
         const mac = (encryption as any).authTag || (encryption as EncryptionWithMacIV).mac;
         const rawTri = {
             solutionHashes: solutionHashes.map((hash) => ({
-                type: hash.algo,
+                algo: hash.algo,
                 hash: Buffer.from(hash.hash, hash.encoding),
             })),
             mrenclave: Buffer.from(linkage.mrenclave, linkage.encoding),

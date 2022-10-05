@@ -10,10 +10,11 @@ export interface Encryption {
     ciphertext?: Uint8Array | undefined;
     iv?: Uint8Array | undefined;
     mac?: Uint8Array | undefined;
+    encoding: string;
 }
 
 export interface Hash {
-    type: string;
+    algo: string;
     hash: Uint8Array;
 }
 
@@ -25,7 +26,15 @@ export interface TRI {
 }
 
 function createBaseEncryption(): Encryption {
-    return { algo: "", key: undefined, cipher: undefined, ciphertext: undefined, iv: undefined, mac: undefined };
+    return {
+        algo: "",
+        key: undefined,
+        cipher: undefined,
+        ciphertext: undefined,
+        iv: undefined,
+        mac: undefined,
+        encoding: "",
+    };
 }
 
 export const Encryption = {
@@ -47,6 +56,9 @@ export const Encryption = {
         }
         if (message.mac !== undefined) {
             writer.uint32(58).bytes(message.mac);
+        }
+        if (message.encoding !== "") {
+            writer.uint32(66).string(message.encoding);
         }
         return writer;
     },
@@ -76,6 +88,9 @@ export const Encryption = {
                 case 7:
                     message.mac = reader.bytes();
                     break;
+                case 8:
+                    message.encoding = reader.string();
+                    break;
                 default:
                     reader.skipType(tag & 7);
                     break;
@@ -92,6 +107,7 @@ export const Encryption = {
             ciphertext: isSet(object.ciphertext) ? bytesFromBase64(object.ciphertext) : undefined,
             iv: isSet(object.iv) ? bytesFromBase64(object.iv) : undefined,
             mac: isSet(object.mac) ? bytesFromBase64(object.mac) : undefined,
+            encoding: isSet(object.encoding) ? String(object.encoding) : "",
         };
     },
 
@@ -104,6 +120,7 @@ export const Encryption = {
             (obj.ciphertext = message.ciphertext !== undefined ? base64FromBytes(message.ciphertext) : undefined);
         message.iv !== undefined && (obj.iv = message.iv !== undefined ? base64FromBytes(message.iv) : undefined);
         message.mac !== undefined && (obj.mac = message.mac !== undefined ? base64FromBytes(message.mac) : undefined);
+        message.encoding !== undefined && (obj.encoding = message.encoding);
         return obj;
     },
 
@@ -115,18 +132,19 @@ export const Encryption = {
         message.ciphertext = object.ciphertext ?? undefined;
         message.iv = object.iv ?? undefined;
         message.mac = object.mac ?? undefined;
+        message.encoding = object.encoding ?? "";
         return message;
     },
 };
 
 function createBaseHash(): Hash {
-    return { type: "", hash: new Uint8Array() };
+    return { algo: "", hash: new Uint8Array() };
 }
 
 export const Hash = {
     encode(message: Hash, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-        if (message.type !== "") {
-            writer.uint32(10).string(message.type);
+        if (message.algo !== "") {
+            writer.uint32(10).string(message.algo);
         }
         if (message.hash.length !== 0) {
             writer.uint32(18).bytes(message.hash);
@@ -142,7 +160,7 @@ export const Hash = {
             const tag = reader.uint32();
             switch (tag >>> 3) {
                 case 1:
-                    message.type = reader.string();
+                    message.algo = reader.string();
                     break;
                 case 2:
                     message.hash = reader.bytes();
@@ -157,14 +175,14 @@ export const Hash = {
 
     fromJSON(object: any): Hash {
         return {
-            type: isSet(object.type) ? String(object.type) : "",
+            algo: isSet(object.algo) ? String(object.algo) : "",
             hash: isSet(object.hash) ? bytesFromBase64(object.hash) : new Uint8Array(),
         };
     },
 
     toJSON(message: Hash): unknown {
         const obj: any = {};
-        message.type !== undefined && (obj.type = message.type);
+        message.algo !== undefined && (obj.algo = message.algo);
         message.hash !== undefined &&
             (obj.hash = base64FromBytes(message.hash !== undefined ? message.hash : new Uint8Array()));
         return obj;
@@ -172,7 +190,7 @@ export const Hash = {
 
     fromPartial<I extends Exact<DeepPartial<Hash>, I>>(object: I): Hash {
         const message = createBaseHash();
-        message.type = object.type ?? "";
+        message.algo = object.algo ?? "";
         message.hash = object.hash ?? new Uint8Array();
         return message;
     },

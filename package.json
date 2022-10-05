@@ -1,6 +1,6 @@
 {
   "name": "@super-protocol/sdk-js",
-  "version": "0.10.2-beta.4",
+  "version": "0.10.3-beta.0",
   "main": "build/index.js",
   "license": "MIT",
   "files": [

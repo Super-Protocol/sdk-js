@@ -1,6 +1,5 @@
 /* eslint-disable */
-import Long from "long";
-import * as _m0 from "protobufjs/minimal";
+import _m0 from "protobufjs/minimal";
 
 export const protobufPackage = "";
 
@@ -11,7 +10,6 @@ export interface Encryption {
     ciphertext?: Uint8Array | undefined;
     iv?: Uint8Array | undefined;
     mac?: Uint8Array | undefined;
-    encoding: string;
 }
 
 export interface Hash {
@@ -27,15 +25,7 @@ export interface TRI {
 }
 
 function createBaseEncryption(): Encryption {
-    return {
-        algo: "",
-        key: undefined,
-        cipher: undefined,
-        ciphertext: undefined,
-        iv: undefined,
-        mac: undefined,
-        encoding: "",
-    };
+    return { algo: "", key: undefined, cipher: undefined, ciphertext: undefined, iv: undefined, mac: undefined };
 }
 
 export const Encryption = {
@@ -57,9 +47,6 @@ export const Encryption = {
         }
         if (message.mac !== undefined) {
             writer.uint32(58).bytes(message.mac);
-        }
-        if (message.encoding !== "") {
-            writer.uint32(66).string(message.encoding);
         }
         return writer;
     },
@@ -89,9 +76,6 @@ export const Encryption = {
                 case 7:
                     message.mac = reader.bytes();
                     break;
-                case 8:
-                    message.encoding = reader.string();
-                    break;
                 default:
                     reader.skipType(tag & 7);
                     break;
@@ -108,7 +92,6 @@ export const Encryption = {
             ciphertext: isSet(object.ciphertext) ? bytesFromBase64(object.ciphertext) : undefined,
             iv: isSet(object.iv) ? bytesFromBase64(object.iv) : undefined,
             mac: isSet(object.mac) ? bytesFromBase64(object.mac) : undefined,
-            encoding: isSet(object.encoding) ? String(object.encoding) : "",
         };
     },
 
@@ -121,7 +104,6 @@ export const Encryption = {
             (obj.ciphertext = message.ciphertext !== undefined ? base64FromBytes(message.ciphertext) : undefined);
         message.iv !== undefined && (obj.iv = message.iv !== undefined ? base64FromBytes(message.iv) : undefined);
         message.mac !== undefined && (obj.mac = message.mac !== undefined ? base64FromBytes(message.mac) : undefined);
-        message.encoding !== undefined && (obj.encoding = message.encoding);
         return obj;
     },
 
@@ -133,7 +115,6 @@ export const Encryption = {
         message.ciphertext = object.ciphertext ?? undefined;
         message.iv = object.iv ?? undefined;
         message.mac = object.mac ?? undefined;
-        message.encoding = object.encoding ?? "";
         return message;
     },
 };
@@ -295,25 +276,29 @@ var globalThis: any = (() => {
     throw "Unable to locate global object";
 })();
 
-const atob: (b64: string) => string =
-    globalThis.atob || ((b64) => globalThis.Buffer.from(b64, "base64").toString("binary"));
 function bytesFromBase64(b64: string): Uint8Array {
-    const bin = atob(b64);
-    const arr = new Uint8Array(bin.length);
-    for (let i = 0; i < bin.length; ++i) {
-        arr[i] = bin.charCodeAt(i);
+    if (globalThis.Buffer) {
+        return Uint8Array.from(globalThis.Buffer.from(b64, "base64"));
+    } else {
+        const bin = globalThis.atob(b64);
+        const arr = new Uint8Array(bin.length);
+        for (let i = 0; i < bin.length; ++i) {
+            arr[i] = bin.charCodeAt(i);
+        }
+        return arr;
     }
-    return arr;
 }
 
-const btoa: (bin: string) => string =
-    globalThis.btoa || ((bin) => globalThis.Buffer.from(bin, "binary").toString("base64"));
 function base64FromBytes(arr: Uint8Array): string {
-    const bin: string[] = [];
-    arr.forEach((byte) => {
-        bin.push(String.fromCharCode(byte));
-    });
-    return btoa(bin.join(""));
+    if (globalThis.Buffer) {
+        return globalThis.Buffer.from(arr).toString("base64");
+    } else {
+        const bin: string[] = [];
+        arr.forEach((byte) => {
+            bin.push(String.fromCharCode(byte));
+        });
+        return globalThis.btoa(bin.join(""));
+    }
 }
 
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
@@ -331,12 +316,7 @@ export type DeepPartial<T> = T extends Builtin
 type KeysOfUnion<T> = T extends T ? keyof T : never;
 export type Exact<P, I extends P> = P extends Builtin
     ? P
-    : P & { [K in keyof P]: Exact<P[K], I[K]> } & Record<Exclude<keyof I, KeysOfUnion<P>>, never>;
-
-if (_m0.util.Long !== Long) {
-    _m0.util.Long = Long as any;
-    _m0.configure();
-}
+    : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
 
 function isSet(value: any): boolean {
     return value !== null && value !== undefined;

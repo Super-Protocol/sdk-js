@@ -15,6 +15,17 @@ export const checkIfInitialized = () => {
 };
 
 /**
+ * Function for checking if HTTPS connection initialized
+ * Used for batch methods
+ */
+export const checkIfHttpsInitialized = () => {
+    if (!store.web3Https)
+        throw new Error(
+            "HTTP/HTTPS connection is not initialized, needs to provide 'blockchainHttpsUrl' config parameter during 'await BlockchainConnector.init(CONFIG)' call",
+        );
+};
+
+/**
  * Function for checking if provider action account initialized (required for set methods)
  * Used in all set methods
  */

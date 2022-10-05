@@ -6,25 +6,18 @@
 yarn add @super-protocol/sdk-js
 ```
 
+## Prepare protobuf
+1. git submodule init
+   git submodule update
+
+2. Install protobuf (http://google.github.io/proto-lens/installing-protoc.html)
+
+3. yarn dto::update
+
 ## Local Dev Setup
+1. npm install uplink-nodejs
 
-1. Follow instructions to setup Decentralized Cloud Storage providers: 
-   * [StorJ](https://github.com/storj-thirdparty/uplink-nodejs)
 2. Just run ```yarn```
-
-## Update DTO
-
-1. Fetch DTO submodule changes from github
-   ```
-   git submodule foreach git pull
-   ```
-
-1. Install protobuf library for your OS
-
-1. Update TypeScript classes based on updated DTO
-   ```
-   yarn dto:update
-   ```
 
 ## Scripts
 

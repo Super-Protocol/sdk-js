@@ -273,11 +273,11 @@ class BlockchainConnector {
     ): Promise<BlockchainTransaction> {
         checkIfHttpsInitialized();
 
-        if (!lastBlock) {
-            lastBlock = await store.web3Https!.eth.getBlockNumber();
-            if (!lastBlock) {
-                lastBlock = 0;
-            }
+        const blockchainLastBlock = await store.web3Https!.eth.getBlockNumber();
+        if (lastBlock) {
+            lastBlock = Math.min(lastBlock, blockchainLastBlock);
+        } else {
+            lastBlock = blockchainLastBlock;
         }
 
         if (!startBlock) {
@@ -298,7 +298,7 @@ class BlockchainConnector {
             const blocks = await this.executeBatchAsync(batch) as BlockTransactionObject[];
 
             blocks.forEach((block: BlockTransactionObject) => {
-                if (!block.transactions) return;
+                if (!block?.transactions) return;
 
                 block.transactions.forEach((transaction) => {
                     let address: string | null = null;

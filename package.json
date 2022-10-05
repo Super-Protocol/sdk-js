@@ -25,7 +25,7 @@
     "patch": "npm version patch && npm run tag:publish",
     "minor": "npm version minor && npm run tag:publish",
     "major": "npm version major && npm run tag:publish",
-    "tag:publish": "git push origin && git push public && git push public $(git tag --points-at HEAD)",
+    "tag:publish": "git push origin && git push origin $(git tag --points-at HEAD)",
     "dto:update": "npm run dto:clean && npm run dto:generate",
     "dto:clean": "rm -rf ./src/proto/*",
     "dto:generate": "cd ./dto/src && protoc --plugin=../../node_modules/.bin/protoc-gen-ts_proto --ts_proto_opt=esModuleInterop=true --ts_proto_opt=unrecognizedEnum=false --ts_proto_out=../../src/proto ./*"

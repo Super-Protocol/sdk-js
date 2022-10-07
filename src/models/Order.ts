@@ -123,6 +123,13 @@ class Order {
     }
 
     /**
+     * Function for fetching reserve for output order
+     */
+    public async calculateOrderOutputReserve(): Promise<string> {
+        return Order.contract.methods.calculateOrderOutputReserve(this.id).call();
+    }
+
+    /**
      * Function for fetching spent deposits sum of the order and its suborders
      */
     public async calculateTotalDepositSpent(): Promise<string> {

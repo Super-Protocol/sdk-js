@@ -55,12 +55,10 @@ export type ExtendedOrderInfo = OrderInfo & {
 // Order of keys and type conversion functions for this object in blockchain contract
 export const OrderResultStructure = {
     encryptedResult: String,
-    encryptedError: String, // TODO Remove
     orderPrice: String,
 };
 export type OrderResult = {
     encryptedResult: string;
-    encryptedError: string; // TODO Remove
     orderPrice: string;
 };
 

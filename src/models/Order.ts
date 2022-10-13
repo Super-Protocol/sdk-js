@@ -84,12 +84,7 @@ class Order {
     public async getOrderResult(): Promise<OrderResult> {
         const orderInfoParams = await Order.contract.methods.getOrder(this.id).call();
 
-        // for SDK compatibility
-        const result = ["", "", orderInfoParams[2][1]];
-        if (orderInfoParams[1][4] === OrderStatus.Error) result[1] = orderInfoParams[2][0];
-        else result[0] = orderInfoParams[2][0];
-
-        return (this.orderResult = tupleToObject(result, OrderResultStructure));
+        return (this.orderResult = tupleToObject([orderInfoParams[2][0], orderInfoParams[2][1]], OrderResultStructure));
     }
 
     /**
@@ -254,18 +249,13 @@ class Order {
     /**
      * Completes order
      */
-    public async complete(
-        status: OrderStatus,
-        encryptedResult = "",
-        encryptedError = "", // for SDK compatibility
-        transactionOptions?: TransactionOptions,
-    ) {
+    public async complete(status: OrderStatus, encryptedResult = "", transactionOptions?: TransactionOptions) {
         transactionOptions ?? this.checkInitOrder(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
         await TxManager.execute(
             Order.contract.methods.completeOrder,
-            [this.id, status, status === OrderStatus.Error ? encryptedError : encryptedResult],
+            [this.id, status, encryptedResult],
             transactionOptions,
         );
     }

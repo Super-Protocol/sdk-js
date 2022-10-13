@@ -63,13 +63,15 @@ class BlockchainConnector {
         }
 
         if (/^(ws)|(wss)/.test(url)) {
+            const reconnectOptions = Object.assign({
+                auto: true,
+                delay: 5000, // ms
+                maxAttempts: 5,
+                onTimeout: false,
+            }, config.wssReconnect);
+
             this.provider = new Web3.providers.WebsocketProvider(url, {
-                reconnect: {
-                    auto: true,
-                    delay: 5000, // ms
-                    maxAttempts: 5,
-                    onTimeout: false,
-                },
+                reconnect: reconnectOptions,
             });
             store.web3 = new Web3(this.provider);
         } else {
@@ -339,6 +341,12 @@ export type Config = {
     gasPrice?: string;
     gasLimit?: number;
     gasLimitMultiplier?: number;
+    wssReconnect?: {
+        auto?: boolean;
+        delay?: number;
+        maxAttempts?: number;
+        onTimeout?: boolean;
+    };
 };
 
 export default BlockchainConnector;

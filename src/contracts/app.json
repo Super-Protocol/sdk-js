@@ -2221,6 +2221,11 @@
               "internalType": "string",
               "name": "argsPublicKey",
               "type": "string"
+            },
+            {
+              "internalType": "uint256",
+              "name": "maxDurationTimeMinutes",
+              "type": "uint256"
             }
           ],
           "internalType": "struct TeeOfferInfo",
@@ -2651,6 +2656,11 @@
                   "internalType": "string",
                   "name": "argsPublicKey",
                   "type": "string"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "maxDurationTimeMinutes",
+                  "type": "uint256"
                 }
               ],
               "internalType": "struct TeeOfferInfo",
@@ -3123,6 +3133,11 @@
                   "internalType": "string",
                   "name": "argsPublicKey",
                   "type": "string"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "maxDurationTimeMinutes",
+                  "type": "uint256"
                 }
               ],
               "internalType": "struct TeeOfferInfo",
@@ -3291,6 +3306,118 @@
         }
       ],
       "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "groupId",
+          "type": "uint256"
+        }
+      ],
+      "name": "OrdersGroupCreated",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "groupId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256[]",
+          "name": "ordersIds",
+          "type": "uint256[]"
+        }
+      ],
+      "name": "addOrdersToGroup",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256[]",
+          "name": "ordersIds",
+          "type": "uint256[]"
+        }
+      ],
+      "name": "createGroupOfOrders",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "groupId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getGroupOrders",
+      "outputs": [
+        {
+          "internalType": "uint256[]",
+          "name": "",
+          "type": "uint256[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "orderId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getOrderGroupId",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "groupId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256[]",
+          "name": "ordersIds",
+          "type": "uint256[]"
+        }
+      ],
+      "name": "removeOrdersFromGroup",
+      "outputs": [],
+      "stateMutability": "nonpayable",
       "type": "function"
     },
     {
@@ -7344,6 +7471,11 @@
                   "internalType": "string",
                   "name": "argsPublicKey",
                   "type": "string"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "maxDurationTimeMinutes",
+                  "type": "uint256"
                 }
               ],
               "internalType": "struct TeeOfferInfo",

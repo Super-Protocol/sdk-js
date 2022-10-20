@@ -9,6 +9,7 @@ export const TeeOfferInfoStructure = {
     tcb: String,
     tlb: String,
     argsPublicKey: String,
+    maxDurationTimeMinutes: String,
 };
 export type TeeOfferInfo = {
     name: string;
@@ -20,4 +21,5 @@ export type TeeOfferInfo = {
     tcb: string;
     tlb: string;
     argsPublicKey: string;
+    maxDurationTimeMinutes: string;
 };

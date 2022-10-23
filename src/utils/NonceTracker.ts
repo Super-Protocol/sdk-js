@@ -1,65 +1,80 @@
 import Web3 from "web3";
 import rootLogger from "../logger";
+import { Logger } from "pino";
 
 class NonceTracker {
-    private store: Record<string, number> = {};
-    private static logger = rootLogger.child({ className: "NonceTracker" });
+    private logger: Logger;
+    private txCount?: number;
+    private transactionsOnHold: (()=>void)[]|undefined;
+    private countOfPendingTransactions = 0;
 
-    constructor(private web3: Web3) {
-        NonceTracker.logger.trace("Created NonceTracker");
+    constructor(private web3: Web3, private address: string) {
+        this.logger = rootLogger.child({ className: "NonceTracker", address });
+        this.logger.trace("Created NonceTracker");
     }
 
-    public async initAccount(address: string): Promise<void> {
-        if (address in this.store) {
-            return;
+    public async initAccount(): Promise<void> {
+        this.txCount = await this.web3.eth.getTransactionCount(this.address);
+        this.logger.trace(`Initialized ${this.address} account with nonce: ${this.txCount}`);
+    }
+
+    public getNonce(): number {
+        if (this.txCount === undefined)
+            throw Error(`NonceTracker for address ${this.address} is not initialized`);
+
+        this.logger.trace(`Get nonce: ${this.txCount}`);
+        return this.txCount;
+    }
+
+    public consumeNonce(): number {
+        if (this.txCount === undefined)
+            throw Error(`NonceTracker for address ${this.address} is not initialized`);
+
+        this.logger.trace(`Consume nonce: ${this.txCount + 1}`);
+        return this.txCount++;
+    }
+
+    public async onTransactionStartPublishing () {
+        if (this.transactionsOnHold) {
+            await this.waitForPendingTransactions();
         }
+        this.countOfPendingTransactions++;
+    }
 
-        const txCount = await this.web3.eth.getTransactionCount(address);
-        if (address in this.store) {
-            return;
+    public onTransactionPublished () {
+        this.countOfPendingTransactions--;
+
+        if (this.countOfPendingTransactions === 0) {
+            this.sendHoldTransactions();
         }
-
-        NonceTracker.logger.trace(`Initialized ${address} account with nonce: ${txCount}`);
-
-        this.store[address] = txCount;
     }
 
-    public isManaged(address: string): boolean {
-        return address in this.store;
-    }
+    public async onTransactionError () {
+        this.countOfPendingTransactions--;
+        if (!this.transactionsOnHold) this.transactionsOnHold = [];
 
-    public async reinitialize(): Promise<void> {
-        await Promise.all(
-            Object.keys(this.store).map(async (address) => {
-                const txCount = await this.web3.eth.getTransactionCount(address);
-                NonceTracker.logger.trace(`Account ${address} has been reinitialized with nonce: ${txCount}`);
-                this.store[address] = txCount;
-            }),
-        );
-        NonceTracker.logger.trace("All accounts has been reinitialized");
-    }
-
-    private checkAccount(address: string) {
-        if (this.isManaged(address)) {
-            return;
+        if (this.countOfPendingTransactions === 0) {
+            this.sendHoldTransactions();
+        } else {
+            await this.waitForPendingTransactions();
         }
-        throw Error(`${address} account is not initialized. You must call initAccount before using it.`);
     }
 
-    public getNonce(address: string): number {
-        this.checkAccount(address);
-
-        NonceTracker.logger.trace(`Get nonce: ${this.store[address]}`);
-
-        return this.store[address];
+    private async waitForPendingTransactions () {
+        return new Promise<void>(resolve => {
+            if (!this.transactionsOnHold) return resolve();
+            this.transactionsOnHold.push(() => {
+                resolve();
+            });
+        });
     }
 
-    public consumeNonce(address: string): number {
-        this.checkAccount(address);
+    private async sendHoldTransactions () {
+        if (!this.transactionsOnHold) return;
 
-        NonceTracker.logger.trace(`Consume nonce: ${this.store[address] + 1}`);
-
-        return this.store[address]++;
+        await this.initAccount();
+        this.transactionsOnHold.forEach(callback => callback());
+        this.transactionsOnHold = undefined;
     }
 }
 

@@ -25,14 +25,11 @@ type MethodReturnType = ContractSendMethod & {
 
 class TxManager {
     private static web3: Web3;
-    private static nonceTracker: NonceTracker;
     private static logger = rootLogger.child({ className: "TxManager" });
-    private static transactionsOnHold: (() => void)[] | undefined;
-    private static countOfPendingTransactions = 0;
+    private static nonceTrackers: {[address: string]: NonceTracker} = {};
 
     public static init(web3: Web3) {
         this.web3 = web3;
-        this.nonceTracker = new NonceTracker(web3);
     }
 
     private static checkIfInitialized() {
@@ -42,7 +39,9 @@ class TxManager {
     }
 
     public static async initAccount(address: string): Promise<void> {
-        return this.nonceTracker.initAccount(address);
+        if (this.nonceTrackers[address]) return;
+        this.nonceTrackers[address] = new NonceTracker(this.web3, address);
+        await this.nonceTrackers[address].initAccount();
     }
 
     public static async execute(
@@ -69,8 +68,6 @@ class TxManager {
         checkIfInitialized();
         checkIfActionAccountInitialized(transactionOptions);
 
-        await this.onStartPublishing();
-
         const web3 = transactionOptions?.web3 || this.web3;
         const options = await createTransactionOptions({ ...transactionOptions });
         if (!options.from) {
@@ -93,14 +90,16 @@ class TxManager {
             txData.gas = Math.ceil(estimatedGas * store.gasLimitMultiplier);
         }
 
+        let nonceTracker;
         // TODO: Consider a better way to organize different strategies for publishing transactions.
-        if (!checkForUsingExternalTxManager(transactionOptions)) {
-            if (this.nonceTracker.isManaged(options.from)) {
-                txData.nonce = this.nonceTracker.consumeNonce(options.from);
-            }
+        if (!checkForUsingExternalTxManager(transactionOptions) && this.nonceTrackers[options.from]) {
+            nonceTracker = this.nonceTrackers[options.from];
+            await nonceTracker.onTransactionStartPublishing();
+            txData.nonce = nonceTracker.consumeNonce();
         }
         const signingKey = store.keys[options.from];
         try {
+            let transactionResultData;
             if (signingKey) {
                 const signed = await web3.eth.accounts.signTransaction(txData, signingKey);
                 if (!signed.rawTransaction) {
@@ -115,9 +114,7 @@ class TxManager {
                     "Publishing signed transaction",
                 );
 
-                const data = await web3.eth.sendSignedTransaction(signed.rawTransaction);
-                this.onFinishPublishing();
-                return data;
+                transactionResultData = await web3.eth.sendSignedTransaction(signed.rawTransaction);
             } else {
                 TxManager.logger.debug(
                     {
@@ -126,50 +123,16 @@ class TxManager {
                     "Publishing unsigned transaction",
                 );
 
-                const data = await web3.eth.sendTransaction(txData);
-                this.onFinishPublishing();
-                return data;
+                transactionResultData = await web3.eth.sendTransaction(txData);
             }
+
+            if (nonceTracker) nonceTracker.onTransactionPublished();
+            return transactionResultData;
         } catch (e) {
             TxManager.logger.error(e, "Error during transaction execution");
-            await this.onError();
+            if (nonceTracker) await nonceTracker.onTransactionError();
             throw e;
         }
-    }
-
-    private static async onStartPublishing() {
-        this.countOfPendingTransactions++;
-        if (!this.transactionsOnHold) return;
-
-        await this.waitForPendingTransactions();
-    }
-
-    private static async onError() {
-        this.countOfPendingTransactions--;
-        if (this.countOfPendingTransactions === 0) return;
-
-        this.transactionsOnHold = [];
-        await this.waitForPendingTransactions();
-    }
-
-    private static onFinishPublishing() {
-        this.countOfPendingTransactions--;
-
-        if (this.countOfPendingTransactions === 0 && this.transactionsOnHold) {
-            this.nonceTracker.reinitialize().then(() => {
-                this.transactionsOnHold?.forEach((callback) => callback());
-                this.transactionsOnHold = undefined;
-            });
-        }
-    }
-
-    private static async waitForPendingTransactions() {
-        await new Promise<void>((resolve) => {
-            if (!this.transactionsOnHold) return resolve();
-            this.transactionsOnHold.push(() => {
-                resolve();
-            });
-        });
     }
 }
 

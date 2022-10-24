@@ -16,6 +16,7 @@ class Consensus {
 
     private static async initializeTcbAndAssignBlocks(
         teeOfferId: string,
+        initializeTcbForce: boolean,
         transactionOptions?: TransactionOptions,
     ): Promise<TCB> {
         let tcbId = await this.getInitializedTcbId(teeOfferId);
@@ -25,7 +26,7 @@ class Consensus {
         const isFirstOffersTcb = timeInitialized == 0;
         const isCreatedMoreThenOneDayAgo = timeInitialized + ONE_DAY < +(await getTimestamp());
 
-        if (isFirstOffersTcb || isCreatedMoreThenOneDayAgo) {
+        if (isFirstOffersTcb || isCreatedMoreThenOneDayAgo || initializeTcbForce) {
             await this.initializeTcb(teeOfferId, transactionOptions);
             tcbId = await this.getInitializedTcbId(teeOfferId);
             tcb = new TCB(tcbId);
@@ -51,6 +52,7 @@ class Consensus {
      */
     public static async getListsForVerification(
         teeOfferId: string,
+        initializeTcbForce = false,
         transactionOptions?: TransactionOptions,
     ): Promise<{
         tcbId: string;
@@ -58,7 +60,7 @@ class Consensus {
     }> {
         checkIfActionAccountInitialized();
 
-        const tcb = await this.initializeTcbAndAssignBlocks(teeOfferId, transactionOptions);
+        const tcb = await this.initializeTcbAndAssignBlocks(teeOfferId, initializeTcbForce, transactionOptions);
         const { blocksIds } = await tcb.getCheckingBlocksMarks();
         const checkingTcbData = [];
 

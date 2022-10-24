@@ -32,13 +32,14 @@ const tii = JSON.stringify({
         ciphertext: 'Z9fyGL8xkIUeR9zxw9UGvn988fIhbDPy7pqRv5vlQs7dK8SFzHGR2QdmK4zovw2PsyRnfaybJi/BQV8MPmqFil/xBHlLPRxvKsosux8WqKzEGIauyJEke8dUQes6qdPLHMBOB6LfQkhFyk1akLXvSQ=='
     },
     tri: {
-        iv: 'AGiCZgstgTo5m46Lz2UOqw==',
-        ephemPublicKey: 'BL4x3ULPWFCfFBdecDA9Pri2wa8w3kfEguzJBC0S1MQ22nxVvRufvFWAsOnI+ABbc/qIt1wMqrPKCDPzv0qFZZ0=',
-        mac: 'H9ePSIWeFyErspCg0yFgiQWJ3atBIq16seVCBdPIqtw=',
-        encoding: 'base64',
-        algo: 'ECIES',
-        ciphertext: '6ewHeID9MxGW3gPujKQBeOFwzN4V4BBLpCMMRCoH2kxN+KJISOlJeNkKXEEAUTXlzKD2cmC40nTi+X552GFMQjhCHSh/3hCF73WHvc12/R9VVSmMU9O39j3TfjUDjTtO7V9VZVNYwAKAyVvpcdNFWoj2rLLyFcSM+dI0TlnQ/yk='
-    }
+        iv: "tTlVMkzHmOBzyH9OiMBn+Q==",
+        ephemPublicKey: "BDqXaiba7KB7F40K11FhgadWAheZNiutrywVWU2d1JUFXyBhe3IDWrNXZXlBRpPbAZ7SVj1F8rEc7o3ktcZNq6o=",
+        mac: "X98kEPpSk3e1X67qkI18uhIyM7OdDdmyWks0sRWlzLE=",
+        encoding: "base64",
+        algo: "ECIES",
+        ciphertext:
+            "oO8FVKJdihs8reNyVaXwrjCP57ahxWPI69XjNXon1B7VLMmQyAJJuYakYIT1rwT+c6y5+y3+UhJAmED7/sL8gCIs9lxFG/OkS4NlYMdCwD5vyVKQx4BHs3gUiyWRIooib4icG+ItByfDYdPKiuitta3B5r7MZuO752C+X+GRwcw=",
+    },
 });
 
 jest.mock("../src/models/Order", () => {

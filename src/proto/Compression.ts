@@ -9,12 +9,16 @@ export interface Compression {
 }
 
 export enum Compression_TYPE {
-    GZIP = 0,
+    Uncompressed = 0,
+    GZIP = 1,
 }
 
 export function compression_TYPEFromJSON(object: any): Compression_TYPE {
     switch (object) {
         case 0:
+        case "Uncompressed":
+            return Compression_TYPE.Uncompressed;
+        case 1:
         case "GZIP":
             return Compression_TYPE.GZIP;
         default:
@@ -24,6 +28,8 @@ export function compression_TYPEFromJSON(object: any): Compression_TYPE {
 
 export function compression_TYPEToJSON(object: Compression_TYPE): string {
     switch (object) {
+        case Compression_TYPE.Uncompressed:
+            return "Uncompressed";
         case Compression_TYPE.GZIP:
             return "GZIP";
         default:

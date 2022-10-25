@@ -9,10 +9,12 @@ import Superpro from "../staticModels/Superpro";
 import TxManager from "../utils/TxManager";
 import BlockchainConnector from "../BlockchainConnector";
 import {
+    TcbData,
     TcbStatus,
     PublicData,
     TcbEpochInfo,
     PublicDataStructure,
+    TcbStructure,
     TcbEpochInfoStructure,
     TcbVerifiedStatus,
 } from "../types/Consensus";
@@ -128,8 +130,10 @@ class TCB {
     /**
      * Function for fetching all TCB data
      */
-    public async get(): Promise<any> {
-        return this.contract.methods.getTcbById(this.tcbId).call();
+    public async get(): Promise<TcbData> {
+        const tcb = await this.contract.methods.getTcbById(this.tcbId).call();
+
+        return tupleToObject(tcb, TcbStructure);
     }
 
     /**
@@ -142,18 +146,6 @@ class TCB {
             blocksIds: tcb.utilData.checkingBlocks,
             marks: tcb.utilData.checkingBlockMarks,
         };
-    }
-
-    /**
-     * Function for fetching used TCB data
-     */
-    public async getPublicData(): Promise<PublicData> {
-        const publicDataParams = await this.contract.methods.getPublicData().call();
-
-        const publicData: PublicData = tupleToObject(publicDataParams, PublicDataStructure);
-        publicData.deviceID = Buffer.from(parseBytes32String(publicData.deviceID), "base64").toString("hex");
-
-        return publicData;
     }
 
     /**

@@ -48,9 +48,29 @@ export const TcbEpochInfoStructure = {
     index: Number,
     valid: Boolean,
 };
+
 export type TcbEpochInfo = {
     index: number;
     valid: boolean;
+};
+
+export const TcbStructure = {
+    quote: String,
+    timeInitialized: Number,
+    timeAdded: Number,
+    publicData: PublicDataStructure,
+    utilData: {},
+    status: TcbStatus,
+    epoch: TcbEpochInfoStructure,
+};
+export type TcbData = {
+    quote: string;
+    timeInitialized: number;
+    timeAdded: number;
+    publicData: PublicData;
+    utilData: any;
+    status: TcbStatus;
+    epoch: TcbEpochInfo;
 };
 
 export type EpochInfo = {

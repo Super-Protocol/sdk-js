@@ -94,6 +94,10 @@ class TeeOffer {
         return this.type!;
     }
 
+    public async isTeeOfferVerifying(): Promise<boolean> {
+        return await TeeOffer.contract.methods.isTeeOfferVerifying(this.id).call();
+    }
+
     /**
      * Function for fetching offer provider from blockchain
      */

@@ -26,28 +26,24 @@ const etlModelObj: IEtlModel = {
     },
 };
 
-const etlModelPacked =
-    "CAES/gIfiwgAAAAAAAATRY3dUqNAEEbfhWt1l4gh8S5BfhYzSMgkgDdbM0wDCcJMhoEELN990a3Svuo6fb7+3jU1CNAe9Rut7ej3XoMijCiiPb5rElreyQws3ihoFP5yft9880/nf1Db4Zdo5dp/w+jl8OfJjrTpq+KSFIB/BH+i+fENBFHlhGiXVaB+tZ0AeVtDQW4/j3eKyLtinNRMAptqj+St/WriFTRTTLfECXl8nAVW2cp1oZsqWj33fF6nI0gvpAm+wphaYp5S5tS9kUeUby6e3iLPdtn9yg9LBwlSSLYNluj++iCNIIxi/3TAz9KpPH+RpIs6gyVhMwPxRo+3nn2x4zHFBzoProMxKdna2umZUEO9PgqTUZxQEtEUCcdZ5hdz17P1w9njxT7Hc1wne/OUbyjzvc6+9C2ZJeOZKndkpOz15TbjcXlO6op1Z9cphn4hXxs8untyXQwQrYK0ILpgaCMBTEO0pp+HVYaIhfhTTG2lfUzzD+8YngLQAQAA";
-
 describe("EtlModel", () => {
     beforeEach(() => {
         jest.clearAllMocks();
     });
 
-    test("pack", async () => {
+    test("pack and unpack", async () => {
         const etlModel = new EtlModel(etlModelObj);
         const packed = await etlModel.pack();
 
-        expect(packed).toEqual(Buffer.from(etlModelPacked, "base64"));
-    });
+        expect(packed).toBeInstanceOf(Buffer);
+        expect(packed.length).toBeGreaterThan(0);
 
-    test("unpack", async () => {
-        const etlModel = await EtlModel.unpack(Buffer.from(etlModelPacked, "base64"));
+        const unpacked = await EtlModel.unpack(packed);
 
         expect({
-            type: etlModel.getType(),
-            subtype: etlModel.getSubtype(),
-            metadata: etlModel.getMetadata(),
+            type: unpacked.getType(),
+            subtype: unpacked.getSubtype(),
+            metadata: unpacked.getMetadata(),
         }).toEqual(etlModelObj);
     });
 

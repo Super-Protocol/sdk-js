@@ -7,24 +7,16 @@ const testData = {
 
 const uncompressed = Buffer.from(JSON.stringify(testData));
 
-const gzippedTestData =
-    "H4sIAAAAAAAAEzVQO27DMAy9yoPnwHCHLpnbrWsPwEh0SkC/SGQQIOjdS9XtJop83+dSLF+4L+eXbXvdttMytEu5Luflo3bOkDYsI9ZUO4YoKLOeEGoZHJTVOihKkxEcBE7iy8HRAWCxkWuEcm4OlhIkSrSiMEWii9OD9aBmZLoWAiW5Ga34VHCR7NzIMh93HymfcDMZKNVNWgQ/uAdRUqkFlhLlUA/meSRDptIvpTQ/BpMbz+6pHgFcSle8TUoyZUg3d3JklYLOrfMXl8jdg/vHvSZrLsdux5OCx2AESem/IQ9k2O0qpCjTEBp1H6yveH8Ebso2a/QOagjEwe+CNYmkE+EpWq8SucwWZ1MuGiw1mrlR912CECIP7nOba5o2aBYkXsf469Xyunz/AJQwgbjaAQAA";
-
 describe("GzipCompressor", () => {
     const gzipCompressor = new GzipCompressor();
 
-    test("compress", async () => {
+    test("compress and decompress", async () => {
         const compressed = await gzipCompressor.compress(testData);
 
         expect(compressed).toBeInstanceOf(Buffer);
         expect(compressed.byteLength).toBeLessThan(uncompressed.byteLength);
-        expect(compressed.toString("base64")).toEqual(gzippedTestData);
-    });
 
-    test("decompress", async () => {
-        const compressed = Buffer.from(gzippedTestData, "base64");
         const decompressed = await gzipCompressor.decompress(compressed);
-
         expect(decompressed).toEqual(testData);
     });
 });

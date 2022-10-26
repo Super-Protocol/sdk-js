@@ -14,7 +14,7 @@
     "prettier": "prettier --write ./src/**/* ./test/**/*",
     "lint": "eslint --ext .ts src",
     "lint:fix": "eslint --ext .ts src --fix",
-    "build": "rm -rf ./build && tsc",
+    "build": "rm -rf ./build && tsc -p ./tsconfig.build.json",
     "prepare": "npm run build",
     "docs": "typedoc src/index.ts --excludePrivate --plugin typedoc-plugin-markdown --out ./auto-docs",
     "docs-cleanup": "rm -rf auto-docs",

@@ -1,0 +1,9 @@
+{
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+        "rootDir": "src",
+        "noUnusedLocals": false, //TODO: make true after refactoring
+        "noUnusedParameters": false //TODO: make true after refactoring
+    },
+    "include": ["src/**/*"]
+}

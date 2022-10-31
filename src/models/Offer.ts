@@ -2,11 +2,11 @@ import { Contract } from "web3-eth-contract";
 import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
 import appJSON from "../contracts/app.json";
-import { checkIfActionAccountInitialized, checkIfInitialized, tupleToObject } from "../utils";
+import { checkIfActionAccountInitialized, tupleToObject } from "../utils";
 import { OfferInfo, OfferInfoStructure, OfferType } from "../types/Offer";
 import { TransactionOptions } from "../types/Web3";
 import { Origins, OriginsStructure } from "../types/Origins";
-import BlockchainConnector from "../BlockchainConnector";
+import BlockchainConnector from "../connectors/BlockchainConnector";
 import Superpro from "../staticModels/Superpro";
 import TxManager from "../utils/TxManager";
 
@@ -25,11 +25,9 @@ class Offer {
     public holdDeposit?: string;
 
     constructor(offerId: string) {
-        checkIfInitialized();
-
         this.id = offerId;
         if (!Offer.contract) {
-            Offer.contract = BlockchainConnector.getContractInstance();
+            Offer.contract = BlockchainConnector.getInstance().getContract();
         }
         this.logger = rootLogger.child({ className: "Offer", offerId: this.id });
     }
@@ -39,8 +37,6 @@ class Offer {
      */
     private checkInitOffer(transactionOptions: TransactionOptions) {
         if (transactionOptions?.web3) {
-            checkIfInitialized();
-
             return new transactionOptions.web3.eth.Contract(<AbiItem[]>appJSON.abi, Superpro.address);
         }
     }

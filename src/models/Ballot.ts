@@ -1,8 +1,8 @@
 import { Contract } from "web3-eth-contract";
 import rootLogger from "../logger";
-import { checkIfInitialized, tupleToObject } from "../utils";
+import { tupleToObject } from "../utils";
 import { BallotInfo, BallotInfoStructure } from "../types/Ballot";
-import BlockchainConnector from "../BlockchainConnector";
+import BlockchainConnector from "../connectors/BlockchainConnector";
 
 class Ballot {
     public address: string;
@@ -12,10 +12,8 @@ class Ballot {
     public ballotInfo?: BallotInfo;
 
     constructor(address: string) {
-        checkIfInitialized();
-
         this.address = address;
-        this.contract = BlockchainConnector.getContractInstance();
+        this.contract = BlockchainConnector.getInstance().getContract();
 
         this.logger = rootLogger.child({ className: "Ballot", address });
     }

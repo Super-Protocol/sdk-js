@@ -4,35 +4,51 @@ import { AbiItem } from "web3-utils";
 import { Transaction } from "web3-core";
 import appJSON from "../contracts/app.json";
 import store from "../store";
-import { checkIfActionAccountInitialized, checkIfInitialized } from "../utils";
+import { checkIfActionAccountInitialized } from "../utils";
 import { TransactionOptions, ContractEvent, BlockInfo } from "../types/Web3";
 import TxManager from "../utils/TxManager";
 
 class SuperproToken {
-    private static _address: string;
-    private static contract: Contract;
+    private static _addressHttps: string;
+    private static _addressWss: string;
+    private static contractHttps?: Contract;
+    private static contractWss?: Contract;
     private static readonly logger = rootLogger.child({ className: "SuperproToken" });
 
-    public static get address() {
-        return SuperproToken._address;
+    public static get addressHttps() {
+        return SuperproToken._addressHttps;
     }
 
-    public static set address(newAddress: string) {
-        SuperproToken._address = newAddress;
-        SuperproToken.contract = new store.web3!.eth.Contract(<AbiItem[]>appJSON.abi, SuperproToken.address);
+    public static set addressHttps(newAddress: string) {
+        SuperproToken._addressHttps = newAddress;
+        SuperproToken.contractHttps = new store.web3Https!.eth.Contract(<AbiItem[]>appJSON.abi, newAddress);
+    }
+
+    public static get addressWss() {
+        return SuperproToken._addressWss;
+    }
+
+    public static set addressWss(newAddress: string) {
+        SuperproToken._addressWss = newAddress;
+        SuperproToken.contractWss = new store.web3Wss!.eth.Contract(<AbiItem[]>appJSON.abi, newAddress);
     }
 
     /**
      * Checks if contract has been initialized, if not - initialize contract
      */
     private static checkInit(transactionOptions?: TransactionOptions) {
-        checkIfInitialized();
-
         if (transactionOptions?.web3) {
-            return new transactionOptions.web3.eth.Contract(<AbiItem[]>appJSON.abi, SuperproToken.address);
+            return new transactionOptions.web3.eth.Contract(<AbiItem[]>appJSON.abi, SuperproToken.addressHttps);
         }
 
-        return SuperproToken.contract;
+        return SuperproToken.contractHttps!;
+    }
+
+    /**
+     * Checks if contract has been initialized with socket support
+     */
+    private static checkWssInit() {
+        return SuperproToken.contractWss!;
     }
 
     /**
@@ -41,7 +57,7 @@ class SuperproToken {
     public static async balanceOf(address: string): Promise<string> {
         this.checkInit();
 
-        return await this.contract.methods.balanceOf(address).call();
+        return await this.contractHttps!.methods.balanceOf(address).call();
     }
 
     /**
@@ -50,7 +66,7 @@ class SuperproToken {
     public static async allowance(from: string, to: string): Promise<string> {
         this.checkInit();
 
-        return await this.contract.methods.allowance(from, to).call();
+        return await this.contractHttps!.methods.allowance(from, to).call();
     }
 
     /**
@@ -71,10 +87,10 @@ class SuperproToken {
             contract.methods.transfer,
             [to, amount],
             transactionOptions,
-            SuperproToken.address,
+            SuperproToken.addressHttps,
         );
 
-        return store.web3!.eth.getTransaction(receipt.transactionHash);
+        return store.web3Https!.eth.getTransaction(receipt.transactionHash);
     }
 
     /**
@@ -91,11 +107,11 @@ class SuperproToken {
         const contract = this.checkInit(transactionOptions);
         checkIfActionAccountInitialized(transactionOptions);
 
-        await TxManager.execute(contract.methods.approve, [address, amount], transactionOptions, SuperproToken.address);
+        await TxManager.execute(contract.methods.approve, [address, amount], transactionOptions, SuperproToken.addressHttps);
     }
 
     public static onTokenApprove(callback: onTokenApproveCallback, owner?: string, spender?: string): () => void {
-        const contract = this.checkInit();
+        const contract = this.checkWssInit();
         const logger = this.logger.child({ method: "onTokenApprove" });
 
         const subscription = contract.events
@@ -126,7 +142,7 @@ class SuperproToken {
     }
 
     public static onTokenTransfer(callback: onTokenTransferCallback, from?: string, to?: string): () => void {
-        const contract = this.checkInit();
+        const contract = this.checkWssInit();
         const logger = this.logger.child({ method: "onTokenTransfer" });
 
         const subscription = contract.events

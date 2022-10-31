@@ -3,8 +3,9 @@ import { checkIfActionAccountInitialized, objectToTuple } from "../utils";
 import { ProviderInfo, ProviderInfoStructure } from "../types/Provider";
 import { BigNumber } from "ethers";
 import { BlockInfo, ContractEvent, TransactionOptions } from "../types/Web3";
-import BlockchainConnector from "../BlockchainConnector";
+import BlockchainConnector from "../connectors/BlockchainConnector";
 import TxManager from "../utils/TxManager";
+import BlockchainEventsListener from "../connectors/BlockchainEventsListener";
 
 class ProviderRegistry {
     private static readonly logger = rootLogger.child({ className: "ProviderRegistry" });
@@ -15,7 +16,7 @@ class ProviderRegistry {
      * Function for fetching list of all providers addresses
      */
     public static async getAllProviders(): Promise<string[]> {
-        const contract = BlockchainConnector.getContractInstance();
+        const contract = BlockchainConnector.getInstance().getContract();
         this.providers = await contract.methods.getProvidersAuths().call();
 
         return this.providers!;
@@ -32,13 +33,13 @@ class ProviderRegistry {
      * Fetch provider security deposit by provider authority account
      */
     public static async getSecurityDeposit(providerAuthority: string): Promise<string> {
-        const contract = BlockchainConnector.getContractInstance();
+        const contract = BlockchainConnector.getInstance().getContract();
 
         return await contract.methods.getProviderSecurityDeposit(providerAuthority).call();
     }
 
     public static async isProviderRegistered(providerAuthority: string): Promise<boolean> {
-        const contract = BlockchainConnector.getContractInstance();
+        const contract = BlockchainConnector.getInstance().getContract();
 
         return await contract.methods.isProviderRegistered(providerAuthority).call();
     }
@@ -53,7 +54,7 @@ class ProviderRegistry {
         externalId = "default",
         transactionOptions?: TransactionOptions,
     ): Promise<void> {
-        const contract = BlockchainConnector.getContractInstance(transactionOptions);
+        const contract = BlockchainConnector.getInstance().getContract(transactionOptions);
         checkIfActionAccountInitialized(transactionOptions);
 
         const providerInfoParams = objectToTuple(providerInfo, ProviderInfoStructure);
@@ -67,7 +68,7 @@ class ProviderRegistry {
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
     public static async refillSecurityDeposit(amount: string, transactionOptions?: TransactionOptions): Promise<void> {
-        const contract = BlockchainConnector.getContractInstance(transactionOptions);
+        const contract = BlockchainConnector.getInstance().getContract(transactionOptions);
         checkIfActionAccountInitialized(transactionOptions);
 
         await TxManager.execute(contract.methods.refillProviderSecurityDepo, [amount], transactionOptions);
@@ -80,7 +81,7 @@ class ProviderRegistry {
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
     public static async returnSecurityDeposit(amount: string, transactionOptions?: TransactionOptions): Promise<void> {
-        const contract = BlockchainConnector.getContractInstance(transactionOptions);
+        const contract = BlockchainConnector.getInstance().getContract(transactionOptions);
         checkIfActionAccountInitialized(transactionOptions);
 
         await TxManager.execute(contract.methods.returnProviderSecurityDepo, [amount], transactionOptions);
@@ -92,7 +93,7 @@ class ProviderRegistry {
      * @return unsubscribe - unsubscribe function from event
      */
     public static onProviderRegistered(callback: onProviderRegisteredCallback): () => void {
-        const contract = BlockchainConnector.getContractInstance();
+        const contract = BlockchainEventsListener.getInstance().getContract();
         const logger = this.logger.child({ method: "onProviderRegistered" });
 
         const subscription = contract.events
@@ -120,7 +121,7 @@ class ProviderRegistry {
      * @returns unsubscribe - unsubscribe function from event
      */
     public static onProviderModified(callback: onProviderModifiedCallback): () => void {
-        const contract = BlockchainConnector.getContractInstance();
+        const contract = BlockchainEventsListener.getInstance().getContract();
         const logger = this.logger.child({ method: "onProviderModified" });
 
         const subscription = contract.events
@@ -148,7 +149,7 @@ class ProviderRegistry {
      * @returns unsubscribe - unsubscribe function from event
      */
     public static onProviderViolationRateIncremented(callback: onProviderViolationRateIncrementedCallback): () => void {
-        const contract = BlockchainConnector.getContractInstance();
+        const contract = BlockchainEventsListener.getInstance().getContract();
         const logger = this.logger.child({ method: "onProviderViolationRateIncremented" });
 
         const subscription = contract.events
@@ -177,7 +178,7 @@ class ProviderRegistry {
      * @returns unsubscribe - unsubscribe function from event
      */
     public static onProviderSecurityDepoRefilled(callback: onProviderSecurityDepoRefilledCallback): () => void {
-        const contract = BlockchainConnector.getContractInstance();
+        const contract = BlockchainEventsListener.getInstance().getContract();
         const logger = this.logger.child({ method: "onProviderSecurityDepoRefilled" });
 
         const subscription = contract.events
@@ -206,7 +207,7 @@ class ProviderRegistry {
      * @returns unsubscribe - unsubscribe function from event
      */
     public static onProviderSecurityDepoUnlocked(callback: onProviderSecurityDepoUnlockedCallback): () => void {
-        const contract = BlockchainConnector.getContractInstance();
+        const contract = BlockchainEventsListener.getInstance().getContract();
         const logger = this.logger.child({ method: "onProviderSecurityDepoUnlocked" });
 
         const subscription = contract.events

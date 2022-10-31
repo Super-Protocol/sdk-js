@@ -6,7 +6,8 @@ import { BlockInfo, ContractEvent, TransactionOptions } from "../types/Web3";
 import { OfferCreatedEvent } from "../types/Events";
 import Superpro from "./Superpro";
 import TxManager from "../utils/TxManager";
-import BlockchainConnector from "../BlockchainConnector";
+import BlockchainConnector from "../connectors/BlockchainConnector";
+import BlockchainEventsListener from "../connectors/BlockchainEventsListener";
 
 class OffersFactory {
     private static readonly logger = rootLogger.child({ className: "OffersFactory" });
@@ -21,7 +22,7 @@ class OffersFactory {
      * Function for fetching list of all offers ids
      */
     public static async getAllOffers(): Promise<string[]> {
-        const contract = BlockchainConnector.getContractInstance();
+        const contract = BlockchainConnector.getInstance().getContract();
 
         const count = await contract.methods.getOffersTotalCount().call();
         this.offers = this.offers || [];
@@ -50,7 +51,7 @@ class OffersFactory {
         externalId = "default",
         transactionOptions?: TransactionOptions,
     ): Promise<void> {
-        const contract = BlockchainConnector.getContractInstance(transactionOptions);
+        const contract = BlockchainConnector.getInstance().getContract(transactionOptions);
         checkIfActionAccountInitialized(transactionOptions);
 
         delete offerInfoV1.disabledAfter;
@@ -66,7 +67,7 @@ class OffersFactory {
     }
 
     public static async getOffer(creator: string, externalId: string): Promise<OfferCreatedEvent> {
-        const contract = BlockchainConnector.getContractInstance();
+        const contract = BlockchainConnector.getInstance().getContract();
         const filter = {
             creator,
             externalId: formatBytes32String(externalId),
@@ -90,7 +91,7 @@ class OffersFactory {
      * @return unsubscribe - unsubscribe function from event
      */
     public static onOfferCreated(callback: onOfferCreatedCallback): () => void {
-        const contract = BlockchainConnector.getContractInstance();
+        const contract = BlockchainEventsListener.getInstance().getContract();
         const logger = this.logger.child({ method: "onOfferCreated" });
 
         const subscription = contract.events
@@ -115,7 +116,7 @@ class OffersFactory {
     }
 
     public static onOfferEnabled(callback: onOfferEnabledCallback): () => void {
-        const contract = BlockchainConnector.getContractInstance();
+        const contract = BlockchainEventsListener.getInstance().getContract();
         const logger = this.logger.child({ method: "onOfferEnabled" });
 
         const subscription = contract.events
@@ -140,7 +141,7 @@ class OffersFactory {
     }
 
     public static onOfferDisabled(callback: onOfferDisbledCallback): () => void {
-        const contract = BlockchainConnector.getContractInstance();
+        const contract = BlockchainEventsListener.getInstance().getContract();
         const logger = this.logger.child({ method: "onOfferDisabled" });
 
         const subscription = contract.events

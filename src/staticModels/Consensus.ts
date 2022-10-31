@@ -1,12 +1,10 @@
-import store from "../store";
-import { Contract } from "web3-eth-contract";
 import TCB from "../models/TCB";
 import { checkIfActionAccountInitialized, getTimestamp } from "../utils";
 import { ONE_DAY } from "../constants";
-import { CheckingTcbData, TcbEpochInfo, EpochInfo } from "../types/Consensus";
+import { CheckingTcbData, EpochInfo } from "../types/Consensus";
 import { TransactionOptions } from "../types/Web3";
 import Superpro from "./Superpro";
-import BlockchainConnector from "../BlockchainConnector";
+import BlockchainConnector from "../connectors/BlockchainConnector";
 import TxManager from "../utils/TxManager";
 
 class Consensus {
@@ -38,7 +36,7 @@ class Consensus {
     }
 
     public static async initializeTcb(teeOfferId: string, transactionOptions?: TransactionOptions): Promise<void> {
-        const contract = BlockchainConnector.getContractInstance();
+        const contract = BlockchainConnector.getInstance().getContract();
         checkIfActionAccountInitialized();
 
         await TxManager.execute(contract.methods.initializeTcb, [teeOfferId], transactionOptions);
@@ -87,49 +85,49 @@ class Consensus {
      * @param teeOfferId - id of TEE offer
      * */
     public static async getInitializedTcbId(teeOfferId: string): Promise<string> {
-        const contract = BlockchainConnector.getContractInstance();
+        const contract = BlockchainConnector.getInstance().getContract();
 
         return contract.methods.getInitializedTcbId(teeOfferId).call();
     }
 
     public static async getEpochIndex(): Promise<number> {
-        const contract = BlockchainConnector.getContractInstance();
+        const contract = BlockchainConnector.getInstance().getContract();
 
         return +(await contract.methods.getEpochIndex().call());
     }
 
     public static async getEpoch(epochIndex: number): Promise<EpochInfo> {
-        const contract = BlockchainConnector.getContractInstance();
+        const contract = BlockchainConnector.getInstance().getContract();
 
         return await contract.methods.getEpoch(epochIndex).call();
     }
 
     public static async getActualTcbId(teeOfferId: string): Promise<string> {
-        const contract = BlockchainConnector.getContractInstance();
+        const contract = BlockchainConnector.getInstance().getContract();
 
         return contract.methods.getActualTcbId(teeOfferId).call();
     }
 
     public static async getSuspiciousBlockTable(): Promise<string[]> {
-        const contract = BlockchainConnector.getContractInstance();
+        const contract = BlockchainConnector.getInstance().getContract();
 
         return contract.methods.getSuspiciousBlockTable().call();
     }
 
     public static async getSuspiciousBlockTableSize(): Promise<string[]> {
-        const contract = BlockchainConnector.getContractInstance();
+        const contract = BlockchainConnector.getInstance().getContract();
 
         return contract.methods.getSuspiciousBlockTableSize().call();
     }
 
     public static async getLastBlockTable(): Promise<string[]> {
-        const contract = BlockchainConnector.getContractInstance();
+        const contract = BlockchainConnector.getInstance().getContract();
 
         return contract.methods.getLastBlockTable().call();
     }
 
     public static async getLastBlockTableSize(): Promise<string[]> {
-        const contract = BlockchainConnector.getContractInstance();
+        const contract = BlockchainConnector.getInstance().getContract();
 
         return contract.methods.getLastBlockTableSize().call();
     }

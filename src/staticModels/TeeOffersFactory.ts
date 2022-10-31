@@ -5,9 +5,10 @@ import { BlockInfo, ContractEvent, TransactionOptions } from "../types/Web3";
 import { TeeOfferInfo, TeeOfferInfoStructure } from "../types/TeeOffer";
 import { OfferType } from "../types/Offer";
 import { OfferCreatedEvent } from "../types/Events";
-import BlockchainConnector from "../BlockchainConnector";
+import BlockchainConnector from "../connectors/BlockchainConnector";
 import Superpro from "./Superpro";
 import TxManager from "../utils/TxManager";
+import BlockchainEventsListener from "../connectors/BlockchainEventsListener";
 
 class TeeOffersFactory {
     private static readonly logger = rootLogger.child({ className: "TeeOffersFactory" });
@@ -22,7 +23,7 @@ class TeeOffersFactory {
      * Function for fetching list of all TEE offers addresses
      */
     public static async getAllTeeOffers(): Promise<string[]> {
-        const contract = BlockchainConnector.getContractInstance();
+        const contract = BlockchainConnector.getInstance().getContract();
 
         const count = await contract.methods.getOffersTotalCount().call();
         this.teeOffers = this.teeOffers || [];
@@ -51,7 +52,7 @@ class TeeOffersFactory {
         externalId = "default",
         transactionOptions?: TransactionOptions,
     ): Promise<void> {
-        const contract = BlockchainConnector.getContractInstance(transactionOptions);
+        const contract = BlockchainConnector.getInstance().getContract(transactionOptions);
         checkIfActionAccountInitialized(transactionOptions);
 
         // Converts offer info to array of arrays (used in blockchain)
@@ -65,7 +66,7 @@ class TeeOffersFactory {
     }
 
     public static async getOffer(creator: string, externalId: string): Promise<OfferCreatedEvent> {
-        const contract = BlockchainConnector.getContractInstance();
+        const contract = BlockchainConnector.getInstance().getContract();
 
         const filter = {
             creator,
@@ -89,7 +90,7 @@ class TeeOffersFactory {
      * @return TEE offer id
      */
     public static getByDeviceId(deviceId: string): Promise<string> {
-        const contract = BlockchainConnector.getContractInstance();
+        const contract = BlockchainConnector.getInstance().getContract();
 
         return contract.methods.getTeeOfferByDeviceId(deviceId).call();
     }
@@ -100,7 +101,7 @@ class TeeOffersFactory {
      * @return unsubscribe - unsubscribe function from event
      */
     public static onTeeOfferCreated(callback: onTeeOfferCreatedCallback): () => void {
-        const contract = BlockchainConnector.getContractInstance();
+        const contract = BlockchainEventsListener.getInstance().getContract();
         const logger = this.logger.child({ method: "onTeeOfferCreated" });
 
         const subscription = contract.events
@@ -125,7 +126,7 @@ class TeeOffersFactory {
     }
 
     public static onTeeOfferViolationRateChanged(callback: onTeeOfferViolationRateChangedCallback): () => void {
-        const contract = BlockchainConnector.getContractInstance();
+        const contract = BlockchainEventsListener.getInstance().getContract();
         const logger = this.logger.child({ method: "onTeeOfferViolationRateChanged" });
 
         const subscription = contract.events

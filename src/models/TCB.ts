@@ -2,12 +2,12 @@ import { Contract } from "web3-eth-contract";
 import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
 import appJSON from "../contracts/app.json";
-import { checkIfActionAccountInitialized, checkIfInitialized, tupleToObject } from "../utils";
+import { checkIfActionAccountInitialized, tupleToObject } from "../utils";
 import { TransactionOptions } from "../types/Web3";
 import { formatBytes32String, parseBytes32String } from "ethers/lib/utils";
 import Superpro from "../staticModels/Superpro";
 import TxManager from "../utils/TxManager";
-import BlockchainConnector from "../BlockchainConnector";
+import BlockchainConnector from "../connectors/BlockchainConnector";
 import {
     TcbData,
     TcbStatus,
@@ -25,21 +25,17 @@ class TCB {
     private logger: typeof rootLogger;
 
     constructor(tcbId: string) {
-        checkIfInitialized();
-
         this.logger = rootLogger.child({
             className: "TCB",
             tcbId,
         });
 
         this.tcbId = tcbId;
-        this.contract = BlockchainConnector.getContractInstance();
+        this.contract = BlockchainConnector.getInstance().getContract();
     }
 
     private checkInitTcb(transactionOptions?: TransactionOptions) {
         if (transactionOptions?.web3) {
-            checkIfInitialized();
-
             return new transactionOptions.web3.eth.Contract(<AbiItem[]>appJSON.abi, Superpro.address);
         }
 

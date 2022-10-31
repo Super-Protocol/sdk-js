@@ -1,7 +1,7 @@
 import rootLogger from "../logger";
 import Superpro from "./Superpro";
 import { BigNumber } from "ethers";
-import BlockchainConnector from "../BlockchainConnector";
+import BlockchainConnector from "../connectors/BlockchainConnector";
 
 class ActiveOrders {
     private static readonly logger = rootLogger.child({ className: "ActiveOrders" });
@@ -15,7 +15,7 @@ class ActiveOrders {
      * @returns {Promise<BigNumber>}
      */
     public static async getListOfActiveOrdersSize(): Promise<BigNumber> {
-        const contract = BlockchainConnector.getContractInstance();
+        const contract = BlockchainConnector.getInstance().getContract();
 
         return await contract.methods.getListOfActiveOrdersSize().call();
     }
@@ -28,7 +28,7 @@ class ActiveOrders {
         begin?: BigNumber | number,
         end?: BigNumber | number,
     ): Promise<string[]> {
-        const contract = BlockchainConnector.getContractInstance();
+        const contract = BlockchainConnector.getInstance().getContract();
         const logger = this.logger.child({ method: "getListOfActiveOrdersRange" });
 
         begin = begin ?? 0;

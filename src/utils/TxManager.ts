@@ -7,7 +7,6 @@ import { TransactionOptions } from "../types/Web3";
 import {
     checkForUsingExternalTxManager,
     checkIfActionAccountInitialized,
-    checkIfInitialized,
     createTransactionOptions,
 } from "../utils";
 import Superpro from "../staticModels/Superpro";
@@ -65,7 +64,6 @@ class TxManager {
         transactionCall?: MethodReturnType,
     ): Promise<TransactionReceipt> {
         this.checkIfInitialized();
-        checkIfInitialized();
         checkIfActionAccountInitialized(transactionOptions);
 
         const web3 = transactionOptions?.web3 || this.web3;

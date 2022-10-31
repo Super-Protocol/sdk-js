@@ -13,11 +13,11 @@ import { ContractEvent, TransactionOptions } from "../types/Web3";
 import { AbiItem } from "web3-utils";
 import appJSON from "../contracts/app.json";
 import store from "../store";
-import { checkIfActionAccountInitialized, checkIfInitialized, objectToTuple, tupleToObject } from "../utils";
+import { checkIfActionAccountInitialized, objectToTuple, tupleToObject } from "../utils";
 import { Origins, OriginsStructure } from "../types/Origins";
 import { SubOrderCreatedEvent } from "../types/Events";
 import { formatBytes32String } from "ethers/lib/utils";
-import BlockchainConnector from "../BlockchainConnector";
+import BlockchainConnector from "../connectors/BlockchainConnector";
 import Superpro from "../staticModels/Superpro";
 import TxManager from "../utils/TxManager";
 
@@ -35,11 +35,9 @@ class Order {
     public id: string;
 
     constructor(orderId: string) {
-        checkIfInitialized();
-
         this.id = orderId;
         if (!Order.contract) {
-            Order.contract = BlockchainConnector.getContractInstance();
+            Order.contract = BlockchainConnector.getInstance().getContract();
         }
 
         this.logger = rootLogger.child({ className: "Order", orderId: this.id });
@@ -50,8 +48,6 @@ class Order {
      */
     private checkInitOrder(transactionOptions: TransactionOptions) {
         if (transactionOptions?.web3) {
-            checkIfInitialized();
-
             return new transactionOptions.web3.eth.Contract(<AbiItem[]>appJSON.abi, Superpro.address);
         }
     }

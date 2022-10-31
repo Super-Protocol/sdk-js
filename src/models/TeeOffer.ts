@@ -2,13 +2,13 @@ import { Contract } from "web3-eth-contract";
 import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
 import appJSON from "../contracts/app.json";
-import { checkIfActionAccountInitialized, checkIfInitialized, tupleToObject } from "../utils";
+import { checkIfActionAccountInitialized, tupleToObject } from "../utils";
 import { TeeOfferInfo, TeeOfferInfoStructure } from "../types/TeeOffer";
 import { TransactionOptions } from "../types/Web3";
 import { OfferType } from "../types/Offer";
 import { Origins, OriginsStructure } from "../types/Origins";
 import Superpro from "../staticModels/Superpro";
-import BlockchainConnector from "../BlockchainConnector";
+import BlockchainConnector from "../connectors/BlockchainConnector";
 import TxManager from "../utils/TxManager";
 
 class TeeOffer {
@@ -31,11 +31,9 @@ class TeeOffer {
     public isCancelable?: boolean;
 
     constructor(offerId: string) {
-        checkIfInitialized();
-
         this.id = offerId;
         if (!TeeOffer.contract) {
-            TeeOffer.contract = BlockchainConnector.getContractInstance();
+            TeeOffer.contract = BlockchainConnector.getInstance().getContract();
         }
 
         this.logger = rootLogger.child({ className: "TeeOffer" });
@@ -54,8 +52,6 @@ class TeeOffer {
      */
     private checkInitTeeOffer(transactionOptions: TransactionOptions) {
         if (transactionOptions?.web3) {
-            checkIfInitialized();
-
             return new transactionOptions.web3.eth.Contract(<AbiItem[]>appJSON.abi, Superpro.address);
         }
     }

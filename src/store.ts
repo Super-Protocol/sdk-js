@@ -2,8 +2,7 @@ import Web3 from "web3";
 import { defaultGasLimitMultiplier, defaultGasLimit } from "./constants";
 
 export type Store = {
-    isInitialized: boolean;
-    web3?: Web3;
+    web3Wss?: Web3;
     web3Https?: Web3;
     actionAccount?: string;
     gasLimit: number;
@@ -13,8 +12,7 @@ export type Store = {
 };
 
 const store: Store = {
-    isInitialized: false,
-    web3: undefined,
+    web3Wss: undefined,
     web3Https: undefined,
     actionAccount: undefined,
     gasLimit: defaultGasLimit,

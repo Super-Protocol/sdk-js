@@ -1,5 +1,6 @@
 import { ContractName, ParamName } from "../types/Superpro";
-import BlockchainConnector from "../BlockchainConnector";
+import BlockchainConnector from "../connectors/BlockchainConnector";
+import { Contract } from "web3-eth-contract";
 
 class Superpro {
     public static address: string;
@@ -11,8 +12,8 @@ class Superpro {
         return this.address;
     }
 
-    public static async getTokenAddress(): Promise<string> {
-        const contract = BlockchainConnector.getContractInstance();
+    public static async getTokenAddress(contractInstance?: Contract): Promise<string> {
+        const contract = contractInstance || BlockchainConnector.getInstance().getContract();
 
         return await contract.methods.getToken().call();
     }
@@ -21,7 +22,7 @@ class Superpro {
      * Fetching config parameter value by name
      */
     public static async getParam(name: ParamName): Promise<string> {
-        const contract = BlockchainConnector.getContractInstance();
+        const contract = BlockchainConnector.getInstance().getContract();
 
         return await contract.methods.getConfigParam(name).call();
     }

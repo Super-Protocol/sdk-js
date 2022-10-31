@@ -1,104 +1,91 @@
-import rootLogger from "./logger";
+import { BaseConnector, Config } from "./BaseConnector";
 import Web3 from "web3";
 import { BlockTransactionObject } from "web3-eth/types";
-import { HttpProviderBase, WebsocketProviderBase, errors } from "web3-core-helpers";
-import store from "./store";
+import { errors } from "web3-core-helpers";
 import {
     BLOCK_SIZE_TO_FETCH_TRANSACTION,
     POLYGON_MATIC_EVENT_PATH,
     defaultBlockchainUrl,
-} from "./constants";
-import {checkIfActionAccountInitialized, checkIfHttpsInitialized, checkIfInitialized} from "./utils";
-import { Transaction, TransactionOptions, EventData, BlockInfo } from "./types/Web3";
-import Superpro from "./staticModels/Superpro";
-import SuperproToken from "./staticModels/SuperproToken";
-import BlockchainTransaction from "./types/blockchainConnector/StorageAccess";
-import TxManager from "./utils/TxManager";
-import appJSON from "./contracts/app.json";
+} from "../constants";
+import { checkIfActionAccountInitialized } from "../utils";
+import { Transaction, TransactionOptions, EventData, BlockInfo } from "../types/Web3";
+import BlockchainTransaction from "../types/blockchainConnector/StorageAccess";
+import TxManager from "../utils/TxManager";
+import appJSON from "../contracts/app.json";
 import { TransactionReceipt } from "web3-core";
 import { Wallet } from "ethers";
-import { Contract } from "web3-eth-contract";
 import { AbiItem } from "web3-utils";
 const Jsonrpc = require('web3-core-requestmanager/src/jsonrpc');
 
+// TODO: remove this dependencies
+import store from "../store";
+import Superpro from "../staticModels/Superpro";
+import SuperproToken from "../staticModels/SuperproToken";
 
-class BlockchainConnector {
-    private static logger = rootLogger.child({ className: "BlockchainConnector" });
-    private static contract: Contract;
-    private static provider?: HttpProviderBase | WebsocketProviderBase;
-    private static providerHttps?: HttpProviderBase;
-    public static defaultActionAccount?: string;
 
-    private static async initContracts() {
-        BlockchainConnector.contract = new store.web3!.eth.Contract(<AbiItem[]>appJSON.abi, Superpro.address);
+class BlockchainConnector extends BaseConnector {
+    private defaultActionAccount?: string;
+
+    // Singleton
+    private static instance: BlockchainConnector;
+
+    private constructor() {
+        super();
     }
 
-    public static getContractInstance(transactionOptions?: TransactionOptions) {
-        checkIfInitialized();
+    public static getInstance(): BlockchainConnector {
+        if (!BlockchainConnector.instance) {
+            BlockchainConnector.instance = new BlockchainConnector();
+        }
+
+        return BlockchainConnector.instance;
+    }
+
+    // TODO: remove this
+    public getContract(transactionOptions?: TransactionOptions) {
+        this.checkIfInitialized();
 
         if (transactionOptions?.web3) {
             return new transactionOptions.web3.eth.Contract(<AbiItem[]>appJSON.abi, Superpro.address);
         }
 
-        return BlockchainConnector.contract;
+        return super.getContract();
     }
-
     /**
      * Function for connecting to blockchain
      * Used to setting up settings for blockchain connector
      * Needs to run this function before using blockchain connector
      */
-    public static async init(config: Config): Promise<void> {
+    public async initialize(config: Config): Promise<void> {
+        this.logger.trace(config, "Initializing");
+
         const url = config?.blockchainUrl || defaultBlockchainUrl;
-
-        if (config?.blockchainHttpsUrl) {
-            this.providerHttps = new Web3.providers.HttpProvider(config?.blockchainHttpsUrl);
-            store.web3Https = new Web3(this.providerHttps);
-        }
-
-        if (this.provider) {
-            if (this.provider instanceof Web3.providers.WebsocketProvider) {
-                this.provider.reset();
-            }
-        }
-
-        if (/^(ws)|(wss)/.test(url)) {
-            const reconnectOptions = Object.assign({
-                auto: true,
-                delay: 5000, // ms
-                maxAttempts: 5,
-                onTimeout: false,
-            }, config.wssReconnect);
-
-            this.provider = new Web3.providers.WebsocketProvider(url, {
-                reconnect: reconnectOptions,
-            });
-            store.web3 = new Web3(this.provider);
-        } else {
-            this.provider = new Web3.providers.HttpProvider(url);
-            store.web3 = new Web3(this.provider);
-        }
+        this.provider = new Web3.providers.HttpProvider(url);
+        store.web3Https = new Web3(this.provider);
 
         if (config?.gasPrice) store.gasPrice = config.gasPrice;
         if (config?.gasLimit) store.gasLimit = config.gasLimit;
         if (config?.gasLimitMultiplier) store.gasLimitMultiplier = config.gasLimitMultiplier;
 
         Superpro.address = config.contractAddress;
-        await this.initContracts();
+        this.contract = new store.web3Https!.eth.Contract(<AbiItem[]>appJSON.abi, Superpro.address);
 
-        TxManager.init(store.web3);
-        store.isInitialized = true;
+        TxManager.init(store.web3Https);
+        SuperproToken.addressHttps = await Superpro.getTokenAddress(this.contract);
 
-        SuperproToken.address = await Superpro.getTokenAddress();
+        this.initialized = true;
+
+        this.logger.trace("Initialized");
     }
 
     /**
      * Function for connecting provider action account
      * Needs to run this function before using any set methods in blockchain connector
      */
-    public static async initActionAccount(actionAccountKey: string, manageNonce = true): Promise<string> {
-        checkIfInitialized();
-        const actionAccount = store.web3!.eth.accounts.wallet.add(actionAccountKey).address;
+    public async initializeActionAccount(actionAccountKey: string, manageNonce = true): Promise<string> {
+        this.checkIfInitialized();
+
+        const actionAccount = store.web3Https!.eth.accounts.wallet.add(actionAccountKey).address;
         if (!store.actionAccount) store.actionAccount = actionAccount;
         if (!store.keys[actionAccount]) store.keys[actionAccount] = actionAccountKey;
         if (!this.defaultActionAccount) this.defaultActionAccount = actionAccount;
@@ -112,14 +99,14 @@ class BlockchainConnector {
     /**
      * Returns balance of blockchain platform tokens in wei
      */
-    public static async getBalance(address: string): Promise<string> {
-        checkIfInitialized();
-        return store.web3!.eth.getBalance(address);
+    public async getBalance(address: string): Promise<string> {
+        this.checkIfInitialized();
+        return store.web3Https!.eth.getBalance(address);
     }
 
-    public static async getTimestamp(): Promise<number | string> {
-        checkIfInitialized();
-        const block = await store.web3?.eth.getBlock("latest");
+    public async getTimestamp(): Promise<number | string> {
+        this.checkIfInitialized();
+        const block = await store.web3Https?.eth.getBlock("latest");
 
         return block!.timestamp;
     }
@@ -129,11 +116,11 @@ class BlockchainConnector {
      * @param txHash - transaction hash
      * @returns {Promise<EventData[]>} - Transaction events info
      */
-    public static async getTransactionEvents(txHash: string): Promise<EventData[]> {
-        checkIfInitialized();
+    public async getTransactionEvents(txHash: string): Promise<EventData[]> {
+        this.checkIfInitialized();
         const parseReceiptEvents = require("web3-parse-receipt-events");
-        const receipt = await store.web3!.eth.getTransactionReceipt(txHash);
-        const tokenEvents = parseReceiptEvents(appJSON.abi, SuperproToken.address, receipt);
+        const receipt = await store.web3Https!.eth.getTransactionReceipt(txHash);
+        const tokenEvents = parseReceiptEvents(appJSON.abi, SuperproToken.addressHttps, receipt);
         parseReceiptEvents(appJSON.abi, Superpro.address, receipt); // don't remove
         const events = Object.values(tokenEvents.events || {});
 
@@ -166,11 +153,11 @@ class BlockchainConnector {
      * @param callback - function for processing created TEE offer
      * @return unsubscribe - unsubscribe function from event
      */
-    public static async getLastBlockInfo(): Promise<BlockInfo> {
-        checkIfInitialized();
+    public async getLastBlockInfo(): Promise<BlockInfo> {
+        this.checkIfInitialized();
 
-        const index = await store.web3!.eth.getBlockNumber();
-        const hash = (await store.web3!.eth.getBlock(index)).hash;
+        const index = await store.web3Https!.eth.getBlockNumber();
+        const hash = (await store.web3Https!.eth.getBlock(index)).hash;
 
         return {
             index,
@@ -183,21 +170,21 @@ class BlockchainConnector {
      * @param txHash - transaction hash
      * @returns {Promise<TransactionReceipt>} - Transaction reciept
      */
-    public static async getTransactionReceipt(txHash: string): Promise<TransactionReceipt> {
-        checkIfInitialized();
+    public async getTransactionReceipt(txHash: string): Promise<TransactionReceipt> {
+        this.checkIfInitialized();
 
-        return store.web3!.eth.getTransactionReceipt(txHash);
+        return store.web3Https!.eth.getTransactionReceipt(txHash);
     }
 
     /**
      * Returns balance of blockchain platform tokens in wei
      */
-    public static async transfer(
+    public async transfer(
         to: string,
         amount: string,
         transactionOptions?: TransactionOptions,
     ): Promise<TransactionReceipt> {
-        checkIfInitialized();
+        this.checkIfInitialized();
         checkIfActionAccountInitialized(transactionOptions);
 
         const transaction = {
@@ -213,20 +200,20 @@ class BlockchainConnector {
      * @param address - wallet address
      * @returns {Promise<number>} - Transactions count
      */
-    public static async getTransactionCount(address: string, status?: string): Promise<number> {
-        checkIfInitialized();
+    public async getTransactionCount(address: string, status?: string): Promise<number> {
+        this.checkIfInitialized();
         if (status) {
-            return store.web3!.eth.getTransactionCount(address, status);
+            return store.web3Https!.eth.getTransactionCount(address, status);
         } else {
-            return store.web3!.eth.getTransactionCount(address);
+            return store.web3Https!.eth.getTransactionCount(address);
         }
     }
 
-    public static getAddressByKey(pk: string): string {
+    public getAddressByKey(pk: string): string {
         return new Wallet(pk).address;
     }
 
-    private static async executeBatchAsync(batch: any) {
+    private async executeBatchAsync(batch: any) {
         return new Promise((resolve, reject) => {
             var requests = batch.requests;
 
@@ -267,13 +254,13 @@ class BlockchainConnector {
      *   lastBlock, - number of last fetched block (can be used to start fetching from this block next time)
      * }>}
      */
-    public static async getTransactions(
+     public async getTransactions(
         addresses: string[],
         startBlock?: number,
         lastBlock?: number,
         batchSize: number = BLOCK_SIZE_TO_FETCH_TRANSACTION,
     ): Promise<BlockchainTransaction> {
-        checkIfHttpsInitialized();
+        this.checkIfInitialized();
 
         const blockchainLastBlock = await store.web3Https!.eth.getBlockNumber();
         if (lastBlock) {
@@ -326,27 +313,10 @@ class BlockchainConnector {
         };
     }
 
-    public static disconnect() {
-        this.provider?.disconnect(0, "");
-        if (this.providerHttps) this.providerHttps.disconnect();
-        store.isInitialized = false;
-        store.web3 = undefined;
+    public shutdown() {
+        super.shutdown();
+        store.web3Https = undefined;
     }
 }
-
-export type Config = {
-    contractAddress: string;
-    blockchainUrl?: string;
-    blockchainHttpsUrl?: string;
-    gasPrice?: string;
-    gasLimit?: number;
-    gasLimitMultiplier?: number;
-    wssReconnect?: {
-        auto?: boolean;
-        delay?: number;
-        maxAttempts?: number;
-        onTimeout?: boolean;
-    };
-};
 
 export default BlockchainConnector;

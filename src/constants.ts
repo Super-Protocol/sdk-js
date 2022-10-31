@@ -1,4 +1,4 @@
-export const defaultBlockchainUrl = "ws://127.0.0.1:8545";
+export const defaultBlockchainUrl = "http://127.0.0.1:8545";
 export const defaultGasLimit = 7000000;
 export const defaultGasPrice = "30000000000";
 export const defaultGasLimitMultiplier = 1.2;

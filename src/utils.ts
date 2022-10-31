@@ -4,35 +4,13 @@ import { isArray } from "lodash";
 import Web3 from "web3";
 
 /**
- * Function for checking if BlockchainConnector initialized (required for get and set methods)
- * Used in all models constructors
- */
-export const checkIfInitialized = () => {
-    if (!store.isInitialized)
-        throw new Error(
-            "BlockchainConnector is not initialized, needs to run 'await BlockchainConnector.init(CONFIG)' first",
-        );
-};
-
-/**
- * Function for checking if HTTPS connection initialized
- * Used for batch methods
- */
-export const checkIfHttpsInitialized = () => {
-    if (!store.web3Https)
-        throw new Error(
-            "HTTP/HTTPS connection is not initialized, needs to provide 'blockchainHttpsUrl' config parameter during 'await BlockchainConnector.init(CONFIG)' call",
-        );
-};
-
-/**
  * Function for checking if provider action account initialized (required for set methods)
  * Used in all set methods
  */
 export const checkIfActionAccountInitialized = (transactionOptions?: TransactionOptions) => {
     if (!store.actionAccount && !transactionOptions?.web3)
         throw new Error(
-            "Provider action account is not initialized, needs to run 'BlockchainConnector.initActionAccount(SECRET_KEY)' first",
+            "Provider action account is not initialized, needs to run 'BlockchainConnector.getInstance().initActionAccount(SECRET_KEY)' first",
         );
 };
 
@@ -63,7 +41,7 @@ export const createTransactionOptions = async (options?: TransactionOptions): Pr
         if (store.gasPrice) {
             options.gasPrice = store.gasPrice;
         } else {
-            const web3 = options.web3 || store.web3;
+            const web3 = options.web3 || store.web3Https;
             if (!web3) {
                 throw Error(
                     "web3 is undefined, define it in transaction options or initialize BlockchainConnector with web3 instance.",
@@ -156,8 +134,8 @@ export const objectToTuple = (data: unknown, format: Format): unknown[] => {
 };
 
 export const getTimestamp = async (): Promise<number> => {
-    const endBlockIndex = await store.web3!.eth.getBlockNumber();
-    const block = await store.web3!.eth.getBlock(endBlockIndex, true);
+    const endBlockIndex = await store.web3Https!.eth.getBlockNumber();
+    const block = await store.web3Https!.eth.getBlock(endBlockIndex, true);
 
     return Number(block.timestamp);
 };

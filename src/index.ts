@@ -1,7 +1,9 @@
-import BlockchainConnector from "./BlockchainConnector";
+import BlockchainConnector from "./connectors/BlockchainConnector";
 
 export default BlockchainConnector;
-export * from "./BlockchainConnector";
+export * from "./connectors/BlockchainConnector";
+
+export { default as BlockchainEventsListener } from "./connectors/BlockchainEventsListener";
 
 export { default as Crypto } from "./crypto";
 

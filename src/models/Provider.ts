@@ -2,12 +2,12 @@ import { Contract } from "web3-eth-contract";
 import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
 import appJSON from "../contracts/app.json";
-import { checkIfActionAccountInitialized, checkIfInitialized, tupleToObject, objectToTuple } from "../utils";
+import { checkIfActionAccountInitialized, tupleToObject, objectToTuple } from "../utils";
 import { ProviderInfo, ProviderInfoStructure } from "../types/Provider";
 import { Origins, OriginsStructure } from "../types/Origins";
 import Superpro from "../staticModels/Superpro";
 import { TransactionOptions } from "../types/Web3";
-import BlockchainConnector from "../BlockchainConnector";
+import BlockchainConnector from "../connectors/BlockchainConnector";
 import TxManager from "../utils/TxManager";
 
 class Provider {
@@ -23,11 +23,9 @@ class Provider {
     public providerId: string;
 
     constructor(providerId: string) {
-        checkIfInitialized();
-
         this.providerId = providerId;
         if (!Provider.contractProviders) {
-            Provider.contractProviders = BlockchainConnector.getContractInstance();
+            Provider.contractProviders = BlockchainConnector.getInstance().getContract();
         }
 
         this.logger = rootLogger.child({
@@ -38,8 +36,6 @@ class Provider {
 
     private checkInitProvider(transactionOptions: TransactionOptions) {
         if (transactionOptions?.web3) {
-            checkIfInitialized();
-
             return new transactionOptions.web3.eth.Contract(<AbiItem[]>appJSON.abi, Superpro.address);
         }
     }

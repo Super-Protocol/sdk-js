@@ -8,6 +8,13 @@ const mockLogger = {
 };
 jest.mock("../src/logger", () => mockLogger);
 
+const mockResourceLoader = {
+    download: jest.fn(),
+};
+jest.mock("../src/utils/resourceLoaders", () => ({
+    getResourceLoader: () => jest.fn().mockImplementation(() => mockResourceLoader),
+}));
+
 import { EtlModel } from "../src/models/EtlModel";
 
 const etlModelObj: IEtlModel = {
@@ -51,5 +58,115 @@ describe("EtlModel", () => {
         await expect(EtlModel.unpack(Buffer.alloc(5))).rejects.toThrowError();
 
         expect(mockLogger.error).toHaveBeenCalledWith("Unable to unpack EtlModel");
+    });
+    describe("downloadMetadata", () => {
+        test("downloads and parse JSON", async () => {
+            const resource = {
+                Model: { data: "int32" },
+            };
+            const etlModel = new EtlModel(etlModelObj);
+            mockResourceLoader.download.mockResolvedValueOnce(Buffer.from(JSON.stringify(resource)));
+
+            const result = await etlModel.downloadMetadata();
+
+            expect(result).toEqual(resource);
+        });
+
+        test("downloads and parse Protobuf", async () => {
+            const etlModelWithProtobuf: IEtlModel = {
+                type: EtlModelType.Custom,
+                subtype: null,
+                metadata: {
+                    resourceContentType: ResourceContentType.PROTOBUF,
+                    resource: {
+                        type: ResourceType.Url,
+                    },
+                },
+            };
+            const resource = `syntax = "proto3"; message Model {int32 data = 1;}`;
+
+            const etlModel = new EtlModel(etlModelWithProtobuf);
+            mockResourceLoader.download.mockResolvedValueOnce(Buffer.from(resource));
+
+            const result = await etlModel.downloadMetadata();
+
+            expect(result).toEqual({
+                Model: {
+                    fields: {
+                        data: {
+                            id: 1,
+                            type: "int32",
+                        },
+                    },
+                },
+            });
+        });
+
+        test("throws error if resource content type is not supported", async () => {
+            const erroredEtlModel: IEtlModel = {
+                type: EtlModelType.Custom,
+                subtype: null,
+                metadata: {
+                    resourceContentType: "XML" as unknown as ResourceContentType,
+                    resource: {
+                        type: ResourceType.Url,
+                    },
+                },
+            };
+
+            const resource = `<xml>Hello</xml>`;
+
+            const etlModel = new EtlModel(erroredEtlModel);
+            mockResourceLoader.download.mockResolvedValueOnce(Buffer.from(resource));
+
+            await expect(etlModel.downloadMetadata()).rejects.toThrowError(
+                "Error during download and parsing resource: Resource content type XML is not supported",
+            );
+        });
+
+        test("throws error if pasing an object is not possible", async () => {
+            const resource = Buffer.alloc(5);
+
+            const etlModel = new EtlModel(etlModelObj);
+            mockResourceLoader.download.mockResolvedValueOnce(resource);
+
+            await expect(etlModel.downloadMetadata()).rejects.toThrowError(
+                "Error during download and parsing resource: JSON data in incorrect",
+            );
+        });
+
+        test("throws an error if resource is empty", async () => {
+            const resource = Buffer.from("");
+
+            const etlModel = new EtlModel(etlModelObj);
+            mockResourceLoader.download.mockResolvedValueOnce(resource);
+
+            await expect(etlModel.downloadMetadata()).rejects.toThrowError(
+                expect.objectContaining({
+                    message: expect.stringContaining("Error during download and parsing resource: Resource is empty"),
+                }),
+            );
+        });
+
+        test("throws an error if protobuf message is incorrect", async () => {
+            const resource = `syntax = "proto3"; message Model {int32 data`;
+
+            const etlModel = new EtlModel({
+                ...etlModelObj,
+                metadata: {
+                    ...etlModelObj.metadata,
+                    resourceContentType: ResourceContentType.PROTOBUF,
+                },
+            });
+            mockResourceLoader.download.mockResolvedValueOnce(resource);
+
+            await expect(etlModel.downloadMetadata()).rejects.toThrowError(
+                expect.objectContaining({
+                    message: expect.stringContaining(
+                        "Error during download and parsing resource: Protobuf message is incorrect",
+                    ),
+                }),
+            );
+        });
     });
 });

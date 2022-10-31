@@ -1,9 +1,7 @@
-import rootLogger from "../logger";
 import { Compression } from "../proto/Compression";
 import { GzipCompressor, UncompressedCompressor } from "../utils/compressors";
 
 export class ModelPackager {
-    private static readonly logger = rootLogger.child({ className: ModelPackager.name });
     private static compressors = [GzipCompressor, UncompressedCompressor];
 
     /**

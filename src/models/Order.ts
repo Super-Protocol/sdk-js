@@ -20,6 +20,7 @@ import { formatBytes32String } from "ethers/lib/utils";
 import BlockchainConnector from "../connectors/BlockchainConnector";
 import Superpro from "../staticModels/Superpro";
 import TxManager from "../utils/TxManager";
+import BlockchainEventsListener from "../connectors/BlockchainEventsListener";
 
 class Order {
     private static contract: Contract;
@@ -379,7 +380,9 @@ class Order {
     public onOrderStatusUpdated(callback: onOrderStatusUpdatedCallback): () => void {
         const logger = this.logger.child({ method: "onOrderStatusUpdated" });
 
-        const subscription = Order.contract.events
+        // TODO: add ability to use this event without https provider initialization
+        const contractWss = BlockchainEventsListener.getInstance().getContract();
+        const subscription = contractWss.events
             .OrderStatusUpdated()
             .on("data", async (event: ContractEvent) => {
                 if (event.returnValues.orderId != this.id) {

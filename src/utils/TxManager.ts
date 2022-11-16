@@ -85,7 +85,23 @@ class TxManager {
                 TxManager.logger.debug({ error: e }, "Fail to calculate estimated gas");
                 estimatedGas = defaultGasLimit;
             }
-            txData.gas = Math.ceil(estimatedGas * store.gasLimitMultiplier);
+            txData.gas = estimatedGas;
+            txData.gas = Math.ceil(txData.gas * store.gasLimitMultiplier);
+            // defaultGasLimit is max gas limit
+            txData.gas = txData.gas < defaultGasLimit ? txData.gas : defaultGasLimit;
+
+            if (options.gas) {
+                if (options.gas < estimatedGas) {
+                    TxManager.logger.warn(
+                        {
+                            estimated: estimatedGas,
+                            specified: options.gas,
+                        },
+                        "Fail to calculate estimated gas",
+                    );
+                }
+                txData.gas = options.gas;
+            }
         }
 
         let nonceTracker;

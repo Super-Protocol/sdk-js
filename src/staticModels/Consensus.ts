@@ -60,7 +60,7 @@ class Consensus {
 
         const tcb = await this.initializeTcbAndAssignBlocks(teeOfferId, initializeTcbForce, transactionOptions);
         const { blocksIds } = await tcb.getCheckingBlocksMarks();
-        const checkingTcbData = [];
+        const checkingTcbData: CheckingTcbData[] = [];
 
         for (let blockIndex = 0; blockIndex < blocksIds.length; blockIndex++) {
             const tcb = new TCB(blocksIds[blockIndex]);
@@ -90,10 +90,12 @@ class Consensus {
         return contract.methods.getInitializedTcbId(teeOfferId).call();
     }
 
-    public static async getEpochIndex(): Promise<number> {
+    public static async getEpochTime(
+        time: number,
+    ): Promise<{ epochStart: number; epochEnd: number; epochIndex: number }> {
         const contract = BlockchainConnector.getInstance().getContract();
 
-        return +(await contract.methods.getEpochIndex().call());
+        return await contract.methods.getEpochTime(time).call();
     }
 
     public static async getEpoch(epochIndex: number): Promise<EpochInfo> {

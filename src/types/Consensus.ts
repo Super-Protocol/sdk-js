@@ -19,23 +19,47 @@ export type PublicData = {
     properties: string;
 };
 
+export const UtilityDataStructure = {
+    checkingBlocks: [Number],
+    checkingBlockMarks: [TcbVerifiedStatus],
+    lastBlocksTakenAmount: Number,
+    suspiciousBlocksTakenAmount: Number,
+    negative: Number,
+    positive: Number,
+    previousTcb: Number,
+    lastBlocksTaken: Boolean,
+    suspiciousBlocksTaken: Boolean,
+    assignedToEpoch: Boolean,
+    checked: Boolean,
+    rewardClaimed: Boolean,
+};
+export type UtilityData = {
+    checkingBlocks: [number];
+    checkingBlockMarks: [TcbVerifiedStatus];
+    lastBlocksTakenAmount: number;
+    suspiciousBlocksTakenAmount: number;
+    negative: number;
+    positive: number;
+    previousTcb: number;
+    lastBlocksTaken: boolean;
+    suspiciousBlocksTaken: boolean;
+    assignedToEpoch: boolean;
+    checked: boolean;
+    rewardClaimed: boolean;
+};
+
 // Order of keys and type conversion functions for this object in blockchain contract
 export const EpochStructure = {
-    startDate: Number,
-    endDate: Number,
     reward: String,
     benchmark: Number,
-    reparation: String,
-    reparationBenchmark: Number,
+    penaltyBenchmark: Number,
 };
 export type Epoch = {
-    startDate: number;
-    endDate: number;
     reward: string;
     benchmark: number;
-    reparation: string;
-    reparationBenchmark: number;
+    penaltyBenchmark: number;
 };
+
 export enum TcbStatus {
     Inited = "0",
     Completed = "1",
@@ -44,38 +68,24 @@ export enum TcbStatus {
 }
 
 // Order of keys and type conversion functions for this object in blockchain contract
-export const TcbEpochInfoStructure = {
-    index: Number,
-    valid: Boolean,
-};
-
-export type TcbEpochInfo = {
-    index: number;
-    valid: boolean;
-};
-
 export const TcbStructure = {
     quote: String,
     timeInitialized: Number,
     timeAdded: Number,
     publicData: PublicDataStructure,
-    utilData: {},
+    utilData: UtilityDataStructure,
     status: TcbStatus,
-    epoch: TcbEpochInfoStructure,
 };
 export type TcbData = {
     quote: string;
     timeInitialized: number;
     timeAdded: number;
     publicData: PublicData;
-    utilData: any;
+    utilData: UtilityData;
     status: TcbStatus;
-    epoch: TcbEpochInfo;
 };
 
 export type EpochInfo = {
-    startDate: number;
-    endDate: number;
     reward: number;
     benchmark: number;
     penaltyBenchmark: number;
@@ -86,5 +96,5 @@ export type CheckingTcbData = {
     properties: string;
     benchmark: number;
     tcbQuote: string;
-    tcbMarks: string;
+    tcbMarks: [TcbVerifiedStatus];
 };

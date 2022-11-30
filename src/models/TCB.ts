@@ -1,35 +1,19 @@
 import { Contract } from "web3-eth-contract";
-import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
 import appJSON from "../contracts/app.json";
 import { checkIfActionAccountInitialized, tupleToObject } from "../utils";
 import { TransactionOptions } from "../types/Web3";
-import { formatBytes32String, parseBytes32String } from "ethers/lib/utils";
+import { formatBytes32String } from "ethers/lib/utils";
 import Superpro from "../staticModels/Superpro";
 import TxManager from "../utils/TxManager";
 import BlockchainConnector from "../connectors/BlockchainConnector";
-import {
-    TcbData,
-    TcbStatus,
-    PublicData,
-    TcbEpochInfo,
-    PublicDataStructure,
-    TcbStructure,
-    TcbEpochInfoStructure,
-    TcbVerifiedStatus,
-} from "../types/Consensus";
+import { TcbData, TcbStatus, PublicData, TcbStructure, TcbVerifiedStatus } from "../types/Consensus";
 
 class TCB {
     public tcbId: string;
     private contract: Contract;
-    private logger: typeof rootLogger;
 
     constructor(tcbId: string) {
-        this.logger = rootLogger.child({
-            className: "TCB",
-            tcbId,
-        });
-
         this.tcbId = tcbId;
         this.contract = BlockchainConnector.getInstance().getContract();
     }
@@ -149,15 +133,6 @@ class TCB {
      */
     public async getStatus(): Promise<TcbStatus> {
         return this.contract.methods.getTcbStatus().call();
-    }
-
-    /**
-     * Function for fetching TCB status
-     */
-    public async getEpochInfo(): Promise<TcbEpochInfo> {
-        const epoch = await this.contract.methods.getEpochInfo().call();
-
-        return tupleToObject(epoch, TcbEpochInfoStructure);
     }
 }
 

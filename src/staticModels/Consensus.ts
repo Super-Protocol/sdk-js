@@ -94,8 +94,13 @@ class Consensus {
         time: number,
     ): Promise<{ epochStart: number; epochEnd: number; epochIndex: number }> {
         const contract = BlockchainConnector.getInstance().getContract();
+        const result = await contract.methods.getEpochTime(time).call();
 
-        return await contract.methods.getEpochTime(time).call();
+        return {
+            epochStart: result[0],
+            epochEnd: result[1],
+            epochIndex: result[2],
+        };
     }
 
     public static async getEpoch(epochIndex: number): Promise<EpochInfo> {

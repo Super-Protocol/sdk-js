@@ -129,6 +129,15 @@ class TxManager {
                 );
 
                 transactionResultData = await web3.eth.sendSignedTransaction(signed.rawTransaction);
+
+                TxManager.logger.debug(
+                    {
+                        txHash: signed.transactionHash,
+                        txBlockNumber: transactionResultData.blockNumber,
+                        txGasUsed: transactionResultData.gasUsed,
+                    },
+                    "Transaction result",
+                );
             } else {
                 TxManager.logger.debug(
                     {
@@ -141,6 +150,7 @@ class TxManager {
             }
 
             if (nonceTracker) nonceTracker.onTransactionPublished();
+
             return transactionResultData;
         } catch (e) {
             TxManager.logger.error(e, "Error during transaction execution");

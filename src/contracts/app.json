@@ -1458,11 +1458,6 @@
           "type": "uint8"
         },
         {
-          "internalType": "uint8",
-          "name": "",
-          "type": "uint8"
-        },
-        {
           "internalType": "uint32",
           "name": "",
           "type": "uint32"

@@ -2,7 +2,7 @@ import { Contract } from "web3-eth-contract";
 import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
 import appJSON from "../contracts/app.json";
-import { checkIfActionAccountInitialized, tupleToObject } from "../utils";
+import { checkIfActionAccountInitialized, tupleToObject, objectToTuple } from "../utils";
 import { OfferInfo, OfferInfoStructure, OfferType } from "../types/Offer";
 import { TransactionOptions } from "../types/Web3";
 import { Origins, OriginsStructure } from "../types/Origins";
@@ -42,7 +42,7 @@ class Offer {
     }
 
     /**
-     * Updates name in order info
+     * Updates name in offer info
      * @param name - new name
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
@@ -55,7 +55,7 @@ class Offer {
     }
 
     /**
-     * Updates description in order info
+     * Updates description in offer info
      * @param description - new description
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
@@ -65,6 +65,20 @@ class Offer {
 
         await TxManager.execute(Offer.contract.methods.setOfferDescription, [this.id, description], transactionOptions);
         if (this.offerInfo) this.offerInfo.description = description;
+    }
+
+    /**
+     * Updates offer info
+     * @param newInfo - new offer info
+     * @param transactionOptions - object what contains alternative action account or gas limit (optional)
+     */
+    public async setInfo(newInfo: OfferInfo, transactionOptions?: TransactionOptions): Promise<void> {
+        transactionOptions ?? this.checkInitOffer(transactionOptions!);
+        checkIfActionAccountInitialized(transactionOptions);
+
+        const newInfoTuple = objectToTuple(newInfo, OfferInfoStructure);
+        await TxManager.execute(Offer.contract.methods.setValueOfferInfo, [this.id, newInfoTuple], transactionOptions);
+        if (this.offerInfo) this.offerInfo = newInfo;
     }
 
     /**

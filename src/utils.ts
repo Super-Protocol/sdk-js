@@ -10,7 +10,7 @@ import Web3 from "web3";
 export const checkIfActionAccountInitialized = (transactionOptions?: TransactionOptions) => {
     if (!store.actionAccount && !transactionOptions?.web3)
         throw new Error(
-            "Provider action account is not initialized, needs to run 'BlockchainConnector.getInstance().initActionAccount(SECRET_KEY)' first",
+            "Provider action account is not initialized, needs to run 'BlockchainConnector.getInstance().initializeActionAccount(SECRET_KEY)' first",
         );
 };
 

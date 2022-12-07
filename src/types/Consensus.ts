@@ -13,7 +13,7 @@ export const PublicDataStructure = {
     properties: String,
 };
 export type PublicData = {
-    teeOffer: string;
+    teeOffer?: string;
     deviceID: string;
     benchmark: number;
     properties: string;
@@ -92,9 +92,10 @@ export type EpochInfo = {
 };
 
 export type CheckingTcbData = {
-    deviceID: string;
+    deviceId: string;
     properties: string;
     benchmark: number;
-    tcbQuote: string;
-    tcbMarks: [TcbVerifiedStatus];
+    quote: string;
+    marks: [TcbVerifiedStatus];
+    checkingBlocks: [number];
 };

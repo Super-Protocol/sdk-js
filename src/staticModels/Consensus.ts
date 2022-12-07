@@ -54,29 +54,30 @@ class Consensus {
         transactionOptions?: TransactionOptions,
     ): Promise<{
         tcbId: string;
-        checkingTcbData: CheckingTcbData[];
+        tcbsForVerification: CheckingTcbData[];
     }> {
         checkIfActionAccountInitialized();
 
         const tcb = await this.initializeTcbAndAssignBlocks(teeOfferId, initializeTcbForce, transactionOptions);
         const { blocksIds } = await tcb.getCheckingBlocksMarks();
-        const checkingTcbData: CheckingTcbData[] = [];
+        const tcbsForVerification: CheckingTcbData[] = [];
 
         for (let blockIndex = 0; blockIndex < blocksIds.length; blockIndex++) {
             const tcb = new TCB(blocksIds[blockIndex]);
             const tcbInfo = await tcb.get();
-            checkingTcbData.push({
-                deviceID: tcbInfo.publicData.deviceID,
+            tcbsForVerification.push({
+                deviceId: tcbInfo.publicData.deviceID,
                 properties: tcbInfo.publicData.properties,
                 benchmark: tcbInfo.publicData.benchmark,
-                tcbQuote: tcbInfo.quote,
-                tcbMarks: tcbInfo.utilData.checkingBlockMarks,
+                quote: tcbInfo.quote,
+                marks: tcbInfo.utilData.checkingBlockMarks,
+                checkingBlocks: tcbInfo.utilData.checkingBlocks,
             });
         }
 
         return {
             tcbId: tcb.tcbId,
-            checkingTcbData,
+            tcbsForVerification,
         };
     }
 

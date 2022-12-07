@@ -1792,6 +1792,40 @@
       "inputs": [
         {
           "internalType": "uint256",
+          "name": "teeOfferId",
+          "type": "uint256"
+        }
+      ],
+      "name": "isTcbCreationAvailable",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "offerNotBlocked",
+          "type": "bool"
+        },
+        {
+          "internalType": "bool",
+          "name": "newEpochStarted",
+          "type": "bool"
+        },
+        {
+          "internalType": "bool",
+          "name": "halfEpochPassed",
+          "type": "bool"
+        },
+        {
+          "internalType": "bool",
+          "name": "benchmarkVerified",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
           "name": "offerId",
           "type": "uint256"
         }

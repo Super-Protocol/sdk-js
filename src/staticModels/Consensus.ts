@@ -1,6 +1,5 @@
 import TCB from "../models/TCB";
-import { checkIfActionAccountInitialized, getTimestamp } from "../utils";
-import { ONE_DAY } from "../constants";
+import { checkIfActionAccountInitialized, tupleToObject } from "../utils";
 import { CheckingTcbData, EpochInfo } from "../types/Consensus";
 import { TransactionOptions } from "../types/Web3";
 import Superpro from "./Superpro";
@@ -14,23 +13,14 @@ class Consensus {
 
     private static async initializeTcbAndAssignBlocks(
         teeOfferId: string,
-        initializeTcbForce: boolean,
         transactionOptions?: TransactionOptions,
     ): Promise<TCB> {
-        let tcbId = await this.getInitializedTcbId(teeOfferId);
-        let tcb = new TCB(tcbId);
+        await this.initializeTcb(teeOfferId, transactionOptions);
+        const tcbId = await this.getInitializedTcbId(teeOfferId);
+        const tcb = new TCB(tcbId);
 
-        const timeInitialized: number = +(await tcb.get()).timeInitialized;
-        const isFirstOffersTcb = timeInitialized == 0;
-        const isCreatedMoreThenOneDayAgo = timeInitialized + ONE_DAY < +(await getTimestamp());
-
-        if (isFirstOffersTcb || isCreatedMoreThenOneDayAgo || initializeTcbForce) {
-            await this.initializeTcb(teeOfferId, transactionOptions);
-            tcbId = await this.getInitializedTcbId(teeOfferId);
-            tcb = new TCB(tcbId);
-            await tcb.assignLastBlocksToCheck(transactionOptions);
-            await tcb.assignSuspiciousBlocksToCheck(transactionOptions);
-        }
+        await tcb.assignLastBlocksToCheck(transactionOptions);
+        await tcb.assignSuspiciousBlocksToCheck(transactionOptions);
 
         return tcb;
     }
@@ -42,6 +32,15 @@ class Consensus {
         await TxManager.execute(contract.methods.initializeTcb, [teeOfferId], transactionOptions);
     }
 
+    public static async isTcbCreationAvailable(teeOfferId: string): Promise<boolean> {
+        const contract = BlockchainConnector.getInstance().getContract();
+        const [offerNotBlocked, newEpochStarted, halfEpochPassed, benchmarkVerified] = contract.methods
+            .isTcbCreationAvailable(teeOfferId)
+            .call();
+
+        return offerNotBlocked && newEpochStarted && halfEpochPassed && benchmarkVerified;
+    }
+
     /**
      * Function initialize TCB and returns list of anothers' TCB for their checking
      * @param teeOfferId - id of TEE offer
@@ -50,7 +49,6 @@ class Consensus {
      */
     public static async getListsForVerification(
         teeOfferId: string,
-        initializeTcbForce = false,
         transactionOptions?: TransactionOptions,
     ): Promise<{
         tcbId: string;
@@ -58,7 +56,7 @@ class Consensus {
     }> {
         checkIfActionAccountInitialized();
 
-        const tcb = await this.initializeTcbAndAssignBlocks(teeOfferId, initializeTcbForce, transactionOptions);
+        const tcb = await this.initializeTcbAndAssignBlocks(teeOfferId, transactionOptions);
         const { blocksIds } = await tcb.getCheckingBlocksMarks();
         const tcbsForVerification: CheckingTcbData[] = [];
 
@@ -95,12 +93,12 @@ class Consensus {
         time: number,
     ): Promise<{ epochStart: number; epochEnd: number; epochIndex: number }> {
         const contract = BlockchainConnector.getInstance().getContract();
-        const result = await contract.methods.getEpochTime(time).call();
+        const [epochStart, epochEnd, epochIndex] = await contract.methods.getEpochTime(time).call();
 
         return {
-            epochStart: result[0],
-            epochEnd: result[1],
-            epochIndex: result[2],
+            epochStart,
+            epochEnd,
+            epochIndex,
         };
     }
 

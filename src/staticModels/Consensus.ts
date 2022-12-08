@@ -1,11 +1,12 @@
 import TCB from "../models/TCB";
-import { checkIfActionAccountInitialized } from "../utils";
+import { checkIfActionAccountInitialized, tupleToObject } from "../utils";
 import { EpochInfo } from "../types/Consensus";
 import { TeeConfirmationBlock, GetTcbRequest } from "@super-protocol/dto-js";
 import { TransactionOptions } from "../types/Web3";
 import Superpro from "./Superpro";
 import BlockchainConnector from "../connectors/BlockchainConnector";
 import TxManager from "../utils/TxManager";
+import { ConsensusConstants, ConsensusConstantsStructure } from "../types/Consensus";
 
 class Consensus {
     public static get address(): string {
@@ -135,6 +136,13 @@ class Consensus {
         const contract = BlockchainConnector.getInstance().getContract();
 
         return contract.methods.getLastBlockTableSize().call();
+    }
+
+    public static async getConstants(): Promise<ConsensusConstants> {
+        const contract = BlockchainConnector.getInstance().getContract();
+        const response = await contract.methods.getConsensusConstants().call();
+
+        return tupleToObject(response, ConsensusConstantsStructure);
     }
 
     // TODO: get locked rewards info

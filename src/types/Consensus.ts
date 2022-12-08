@@ -90,3 +90,21 @@ export type EpochInfo = {
     benchmark: number;
     penaltyBenchmark: number;
 };
+
+export type ConsensusConstants = {
+    CONSENSUS_L1: number;
+    CONSENSUS_L2: number;
+    CONSENSUS_K: number;
+    CONSENSUS_MAX_PENALTIES: number;
+    MAX_BECHMARK_OVERRUN_PERCENT: number;
+    CONSENSUS_EPOCH_DURATION: number;
+};
+
+export const ConsensusConstantsStructure = {
+    CONSENSUS_L1: Number,
+    CONSENSUS_L2: Number,
+    CONSENSUS_K: Number,
+    CONSENSUS_MAX_PENALTIES: Number,
+    MAX_BECHMARK_OVERRUN_PERCENT: Number,
+    CONSENSUS_EPOCH_DURATION: Number,
+};

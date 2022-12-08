@@ -9,6 +9,7 @@ import Superpro from "../staticModels/Superpro";
 import { TransactionOptions } from "../types/Web3";
 import BlockchainConnector from "../connectors/BlockchainConnector";
 import TxManager from "../utils/TxManager";
+import Consensus from "../staticModels/Consensus";
 
 class Provider {
     private static contractProviders: Contract;
@@ -110,6 +111,13 @@ class Provider {
         origins.modifiedDate = +origins.modifiedDate * 1000;
 
         return (this.origins = origins);
+    }
+
+    public async isProviderBanned(): Promise<boolean> {
+        const violationRate = await this.getViolationRate();
+        const { CONSENSUS_MAX_PENALTIES } = await Consensus.getConstants();
+
+        return violationRate >= CONSENSUS_MAX_PENALTIES;
     }
 }
 

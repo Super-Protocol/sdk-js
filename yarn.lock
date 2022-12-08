@@ -1019,10 +1019,10 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
-"@super-protocol/dto-js@0.0.14":
-  version "0.0.14"
-  resolved "https://registry.yarnpkg.com/@super-protocol/dto-js/-/dto-js-0.0.14.tgz#c08adf500443a8677d135a1b6adff4a660ab0724"
-  integrity sha512-vtg9KUwE6SbrvZp2TOY+yFIhl4DGDHe+8LlCfQm7C77U9I0zclwiZTXaceEOaFJoH+940WFVLHzCTNj5iDWJzw==
+"@super-protocol/dto-js@0.0.22":
+  version "0.0.22"
+  resolved "https://registry.yarnpkg.com/@super-protocol/dto-js/-/dto-js-0.0.22.tgz#cbc04887823889c70cc5a3d059cd58f436bbda38"
+  integrity sha512-9amHMowghNrl2hw/CYFPLOa0259Ai3bgGvpGnAd3L0/utj97ef2vcJ1WiUNJBCQg5JiPhE2DkJSMfK8PxV991A==
 
 "@super-protocol/tee-lib@^0.1.2":
   version "0.1.2"

@@ -1,6 +1,7 @@
 import TCB from "../models/TCB";
-import { checkIfActionAccountInitialized, tupleToObject } from "../utils";
-import { CheckingTcbData, EpochInfo } from "../types/Consensus";
+import { checkIfActionAccountInitialized } from "../utils";
+import { EpochInfo } from "../types/Consensus";
+import { TeeConfirmationBlock, GetTcbRequest } from "@super-protocol/dto-js";
 import { TransactionOptions } from "../types/Web3";
 import Superpro from "./Superpro";
 import BlockchainConnector from "../connectors/BlockchainConnector";
@@ -50,20 +51,18 @@ class Consensus {
     public static async getListsForVerification(
         teeOfferId: string,
         transactionOptions?: TransactionOptions,
-    ): Promise<{
-        tcbId: string;
-        tcbsForVerification: CheckingTcbData[];
-    }> {
+    ): Promise<GetTcbRequest> {
         checkIfActionAccountInitialized();
 
         const tcb = await this.initializeTcbAndAssignBlocks(teeOfferId, transactionOptions);
         const { blocksIds } = await tcb.getCheckingBlocksMarks();
-        const tcbsForVerification: CheckingTcbData[] = [];
+        const tcbsForVerification: TeeConfirmationBlock[] = [];
 
         for (let blockIndex = 0; blockIndex < blocksIds.length; blockIndex++) {
             const tcb = new TCB(blocksIds[blockIndex]);
             const tcbInfo = await tcb.get();
             tcbsForVerification.push({
+                tcbId: blocksIds[blockIndex].toString(),
                 deviceId: tcbInfo.publicData.deviceID,
                 properties: tcbInfo.publicData.properties,
                 benchmark: tcbInfo.publicData.benchmark,

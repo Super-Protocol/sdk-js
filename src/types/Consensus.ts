@@ -1,8 +1,8 @@
 export enum TcbVerifiedStatus {
-    Valid = "0",
-    InvalidQuote = "1",
-    InvalidMrEnclave = "2",
-    InvalidBcbHash = "3",
+    Valid = 0,
+    InvalidQuote = 1,
+    InvalidMrEnclave = 2,
+    InvalidBcbHash = 3,
 }
 
 // Order of keys and type conversion functions for this object in blockchain contract
@@ -20,13 +20,13 @@ export type PublicData = {
 };
 
 export const UtilityDataStructure = {
-    checkingBlocks: [Number],
+    checkingBlocks: [String],
     checkingBlockMarks: [TcbVerifiedStatus],
     lastBlocksTakenAmount: Number,
     suspiciousBlocksTakenAmount: Number,
     negative: Number,
     positive: Number,
-    previousTcb: Number,
+    previousTcb: String,
     lastBlocksTaken: Boolean,
     suspiciousBlocksTaken: Boolean,
     assignedToEpoch: Boolean,
@@ -34,13 +34,13 @@ export const UtilityDataStructure = {
     rewardClaimed: Boolean,
 };
 export type UtilityData = {
-    checkingBlocks: [number];
+    checkingBlocks: [string];
     checkingBlockMarks: [TcbVerifiedStatus];
     lastBlocksTakenAmount: number;
     suspiciousBlocksTakenAmount: number;
     negative: number;
     positive: number;
-    previousTcb: number;
+    previousTcb: string;
     lastBlocksTaken: boolean;
     suspiciousBlocksTaken: boolean;
     assignedToEpoch: boolean;
@@ -89,13 +89,4 @@ export type EpochInfo = {
     reward: number;
     benchmark: number;
     penaltyBenchmark: number;
-};
-
-export type CheckingTcbData = {
-    deviceId: string;
-    properties: string;
-    benchmark: number;
-    quote: string;
-    marks: [TcbVerifiedStatus];
-    checkingBlocks: [number];
 };

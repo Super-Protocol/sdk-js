@@ -36,7 +36,7 @@ class Consensus {
 
     public static async isTcbCreationAvailable(teeOfferId: string): Promise<boolean> {
         const contract = BlockchainConnector.getInstance().getContract();
-        const [offerNotBlocked, newEpochStarted, halfEpochPassed, benchmarkVerified] = contract.methods
+        const [offerNotBlocked, newEpochStarted, halfEpochPassed, benchmarkVerified] = await contract.methods
             .isTcbCreationAvailable(teeOfferId)
             .call();
 

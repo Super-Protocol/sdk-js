@@ -50,6 +50,7 @@ class TeeOffersFactory {
         providerAuthorityAccount: string,
         teeOfferInfo: TeeOfferInfo,
         externalId = "default",
+        enabled = true,
         transactionOptions?: TransactionOptions,
     ): Promise<void> {
         const contract = BlockchainConnector.getInstance().getContract(transactionOptions);
@@ -60,7 +61,7 @@ class TeeOffersFactory {
         const formattedExternalId = formatBytes32String(externalId);
         await TxManager.execute(
             contract.methods.createTeeOffer,
-            [providerAuthorityAccount, teeOfferInfoParams, formattedExternalId],
+            [providerAuthorityAccount, teeOfferInfoParams, formattedExternalId, enabled],
             transactionOptions,
         );
     }

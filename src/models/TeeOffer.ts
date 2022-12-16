@@ -22,7 +22,7 @@ class TeeOffer {
     public type?: OfferType;
     public providerAuthority?: string;
     public provider?: string;
-    public disabledAfter?: number;
+    public enabled?: boolean;
     public tcb?: string;
     public closingPrice?: string;
     public tlbAddedTime?: number;
@@ -37,6 +37,13 @@ class TeeOffer {
         }
 
         this.logger = rootLogger.child({ className: "TeeOffer" });
+    }
+
+    /**
+     * Function for fetching offer status from the blockchain
+     */
+    public async isEnabled(): Promise<boolean> {
+        return TeeOffer.contract.methods.isOfferEnabled(this.id).call();
     }
 
     /**
@@ -92,15 +99,6 @@ class TeeOffer {
 
     public async isTeeOfferVerifying(): Promise<boolean> {
         return await TeeOffer.contract.methods.isTeeOfferVerifying(this.id).call();
-    }
-
-    /**
-     * Function for fetching offer provider from blockchain
-     */
-    public async getDisabledAfter(): Promise<number> {
-        this.disabledAfter = +(await TeeOffer.contract.methods.getOfferDisabledAfter(this.id).call());
-
-        return this.disabledAfter!;
     }
 
     /**

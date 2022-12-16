@@ -62,6 +62,3 @@ export type OfferInfo = {
     hash: string;
 };
 
-export type OfferInfoV1 = OfferInfo & {
-    disabledAfter?: number;
-};

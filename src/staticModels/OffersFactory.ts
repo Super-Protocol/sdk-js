@@ -1,6 +1,6 @@
 import rootLogger from "../logger";
 import { checkIfActionAccountInitialized, objectToTuple } from "../utils";
-import { OfferInfo, OfferInfoV1, OfferInfoStructure, OfferType } from "../types/Offer";
+import { OfferInfo, OfferInfoStructure, OfferType } from "../types/Offer";
 import { BytesLike, formatBytes32String, parseBytes32String } from "ethers/lib/utils";
 import { BlockInfo, ContractEvent, TransactionOptions } from "../types/Web3";
 import { OfferCreatedEvent } from "../types/Events";
@@ -47,21 +47,19 @@ class OffersFactory {
      */
     public static async createOffer(
         providerAuthorityAccount: string,
-        offerInfoV1: OfferInfoV1,
+        offerInfo: OfferInfo,
         externalId = "default",
+        enabled = true,
         transactionOptions?: TransactionOptions,
     ): Promise<void> {
         const contract = BlockchainConnector.getInstance().getContract(transactionOptions);
         checkIfActionAccountInitialized(transactionOptions);
 
-        delete offerInfoV1.disabledAfter;
-        const offerInfo: OfferInfo = offerInfoV1;
-
         const offerInfoParams = objectToTuple(offerInfo, OfferInfoStructure);
         const formattedExternalId = formatBytes32String(externalId);
         await TxManager.execute(
             contract.methods.createValueOffer,
-            [providerAuthorityAccount, offerInfoParams, formattedExternalId],
+            [providerAuthorityAccount, offerInfoParams, formattedExternalId, enabled],
             transactionOptions,
         );
     }

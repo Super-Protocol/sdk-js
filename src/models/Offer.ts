@@ -20,7 +20,7 @@ class Offer {
     public providerAuthority?: string;
     public origins?: Origins;
     public id: string;
-    public disabledAfter?: number;
+    public enabled?: boolean;
     public closingPrice?: string;
     public holdDeposit?: string;
 
@@ -39,6 +39,13 @@ class Offer {
         if (transactionOptions?.web3) {
             return new transactionOptions.web3.eth.Contract(<AbiItem[]>appJSON.abi, Superpro.address);
         }
+    }
+
+    /**
+     * Function for fetching offer status from blockchain
+     */
+    public async isEnabled(): Promise<number> {
+        return await Offer.contract.methods.isOfferEnabled(this.id).call();
     }
 
     /**
@@ -186,15 +193,6 @@ class Offer {
      */
     public async isRestrictedByOfferType(type: OfferType) {
         return await Offer.contract.methods.isOfferRestrictedByOfferType(this.id, type).call();
-    }
-
-    /**
-     * Function for fetching offer provider from blockchain
-     */
-    public async getDisabledAfter(): Promise<number> {
-        this.disabledAfter = +(await Offer.contract.methods.getOfferDisabledAfter(this.id).call());
-
-        return this.disabledAfter!;
     }
 }
 

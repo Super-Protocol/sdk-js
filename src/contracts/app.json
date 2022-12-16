@@ -980,32 +980,6 @@
       "type": "function"
     },
     {
-      "inputs": [],
-      "name": "getActiveOffersCurrentEventIndex",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "getActiveOffersEventsQueueLength",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
       "inputs": [
         {
           "internalType": "uint256",
@@ -1043,32 +1017,14 @@
       "type": "function"
     },
     {
-      "inputs": [],
-      "name": "isListOfActiveOffersNeedToBeUpdated",
-      "outputs": [
-        {
-          "internalType": "bool",
-          "name": "",
-          "type": "bool"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
       "inputs": [
         {
           "internalType": "uint256",
           "name": "offerId",
           "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "disabledAfter",
-          "type": "uint256"
         }
       ],
-      "name": "onOfferDisableRequest",
+      "name": "onOfferDisabled",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
@@ -1082,19 +1038,6 @@
         }
       ],
       "name": "onOfferEnabled",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "maxProcessedEvents",
-          "type": "uint256"
-        }
-      ],
-      "name": "updateListOfActiveOffers",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
@@ -2302,6 +2245,11 @@
           "internalType": "bytes32",
           "name": "externalId",
           "type": "bytes32"
+        },
+        {
+          "internalType": "bool",
+          "name": "enabled",
+          "type": "bool"
         }
       ],
       "name": "createTeeOffer",
@@ -2427,7 +2375,7 @@
         },
         {
           "internalType": "bool",
-          "name": "suspended",
+          "name": "enabled",
           "type": "bool"
         }
       ],
@@ -2458,654 +2406,6 @@
         }
       ],
       "name": "enableOffer",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "offerId",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "startDate",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "orderPrice",
-          "type": "uint256"
-        }
-      ],
-      "name": "getOfferClosingPrice",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "offerId",
-          "type": "uint256"
-        }
-      ],
-      "name": "getOfferDisabledAfter",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "offerId",
-          "type": "uint256"
-        }
-      ],
-      "name": "getOfferGroup",
-      "outputs": [
-        {
-          "internalType": "enum OfferGroup",
-          "name": "",
-          "type": "uint8"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "offerId",
-          "type": "uint256"
-        }
-      ],
-      "name": "getOfferHoldDeposit",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "offerId",
-          "type": "uint256"
-        }
-      ],
-      "name": "getOfferOrigins",
-      "outputs": [
-        {
-          "components": [
-            {
-              "internalType": "uint256",
-              "name": "createdDate",
-              "type": "uint256"
-            },
-            {
-              "internalType": "address",
-              "name": "createdBy",
-              "type": "address"
-            },
-            {
-              "internalType": "uint256",
-              "name": "modifiedDate",
-              "type": "uint256"
-            },
-            {
-              "internalType": "address",
-              "name": "modifiedBy",
-              "type": "address"
-            }
-          ],
-          "internalType": "struct Origins",
-          "name": "",
-          "type": "tuple"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "offerId",
-          "type": "uint256"
-        }
-      ],
-      "name": "getOfferProviderAuthority",
-      "outputs": [
-        {
-          "internalType": "address",
-          "name": "",
-          "type": "address"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "offerId",
-          "type": "uint256"
-        }
-      ],
-      "name": "getOfferType",
-      "outputs": [
-        {
-          "internalType": "enum OfferType",
-          "name": "",
-          "type": "uint8"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "enum OfferType",
-          "name": "offerType",
-          "type": "uint8"
-        }
-      ],
-      "name": "getOffersCountByType",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "getOffersTotalCount",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "offerId",
-          "type": "uint256"
-        }
-      ],
-      "name": "getTeeOffer",
-      "outputs": [
-        {
-          "components": [
-            {
-              "internalType": "uint256",
-              "name": "id",
-              "type": "uint256"
-            },
-            {
-              "internalType": "address",
-              "name": "providerAuth",
-              "type": "address"
-            },
-            {
-              "components": [
-                {
-                  "internalType": "string",
-                  "name": "name",
-                  "type": "string"
-                },
-                {
-                  "internalType": "string",
-                  "name": "description",
-                  "type": "string"
-                },
-                {
-                  "internalType": "string",
-                  "name": "teeType",
-                  "type": "string"
-                },
-                {
-                  "internalType": "uint32",
-                  "name": "slots",
-                  "type": "uint32"
-                },
-                {
-                  "internalType": "uint64",
-                  "name": "minTimeMinutes",
-                  "type": "uint64"
-                },
-                {
-                  "internalType": "string",
-                  "name": "properties",
-                  "type": "string"
-                },
-                {
-                  "internalType": "address",
-                  "name": "tcb",
-                  "type": "address"
-                },
-                {
-                  "internalType": "string",
-                  "name": "tlb",
-                  "type": "string"
-                },
-                {
-                  "internalType": "string",
-                  "name": "argsPublicKey",
-                  "type": "string"
-                },
-                {
-                  "internalType": "uint256",
-                  "name": "maxDurationTimeMinutes",
-                  "type": "uint256"
-                }
-              ],
-              "internalType": "struct TeeOfferInfo",
-              "name": "info",
-              "type": "tuple"
-            },
-            {
-              "internalType": "uint256",
-              "name": "disabledAfter",
-              "type": "uint256"
-            }
-          ],
-          "internalType": "struct TeeOfferData",
-          "name": "ret",
-          "type": "tuple"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "offerId",
-          "type": "uint256"
-        }
-      ],
-      "name": "getTeeOfferLastTlbAddedTime",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "offerId",
-          "type": "uint256"
-        }
-      ],
-      "name": "getValueOffer",
-      "outputs": [
-        {
-          "components": [
-            {
-              "internalType": "uint256",
-              "name": "id",
-              "type": "uint256"
-            },
-            {
-              "internalType": "address",
-              "name": "providerAuth",
-              "type": "address"
-            },
-            {
-              "components": [
-                {
-                  "internalType": "string",
-                  "name": "name",
-                  "type": "string"
-                },
-                {
-                  "internalType": "enum OfferGroup",
-                  "name": "group",
-                  "type": "uint8"
-                },
-                {
-                  "internalType": "enum OfferType",
-                  "name": "offerType",
-                  "type": "uint8"
-                },
-                {
-                  "internalType": "bool",
-                  "name": "cancelable",
-                  "type": "bool"
-                },
-                {
-                  "internalType": "string",
-                  "name": "description",
-                  "type": "string"
-                },
-                {
-                  "internalType": "uint256",
-                  "name": "holdSum",
-                  "type": "uint256"
-                },
-                {
-                  "components": [
-                    {
-                      "internalType": "uint256[]",
-                      "name": "offers",
-                      "type": "uint256[]"
-                    },
-                    {
-                      "internalType": "enum OfferType[]",
-                      "name": "types",
-                      "type": "uint8[]"
-                    }
-                  ],
-                  "internalType": "struct OfferRestrictions",
-                  "name": "restrictions",
-                  "type": "tuple"
-                },
-                {
-                  "internalType": "string",
-                  "name": "properties",
-                  "type": "string"
-                },
-                {
-                  "internalType": "uint256",
-                  "name": "maxDurationTimeMinutes",
-                  "type": "uint256"
-                },
-                {
-                  "internalType": "string",
-                  "name": "input",
-                  "type": "string"
-                },
-                {
-                  "internalType": "string",
-                  "name": "output",
-                  "type": "string"
-                },
-                {
-                  "internalType": "string",
-                  "name": "allowedArgs",
-                  "type": "string"
-                },
-                {
-                  "internalType": "address[]",
-                  "name": "allowedAccounts",
-                  "type": "address[]"
-                },
-                {
-                  "internalType": "string",
-                  "name": "argsPublicKey",
-                  "type": "string"
-                },
-                {
-                  "internalType": "string",
-                  "name": "resultResource",
-                  "type": "string"
-                },
-                {
-                  "internalType": "string",
-                  "name": "linkage",
-                  "type": "string"
-                },
-                {
-                  "internalType": "string",
-                  "name": "hash",
-                  "type": "string"
-                }
-              ],
-              "internalType": "struct ValueOfferInfo",
-              "name": "info",
-              "type": "tuple"
-            },
-            {
-              "internalType": "uint256",
-              "name": "disabledAfter",
-              "type": "uint256"
-            }
-          ],
-          "internalType": "struct ValueOfferData",
-          "name": "ret",
-          "type": "tuple"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "offerId",
-          "type": "uint256"
-        }
-      ],
-      "name": "isAutoCompleteOffer",
-      "outputs": [
-        {
-          "internalType": "bool",
-          "name": "",
-          "type": "bool"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "offerId",
-          "type": "uint256"
-        },
-        {
-          "internalType": "address",
-          "name": "consumer",
-          "type": "address"
-        }
-      ],
-      "name": "isOfferAllowedForConsumer",
-      "outputs": [
-        {
-          "internalType": "bool",
-          "name": "",
-          "type": "bool"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "offerId",
-          "type": "uint256"
-        }
-      ],
-      "name": "isOfferCancelable",
-      "outputs": [
-        {
-          "internalType": "bool",
-          "name": "",
-          "type": "bool"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "offerId",
-          "type": "uint256"
-        }
-      ],
-      "name": "isOfferEnabled",
-      "outputs": [
-        {
-          "internalType": "bool",
-          "name": "",
-          "type": "bool"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "offerId",
-          "type": "uint256"
-        }
-      ],
-      "name": "isOfferExists",
-      "outputs": [
-        {
-          "internalType": "bool",
-          "name": "",
-          "type": "bool"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "offerId",
-          "type": "uint256"
-        },
-        {
-          "internalType": "enum OfferType",
-          "name": "offerType",
-          "type": "uint8"
-        }
-      ],
-      "name": "isOfferRestrictedByOfferType",
-      "outputs": [
-        {
-          "internalType": "bool",
-          "name": "",
-          "type": "bool"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "offerId",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "otherOfferId",
-          "type": "uint256"
-        }
-      ],
-      "name": "isOfferRestrictionsPermitOtherOffer",
-      "outputs": [
-        {
-          "internalType": "bool",
-          "name": "",
-          "type": "bool"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "offerId",
-          "type": "uint256"
-        }
-      ],
-      "name": "isOfferSuspended",
-      "outputs": [
-        {
-          "internalType": "bool",
-          "name": "",
-          "type": "bool"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "offerId",
-          "type": "uint256"
-        }
-      ],
-      "name": "isTeeOfferBanned",
-      "outputs": [
-        {
-          "internalType": "bool",
-          "name": "",
-          "type": "bool"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "offerId",
-          "type": "uint256"
-        }
-      ],
-      "name": "resumeOffer",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
@@ -3373,19 +2673,6 @@
       "inputs": [
         {
           "internalType": "uint256",
-          "name": "offerId",
-          "type": "uint256"
-        }
-      ],
-      "name": "suspendOffer",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
           "name": "begin",
           "type": "uint256"
         },
@@ -3467,9 +2754,9 @@
               "type": "tuple"
             },
             {
-              "internalType": "uint256",
-              "name": "disabledAfter",
-              "type": "uint256"
+              "internalType": "bool",
+              "name": "enabled",
+              "type": "bool"
             }
           ],
           "internalType": "struct TeeOfferData[]",
@@ -3617,14 +2904,611 @@
               "type": "tuple"
             },
             {
-              "internalType": "uint256",
-              "name": "disabledAfter",
-              "type": "uint256"
+              "internalType": "bool",
+              "name": "enabled",
+              "type": "bool"
             }
           ],
           "internalType": "struct ValueOfferData[]",
           "name": "",
           "type": "tuple[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "offerId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "startDate",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "orderPrice",
+          "type": "uint256"
+        }
+      ],
+      "name": "getOfferClosingPrice",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "offerId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getOfferGroup",
+      "outputs": [
+        {
+          "internalType": "enum OfferGroup",
+          "name": "",
+          "type": "uint8"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "offerId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getOfferHoldDeposit",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "offerId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getOfferOrigins",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "createdDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "address",
+              "name": "createdBy",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "modifiedDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "address",
+              "name": "modifiedBy",
+              "type": "address"
+            }
+          ],
+          "internalType": "struct Origins",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "offerId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getOfferProviderAuthority",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "offerId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getOfferType",
+      "outputs": [
+        {
+          "internalType": "enum OfferType",
+          "name": "",
+          "type": "uint8"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "enum OfferType",
+          "name": "offerType",
+          "type": "uint8"
+        }
+      ],
+      "name": "getOffersCountByType",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getOffersTotalCount",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "offerId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getTeeOffer",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "id",
+              "type": "uint256"
+            },
+            {
+              "internalType": "address",
+              "name": "providerAuth",
+              "type": "address"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "string",
+                  "name": "name",
+                  "type": "string"
+                },
+                {
+                  "internalType": "string",
+                  "name": "description",
+                  "type": "string"
+                },
+                {
+                  "internalType": "string",
+                  "name": "teeType",
+                  "type": "string"
+                },
+                {
+                  "internalType": "uint32",
+                  "name": "slots",
+                  "type": "uint32"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "minTimeMinutes",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "string",
+                  "name": "properties",
+                  "type": "string"
+                },
+                {
+                  "internalType": "address",
+                  "name": "tcb",
+                  "type": "address"
+                },
+                {
+                  "internalType": "string",
+                  "name": "tlb",
+                  "type": "string"
+                },
+                {
+                  "internalType": "string",
+                  "name": "argsPublicKey",
+                  "type": "string"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "maxDurationTimeMinutes",
+                  "type": "uint256"
+                }
+              ],
+              "internalType": "struct TeeOfferInfo",
+              "name": "info",
+              "type": "tuple"
+            },
+            {
+              "internalType": "bool",
+              "name": "enabled",
+              "type": "bool"
+            }
+          ],
+          "internalType": "struct TeeOfferData",
+          "name": "ret",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "offerId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getTeeOfferLastTlbAddedTime",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "offerId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getValueOffer",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "id",
+              "type": "uint256"
+            },
+            {
+              "internalType": "address",
+              "name": "providerAuth",
+              "type": "address"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "string",
+                  "name": "name",
+                  "type": "string"
+                },
+                {
+                  "internalType": "enum OfferGroup",
+                  "name": "group",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "enum OfferType",
+                  "name": "offerType",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "bool",
+                  "name": "cancelable",
+                  "type": "bool"
+                },
+                {
+                  "internalType": "string",
+                  "name": "description",
+                  "type": "string"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "holdSum",
+                  "type": "uint256"
+                },
+                {
+                  "components": [
+                    {
+                      "internalType": "uint256[]",
+                      "name": "offers",
+                      "type": "uint256[]"
+                    },
+                    {
+                      "internalType": "enum OfferType[]",
+                      "name": "types",
+                      "type": "uint8[]"
+                    }
+                  ],
+                  "internalType": "struct OfferRestrictions",
+                  "name": "restrictions",
+                  "type": "tuple"
+                },
+                {
+                  "internalType": "string",
+                  "name": "properties",
+                  "type": "string"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "maxDurationTimeMinutes",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "string",
+                  "name": "input",
+                  "type": "string"
+                },
+                {
+                  "internalType": "string",
+                  "name": "output",
+                  "type": "string"
+                },
+                {
+                  "internalType": "string",
+                  "name": "allowedArgs",
+                  "type": "string"
+                },
+                {
+                  "internalType": "address[]",
+                  "name": "allowedAccounts",
+                  "type": "address[]"
+                },
+                {
+                  "internalType": "string",
+                  "name": "argsPublicKey",
+                  "type": "string"
+                },
+                {
+                  "internalType": "string",
+                  "name": "resultResource",
+                  "type": "string"
+                },
+                {
+                  "internalType": "string",
+                  "name": "linkage",
+                  "type": "string"
+                },
+                {
+                  "internalType": "string",
+                  "name": "hash",
+                  "type": "string"
+                }
+              ],
+              "internalType": "struct ValueOfferInfo",
+              "name": "info",
+              "type": "tuple"
+            },
+            {
+              "internalType": "bool",
+              "name": "enabled",
+              "type": "bool"
+            }
+          ],
+          "internalType": "struct ValueOfferData",
+          "name": "ret",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "offerId",
+          "type": "uint256"
+        }
+      ],
+      "name": "isAutoCompleteOffer",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "offerId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "address",
+          "name": "consumer",
+          "type": "address"
+        }
+      ],
+      "name": "isOfferAllowedForConsumer",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "offerId",
+          "type": "uint256"
+        }
+      ],
+      "name": "isOfferCancelable",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "offerId",
+          "type": "uint256"
+        }
+      ],
+      "name": "isOfferEnabled",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "offerId",
+          "type": "uint256"
+        }
+      ],
+      "name": "isOfferExists",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "offerId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "enum OfferType",
+          "name": "offerType",
+          "type": "uint8"
+        }
+      ],
+      "name": "isOfferRestrictedByOfferType",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "offerId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "otherOfferId",
+          "type": "uint256"
+        }
+      ],
+      "name": "isOfferRestrictionsPermitOtherOffer",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "offerId",
+          "type": "uint256"
+        }
+      ],
+      "name": "isTeeOfferBanned",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
         }
       ],
       "stateMutability": "view",
@@ -5491,9 +5375,15 @@
           "type": "address"
         }
       ],
-      "name": "gcProviderOffers",
-      "outputs": [],
-      "stateMutability": "nonpayable",
+      "name": "getProviderOffersDisabledTime",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
       "type": "function"
     },
     {
@@ -5520,51 +5410,13 @@
             },
             {
               "internalType": "uint256",
-              "name": "lastDisabledAfter",
+              "name": "disabledTime",
               "type": "uint256"
             }
           ],
           "internalType": "struct ProviderOffersState",
           "name": "",
           "type": "tuple"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "providerAuth",
-          "type": "address"
-        }
-      ],
-      "name": "getProviderRecentlyEnabledTeeOffersCount",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "providerAuth",
-          "type": "address"
-        }
-      ],
-      "name": "getProviderRecentlyEnabledValueOffersCount",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
         }
       ],
       "stateMutability": "view",
@@ -5678,11 +5530,6 @@
           "type": "address"
         },
         {
-          "internalType": "uint256",
-          "name": "offerId",
-          "type": "uint256"
-        },
-        {
           "internalType": "enum OfferType",
           "name": "offerType",
           "type": "uint8"
@@ -5691,11 +5538,6 @@
           "internalType": "bool",
           "name": "enabled",
           "type": "bool"
-        },
-        {
-          "internalType": "uint256",
-          "name": "disabledAfter",
-          "type": "uint256"
         }
       ],
       "name": "setProviderOfferState",
@@ -7514,14 +7356,9 @@
           "internalType": "uint256",
           "name": "offerId",
           "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "disableAfter",
-          "type": "uint256"
         }
       ],
-      "name": "onOfferDisableRequest",
+      "name": "onOfferDisabled",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
@@ -7909,42 +7746,6 @@
     {
       "inputs": [
         {
-          "internalType": "address",
-          "name": "providerAuth",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "offerId",
-          "type": "uint256"
-        },
-        {
-          "internalType": "enum OfferType",
-          "name": "offerType",
-          "type": "uint8"
-        }
-      ],
-      "name": "addProviderOffer",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "providerAuth",
-          "type": "address"
-        }
-      ],
-      "name": "gcProviderOffers",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
           "internalType": "uint256",
           "name": "offerId",
           "type": "uint256"
@@ -7961,25 +7762,6 @@
         }
       ],
       "name": "getOfferClosingPrice",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "offerId",
-          "type": "uint256"
-        }
-      ],
-      "name": "getOfferDisabledAfter",
       "outputs": [
         {
           "internalType": "uint256",
@@ -8061,6 +7843,19 @@
           "internalType": "enum OfferType",
           "name": "",
           "type": "uint8"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getOffersTotalCount",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
         }
       ],
       "stateMutability": "view",
@@ -8170,9 +7965,9 @@
               "type": "tuple"
             },
             {
-              "internalType": "uint256",
-              "name": "disabledAfter",
-              "type": "uint256"
+              "internalType": "bool",
+              "name": "enabled",
+              "type": "bool"
             }
           ],
           "internalType": "struct TeeOfferData",
@@ -8310,9 +8105,9 @@
               "type": "tuple"
             },
             {
-              "internalType": "uint256",
-              "name": "disabledAfter",
-              "type": "uint256"
+              "internalType": "bool",
+              "name": "enabled",
+              "type": "bool"
             }
           ],
           "internalType": "struct ValueOfferData",
@@ -8455,25 +8250,6 @@
     {
       "inputs": [
         {
-          "internalType": "address",
-          "name": "providerAuth",
-          "type": "address"
-        }
-      ],
-      "name": "isProviderHasEnabledOffers",
-      "outputs": [
-        {
-          "internalType": "bool",
-          "name": "",
-          "type": "bool"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
           "internalType": "uint256",
           "name": "offerId",
           "type": "uint256"
@@ -8488,39 +8264,6 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "providerAuth",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "offerId",
-          "type": "uint256"
-        },
-        {
-          "internalType": "enum OfferType",
-          "name": "offerType",
-          "type": "uint8"
-        },
-        {
-          "internalType": "bool",
-          "name": "enabled",
-          "type": "bool"
-        },
-        {
-          "internalType": "uint256",
-          "name": "disabledAfter",
-          "type": "uint256"
-        }
-      ],
-      "name": "setProviderOfferState",
-      "outputs": [],
-      "stateMutability": "nonpayable",
       "type": "function"
     },
     {
@@ -9388,6 +9131,67 @@
           "internalType": "address",
           "name": "providerAuth",
           "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "offerId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "enum OfferType",
+          "name": "offerType",
+          "type": "uint8"
+        }
+      ],
+      "name": "addProviderOffer",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "providerAuth",
+          "type": "address"
+        }
+      ],
+      "name": "getProviderOffersDisabledTime",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "providerAuth",
+          "type": "address"
+        }
+      ],
+      "name": "isProviderHasEnabledOffers",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "providerAuth",
+          "type": "address"
         }
       ],
       "name": "isProviderHasEnoughSecurityDeposit",
@@ -9399,6 +9203,29 @@
         }
       ],
       "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "providerAuth",
+          "type": "address"
+        },
+        {
+          "internalType": "enum OfferType",
+          "name": "offerType",
+          "type": "uint8"
+        },
+        {
+          "internalType": "bool",
+          "name": "enabled",
+          "type": "bool"
+        }
+      ],
+      "name": "setProviderOfferState",
+      "outputs": [],
+      "stateMutability": "nonpayable",
       "type": "function"
     },
     {

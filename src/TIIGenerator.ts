@@ -10,13 +10,16 @@ import TeeOffer from "./models/TeeOffer";
 import { OrderInfo } from "./types/Order";
 import { OfferInfo } from "./types/Offer";
 import {
+    Cipher,
     CryptoAlgorithm,
     Encoding,
     Encryption,
     EncryptionWithMacIV,
     Hash,
+    HashAlgorithm,
     Linkage,
     Resource,
+    TeeRunInfo,
     UrlResource,
 } from "@super-protocol/dto-js";
 import { TLBlockSerializerV1, TLBlockUnserializeResultType } from "@super-protocol/tee-lib";
@@ -141,7 +144,7 @@ class TIIGenerator {
         }
     }
 
-    public static async getTRI(tii: string, decryptionKey: Buffer): Promise<TRI> {
+    public static async getTRI(tii: string, decryptionKey: Buffer): Promise<TeeRunInfo> {
         const tiiObj = JSON.parse(tii);
         tiiObj.tri.key = decryptionKey.toString(tiiObj.tri.encoding);
         const tri: string = await Crypto.decrypt(tiiObj.tri as Encryption);
@@ -159,16 +162,26 @@ class TIIGenerator {
         }
 
         const decoded = TRI.decode(decompressed);
-        if (decoded.encryption?.iv) {
-            decoded.encryption.iv = Buffer.from(decoded.encryption.iv).toString(tiiObj.tri.encoding) as any;
-        }
-        if (decoded.encryption?.key) {
-            decoded.encryption.key = Buffer.from(decoded.encryption.key).toString(tiiObj.tri.encoding) as any;
-        }
-        if (decoded.encryption?.mac) {
-            decoded.encryption.mac = Buffer.from(decoded.encryption.mac).toString(tiiObj.tri.encoding) as any;
-        }
-        return decoded;
+        return {
+            solutionHashes: decoded.solutionHashes.map(hash => ({
+                hash: Buffer.from(hash.hash).toString(Encoding.base64),
+                algo: hash.algo as HashAlgorithm,
+                encoding: Encoding.base64,
+            })),
+            linkage: {
+                encoding: Encoding.base64,
+                mrenclave: Buffer.from(decoded.mrenclave).toString(Encoding.base64),
+            },
+            args: decoded.args,
+            encryption: {
+                algo: decoded.encryption!.algo as CryptoAlgorithm,
+                cipher: decoded.encryption!.cipher! as Cipher,
+                encoding: Encoding.base64,
+                key: Buffer.from(decoded.encryption!.key!).toString(Encoding.base64),
+                iv: (decoded.encryption!.iv && Buffer.from(decoded.encryption!.iv!).toString(Encoding.base64)),
+                mac: (decoded.encryption!.mac && Buffer.from(decoded.encryption!.mac!).toString(Encoding.base64)),
+            } as EncryptionWithMacIV
+        };
     }
 
     public static async getUrl(tii: string, decryptionKey: Buffer): Promise<string> {
@@ -183,12 +196,5 @@ class TIIGenerator {
         return JSON.parse(resource) as T;
     }
 }
-
-export type TeeRunInfo = {
-    solutionHashes: Hash[];
-    linkage: Linkage;
-    args: any;
-    encryption: Encryption;
-};
 
 export default TIIGenerator;

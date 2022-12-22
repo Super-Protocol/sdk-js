@@ -9,7 +9,6 @@ export enum OrderStatus {
     Error = "5",
     Blocked = "6",
     Suspended = "7",
-    AwaitingPayment = "8", // TODO Remove
 }
 
 // Order of keys and type conversion functions for this object in blockchain contract

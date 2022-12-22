@@ -198,7 +198,7 @@ class Order {
     /**
      * Function for updating status of contract
      */
-    public async updateStatus(status: OrderStatus, price?: number, transactionOptions?: TransactionOptions) {
+    public async updateStatus(status: OrderStatus, transactionOptions?: TransactionOptions) {
         transactionOptions ?? this.checkInitOrder(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 

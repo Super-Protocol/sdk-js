@@ -51,7 +51,6 @@ class ProviderRegistry {
      */
     public static async registerProvider(
         providerInfo: ProviderInfo,
-        externalId = "default",
         transactionOptions?: TransactionOptions,
     ): Promise<void> {
         const contract = BlockchainConnector.getInstance().getContract(transactionOptions);

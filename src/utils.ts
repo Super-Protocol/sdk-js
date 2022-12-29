@@ -2,6 +2,7 @@ import store from "./store";
 import { TransactionOptions } from "./types/Web3";
 import { isArray } from "lodash";
 import Web3 from "web3";
+import { Monitoring } from "./utils/Monitoring";
 
 /**
  * Function for checking if provider action account initialized (required for set methods)
@@ -133,9 +134,18 @@ export const objectToTuple = (data: unknown, format: Format): unknown[] => {
     }
 };
 
-export const getTimestamp = async (): Promise<number> => {
-    const endBlockIndex = await store.web3Https!.eth.getBlockNumber();
-    const block = await store.web3Https!.eth.getBlock(endBlockIndex, true);
+export function incrementMethodCall() {
+    return function (_target: any, propertyName: string, propertyDescriptor: PropertyDescriptor) {
+        if (!isNodeJS()) {
+            return propertyDescriptor;
+        }
+        const monitoring = Monitoring.getInstance();
+        const method = propertyDescriptor.value;
+        propertyDescriptor.value = async function (...args: any[]): Promise<void> {
+            monitoring.incrementCall(propertyName);
 
-    return Number(block.timestamp);
-};
+            return method.apply(this, args);
+        };
+        return propertyDescriptor;
+    };
+}

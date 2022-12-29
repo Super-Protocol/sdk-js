@@ -1,5 +1,5 @@
 import rootLogger from "../logger";
-import { checkIfActionAccountInitialized, objectToTuple } from "../utils";
+import { checkIfActionAccountInitialized, incrementMethodCall, objectToTuple } from "../utils";
 import { OrderInfo, OrderInfoStructure, OrderInfoStructureArray, OrderStatus } from "../types/Order";
 import { formatBytes32String, parseBytes32String } from "ethers/lib/utils";
 import { BlockInfo, ContractEvent, TransactionOptions } from "../types/Web3";
@@ -72,6 +72,7 @@ class OrdersFactory {
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      * @returns {Promise<void>} - Does not return id of created order!
      */
+    @incrementMethodCall()
     public static async createOrder(
         orderInfo: OrderInfo,
         holdDeposit = "0",
@@ -93,6 +94,7 @@ class OrdersFactory {
         );
     }
 
+    @incrementMethodCall()
     public static async getOrder(consumer: string, externalId: string): Promise<OrderCreatedEvent> {
         const contract = BlockchainConnector.getInstance().getContract();
         const filter = {
@@ -121,6 +123,7 @@ class OrdersFactory {
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      * @returns {Promise<void>} - Does not return id of created order!
      */
+    @incrementMethodCall()
     public static async createWorkflow(
         parentOrderInfo: OrderInfo,
         subOrdersInfo: OrderInfo[],

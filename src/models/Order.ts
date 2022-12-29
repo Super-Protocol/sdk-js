@@ -13,7 +13,7 @@ import { ContractEvent, TransactionOptions } from "../types/Web3";
 import { AbiItem } from "web3-utils";
 import appJSON from "../contracts/app.json";
 import store from "../store";
-import { checkIfActionAccountInitialized, objectToTuple, tupleToObject } from "../utils";
+import { checkIfActionAccountInitialized, incrementMethodCall, objectToTuple, tupleToObject } from "../utils";
 import { Origins, OriginsStructure } from "../types/Origins";
 import { SubOrderCreatedEvent } from "../types/Events";
 import { formatBytes32String } from "ethers/lib/utils";
@@ -63,12 +63,14 @@ class Order {
     /**
      * Function for fetching order info from blockchain
      */
+    @incrementMethodCall()
     public async getOrderInfo(): Promise<OrderInfo> {
         const orderInfoParams = await Order.contract.methods.getOrder(this.id).call();
 
         return (this.orderInfo = tupleToObject(orderInfoParams[1], OrderInfoStructure));
     }
 
+    @incrementMethodCall()
     public async getConsumer(): Promise<string> {
         const orderInfoParams = await Order.contract.methods.getOrder(this.id).call();
         this.consumer = orderInfoParams[0];
@@ -78,6 +80,7 @@ class Order {
     /**
      * Function for fetching order result from blockchain
      */
+    @incrementMethodCall()
     public async getOrderResult(): Promise<OrderResult> {
         const orderInfoParams = await Order.contract.methods.getOrder(this.id).call();
 
@@ -87,6 +90,7 @@ class Order {
     /**
      * Function for fetching sub orders from blockchain
      */
+    @incrementMethodCall()
     public async getSubOrders(): Promise<string[]> {
         this.subOrders = await Order.contract.methods.getOrderSubOrders(this.id).call();
         return this.subOrders!;
@@ -95,6 +99,7 @@ class Order {
     /**
      * Function for fetching parent order from blockchain
      */
+    @incrementMethodCall()
     public async getParentOrder(): Promise<string> {
         this.parentOrder = await Order.contract.methods.getOrderParentOrder(this.id).call();
         return this.parentOrder!;
@@ -103,6 +108,7 @@ class Order {
     /**
      * Function for fetching order deposit spent from blockchain
      */
+    @incrementMethodCall()
     public async getDepositSpent(): Promise<string> {
         return Order.contract.methods.getDepositSpent(this.id).call();
     }
@@ -110,6 +116,7 @@ class Order {
     /**
      * Function for fetching hold deposits sum of the order and its suborders
      */
+    @incrementMethodCall()
     public async calculateTotalHoldDeposit(): Promise<string> {
         return Order.contract.methods.calculateTotalHoldDeposit(this.id).call();
     }
@@ -117,6 +124,7 @@ class Order {
     /**
      * Function for fetching reserve for output order
      */
+    @incrementMethodCall()
     public async calculateOrderOutputReserve(): Promise<string> {
         return Order.contract.methods.calculateOrderOutputReserve(this.id).call();
     }
@@ -124,6 +132,7 @@ class Order {
     /**
      * Function for fetching spent deposits sum of the order and its suborders
      */
+    @incrementMethodCall()
     public async calculateTotalDepositSpent(): Promise<string> {
         return Order.contract.methods.calculateTotalDepositSpent(this.id).call();
     }
@@ -131,6 +140,7 @@ class Order {
     /**
      * Function for fetching unspent deposits sum of the order and its suborders
      */
+    @incrementMethodCall()
     public async calculateTotalDepositUnspent(): Promise<string> {
         return Order.contract.methods.calculateTotalDepositUnspent(this.id).call();
     }
@@ -138,6 +148,7 @@ class Order {
     /**
      * Fetch new Origins (createdDate, createdBy, modifiedDate and modifiedBy)
      */
+    @incrementMethodCall()
     public async getOrigins(): Promise<Origins> {
         let origins = await Order.contract.methods.getOrderOrigins(this.id).call();
 
@@ -154,6 +165,7 @@ class Order {
     /**
      * Function for fetching parent order from blockchain
      */
+    @incrementMethodCall()
     public async getAwaitingPayment(): Promise<boolean> {
         return Order.contract.methods.getAwaitingPayment(this.id).call();
     }
@@ -161,6 +173,7 @@ class Order {
     /**
      * Function for fetching start of processing date
      */
+    @incrementMethodCall()
     public async getStartDate(): Promise<number> {
         return <number>Order.contract.methods.getStartDate(this.id).call();
     }
@@ -168,6 +181,7 @@ class Order {
     /**
      * Function for fetching parent order from blockchain
      */
+    @incrementMethodCall()
     public async setAwaitingPayment(value: boolean, transactionOptions?: TransactionOptions): Promise<void> {
         transactionOptions ?? this.checkInitOrder(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
@@ -178,6 +192,7 @@ class Order {
     /**
      * Updates order price
      */
+    @incrementMethodCall()
     public async updateOrderPrice(price: string, transactionOptions?: TransactionOptions): Promise<void> {
         transactionOptions ?? this.checkInitOrder(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
@@ -188,6 +203,7 @@ class Order {
     /**
      * Sets deposit spent
      */
+    @incrementMethodCall()
     public async setDepositSpent(value: string, transactionOptions?: TransactionOptions): Promise<void> {
         transactionOptions ?? this.checkInitOrder(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
@@ -198,6 +214,7 @@ class Order {
     /**
      * Function for updating status of contract
      */
+    @incrementMethodCall()
     public async updateStatus(status: OrderStatus, transactionOptions?: TransactionOptions) {
         transactionOptions ?? this.checkInitOrder(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
@@ -212,6 +229,7 @@ class Order {
     /**
      * Function for updating status of contract
      */
+    @incrementMethodCall()
     public async cancelOrder(transactionOptions?: TransactionOptions) {
         transactionOptions ?? this.checkInitOrder(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
@@ -222,6 +240,7 @@ class Order {
     /**
      * Starts suspended order
      */
+    @incrementMethodCall()
     public async start(transactionOptions?: TransactionOptions) {
         transactionOptions ?? this.checkInitOrder(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
@@ -232,6 +251,7 @@ class Order {
     /**
      * Updates order result
      */
+    @incrementMethodCall()
     public async updateOrderResult(encryptedResult = "", transactionOptions?: TransactionOptions) {
         transactionOptions ?? this.checkInitOrder(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
@@ -246,6 +266,7 @@ class Order {
     /**
      * Completes order
      */
+    @incrementMethodCall()
     public async complete(status: OrderStatus, encryptedResult = "", transactionOptions?: TransactionOptions) {
         transactionOptions ?? this.checkInitOrder(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
@@ -264,6 +285,7 @@ class Order {
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      * @returns {Promise<void>} - Does not return id of created sub order!
      */
+    @incrementMethodCall()
     public async createSubOrder(
         subOrderInfo: OrderInfo,
         blocking: boolean,
@@ -295,6 +317,7 @@ class Order {
      * @param transactionOptions - object what contains action account and web3 instance
      * @returns {Promise<string[]>} - tx hashes
      */
+    @incrementMethodCall()
     public async createSubOrders(
         subOrdersInfo: ExtendedOrderInfo[],
         transactionOptions: TransactionOptions,
@@ -336,6 +359,7 @@ class Order {
         return txs.reduce((a: any, b: any) => a.concat(b), []) as string[];
     }
 
+    @incrementMethodCall()
     public async getSubOrder(consumer: string, externalId: string): Promise<SubOrderCreatedEvent> {
         const filter = {
             consumer,
@@ -354,6 +378,7 @@ class Order {
      * Function for withdrawing profit from order
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
+    @incrementMethodCall()
     public async withdrawProfit(transactionOptions?: TransactionOptions) {
         transactionOptions ?? this.checkInitOrder(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);

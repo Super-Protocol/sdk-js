@@ -2,7 +2,7 @@ import { Contract } from "web3-eth-contract";
 import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
 import appJSON from "../contracts/app.json";
-import { checkIfActionAccountInitialized, tupleToObject, objectToTuple } from "../utils";
+import { checkIfActionAccountInitialized, tupleToObject, objectToTuple, incrementMethodCall } from "../utils";
 import { OfferInfo, OfferInfoStructure, OfferType } from "../types/Offer";
 import { TransactionOptions } from "../types/Web3";
 import { Origins, OriginsStructure } from "../types/Origins";
@@ -44,6 +44,7 @@ class Offer {
     /**
      * Function for fetching offer status from blockchain
      */
+    @incrementMethodCall()
     public async isEnabled(): Promise<number> {
         return await Offer.contract.methods.isOfferEnabled(this.id).call();
     }
@@ -91,6 +92,7 @@ class Offer {
     /**
      * Function for fetching offer info from blockchain
      */
+    @incrementMethodCall()
     public async getInfo(): Promise<OfferInfo> {
         const [, , orderInfoParams] = await Offer.contract.methods.getValueOffer(this.id).call();
 
@@ -100,6 +102,7 @@ class Offer {
     /**
      * Function for fetching offer provider from blockchain (works for TEE and Value offers)
      */
+    @incrementMethodCall()
     public async getProvider(): Promise<string> {
         this.provider = await Offer.contract.methods.getOfferProviderAuthority(this.id).call();
         return this.provider!;
@@ -108,6 +111,7 @@ class Offer {
     /**
      * Fetch offer type from blockchain (works for TEE and Value offers)
      */
+    @incrementMethodCall()
     public async getOfferType(): Promise<OfferType> {
         this.type = await Offer.contract.methods.getOfferType(this.id).call();
         return this.type!;
@@ -116,6 +120,7 @@ class Offer {
     /**
      * Function for fetching TEE offer provider authority account from blockchain
      */
+    @incrementMethodCall()
     public async getProviderAuthority(): Promise<string> {
         this.providerAuthority = await Offer.contract.methods.getOfferProviderAuthority(this.id).call();
         return this.providerAuthority!;
@@ -124,6 +129,7 @@ class Offer {
     /**
      * Fetch new Origins (createdDate, createdBy, modifiedDate and modifiedBy)
      */
+    @incrementMethodCall()
     public async getOrigins(): Promise<Origins> {
         let origins = await Offer.contract.methods.getOfferOrigins(this.id).call();
 
@@ -140,6 +146,7 @@ class Offer {
     /**
      * Function for fetching offer hold deposit
      */
+    @incrementMethodCall()
     public async getHoldDeposit(): Promise<string> {
         this.holdDeposit = await Offer.contract.methods.getOfferHoldDeposit(this.id).call();
         return this.holdDeposit!;
@@ -148,11 +155,13 @@ class Offer {
     /**
      * Function for offer closing price calculation
      */
+    @incrementMethodCall()
     public async getClosingPrice(startDate: number, orderPrice: string): Promise<string> {
         this.closingPrice = await Offer.contract.methods.getOfferClosingPrice(this.id, startDate, orderPrice).call();
         return this.closingPrice!;
     }
 
+    @incrementMethodCall()
     public async isOfferExists(): Promise<boolean> {
         return await Offer.contract.methods.isOfferExists(this.id).call();
     }
@@ -183,6 +192,7 @@ class Offer {
      * Checks if passed offer match restrictions in this offer
      * @param offerId - id of offer what needs to be checked
      */
+    @incrementMethodCall()
     public async isRestrictionsPermitThatOffer(offerId: string) {
         return await Offer.contract.methods.isOfferRestrictionsPermitOtherOffer(this.id, offerId).call();
     }
@@ -191,6 +201,7 @@ class Offer {
      * Checks if this offer contains restrictions of a certain type
      * @param type - type of offer which needs to be checked
      */
+    @incrementMethodCall()
     public async isRestrictedByOfferType(type: OfferType) {
         return await Offer.contract.methods.isOfferRestrictedByOfferType(this.id, type).call();
     }

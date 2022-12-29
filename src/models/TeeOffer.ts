@@ -2,7 +2,7 @@ import { Contract } from "web3-eth-contract";
 import rootLogger from "../logger";
 import { AbiItem } from "web3-utils";
 import appJSON from "../contracts/app.json";
-import { checkIfActionAccountInitialized, tupleToObject, objectToTuple } from "../utils";
+import { checkIfActionAccountInitialized, tupleToObject, objectToTuple, incrementMethodCall } from "../utils";
 import { TeeOfferInfo, TeeOfferInfoStructure } from "../types/TeeOffer";
 import { TransactionOptions } from "../types/Web3";
 import { OfferType } from "../types/Offer";
@@ -42,6 +42,7 @@ class TeeOffer {
     /**
      * Function for fetching offer status from the blockchain
      */
+    @incrementMethodCall()
     public async isEnabled(): Promise<boolean> {
         return TeeOffer.contract.methods.isOfferEnabled(this.id).call();
     }
@@ -49,6 +50,7 @@ class TeeOffer {
     /**
      * @returns True if offer is cancelable.
      */
+    @incrementMethodCall()
     public async isOfferCancelable(): Promise<boolean> {
         this.isCancelable = await TeeOffer.contract.methods.isOfferCancelable(this.id).call();
         return this.isCancelable!;
@@ -57,6 +59,7 @@ class TeeOffer {
     /**
      * Checks if contract has been initialized, if not - initialize contract
      */
+    @incrementMethodCall()
     private checkInitTeeOffer(transactionOptions: TransactionOptions) {
         if (transactionOptions?.web3) {
             return new transactionOptions.web3.eth.Contract(<AbiItem[]>appJSON.abi, Superpro.address);
@@ -66,6 +69,7 @@ class TeeOffer {
     /**
      * Function for fetching TEE offer info from blockchain
      */
+    @incrementMethodCall()
     public async getInfo(): Promise<TeeOfferInfo> {
         const [, , teeOfferInfoParams] = await TeeOffer.contract.methods.getTeeOffer(this.id).call();
 
@@ -75,6 +79,7 @@ class TeeOffer {
     /**
      * Function for fetching TEE offer provider from blockchain
      */
+    @incrementMethodCall()
     public async getProvider(): Promise<string> {
         this.providerAuthority = await TeeOffer.contract.methods.getOfferProviderAuthority(this.id).call();
         return this.providerAuthority!;
@@ -83,6 +88,7 @@ class TeeOffer {
     /**
      * Function for fetching TEE offer provider authority account from blockchain
      */
+    @incrementMethodCall()
     public async getProviderAuthority(): Promise<string> {
         this.providerAuthority = await TeeOffer.contract.methods.getOfferProviderAuthority(this.id).call();
         return this.providerAuthority!;
@@ -91,12 +97,14 @@ class TeeOffer {
     /**
      * Fetch offer type from blockchain (works for TEE and Value offers)
      */
+    @incrementMethodCall()
     public async getOfferType(): Promise<OfferType> {
         this.type = await TeeOffer.contract.methods.getOfferType(this.id).call();
 
         return this.type!;
     }
 
+    @incrementMethodCall()
     public async isTeeOfferVerifying(): Promise<boolean> {
         return await TeeOffer.contract.methods.isTeeOfferVerifying(this.id).call();
     }
@@ -112,6 +120,7 @@ class TeeOffer {
     /**
      * Function for fetching TLB provider from blockchain
      */
+    @incrementMethodCall()
     public async getTlb(): Promise<string> {
         const offerInfo = await this.getInfo();
         return offerInfo.tlb;
@@ -120,6 +129,7 @@ class TeeOffer {
     /**
      * Function for offer closing price calculation
      */
+    @incrementMethodCall()
     public async getClosingPrice(startDate: number): Promise<string> {
         this.closingPrice = await TeeOffer.contract.methods.getOfferClosingPrice(this.id, startDate, 0).call();
         return this.closingPrice!;
@@ -164,6 +174,7 @@ class TeeOffer {
     /**
      * Fetch new Origins (createdDate, createdBy, modifiedDate and modifiedBy)
      */
+    @incrementMethodCall()
     public async getOrigins(): Promise<Origins> {
         let origins = await TeeOffer.contract.methods.getOfferOrigins(this.id).call();
 
@@ -182,6 +193,7 @@ class TeeOffer {
      * @param tlb - new TLB
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
+    @incrementMethodCall()
     public async addTlb(tlb: string, transactionOptions?: TransactionOptions): Promise<void> {
         transactionOptions ?? this.checkInitTeeOffer(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);

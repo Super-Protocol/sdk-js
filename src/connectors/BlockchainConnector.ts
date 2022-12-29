@@ -21,6 +21,7 @@ const Jsonrpc = require('web3-core-requestmanager/src/jsonrpc');
 import store from "../store";
 import Superpro from "../staticModels/Superpro";
 import SuperproToken from "../staticModels/SuperproToken";
+import { Monitoring } from "../utils/Monitoring";
 
 
 class BlockchainConnector extends BaseConnector {
@@ -72,7 +73,7 @@ class BlockchainConnector extends BaseConnector {
 
         TxManager.init(store.web3Https);
         SuperproToken.addressHttps = await Superpro.getTokenAddress(this.contract);
-
+        Monitoring.getInstance().initializeLogging();
         this.initialized = true;
 
         this.logger.trace("Initialized");
@@ -320,6 +321,7 @@ class BlockchainConnector extends BaseConnector {
     public shutdown() {
         super.shutdown();
         store.web3Https = undefined;
+        Monitoring.getInstance().shutdownLogging();
     }
 }
 

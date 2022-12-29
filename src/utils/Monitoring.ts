@@ -21,12 +21,20 @@ export class Monitoring {
         if (!checkInterval) return;
         const startTs = Date.now();
         setInterval(() => {
-            this.logger.debug({ stopwatch: Date.now() - startTs }, "Contract methods calls");
             this.contractMethodCalls.forEach((value, key) =>
                 this.logger.debug({
                     methodName: key,
                     calledTimes: value,
                 }),
+            );
+            const totalCalls = Array.from(this.contractMethodCalls.values()).reduce((acc, curr) => acc + curr, 0);
+            const timeSpend = Math.floor((Date.now() - startTs) / (60 * 1000));
+            this.logger.debug(
+                {
+                    timeSpend: timeSpend + " min",
+                    totalCalls,
+                },
+                "Contract methods calls",
             );
         }, +checkInterval);
     }

@@ -136,9 +136,6 @@ export const objectToTuple = (data: unknown, format: Format): unknown[] => {
 
 export function incrementMethodCall() {
     return function (_target: any, propertyName: string, propertyDescriptor: PropertyDescriptor) {
-        if (!isNodeJS()) {
-            return propertyDescriptor;
-        }
         const monitoring = Monitoring.getInstance();
         const method = propertyDescriptor.value;
         propertyDescriptor.value = async function (...args: any[]): Promise<void> {

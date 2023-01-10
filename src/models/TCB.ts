@@ -1,9 +1,8 @@
 import { Contract } from "web3-eth-contract";
 import { AbiItem } from "web3-utils";
 import appJSON from "../contracts/app.json";
-import { checkIfActionAccountInitialized, tupleToObject } from "../utils";
+import { checkIfActionAccountInitialized, tupleToObject, formatHexStringToBytes32, parseBytes32toHexString } from "../utils";
 import { TransactionOptions } from "../types/Web3";
-import { formatBytes32String } from "ethers/lib/utils";
 import Superpro from "../staticModels/Superpro";
 import TxManager from "../utils/TxManager";
 import BlockchainConnector from "../connectors/BlockchainConnector";
@@ -33,8 +32,7 @@ class TCB {
     private async setTcbData(pb: PublicData, quote: string, transactionOptions?: TransactionOptions) {
         checkIfActionAccountInitialized(transactionOptions);
 
-        const fromattedDeviceId = formatBytes32String(Buffer.from(pb.deviceID).toString("base64"));
-
+        const fromattedDeviceId = formatHexStringToBytes32(pb.deviceID);
         await TxManager.execute(
             this.contract.methods.setTcbData,
             [this.tcbId, pb.benchmark, pb.properties, fromattedDeviceId, quote],
@@ -113,7 +111,10 @@ class TCB {
     public async get(): Promise<TcbData> {
         const tcb = await this.contract.methods.getTcbById(this.tcbId).call();
 
-        return tupleToObject(tcb, TcbStructure);
+        let tcbObject: TcbData = tupleToObject(tcb, TcbStructure);
+        tcbObject.publicData.deviceID = parseBytes32toHexString(tcbObject.publicData.deviceID);
+
+        return tcbObject;
     }
 
     /**

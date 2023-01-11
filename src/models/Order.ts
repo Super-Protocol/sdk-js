@@ -65,6 +65,9 @@ class Order {
      */
     @incrementMethodCall()
     public async getOrderInfo(): Promise<OrderInfo> {
+        if (!(await this.isExist())) {
+            throw Error(`Order ${this.id} does not exist`);
+        }
         const orderInfoParams = await Order.contract.methods.getOrder(this.id).call();
 
         return (this.orderInfo = tupleToObject(orderInfoParams[1], OrderInfoStructure));

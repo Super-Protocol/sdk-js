@@ -1,7 +1,7 @@
 import rootLogger from "../logger";
 import { checkIfActionAccountInitialized, objectToTuple } from "../utils";
 import { BytesLike, formatBytes32String, parseBytes32String } from "ethers/lib/utils";
-import { formatHexStringToBytes32 } from "../utils";
+import { packDevicId } from "../utils";
 import { BlockInfo, ContractEvent, TransactionOptions } from "../types/Web3";
 import { TeeOfferInfo, TeeOfferInfoStructure } from "../types/TeeOffer";
 import { OfferType } from "../types/Offer";
@@ -94,7 +94,7 @@ class TeeOffersFactory {
     public static getByDeviceId(deviceId: string): Promise<string> {
         const contract = BlockchainConnector.getInstance().getContract();
 
-        const fromattedDeviceId = formatHexStringToBytes32(deviceId);
+        const fromattedDeviceId = packDevicId(deviceId);
 
         return contract.methods.getTeeOfferByDeviceId(fromattedDeviceId).call();
     }

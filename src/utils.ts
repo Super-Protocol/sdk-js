@@ -152,42 +152,22 @@ export function incrementMethodCall() {
 
 const hexRegex = /^[0-9a-fA-F]+$/;
 
-export function formatHexStringToBytes32(text: string): string {
-    if (!hexRegex.test(text)) {
-        throw new Error("formatted value - is not a hex");
+export function packDevicId(hexedDeviceId: string): string {
+    if (hexedDeviceId.length == 64) {
+        throw new Error("DeviceId must be equal 64 hex symbols");
     }
 
-    // Get the bytes
-    const bytes = toUtf8Bytes(text);
-
-    // Check we have room for null-termination
-    if (bytes.length > 32) {
-        throw new Error("bytes32 string must be less or equal than 32 bytes");
+    if (!hexRegex.test(hexedDeviceId)) {
+        throw new Error("DeviceId must be a hexedecimal");
     }
 
-    // Zero-pad (implicitly null-terminates)
-    return hexlify(concat([bytes, HashZero]).slice(0, 32));
+    return "0x" + hexedDeviceId;
 }
 
-export function parseBytes32toHexString(bytes: BytesLike): string {
-    const data = arrayify(bytes);
-
-    // Must be 32 bytes
-    if (data.length !== 32) {
-        throw new Error("invalid bytes32 - not 32 bytes long");
+export function unpackDeviceId(bytes32: string): string {
+    if (bytes32.length == 66) {
+        throw new Error("DeviceId bytes must be equal 66 symbols");
     }
 
-    // Find the null termination
-    let length = 32;
-    while (data[length - 1] === 0) {
-        length--;
-    }
-
-    // Determine the string value
-    const decodedValue = toUtf8String(data.slice(0, length));
-    if (!hexRegex.test(decodedValue)) {
-        throw new Error("parsed value - is not a hex");
-    }
-
-    return decodedValue;
+    return bytes32.slice(0, 64);
 }

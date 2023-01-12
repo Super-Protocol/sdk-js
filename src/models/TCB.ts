@@ -1,7 +1,7 @@
 import { Contract } from "web3-eth-contract";
 import { AbiItem } from "web3-utils";
 import appJSON from "../contracts/app.json";
-import { checkIfActionAccountInitialized, tupleToObject, formatHexStringToBytes32, parseBytes32toHexString } from "../utils";
+import { checkIfActionAccountInitialized, tupleToObject, packDevicId, unpackDeviceId } from "../utils";
 import { TransactionOptions } from "../types/Web3";
 import Superpro from "../staticModels/Superpro";
 import TxManager from "../utils/TxManager";
@@ -32,7 +32,7 @@ class TCB {
     private async setTcbData(pb: PublicData, quote: string, transactionOptions?: TransactionOptions) {
         checkIfActionAccountInitialized(transactionOptions);
 
-        const fromattedDeviceId = formatHexStringToBytes32(pb.deviceID);
+        const fromattedDeviceId = packDevicId(pb.deviceID);
         await TxManager.execute(
             this.contract.methods.setTcbData,
             [this.tcbId, pb.benchmark, pb.properties, fromattedDeviceId, quote],
@@ -112,7 +112,7 @@ class TCB {
         const tcb = await this.contract.methods.getTcbById(this.tcbId).call();
 
         let tcbObject: TcbData = tupleToObject(tcb, TcbStructure);
-        tcbObject.publicData.deviceID = parseBytes32toHexString(tcbObject.publicData.deviceID);
+        tcbObject.publicData.deviceID = unpackDeviceId(tcbObject.publicData.deviceID);
 
         return tcbObject;
     }

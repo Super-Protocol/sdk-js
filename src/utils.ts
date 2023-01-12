@@ -153,7 +153,7 @@ export function incrementMethodCall() {
 const hexRegex = /^[0-9a-fA-F]+$/;
 
 export function packDevicId(hexedDeviceId: string): string {
-    if (hexedDeviceId.length == 64) {
+    if (hexedDeviceId.length !== 64) {
         throw new Error("DeviceId must be equal 64 hex symbols");
     }
 

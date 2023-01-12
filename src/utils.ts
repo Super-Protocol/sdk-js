@@ -3,6 +3,9 @@ import { TransactionOptions } from "./types/Web3";
 import { isArray } from "lodash";
 import Web3 from "web3";
 import { Monitoring } from "./utils/Monitoring";
+import { toUtf8Bytes, toUtf8String } from "ethers/lib/utils";
+import { arrayify, BytesLike, concat, hexlify } from "@ethersproject/bytes";
+import { HashZero } from "@ethersproject/constants";
 
 /**
  * Function for checking if provider action account initialized (required for set methods)
@@ -136,9 +139,6 @@ export const objectToTuple = (data: unknown, format: Format): unknown[] => {
 
 export function incrementMethodCall() {
     return function (_target: any, propertyName: string, propertyDescriptor: PropertyDescriptor) {
-        if (!isNodeJS()) {
-            return propertyDescriptor;
-        }
         const monitoring = Monitoring.getInstance();
         const method = propertyDescriptor.value;
         propertyDescriptor.value = async function (...args: any[]): Promise<void> {
@@ -148,4 +148,46 @@ export function incrementMethodCall() {
         };
         return propertyDescriptor;
     };
+}
+
+const hexRegex = /^[0-9a-fA-F]+$/;
+
+export function formatHexStringToBytes32(text: string): string {
+    if (!hexRegex.test(text)) {
+        throw new Error("formatted value - is not a hex");
+    }
+
+    // Get the bytes
+    const bytes = toUtf8Bytes(text);
+
+    // Check we have room for null-termination
+    if (bytes.length > 32) {
+        throw new Error("bytes32 string must be less or equal than 32 bytes");
+    }
+
+    // Zero-pad (implicitly null-terminates)
+    return hexlify(concat([bytes, HashZero]).slice(0, 32));
+}
+
+export function parseBytes32toHexString(bytes: BytesLike): string {
+    const data = arrayify(bytes);
+
+    // Must be 32 bytes
+    if (data.length !== 32) {
+        throw new Error("invalid bytes32 - not 32 bytes long");
+    }
+
+    // Find the null termination
+    let length = 32;
+    while (data[length - 1] === 0) {
+        length--;
+    }
+
+    // Determine the string value
+    const decodedValue = toUtf8String(data.slice(0, length));
+    if (!hexRegex.test(decodedValue)) {
+        throw new Error("parsed value - is not a hex");
+    }
+
+    return decodedValue;
 }

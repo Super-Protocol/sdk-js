@@ -7,7 +7,7 @@ import {
     POLYGON_MATIC_EVENT_PATH,
     defaultBlockchainUrl,
 } from "../constants";
-import { checkIfActionAccountInitialized } from "../utils";
+import { checkIfActionAccountInitialized, incrementMethodCall } from "../utils";
 import { Transaction, TransactionOptions, EventData, BlockInfo } from "../types/Web3";
 import BlockchainTransaction from "../types/blockchainConnector/StorageAccess";
 import TxManager from "../utils/TxManager";
@@ -21,6 +21,7 @@ const Jsonrpc = require('web3-core-requestmanager/src/jsonrpc');
 import store from "../store";
 import Superpro from "../staticModels/Superpro";
 import SuperproToken from "../staticModels/SuperproToken";
+import { Monitoring } from "../utils/Monitoring";
 
 
 class BlockchainConnector extends BaseConnector {
@@ -72,7 +73,7 @@ class BlockchainConnector extends BaseConnector {
 
         TxManager.init(store.web3Https);
         SuperproToken.addressHttps = await Superpro.getTokenAddress(this.contract);
-
+        Monitoring.getInstance().initializeLogging();
         this.initialized = true;
 
         this.logger.trace("Initialized");
@@ -99,6 +100,7 @@ class BlockchainConnector extends BaseConnector {
     /**
      * Returns balance of blockchain platform tokens in wei
      */
+    @incrementMethodCall()
     public async getBalance(address: string): Promise<string> {
         this.checkIfInitialized();
         return store.web3Https!.eth.getBalance(address);
@@ -116,6 +118,7 @@ class BlockchainConnector extends BaseConnector {
      * @param txHash - transaction hash
      * @returns {Promise<EventData[]>} - Transaction events info
      */
+    @incrementMethodCall()
     public async getTransactionEvents(txHash: string): Promise<EventData[]> {
         this.checkIfInitialized();
         const parseReceiptEvents = require("web3-parse-receipt-events");
@@ -179,6 +182,7 @@ class BlockchainConnector extends BaseConnector {
     /**
      * Returns balance of blockchain platform tokens in wei
      */
+    @incrementMethodCall()
     public async transfer(
         to: string,
         amount: string,
@@ -254,7 +258,8 @@ class BlockchainConnector extends BaseConnector {
      *   lastBlock, - number of last fetched block (can be used to start fetching from this block next time)
      * }>}
      */
-     public async getTransactions(
+    @incrementMethodCall()
+    public async getTransactions(
         addresses: string[],
         startBlock?: number,
         lastBlock?: number,
@@ -316,6 +321,7 @@ class BlockchainConnector extends BaseConnector {
     public shutdown() {
         super.shutdown();
         store.web3Https = undefined;
+        Monitoring.getInstance().shutdownLogging();
     }
 }
 

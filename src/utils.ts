@@ -165,7 +165,7 @@ export function packDevicId(hexedDeviceId: string): string {
 }
 
 export function unpackDeviceId(bytes32: string): string {
-    if (bytes32.length == 66) {
+    if (bytes32.length !== 66) {
         throw new Error("DeviceId bytes must be equal 66 symbols");
     }
 

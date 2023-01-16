@@ -1,5 +1,5 @@
 import TCB from "../models/TCB";
-import { checkIfActionAccountInitialized, unpackDeviceId, tupleToObject } from "../utils";
+import { checkIfActionAccountInitialized, tupleToObject } from "../utils";
 import { EpochInfo } from "../types/Consensus";
 import { TeeConfirmationBlock, GetTcbRequest } from "@super-protocol/dto-js";
 import { TransactionOptions } from "../types/Web3";
@@ -64,7 +64,7 @@ class Consensus {
             const tcbInfo = await tcb.get();
             tcbsForVerification.push({
                 tcbId: blocksIds[blockIndex].toString(),
-                deviceId: unpackDeviceId(tcbInfo.publicData.deviceID),
+                deviceId: tcbInfo.publicData.deviceID,
                 properties: tcbInfo.publicData.properties,
                 benchmark: tcbInfo.publicData.benchmark,
                 quote: tcbInfo.quote,

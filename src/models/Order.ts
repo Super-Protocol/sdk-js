@@ -177,7 +177,7 @@ class Order {
      * Function for fetching hold deposit of order from blockchain
      */
     @incrementMethodCall()
-    public async getHoldDeposit(): Promise<boolean> {
+    public async getHoldDeposit(): Promise<number> {
         return Order.contract.methods.getOrderHoldDeposit(this.id).call();
     }
 

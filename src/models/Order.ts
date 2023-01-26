@@ -170,7 +170,15 @@ class Order {
      */
     @incrementMethodCall()
     public async getAwaitingPayment(): Promise<boolean> {
-        return Order.contract.methods.getAwaitingPayment(this.id).call();
+        return Order.contract.methods.getAwaitingPayment(this.id).call(); 
+    }
+
+    /**
+     * Function for fetching hold deposit of order from blockchain
+     */
+    @incrementMethodCall()
+    public async getHoldDeposit(): Promise<boolean> {
+        return Order.contract.methods.getOrderHoldDeposit(this.id).call();
     }
 
     /**

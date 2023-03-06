@@ -22,4 +22,5 @@ export type TeeOfferInfo = {
     tlb: string;
     argsPublicKey: string;
     maxDurationTimeMinutes: string;
+    enabled: boolean;
 };

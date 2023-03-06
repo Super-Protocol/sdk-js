@@ -45,7 +45,7 @@ class Offer {
      * Function for fetching offer status from blockchain
      */
     @incrementMethodCall()
-    public async isEnabled(): Promise<number> {
+    public async isEnabled(): Promise<boolean> {
         return await Offer.contract.methods.isOfferEnabled(this.id).call();
     }
 
@@ -94,9 +94,11 @@ class Offer {
      */
     @incrementMethodCall()
     public async getInfo(): Promise<OfferInfo> {
-        const [, , orderInfoParams] = await Offer.contract.methods.getValueOffer(this.id).call();
+        const [, , offerInfoParams, enabled] = await Offer.contract.methods.getValueOffer(this.id).call();
 
-        return (this.offerInfo = tupleToObject(orderInfoParams, OfferInfoStructure));
+        this.offerInfo = tupleToObject(offerInfoParams, OfferInfoStructure);
+        this.offerInfo.enabled = enabled;
+        return this.offerInfo;
     }
 
     /**

@@ -60,5 +60,5 @@ export type OfferInfo = {
     resultResource: string;
     linkage: string;
     hash: string;
+    enabled: boolean;
 };
-

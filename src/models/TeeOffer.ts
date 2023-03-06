@@ -71,9 +71,11 @@ class TeeOffer {
      */
     @incrementMethodCall()
     public async getInfo(): Promise<TeeOfferInfo> {
-        const [, , teeOfferInfoParams] = await TeeOffer.contract.methods.getTeeOffer(this.id).call();
+        const [, , teeOfferInfoParams, enabled] = await TeeOffer.contract.methods.getTeeOffer(this.id).call();
 
-        return (this.offerInfo = tupleToObject(teeOfferInfoParams, TeeOfferInfoStructure));
+        this.offerInfo = tupleToObject(teeOfferInfoParams, TeeOfferInfoStructure);
+        this.offerInfo.enabled = enabled;
+        return this.offerInfo;
     }
 
     /**

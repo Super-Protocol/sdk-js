@@ -25,6 +25,10 @@ class BlockchainEventsListener extends BaseConnector {
         return BlockchainEventsListener.instance;
     }
 
+    public getProvider() {
+        return <WebsocketProviderBase | undefined>this.provider;
+    }
+
     /**
      * Function for connecting to blockchain using web socket
      * Needs to run this function before using events

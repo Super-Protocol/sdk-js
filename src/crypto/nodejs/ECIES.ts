@@ -1,21 +1,36 @@
 import { CryptoAlgorithm, ECIESEncryption, Encryption } from "@super-protocol/dto-js";
-import eccrypto from "eccrypto";
+import crypto from "crypto";
+
 
 class ECIES {
     public static async encrypt(content: string, encryption: Encryption): Promise<ECIESEncryption> {
         if (!encryption.key) throw Error("Encryption key is not provided");
 
-        const result = await eccrypto.encrypt(
-            Buffer.from(encryption.key, encryption.encoding),
-            Buffer.from(content, "binary"),
-        );
+        const ecdh = crypto.createECDH("secp256k1");
+
+        ecdh.generateKeys("binary", "uncompressed");
+        const epk = ecdh.getPublicKey();
+
+        const pk = ecdh.computeSecret(Buffer.from(encryption.key, encryption.encoding));
+
+        var hash = crypto.createHash("sha512").update(pk).digest();
+
+        const cipherKey = hash.slice(0, 32), macKey = hash.slice(32);
+        const iv = crypto.randomBytes(16);
+
+        const cipher = crypto.createCipheriv("aes-256-cbc", cipherKey, iv);
+        let ct = cipher.update(content);
+        ct = Buffer.concat([ct, cipher.final()]);
+        var dataToMac = Buffer.concat([iv, epk, ct]);
+        const mac = crypto.createHmac("sha256", macKey).update(dataToMac).digest();
+
         return {
-            iv: result.iv.toString(encryption.encoding),
-            ephemPublicKey: result.ephemPublicKey.toString(encryption.encoding),
-            mac: result.mac.toString(encryption.encoding),
+            iv: iv.toString(encryption.encoding),
+            ephemPublicKey: epk.toString(encryption.encoding),
+            mac: mac.toString(encryption.encoding),
             encoding: encryption.encoding,
             algo: CryptoAlgorithm.ECIES,
-            ciphertext: result.ciphertext.toString(encryption.encoding),
+            ciphertext: ct.toString(encryption.encoding),
         };
     }
 
@@ -24,12 +39,27 @@ class ECIES {
 
         const encryptedObject = {
             iv: Buffer.from(encryption.iv, encryption.encoding),
-            ephemPublicKey: Buffer.from(encryption.ephemPublicKey, encryption.encoding),
-            ciphertext: Buffer.from(encryption.ciphertext!, encryption.encoding),
+            epk: Buffer.from(encryption.ephemPublicKey, encryption.encoding),
+            ct: Buffer.from(encryption.ciphertext!, encryption.encoding),
             mac: Buffer.from(encryption.mac, encryption.encoding),
         };
+        const ecdh = crypto.createECDH("secp256k1");
+        ecdh.setPrivateKey(Buffer.from(encryption.key, encryption.encoding));
 
-        const result = await eccrypto.decrypt(Buffer.from(encryption.key, encryption.encoding), encryptedObject);
+        const pk = ecdh.computeSecret(encryptedObject.epk);
+
+        var hash = crypto.createHash("sha512").update(pk).digest();
+
+        const cipherKey = hash.slice(0, 32), macKey = hash.slice(32);
+        const m = crypto.createHmac("sha256", macKey).update(Buffer.concat([encryptedObject.iv, encryptedObject.epk, encryptedObject.ct])).digest();
+        if (m.compare(encryptedObject.mac) !== 0 || encryptedObject.mac.compare(m) !== 0) {
+            throw new Error('Corrupted Ecies-lite body: unmatched authentication code');
+        }
+        const decipher = crypto.createDecipheriv("aes-256-cbc", cipherKey, encryptedObject.iv);
+        let pt = decipher.update(encryptedObject.ct);
+
+        const result = Buffer.concat([pt, decipher.final()]);
+
         return result.toString("binary");
     }
 }

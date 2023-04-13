@@ -169,5 +169,6 @@ export function unpackDeviceId(bytes32: string): string {
         throw new Error("DeviceId bytes must be equal 66 symbols");
     }
 
-    return bytes32.slice(0, 64);
+    // removes '0x'
+    return bytes32.slice(2, 66);
 }

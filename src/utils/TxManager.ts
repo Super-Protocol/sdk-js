@@ -103,9 +103,7 @@ class TxManager {
                 txData.gas = options.gas;
             }
 
-            TxManager.logger.debug({ price: txData.gasPrice }, "gasPrice before multipling");
             txData.gasPrice = Math.ceil(txData.gasPrice * store.gasPriceMultiplier);
-            TxManager.logger.debug({ price: txData.gasPrice }, "gasPrice after multipling");
         }
 
         let nonceTracker;

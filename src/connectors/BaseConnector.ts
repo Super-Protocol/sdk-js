@@ -8,6 +8,7 @@ export type Config = {
     gasPrice?: string;
     gasLimit?: number;
     gasLimitMultiplier?: number;
+    gasPriceMultiplier?: number;
     reconnect?: {
         auto?: boolean;
         delay?: number;
@@ -52,7 +53,7 @@ export class BaseConnector {
 
     public shutdown() {
         if (this.initialized) {
-            this.provider?.disconnect(0, "") ;
+            this.provider?.disconnect(0, "");
             this.initialized = false;
             this.logger.trace(`${this.constructor["name"]} was shutdown`);
         }

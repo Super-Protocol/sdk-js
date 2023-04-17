@@ -22,6 +22,7 @@ export type TransactionOptions = {
     from?: string;
     gas?: number;
     gasPrice?: string;
+    gasPriceMultiplier?: number;
     web3?: Web3;
 };
 

@@ -1,5 +1,5 @@
 import Web3 from "web3";
-import { defaultGasLimitMultiplier, defaultGasLimit } from "./constants";
+import { defaultGasLimitMultiplier, defaultGasPriceMultiplier, defaultGasLimit } from "./constants";
 
 export type Store = {
     web3Wss?: Web3;
@@ -7,6 +7,7 @@ export type Store = {
     actionAccount?: string;
     gasLimit: number;
     gasLimitMultiplier: number;
+    gasPriceMultiplier: number;
     gasPrice?: string;
     keys: Record<string, string>;
 };
@@ -17,6 +18,7 @@ const store: Store = {
     actionAccount: undefined,
     gasLimit: defaultGasLimit,
     gasLimitMultiplier: defaultGasLimitMultiplier,
+    gasPriceMultiplier: defaultGasPriceMultiplier,
     gasPrice: undefined,
     keys: {},
 };

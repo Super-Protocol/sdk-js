@@ -67,6 +67,7 @@ class BlockchainConnector extends BaseConnector {
         if (config?.gasPrice) store.gasPrice = config.gasPrice;
         if (config?.gasLimit) store.gasLimit = config.gasLimit;
         if (config?.gasLimitMultiplier) store.gasLimitMultiplier = config.gasLimitMultiplier;
+        if (config?.gasPriceMultiplier) store.gasPriceMultiplier = config.gasPriceMultiplier;
 
         Superpro.address = config.contractAddress;
         this.contract = new store.web3Https!.eth.Contract(<AbiItem[]>appJSON.abi, Superpro.address);

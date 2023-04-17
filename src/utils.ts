@@ -3,9 +3,6 @@ import { TransactionOptions } from "./types/Web3";
 import { isArray } from "lodash";
 import Web3 from "web3";
 import { Monitoring } from "./utils/Monitoring";
-import { toUtf8Bytes, toUtf8String } from "ethers/lib/utils";
-import { arrayify, BytesLike, concat, hexlify } from "@ethersproject/bytes";
-import { HashZero } from "@ethersproject/constants";
 
 /**
  * Function for checking if provider action account initialized (required for set methods)
@@ -41,6 +38,7 @@ export const createTransactionOptions = async (options?: TransactionOptions): Pr
     if (!options) options = {};
     if (!options.from) options.from = store.actionAccount;
     if (!options.gas) options.gas = store.gasLimit;
+    if (!options.gasPriceMultiplier) options.gasPriceMultiplier = store.gasPriceMultiplier;
     if (!options.gasPrice) {
         if (store.gasPrice) {
             options.gasPrice = store.gasPrice;
@@ -55,6 +53,7 @@ export const createTransactionOptions = async (options?: TransactionOptions): Pr
         }
     }
     delete options.web3;
+
     return options;
 };
 

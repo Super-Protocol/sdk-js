@@ -15,8 +15,8 @@ export * from "./TIIGenerator";
 export { default as Consensus } from "./staticModels/Consensus";
 export * from "./staticModels/Consensus";
 
-export { default as OrdersFactory } from "./staticModels/OrdersFactory";
-export * from "./staticModels/OrdersFactory";
+export { default as Orders } from "./staticModels/Orders";
+export * from "./staticModels/Orders";
 
 export { default as ActiveOrders } from "./staticModels/ActiveOrders";
 export * from "./staticModels/ActiveOrders";
@@ -24,20 +24,14 @@ export * from "./staticModels/ActiveOrders";
 export { default as ActiveOffers } from "./staticModels/ActiveOffers";
 export * from "./staticModels/ActiveOffers";
 
-export { default as OffersFactory } from "./staticModels/OffersFactory";
-export * from "./staticModels/OffersFactory";
+export { default as Offers } from "./staticModels/Offers";
+export * from "./staticModels/Offers";
 
-export { default as TeeOffersFactory } from "./staticModels/TeeOffersFactory";
-export * from "./staticModels/TeeOffersFactory";
+export { default as TeeOffers } from "./staticModels/TeeOffers";
+export * from "./staticModels/TeeOffers";
 
 export { default as ProviderRegistry } from "./staticModels/ProviderRegistry";
 export * from "./staticModels/ProviderRegistry";
-
-export { default as Staking } from "./staticModels/Staking";
-export * from "./staticModels/Staking";
-
-export { default as Voting } from "./staticModels/Voting";
-export * from "./staticModels/Voting";
 
 export { default as SuperproToken } from "./staticModels/SuperproToken";
 export * from "./staticModels/SuperproToken";
@@ -47,6 +41,9 @@ export * from "./staticModels/Superpro";
 
 export { default as Marks } from "./staticModels/Marks";
 export * from "./staticModels/Marks";
+
+export { default as Deposits } from "./staticModels/Deposits";
+export * from "./staticModels/Deposits";
 
 export { default as Order } from "./models/Order";
 export * from "./models/Order";
@@ -60,19 +57,20 @@ export * from "./models/TeeOffer";
 export { default as Offer } from "./models/Offer";
 export * from "./models/Offer";
 
-export { default as Ballot } from "./models/Ballot";
-export * from "./models/Ballot";
-
 export { default as TCB } from "./models/TCB";
 export * from "./models/TCB";
 
 export * from "./types/Offer";
 export * from "./types/Marks";
 export * from "./types/Order";
-export * from "./types/TeeOffer";
+export * from "./types/TeeOfferInfo";
+export * from "./types/HardwareInfo";
+export * from "./types/SlotInfo";
+export * from "./types/SlotUsage";
+export * from "./types/OptionInfo";
+export * from "./types/TeeOfferOption";
+export * from "./types/TeeOfferSlot";
 export * from "./types/Provider";
-export * from "./types/Staking";
-export * from "./types/Ballot";
 export * from "./types/Superpro";
 export * from "./types/Consensus";
 export * from "./types/Origins";

@@ -9,8 +9,8 @@ import TxManager from "../utils/TxManager";
 import BlockchainConnector from "../connectors/BlockchainConnector";
 import BlockchainEventsListener from "../connectors/BlockchainEventsListener";
 
-class OrdersFactory {
-    private static readonly logger = rootLogger.child({ className: "OrdersFactory" });
+class Orders {
+    private static readonly logger = rootLogger.child({ className: "Orders" });
 
     public static orders?: string[];
 
@@ -22,7 +22,7 @@ class OrdersFactory {
      * Function for fetching list of all orders ids
      * @returns list of orders ids
      */
-    public static async getAllOrders(): Promise<string[]> {
+    public static async getAll(): Promise<string[]> {
         const contract = BlockchainConnector.getInstance().getContract();
         this.orders = this.orders ?? [];
         const ordersSet = new Set(this.orders);
@@ -39,30 +39,10 @@ class OrdersFactory {
     /**
      * Function for fetching orders count
      */
-    public static async getOrdersCount(): Promise<number> {
+    public static async getCount(): Promise<number> {
         const contract = BlockchainConnector.getInstance().getContract();
 
         return Number(await contract.methods.getOrdersCount().call());
-    }
-
-    /**
-     * Function for fetching order hold deposit for specific order
-     * @param orderId - order for fetching hold deposit
-     */
-    public static async getOrderHoldDeposit(orderId: string): Promise<string> {
-        const contract = BlockchainConnector.getInstance().getContract();
-
-        return await contract.methods.getOrderHoldDeposit(orderId).call();
-    }
-
-    /**
-     * Function for fetching status of order change
-     * @param orderId - order for fetching hold deposit
-     */
-    public static async getOrderChangeWithdrawn(orderId: string): Promise<boolean> {
-        const contract = BlockchainConnector.getInstance().getContract();
-
-        return await contract.methods.getOrderChangeWithdrawn(orderId).call();
     }
 
     /**
@@ -75,7 +55,7 @@ class OrdersFactory {
     @incrementMethodCall()
     public static async createOrder(
         orderInfo: OrderInfo,
-        holdDeposit = "0",
+        deposit = "0",
         suspended = false,
         transactionOptions?: TransactionOptions,
     ): Promise<void> {
@@ -89,13 +69,13 @@ class OrdersFactory {
 
         await TxManager.execute(
             contract.methods.createOrder,
-            [orderInfoArguments, holdDeposit, suspended],
+            [orderInfoArguments, deposit, suspended],
             transactionOptions,
         );
     }
 
     @incrementMethodCall()
-    public static async getOrder(consumer: string, externalId: string): Promise<OrderCreatedEvent> {
+    public static async getByExternalId(consumer: string, externalId: string): Promise<OrderCreatedEvent> {
         const contract = BlockchainConnector.getInstance().getContract();
         const filter = {
             consumer,
@@ -106,6 +86,7 @@ class OrdersFactory {
             consumer,
             externalId,
             offerId: "-1",
+            parentOrderId: "-1",
             orderId: "-1",
         };
 
@@ -127,10 +108,10 @@ class OrdersFactory {
     public static async createWorkflow(
         parentOrderInfo: OrderInfo,
         subOrdersInfo: OrderInfo[],
-        holdDeposit = "0",
+        workflowDeposit = "0",
         transactionOptions?: TransactionOptions,
     ): Promise<void> {
-        const contract =  BlockchainConnector.getInstance().getContract(transactionOptions);
+        const contract = BlockchainConnector.getInstance().getContract(transactionOptions);
         checkIfActionAccountInitialized(transactionOptions);
 
         const preparedInfo = {
@@ -147,7 +128,7 @@ class OrdersFactory {
 
         await TxManager.execute(
             contract.methods.createWorkflow,
-            [parentOrderInfoArgs, holdDeposit, subOrdersInfoArgs],
+            [parentOrderInfoArgs, workflowDeposit, subOrdersInfoArgs],
             transactionOptions,
         );
     }
@@ -197,39 +178,7 @@ class OrdersFactory {
      * @param callback - function for processing created order
      * @returns unsubscribe - unsubscribe function from event
      */
-    public static onWorkflowCreated(callback: onWorkflowCreatedCallback): () => void {
-        const contract = BlockchainEventsListener.getInstance().getContract();
-        const logger = this.logger.child({ method: "onWorkflowCreated" });
-
-        const subscription = contract.events
-            .WorkflowCreated()
-            .on("data", async (event: ContractEvent) => {
-                //consumer: string, externalId: string, offerId: string, orderId: string
-                callback(
-                    <string>event.returnValues.consumer,
-                    parseBytes32String(<string>event.returnValues.externalId),
-                    <string>event.returnValues.offerId,
-                    <string>event.returnValues.orderId,
-                    <BlockInfo>{
-                        index: <number>event.blockNumber,
-                        hash: <string>event.blockHash,
-                    },
-                );
-            })
-            .on("error", (error: Error, receipt: string) => {
-                if (receipt) return; // Used to avoid logging of transaction rejected
-                logger.warn(error);
-            });
-
-        return () => subscription.unsubscribe();
-    }
-
-    /**
-     * Function for adding event listeners on order created event in orders factory contract
-     * @param callback - function for processing created order
-     * @returns unsubscribe - unsubscribe function from event
-     */
-    public static onOrderCreated(callback: onOrderCreatedCallback): () => void {
+    public static onCreated(callback: onOrderCreatedCallback): () => void {
         const contract = BlockchainEventsListener.getInstance().getContract();
         const logger = this.logger.child({ method: "onOrderCreated" });
 
@@ -241,40 +190,8 @@ class OrdersFactory {
                     <string>event.returnValues.consumer,
                     parseBytes32String(<string>event.returnValues.externalId),
                     <string>event.returnValues.offerId,
-                    <string>event.returnValues.orderId,
-                    <BlockInfo>{
-                        index: <number>event.blockNumber,
-                        hash: <string>event.blockHash,
-                    },
-                );
-            })
-            .on("error", (error: Error, receipt: string) => {
-                if (receipt) return; // Used to avoid logging of transaction rejected
-                logger.warn(error);
-            });
-
-        return () => subscription.unsubscribe();
-    }
-
-    /**
-     * Function for adding event listeners on suborder created event in orders contract
-     * @param callback - function for processing created suborder
-     * @param parentOrderId - parent order id
-     * @return unsubscribe - unsubscribe function from event
-     */
-    public static onSubOrderCreated(callback: onSubOrderCreatedCallback, parentOrderId?: string): () => void {
-        const contract = BlockchainEventsListener.getInstance().getContract();
-        const logger = this.logger.child({ method: "onSubOrderCreated" });
-
-        const subscription = contract.events
-            .SubOrderCreated()
-            .on("data", async (event: ContractEvent) => {
-                if (parentOrderId && event.returnValues.parentOrderId != parentOrderId) {
-                    return;
-                }
-                callback(
                     <string>event.returnValues.parentOrderId,
-                    <string>event.returnValues.subOrderId,
+                    <string>event.returnValues.orderId,
                     <BlockInfo>{
                         index: <number>event.blockNumber,
                         hash: <string>event.blockHash,
@@ -295,7 +212,7 @@ class OrdersFactory {
      * @param orderId - order id
      * @returns unsubscribe - unsubscribe function from event
      */
-    public static onOrderStarted(callback: onOrderStartedCallback, orderId?: string): () => void {
+    public static onStarted(callback: onOrderStartedCallback, orderId?: string): () => void {
         const contract = BlockchainEventsListener.getInstance().getContract();
         const logger = this.logger.child({ method: "onOrderStarted" });
 
@@ -328,7 +245,7 @@ class OrdersFactory {
      * @param orderId - order id
      * @returns unsubscribe - unsubscribe function from event
      */
-    public static onOrdersStatusUpdated(callback: onOrdersStatusUpdatedCallback, orderId?: string): () => void {
+    public static onStatusUpdated(callback: onOrdersStatusUpdatedCallback, orderId?: string): () => void {
         const contract = BlockchainEventsListener.getInstance().getContract();
         const logger = this.logger.child({ method: "onOrdersStatusUpdated" });
 
@@ -362,7 +279,7 @@ class OrdersFactory {
      * @param orderId - order id
      * @returns unsubscribe - unsubscribe function from event
      */
-    public static onOrderDepositRefilled(
+    public static onDepositRefilled(
         callback: onOrderDepositRefilledCallback,
         consumer?: string,
         orderId?: string,
@@ -403,7 +320,7 @@ class OrdersFactory {
      * @param orderId - order id
      * @returns unsubscribe - unsubscribe function from event
      */
-    public static onOrderPriceUpdated(callback: onOrderPriceUpdatedCallback, orderId?: string): () => void {
+    public static onPriceUpdated(callback: onOrderPriceUpdatedCallback, orderId?: string): () => void {
         const contract = BlockchainEventsListener.getInstance().getContract();
         const logger = this.logger.child({ method: "onOrderPriceUpdated" });
 
@@ -436,7 +353,7 @@ class OrdersFactory {
      * @param orderId - order id
      * @returns unsubscribe - unsubscribe function from event
      */
-    public static onOrderChangedWithdrawn(callback: onOrderChangedWithdrawnCallback, orderId?: string): () => void {
+    public static onChangedWithdrawn(callback: onOrderChangedWithdrawnCallback, orderId?: string): () => void {
         const contract = BlockchainEventsListener.getInstance().getContract();
         const logger = this.logger.child({ method: "onOrderChangedWithdrawn" });
 
@@ -471,7 +388,7 @@ class OrdersFactory {
      * @param orderId - order id
      * @returns unsubscribe - unsubscribe function from event
      */
-    public static onOrderProfitWithdrawn(
+    public static onProfitWithdrawn(
         callback: onOrderProfitWithdrawnCallback,
         orderId?: string,
         tokenReceiver?: string,
@@ -513,7 +430,7 @@ class OrdersFactory {
      * @param orderId - order id
      * @returns unsubscribe - unsubscribe function from event
      */
-    public static onOrderAwaitingPaymentChanged(
+    public static onAwaitingPaymentChanged(
         callback: onOrderAwaitingPaymentChangedCallback,
         consumer?: string,
         orderId?: string,
@@ -555,7 +472,7 @@ class OrdersFactory {
      * @param orderId - order id
      * @returns unsubscribe - unsubscribe function from event
      */
-    public static onOrderDepositSpentChanged(
+    public static onDepositSpentChanged(
         callback: onOrderDepositSpentChangedCallback,
         consumer?: string,
         orderId?: string,
@@ -597,7 +514,7 @@ class OrdersFactory {
      * @param orderId - order id
      * @returns unsubscribe - unsubscribe function from event
      */
-    public static onOrderEncryptedResultUpdated(
+    public static onEncryptedResultUpdated(
         callback: onOrderEncryptedResultUpdatedCallback,
         consumer?: string,
         orderId?: string,
@@ -631,9 +548,92 @@ class OrdersFactory {
 
         return () => subscription.unsubscribe();
     }
+
+    /**
+     * Function for adding event listeners on OrderOptionsDepositSpentChanged event in orders contract
+     * @param callback - function for processing order encrypted result updated event
+     * @param consumer - order creator address
+     * @param orderId - order id
+     * @returns unsubscribe - unsubscribe function from event
+     */
+    public static onOptionsDepositSpentChanged(
+        callback: onOrderOptionsDepositSpentChangedCallback,
+        consumer?: string,
+        orderId?: string,
+    ): () => void {
+        const contract = BlockchainEventsListener.getInstance().getContract();
+        const logger = this.logger.child({ method: "onOrderOptionsDepositSpentChanged" });
+
+        const subscription = contract.events
+            .OrderOptionsDepositSpentChanged()
+            .on("data", async (event: ContractEvent) => {
+                if (orderId && event.returnValues.orderId != orderId) {
+                    return;
+                }
+                if (consumer && event.returnValues.consumer != consumer) {
+                    return;
+                }
+                callback(
+                    <string>event.returnValues.consumer,
+                    <string>event.returnValues.orderId,
+                    <string>event.returnValues.value,
+                    <BlockInfo>{
+                        index: <number>event.blockNumber,
+                        hash: <string>event.blockHash,
+                    },
+                );
+            })
+            .on("error", (error: Error, receipt: string) => {
+                if (receipt) return; // Used to avoid logging of transaction rejected
+                logger.warn(error);
+            });
+
+        return () => subscription.unsubscribe();
+    }
+
+    /**
+     * Function for adding event listeners on onOrderProfitUnlocked event in orders contract
+     * @param callback - function for processing order encrypted result updated event
+     * @param tokenReceiver - tokenReceiver
+     * @param orderId - order id
+     * @returns unsubscribe - unsubscribe function from event
+     */
+    public static onOProfitUnlocked(
+        callback: onOrderProfitUnlockedCallback,
+        tokenReceiver?: string,
+        orderId?: string,
+    ): () => void {
+        const contract = BlockchainEventsListener.getInstance().getContract();
+        const logger = this.logger.child({ method: "onOrderProfitUnlocked" });
+
+        const subscription = contract.events
+            .OrderProfitUnlocked()
+            .on("data", async (event: ContractEvent) => {
+                if (orderId && event.returnValues.orderId != orderId) {
+                    return;
+                }
+                if (tokenReceiver && event.returnValues.tokenReceiver != tokenReceiver) {
+                    return;
+                }
+                callback(
+                    <string>event.returnValues.tokenReceiver,
+                    <string>event.returnValues.orderId,
+                    <string>event.returnValues.profit,
+                    <BlockInfo>{
+                        index: <number>event.blockNumber,
+                        hash: <string>event.blockHash,
+                    },
+                );
+            })
+            .on("error", (error: Error, receipt: string) => {
+                if (receipt) return; // Used to avoid logging of transaction rejected
+                logger.warn(error);
+            });
+
+        return () => subscription.unsubscribe();
+    }
 }
 
-export type onSubOrderCreatedCallback = (parentOrderId: string, subOrderId: string, block?: BlockInfo) => void;
 export type onOrderStartedCallback = (orderId: string, consumer: string, block?: BlockInfo) => void;
 export type onOrdersStatusUpdatedCallback = (orderId: string, status: OrderStatus, block?: BlockInfo) => void;
 export type onOrderPriceUpdatedCallback = (orderId: string, price: string, block?: BlockInfo) => void;
@@ -641,6 +641,7 @@ export type onOrderCreatedCallback = (
     consumer: string,
     externalId: string,
     offerId: string,
+    parentOrderId: string,
     orderId: string,
     block?: BlockInfo,
 ) => void;
@@ -680,12 +681,17 @@ export type onOrderEncryptedResultUpdatedCallback = (
     encryptedResult: string,
     block?: BlockInfo,
 ) => void;
-export type onWorkflowCreatedCallback = (
+export type onOrderOptionsDepositSpentChangedCallback = (
     consumer: string,
-    externalId: string,
-    offerId: string,
     orderId: string,
+    value: string,
+    block?: BlockInfo,
+) => void;
+export type onOrderProfitUnlockedCallback = (
+    tokenReceiver: string,
+    orderId: string,
+    profit: string,
     block?: BlockInfo,
 ) => void;
 
-export default OrdersFactory;
+export default Orders;

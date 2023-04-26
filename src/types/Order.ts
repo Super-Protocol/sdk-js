@@ -38,13 +38,17 @@ export const OrderInfoStructure = {
 export const OrderInfoStructureArray = [OrderInfoStructure];
 
 export type OrderInfo = {
-    offer: string;
+    offerId: string;
     resultPublicKey: string;
     encryptedRequirements: string;
     encryptedArgs: string;
     status: OrderStatus;
     args: OrderArgs;
     externalId: string;
+    slotId: string;
+    slotCount: string;
+    optionsIds: string[];
+    optionsCount: string[];
 };
 export type ExtendedOrderInfo = OrderInfo & {
     blocking: boolean;

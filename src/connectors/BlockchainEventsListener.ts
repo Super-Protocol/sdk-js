@@ -40,12 +40,15 @@ class BlockchainEventsListener extends BaseConnector {
             (this.provider as WebsocketProviderBase).reset();
         }
 
-        const reconnectOptions = Object.assign({
-            auto: true,
-            delay: 5000, // ms
-            maxAttempts: 5,
-            onTimeout: false,
-        }, config.reconnect);
+        const reconnectOptions = Object.assign(
+            {
+                auto: true,
+                delay: 5000, // ms
+                maxAttempts: 5,
+                onTimeout: false,
+            },
+            config.reconnect,
+        );
 
         this.provider = new Web3.providers.WebsocketProvider(config.blockchainUrl!, {
             reconnect: reconnectOptions,

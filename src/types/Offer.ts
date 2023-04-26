@@ -28,10 +28,7 @@ export const OfferInfoStructure = {
     offerType: OfferType,
     cancelable: Boolean,
     description: String,
-    holdSum: String,
     restrictions: OfferRestrictionsStructure,
-    properties: String,
-    maxDurationTimeMinutes: Number,
     input: String,
     output: String,
     allowedArgs: String,
@@ -48,10 +45,7 @@ export type OfferInfo = {
     offerType: OfferType;
     cancelable: boolean;
     description: string;
-    holdSum: string;
     restrictions: OfferRestrictions;
-    properties: string;
-    maxDurationTimeMinutes: number;
     input: string;
     output: string;
     allowedArgs: string;
@@ -60,5 +54,4 @@ export type OfferInfo = {
     resultResource: string;
     linkage: string;
     hash: string;
-    enabled: boolean;
 };

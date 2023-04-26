@@ -107,7 +107,12 @@ class SuperproToken {
         const contract = this.checkInit(transactionOptions);
         checkIfActionAccountInitialized(transactionOptions);
 
-        await TxManager.execute(contract.methods.approve, [address, amount], transactionOptions, SuperproToken.addressHttps);
+        await TxManager.execute(
+            contract.methods.approve,
+            [address, amount],
+            transactionOptions,
+            SuperproToken.addressHttps,
+        );
     }
 
     public static onTokenApprove(callback: onTokenApproveCallback, owner?: string, spender?: string): () => void {

@@ -109,6 +109,10 @@ export const tupleToObject = <T>(data: unknown[], format: Format): T => {
     }
 };
 
+export const tupleToObjectsArray = <T>(data: unknown[], format: Format): T[] => {
+    return data.map((item) => tupleToObject(item as unknown[], format));
+};
+
 export const objectToTuple = (data: unknown, format: Format): unknown[] => {
     const processItem = (dataItem: unknown, formatItem: FormatItem) => {
         if ((formatItem as FormatFunctions)?.$tuple) {

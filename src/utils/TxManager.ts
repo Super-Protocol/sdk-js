@@ -4,11 +4,7 @@ import NonceTracker from "./NonceTracker";
 import rootLogger from "../logger";
 import store from "../store";
 import { TransactionOptions } from "../types/Web3";
-import {
-    checkForUsingExternalTxManager,
-    checkIfActionAccountInitialized,
-    createTransactionOptions,
-} from "../utils";
+import { checkForUsingExternalTxManager, checkIfActionAccountInitialized, createTransactionOptions } from "../utils";
 import Superpro from "../staticModels/Superpro";
 import { defaultGasLimit } from "../constants";
 import lodash from "lodash";
@@ -25,7 +21,7 @@ type MethodReturnType = ContractSendMethod & {
 class TxManager {
     private static web3: Web3;
     private static logger = rootLogger.child({ className: "TxManager" });
-    private static nonceTrackers: {[address: string]: NonceTracker} = {};
+    private static nonceTrackers: { [address: string]: NonceTracker } = {};
 
     public static init(web3: Web3) {
         this.web3 = web3;

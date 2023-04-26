@@ -39,12 +39,6 @@ export default class StorJStorageProvider implements IStorageProvider {
         this.accessToken = credentials.token;
     }
 
-    async calculateStorageDeposit(offer: Offer, sizeMb: number, hours: number): Promise<string> {
-        const offerInfo = await offer.getInfo();
-        const properties = JSON.parse(offerInfo.properties);
-        return BigNumber.from(properties.priceMbPerHour).mul(sizeMb).mul(hours).toString();
-    }
-
     async uploadFile(
         inputStream: stream.Readable,
         remotePath: string,

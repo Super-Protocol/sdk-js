@@ -1985,6 +1985,277 @@
       "type": "function"
     },
     {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "totalLocked",
+          "type": "uint256"
+        }
+      ],
+      "name": "DepositPartLocked",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "totalLocked",
+          "type": "uint256"
+        }
+      ],
+      "name": "DepositPartUnlocked",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "totalAmount",
+          "type": "uint256"
+        }
+      ],
+      "name": "DepositReplenished",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "totalAmount",
+          "type": "uint256"
+        }
+      ],
+      "name": "DepositWithdrawn",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "depositOwner",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "addProfit",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "depositOwner",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "confiscateTokensFrom",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "depositOwner",
+          "type": "address"
+        }
+      ],
+      "name": "getDepositInfo",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "totalLocked",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "profit",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct DepositInfo",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "depositOwner",
+          "type": "address"
+        }
+      ],
+      "name": "getLockedTokensAmount",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "depositOwner",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "lockDeposit",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "replenish",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "beneficiary",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "replenishFor",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "depositOwner",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "unlockDeposit",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "withdraw",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
       "inputs": [
         {
           "internalType": "uint256",
@@ -2202,24 +2473,9 @@
               "type": "string"
             },
             {
-              "internalType": "uint32",
-              "name": "slots",
-              "type": "uint32"
-            },
-            {
-              "internalType": "uint64",
-              "name": "minTimeMinutes",
-              "type": "uint64"
-            },
-            {
               "internalType": "string",
               "name": "properties",
               "type": "string"
-            },
-            {
-              "internalType": "address",
-              "name": "tcb",
-              "type": "address"
             },
             {
               "internalType": "string",
@@ -2232,9 +2488,60 @@
               "type": "string"
             },
             {
-              "internalType": "uint256",
-              "name": "maxDurationTimeMinutes",
-              "type": "uint256"
+              "components": [
+                {
+                  "components": [
+                    {
+                      "internalType": "uint64",
+                      "name": "cpuCores",
+                      "type": "uint64"
+                    },
+                    {
+                      "internalType": "uint64",
+                      "name": "ram",
+                      "type": "uint64"
+                    },
+                    {
+                      "internalType": "uint64",
+                      "name": "hdd",
+                      "type": "uint64"
+                    },
+                    {
+                      "internalType": "uint64",
+                      "name": "ssd",
+                      "type": "uint64"
+                    }
+                  ],
+                  "internalType": "struct SlotInfo",
+                  "name": "slotInfo",
+                  "type": "tuple"
+                },
+                {
+                  "components": [
+                    {
+                      "internalType": "uint64",
+                      "name": "bandwidth",
+                      "type": "uint64"
+                    },
+                    {
+                      "internalType": "uint64",
+                      "name": "traffic",
+                      "type": "uint64"
+                    },
+                    {
+                      "internalType": "uint64",
+                      "name": "externalPort",
+                      "type": "uint64"
+                    }
+                  ],
+                  "internalType": "struct OptionInfo",
+                  "name": "optionInfo",
+                  "type": "tuple"
+                }
+              ],
+              "internalType": "struct HardwareInfo",
+              "name": "hardwareInfo",
+              "type": "tuple"
             }
           ],
           "internalType": "struct TeeOfferInfo",
@@ -2292,11 +2599,6 @@
               "type": "string"
             },
             {
-              "internalType": "uint256",
-              "name": "holdSum",
-              "type": "uint256"
-            },
-            {
               "components": [
                 {
                   "internalType": "uint256[]",
@@ -2312,16 +2614,6 @@
               "internalType": "struct OfferRestrictions",
               "name": "restrictions",
               "type": "tuple"
-            },
-            {
-              "internalType": "string",
-              "name": "properties",
-              "type": "string"
-            },
-            {
-              "internalType": "uint256",
-              "name": "maxDurationTimeMinutes",
-              "type": "uint256"
             },
             {
               "internalType": "string",
@@ -2474,6 +2766,75 @@
         {
           "components": [
             {
+              "components": [
+                {
+                  "internalType": "uint64",
+                  "name": "cpuCores",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "ram",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "hdd",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "ssd",
+                  "type": "uint64"
+                }
+              ],
+              "internalType": "struct SlotInfo",
+              "name": "slotInfo",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint64",
+                  "name": "bandwidth",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "traffic",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "externalPort",
+                  "type": "uint64"
+                }
+              ],
+              "internalType": "struct OptionInfo",
+              "name": "optionInfo",
+              "type": "tuple"
+            }
+          ],
+          "internalType": "struct HardwareInfo",
+          "name": "newInfo",
+          "type": "tuple"
+        }
+      ],
+      "name": "setTeeOfferHardwareInfo",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "offerId",
+          "type": "uint256"
+        },
+        {
+          "components": [
+            {
               "internalType": "string",
               "name": "name",
               "type": "string"
@@ -2489,24 +2850,9 @@
               "type": "string"
             },
             {
-              "internalType": "uint32",
-              "name": "slots",
-              "type": "uint32"
-            },
-            {
-              "internalType": "uint64",
-              "name": "minTimeMinutes",
-              "type": "uint64"
-            },
-            {
               "internalType": "string",
               "name": "properties",
               "type": "string"
-            },
-            {
-              "internalType": "address",
-              "name": "tcb",
-              "type": "address"
             },
             {
               "internalType": "string",
@@ -2519,9 +2865,60 @@
               "type": "string"
             },
             {
-              "internalType": "uint256",
-              "name": "maxDurationTimeMinutes",
-              "type": "uint256"
+              "components": [
+                {
+                  "components": [
+                    {
+                      "internalType": "uint64",
+                      "name": "cpuCores",
+                      "type": "uint64"
+                    },
+                    {
+                      "internalType": "uint64",
+                      "name": "ram",
+                      "type": "uint64"
+                    },
+                    {
+                      "internalType": "uint64",
+                      "name": "hdd",
+                      "type": "uint64"
+                    },
+                    {
+                      "internalType": "uint64",
+                      "name": "ssd",
+                      "type": "uint64"
+                    }
+                  ],
+                  "internalType": "struct SlotInfo",
+                  "name": "slotInfo",
+                  "type": "tuple"
+                },
+                {
+                  "components": [
+                    {
+                      "internalType": "uint64",
+                      "name": "bandwidth",
+                      "type": "uint64"
+                    },
+                    {
+                      "internalType": "uint64",
+                      "name": "traffic",
+                      "type": "uint64"
+                    },
+                    {
+                      "internalType": "uint64",
+                      "name": "externalPort",
+                      "type": "uint64"
+                    }
+                  ],
+                  "internalType": "struct OptionInfo",
+                  "name": "optionInfo",
+                  "type": "tuple"
+                }
+              ],
+              "internalType": "struct HardwareInfo",
+              "name": "hardwareInfo",
+              "type": "tuple"
             }
           ],
           "internalType": "struct TeeOfferInfo",
@@ -2587,11 +2984,6 @@
               "type": "string"
             },
             {
-              "internalType": "uint256",
-              "name": "holdSum",
-              "type": "uint256"
-            },
-            {
               "components": [
                 {
                   "internalType": "uint256[]",
@@ -2607,16 +2999,6 @@
               "internalType": "struct OfferRestrictions",
               "name": "restrictions",
               "type": "tuple"
-            },
-            {
-              "internalType": "string",
-              "name": "properties",
-              "type": "string"
-            },
-            {
-              "internalType": "uint256",
-              "name": "maxDurationTimeMinutes",
-              "type": "uint256"
             },
             {
               "internalType": "string",
@@ -2714,24 +3096,9 @@
                   "type": "string"
                 },
                 {
-                  "internalType": "uint32",
-                  "name": "slots",
-                  "type": "uint32"
-                },
-                {
-                  "internalType": "uint64",
-                  "name": "minTimeMinutes",
-                  "type": "uint64"
-                },
-                {
                   "internalType": "string",
                   "name": "properties",
                   "type": "string"
-                },
-                {
-                  "internalType": "address",
-                  "name": "tcb",
-                  "type": "address"
                 },
                 {
                   "internalType": "string",
@@ -2744,9 +3111,60 @@
                   "type": "string"
                 },
                 {
-                  "internalType": "uint256",
-                  "name": "maxDurationTimeMinutes",
-                  "type": "uint256"
+                  "components": [
+                    {
+                      "components": [
+                        {
+                          "internalType": "uint64",
+                          "name": "cpuCores",
+                          "type": "uint64"
+                        },
+                        {
+                          "internalType": "uint64",
+                          "name": "ram",
+                          "type": "uint64"
+                        },
+                        {
+                          "internalType": "uint64",
+                          "name": "hdd",
+                          "type": "uint64"
+                        },
+                        {
+                          "internalType": "uint64",
+                          "name": "ssd",
+                          "type": "uint64"
+                        }
+                      ],
+                      "internalType": "struct SlotInfo",
+                      "name": "slotInfo",
+                      "type": "tuple"
+                    },
+                    {
+                      "components": [
+                        {
+                          "internalType": "uint64",
+                          "name": "bandwidth",
+                          "type": "uint64"
+                        },
+                        {
+                          "internalType": "uint64",
+                          "name": "traffic",
+                          "type": "uint64"
+                        },
+                        {
+                          "internalType": "uint64",
+                          "name": "externalPort",
+                          "type": "uint64"
+                        }
+                      ],
+                      "internalType": "struct OptionInfo",
+                      "name": "optionInfo",
+                      "type": "tuple"
+                    }
+                  ],
+                  "internalType": "struct HardwareInfo",
+                  "name": "hardwareInfo",
+                  "type": "tuple"
                 }
               ],
               "internalType": "struct TeeOfferInfo",
@@ -2827,11 +3245,6 @@
                   "type": "string"
                 },
                 {
-                  "internalType": "uint256",
-                  "name": "holdSum",
-                  "type": "uint256"
-                },
-                {
                   "components": [
                     {
                       "internalType": "uint256[]",
@@ -2847,16 +3260,6 @@
                   "internalType": "struct OfferRestrictions",
                   "name": "restrictions",
                   "type": "tuple"
-                },
-                {
-                  "internalType": "string",
-                  "name": "properties",
-                  "type": "string"
-                },
-                {
-                  "internalType": "uint256",
-                  "name": "maxDurationTimeMinutes",
-                  "type": "uint256"
                 },
                 {
                   "internalType": "string",
@@ -2923,35 +3326,6 @@
           "internalType": "uint256",
           "name": "offerId",
           "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "startDate",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "orderPrice",
-          "type": "uint256"
-        }
-      ],
-      "name": "getOfferClosingPrice",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "offerId",
-          "type": "uint256"
         }
       ],
       "name": "getOfferGroup",
@@ -2971,9 +3345,29 @@
           "internalType": "uint256",
           "name": "offerId",
           "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "slotId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint32",
+          "name": "slotCount",
+          "type": "uint32"
+        },
+        {
+          "internalType": "uint256[]",
+          "name": "optionsIds",
+          "type": "uint256[]"
+        },
+        {
+          "internalType": "uint32[]",
+          "name": "optionsCount",
+          "type": "uint32[]"
         }
       ],
-      "name": "getOfferHoldDeposit",
+      "name": "getOfferMinDeposit",
       "outputs": [
         {
           "internalType": "uint256",
@@ -3020,6 +3414,25 @@
           "internalType": "struct Origins",
           "name": "",
           "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "offerId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getOfferProviderActionAccount",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
         }
       ],
       "stateMutability": "view",
@@ -3135,24 +3548,9 @@
                   "type": "string"
                 },
                 {
-                  "internalType": "uint32",
-                  "name": "slots",
-                  "type": "uint32"
-                },
-                {
-                  "internalType": "uint64",
-                  "name": "minTimeMinutes",
-                  "type": "uint64"
-                },
-                {
                   "internalType": "string",
                   "name": "properties",
                   "type": "string"
-                },
-                {
-                  "internalType": "address",
-                  "name": "tcb",
-                  "type": "address"
                 },
                 {
                   "internalType": "string",
@@ -3165,9 +3563,60 @@
                   "type": "string"
                 },
                 {
-                  "internalType": "uint256",
-                  "name": "maxDurationTimeMinutes",
-                  "type": "uint256"
+                  "components": [
+                    {
+                      "components": [
+                        {
+                          "internalType": "uint64",
+                          "name": "cpuCores",
+                          "type": "uint64"
+                        },
+                        {
+                          "internalType": "uint64",
+                          "name": "ram",
+                          "type": "uint64"
+                        },
+                        {
+                          "internalType": "uint64",
+                          "name": "hdd",
+                          "type": "uint64"
+                        },
+                        {
+                          "internalType": "uint64",
+                          "name": "ssd",
+                          "type": "uint64"
+                        }
+                      ],
+                      "internalType": "struct SlotInfo",
+                      "name": "slotInfo",
+                      "type": "tuple"
+                    },
+                    {
+                      "components": [
+                        {
+                          "internalType": "uint64",
+                          "name": "bandwidth",
+                          "type": "uint64"
+                        },
+                        {
+                          "internalType": "uint64",
+                          "name": "traffic",
+                          "type": "uint64"
+                        },
+                        {
+                          "internalType": "uint64",
+                          "name": "externalPort",
+                          "type": "uint64"
+                        }
+                      ],
+                      "internalType": "struct OptionInfo",
+                      "name": "optionInfo",
+                      "type": "tuple"
+                    }
+                  ],
+                  "internalType": "struct HardwareInfo",
+                  "name": "hardwareInfo",
+                  "type": "tuple"
                 }
               ],
               "internalType": "struct TeeOfferInfo",
@@ -3182,6 +3631,76 @@
           ],
           "internalType": "struct TeeOfferData",
           "name": "ret",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "teeOfferId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getTeeOfferHardwareInfo",
+      "outputs": [
+        {
+          "components": [
+            {
+              "components": [
+                {
+                  "internalType": "uint64",
+                  "name": "cpuCores",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "ram",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "hdd",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "ssd",
+                  "type": "uint64"
+                }
+              ],
+              "internalType": "struct SlotInfo",
+              "name": "slotInfo",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint64",
+                  "name": "bandwidth",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "traffic",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "externalPort",
+                  "type": "uint64"
+                }
+              ],
+              "internalType": "struct OptionInfo",
+              "name": "optionInfo",
+              "type": "tuple"
+            }
+          ],
+          "internalType": "struct HardwareInfo",
+          "name": "",
           "type": "tuple"
         }
       ],
@@ -3257,11 +3776,6 @@
                   "type": "string"
                 },
                 {
-                  "internalType": "uint256",
-                  "name": "holdSum",
-                  "type": "uint256"
-                },
-                {
                   "components": [
                     {
                       "internalType": "uint256[]",
@@ -3277,16 +3791,6 @@
                   "internalType": "struct OfferRestrictions",
                   "name": "restrictions",
                   "type": "tuple"
-                },
-                {
-                  "internalType": "string",
-                  "name": "properties",
-                  "type": "string"
-                },
-                {
-                  "internalType": "uint256",
-                  "name": "maxDurationTimeMinutes",
-                  "type": "uint256"
                 },
                 {
                   "internalType": "string",
@@ -3637,31 +4141,6 @@
         },
         {
           "indexed": true,
-          "internalType": "uint256",
-          "name": "orderId",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "bool",
-          "name": "value",
-          "type": "bool"
-        }
-      ],
-      "name": "OrderAwaitingPaymentChanged",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "consumer",
-          "type": "address"
-        },
-        {
-          "indexed": true,
           "internalType": "bytes32",
           "name": "externalId",
           "type": "bytes32"
@@ -3675,99 +4154,17 @@
         {
           "indexed": false,
           "internalType": "uint256",
+          "name": "parentOrderId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
           "name": "orderId",
           "type": "uint256"
         }
       ],
       "name": "OrderCreated",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "consumer",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "internalType": "uint256",
-          "name": "orderId",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "value",
-          "type": "uint256"
-        }
-      ],
-      "name": "OrderDepositSpentChanged",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "consumer",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "internalType": "uint256",
-          "name": "orderId",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "string",
-          "name": "encryptedResult",
-          "type": "string"
-        }
-      ],
-      "name": "OrderEncryptedResultUpdated",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": true,
-          "internalType": "uint256",
-          "name": "orderId",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "price",
-          "type": "uint256"
-        }
-      ],
-      "name": "OrderPriceUpdated",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "consumer",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "internalType": "uint256",
-          "name": "orderId",
-          "type": "uint256"
-        }
-      ],
-      "name": "OrderStarted",
       "type": "event"
     },
     {
@@ -3788,79 +4185,6 @@
       ],
       "name": "OrderStatusUpdated",
       "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": true,
-          "internalType": "uint256",
-          "name": "subOrderId",
-          "type": "uint256"
-        },
-        {
-          "indexed": true,
-          "internalType": "uint256",
-          "name": "parentOrderId",
-          "type": "uint256"
-        }
-      ],
-      "name": "SubOrderCreated",
-      "type": "event"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "orderId",
-          "type": "uint256"
-        }
-      ],
-      "name": "cancelOrder",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "consumer",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "orderId",
-          "type": "uint256"
-        }
-      ],
-      "name": "cancelOrderByApp",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "orderId",
-          "type": "uint256"
-        },
-        {
-          "internalType": "enum OrderStatus",
-          "name": "status",
-          "type": "uint8"
-        },
-        {
-          "internalType": "string",
-          "name": "encryptedResult",
-          "type": "string"
-        }
-      ],
-      "name": "completeOrder",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
     },
     {
       "inputs": [
@@ -3895,7 +4219,7 @@
               "components": [
                 {
                   "internalType": "uint256",
-                  "name": "slots",
+                  "name": "slots_DEPRECATED",
                   "type": "uint256"
                 },
                 {
@@ -3905,7 +4229,7 @@
                 },
                 {
                   "internalType": "uint256[]",
-                  "name": "selectedOffers",
+                  "name": "outputOffers",
                   "type": "uint256[]"
                 }
               ],
@@ -3917,6 +4241,26 @@
               "internalType": "bytes32",
               "name": "externalId",
               "type": "bytes32"
+            },
+            {
+              "internalType": "uint256",
+              "name": "slotId",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint32",
+              "name": "slotCount",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint256[]",
+              "name": "optionsIds",
+              "type": "uint256[]"
+            },
+            {
+              "internalType": "uint32[]",
+              "name": "optionsCount",
+              "type": "uint32[]"
             }
           ],
           "internalType": "struct OrderInfo",
@@ -3925,7 +4269,7 @@
         },
         {
           "internalType": "uint256",
-          "name": "holdDeposit",
+          "name": "deposit",
           "type": "uint256"
         },
         {
@@ -3983,7 +4327,7 @@
               "components": [
                 {
                   "internalType": "uint256",
-                  "name": "slots",
+                  "name": "slots_DEPRECATED",
                   "type": "uint256"
                 },
                 {
@@ -3993,7 +4337,7 @@
                 },
                 {
                   "internalType": "uint256[]",
-                  "name": "selectedOffers",
+                  "name": "outputOffers",
                   "type": "uint256[]"
                 }
               ],
@@ -4005,6 +4349,26 @@
               "internalType": "bytes32",
               "name": "externalId",
               "type": "bytes32"
+            },
+            {
+              "internalType": "uint256",
+              "name": "slotId",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint32",
+              "name": "slotCount",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint256[]",
+              "name": "optionsIds",
+              "type": "uint256[]"
+            },
+            {
+              "internalType": "uint32[]",
+              "name": "optionsCount",
+              "type": "uint32[]"
             }
           ],
           "internalType": "struct OrderInfo",
@@ -4013,7 +4377,7 @@
         },
         {
           "internalType": "uint256",
-          "name": "holdDeposit",
+          "name": "deposit",
           "type": "uint256"
         },
         {
@@ -4071,7 +4435,7 @@
               "components": [
                 {
                   "internalType": "uint256",
-                  "name": "slots",
+                  "name": "slots_DEPRECATED",
                   "type": "uint256"
                 },
                 {
@@ -4081,7 +4445,7 @@
                 },
                 {
                   "internalType": "uint256[]",
-                  "name": "selectedOffers",
+                  "name": "outputOffers",
                   "type": "uint256[]"
                 }
               ],
@@ -4093,6 +4457,26 @@
               "internalType": "bytes32",
               "name": "externalId",
               "type": "bytes32"
+            },
+            {
+              "internalType": "uint256",
+              "name": "slotId",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint32",
+              "name": "slotCount",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint256[]",
+              "name": "optionsIds",
+              "type": "uint256[]"
+            },
+            {
+              "internalType": "uint32[]",
+              "name": "optionsCount",
+              "type": "uint32[]"
             }
           ],
           "internalType": "struct OrderInfo",
@@ -4108,7 +4492,7 @@
             },
             {
               "internalType": "uint256",
-              "name": "holdSum",
+              "name": "deposit",
               "type": "uint256"
             }
           ],
@@ -4171,7 +4555,7 @@
               "components": [
                 {
                   "internalType": "uint256",
-                  "name": "slots",
+                  "name": "slots_DEPRECATED",
                   "type": "uint256"
                 },
                 {
@@ -4181,7 +4565,7 @@
                 },
                 {
                   "internalType": "uint256[]",
-                  "name": "selectedOffers",
+                  "name": "outputOffers",
                   "type": "uint256[]"
                 }
               ],
@@ -4193,6 +4577,26 @@
               "internalType": "bytes32",
               "name": "externalId",
               "type": "bytes32"
+            },
+            {
+              "internalType": "uint256",
+              "name": "slotId",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint32",
+              "name": "slotCount",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint256[]",
+              "name": "optionsIds",
+              "type": "uint256[]"
+            },
+            {
+              "internalType": "uint32[]",
+              "name": "optionsCount",
+              "type": "uint32[]"
             }
           ],
           "internalType": "struct OrderInfo",
@@ -4208,7 +4612,7 @@
             },
             {
               "internalType": "uint256",
-              "name": "holdSum",
+              "name": "deposit",
               "type": "uint256"
             }
           ],
@@ -4229,14 +4633,163 @@
       "type": "function"
     },
     {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "consumer",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "orderId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "bool",
+          "name": "value",
+          "type": "bool"
+        }
+      ],
+      "name": "OrderAwaitingPaymentChanged",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "consumer",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "orderId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "OrderDepositRefilled",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "consumer",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "orderId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "value",
+          "type": "uint256"
+        }
+      ],
+      "name": "OrderDepositSpentChanged",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "consumer",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "orderId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "value",
+          "type": "uint256"
+        }
+      ],
+      "name": "OrderOptionsDepositSpentChanged",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "orderId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "price",
+          "type": "uint256"
+        }
+      ],
+      "name": "OrderPriceUpdated",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "tokenReceiver",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "orderId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "profit",
+          "type": "uint256"
+        }
+      ],
+      "name": "OrderProfitUnlocked",
+      "type": "event"
+    },
+    {
       "inputs": [
         {
           "internalType": "uint256",
           "name": "orderId",
           "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
         }
       ],
-      "name": "processOrder",
+      "name": "refillOrder",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
@@ -4283,9 +4836,14 @@
           "internalType": "uint256",
           "name": "orderId",
           "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "value",
+          "type": "uint256"
         }
       ],
-      "name": "startOrder",
+      "name": "setOptionsDepositSpent",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
@@ -4293,17 +4851,12 @@
     {
       "inputs": [
         {
-          "internalType": "address",
-          "name": "sender",
-          "type": "address"
-        },
-        {
           "internalType": "uint256",
           "name": "orderId",
           "type": "uint256"
         }
       ],
-      "name": "startOrderByApp",
+      "name": "unlockProfit",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
@@ -4322,24 +4875,6 @@
         }
       ],
       "name": "updateOrderPrice",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "orderId",
-          "type": "uint256"
-        },
-        {
-          "internalType": "string",
-          "name": "encryptedResult",
-          "type": "string"
-        }
-      ],
-      "name": "updateOrderResult",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
@@ -4386,12 +4921,12 @@
         },
         {
           "indexed": false,
-          "internalType": "uint256",
-          "name": "amount",
-          "type": "uint256"
+          "internalType": "string",
+          "name": "encryptedResult",
+          "type": "string"
         }
       ],
-      "name": "OrderDepositRefilled",
+      "name": "OrderEncryptedResultUpdated",
       "type": "event"
     },
     {
@@ -4420,22 +4955,42 @@
       "type": "event"
     },
     {
+      "anonymous": false,
       "inputs": [
         {
+          "indexed": true,
+          "internalType": "address",
+          "name": "consumer",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "orderId",
+          "type": "uint256"
+        }
+      ],
+      "name": "OrderStarted",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
           "internalType": "uint256",
           "name": "orderId",
           "type": "uint256"
         },
         {
-          "internalType": "uint256",
-          "name": "amount",
-          "type": "uint256"
+          "indexed": true,
+          "internalType": "enum OrderStatus",
+          "name": "status",
+          "type": "uint8"
         }
       ],
-      "name": "refillOrder",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
+      "name": "OrderStatusUpdated",
+      "type": "event"
     },
     {
       "inputs": [
@@ -4445,7 +5000,7 @@
           "type": "uint256"
         }
       ],
-      "name": "withdrawChange",
+      "name": "cancelOrder",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
@@ -4463,7 +5018,30 @@
           "type": "uint256"
         }
       ],
-      "name": "withdrawChangeByApp",
+      "name": "cancelOrderByApp",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "orderId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "enum OrderStatus",
+          "name": "status",
+          "type": "uint8"
+        },
+        {
+          "internalType": "string",
+          "name": "encryptedResult",
+          "type": "string"
+        }
+      ],
+      "name": "completeOrder",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
@@ -4476,7 +5054,56 @@
           "type": "uint256"
         }
       ],
-      "name": "withdrawProfit",
+      "name": "processOrder",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "orderId",
+          "type": "uint256"
+        }
+      ],
+      "name": "startOrder",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "sender",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "orderId",
+          "type": "uint256"
+        }
+      ],
+      "name": "startOrderByApp",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "orderId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "string",
+          "name": "encryptedResult",
+          "type": "string"
+        }
+      ],
+      "name": "updateOrderResult",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
@@ -4546,14 +5173,79 @@
           "type": "uint256"
         }
       ],
-      "name": "calculateTotalHoldDeposit",
+      "name": "calculateTotalOrderDeposit",
       "outputs": [
         {
           "internalType": "uint256",
-          "name": "holdDeposit",
+          "name": "deposit",
           "type": "uint256"
         }
       ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "enum OfferGroup",
+          "name": "parentOfferGroup",
+          "type": "uint8"
+        },
+        {
+          "internalType": "enum OfferGroup",
+          "name": "subOfferGroup",
+          "type": "uint8"
+        }
+      ],
+      "name": "checkOrderAllowedGroup",
+      "outputs": [],
+      "stateMutability": "pure",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "enum OrderStatus",
+          "name": "prev",
+          "type": "uint8"
+        },
+        {
+          "internalType": "enum OrderStatus",
+          "name": "next",
+          "type": "uint8"
+        }
+      ],
+      "name": "checkOrderAllowedStatus",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "parentOrderId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "subOfferId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "enum OfferGroup",
+          "name": "subOfferGroup",
+          "type": "uint8"
+        }
+      ],
+      "name": "checkOrderRestrictions",
+      "outputs": [],
       "stateMutability": "view",
       "type": "function"
     },
@@ -4585,6 +5277,25 @@
         }
       ],
       "name": "getDepositSpent",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "orderId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getOptionsDepositSpent",
       "outputs": [
         {
           "internalType": "uint256",
@@ -4641,7 +5352,7 @@
               "components": [
                 {
                   "internalType": "uint256",
-                  "name": "slots",
+                  "name": "slots_DEPRECATED",
                   "type": "uint256"
                 },
                 {
@@ -4651,7 +5362,7 @@
                 },
                 {
                   "internalType": "uint256[]",
-                  "name": "selectedOffers",
+                  "name": "outputOffers",
                   "type": "uint256[]"
                 }
               ],
@@ -4663,6 +5374,26 @@
               "internalType": "bytes32",
               "name": "externalId",
               "type": "bytes32"
+            },
+            {
+              "internalType": "uint256",
+              "name": "slotId",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint32",
+              "name": "slotCount",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint256[]",
+              "name": "optionsIds",
+              "type": "uint256[]"
+            },
+            {
+              "internalType": "uint32[]",
+              "name": "optionsCount",
+              "type": "uint32[]"
             }
           ],
           "internalType": "struct OrderInfo",
@@ -4698,12 +5429,12 @@
           "type": "uint256"
         }
       ],
-      "name": "getOrderChangeWithdrawn",
+      "name": "getOrderDeposit",
       "outputs": [
         {
-          "internalType": "bool",
+          "internalType": "uint256",
           "name": "",
-          "type": "bool"
+          "type": "uint256"
         }
       ],
       "stateMutability": "view",
@@ -4717,7 +5448,7 @@
           "type": "uint256"
         }
       ],
-      "name": "getOrderHoldDeposit",
+      "name": "getOrderDepositSpent",
       "outputs": [
         {
           "internalType": "uint256",
@@ -4815,12 +5546,12 @@
           "type": "uint256"
         }
       ],
-      "name": "getOrderProfitWithdrawn",
+      "name": "getOrderSubOrders",
       "outputs": [
         {
-          "internalType": "bool",
+          "internalType": "uint256[]",
           "name": "",
-          "type": "bool"
+          "type": "uint256[]"
         }
       ],
       "stateMutability": "view",
@@ -4834,12 +5565,34 @@
           "type": "uint256"
         }
       ],
-      "name": "getOrderSubOrders",
+      "name": "getOrderTeeOptions",
       "outputs": [
         {
-          "internalType": "uint256[]",
+          "components": [
+            {
+              "internalType": "uint64",
+              "name": "bandwidth",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint64",
+              "name": "traffic",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint64",
+              "name": "externalPort",
+              "type": "uint64"
+            }
+          ],
+          "internalType": "struct OptionInfo[]",
           "name": "",
-          "type": "uint256[]"
+          "type": "tuple[]"
+        },
+        {
+          "internalType": "uint32[]",
+          "name": "",
+          "type": "uint32[]"
         }
       ],
       "stateMutability": "view",
@@ -4886,6 +5639,25 @@
         }
       ],
       "name": "isOrderCompleted",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "orderId",
+          "type": "uint256"
+        }
+      ],
+      "name": "isOrderProcessing",
       "outputs": [
         {
           "internalType": "bool",
@@ -5546,666 +6318,6 @@
       "type": "function"
     },
     {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "creator",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "internalType": "uint256",
-          "name": "slotId",
-          "type": "uint256"
-        }
-      ],
-      "name": "SlotCreated",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": true,
-          "internalType": "uint256",
-          "name": "slotId",
-          "type": "uint256"
-        }
-      ],
-      "name": "SlotRemoved",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": true,
-          "internalType": "uint256",
-          "name": "slotId",
-          "type": "uint256"
-        }
-      ],
-      "name": "SlotUpdated",
-      "type": "event"
-    },
-    {
-      "inputs": [
-        {
-          "components": [
-            {
-              "internalType": "string",
-              "name": "name",
-              "type": "string"
-            },
-            {
-              "internalType": "string",
-              "name": "description",
-              "type": "string"
-            },
-            {
-              "internalType": "uint256",
-              "name": "cpu",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "ram",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "ssd",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "hdd",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "bandwidth",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "traffic",
-              "type": "uint256"
-            }
-          ],
-          "internalType": "struct SlotInfo",
-          "name": "info",
-          "type": "tuple"
-        }
-      ],
-      "name": "createSlot",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "begin",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "end",
-          "type": "uint256"
-        }
-      ],
-      "name": "getRangeOfSlots",
-      "outputs": [
-        {
-          "internalType": "uint256[]",
-          "name": "",
-          "type": "uint256[]"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "slotId",
-          "type": "uint256"
-        }
-      ],
-      "name": "getSlotInfo",
-      "outputs": [
-        {
-          "components": [
-            {
-              "internalType": "string",
-              "name": "name",
-              "type": "string"
-            },
-            {
-              "internalType": "string",
-              "name": "description",
-              "type": "string"
-            },
-            {
-              "internalType": "uint256",
-              "name": "cpu",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "ram",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "ssd",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "hdd",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "bandwidth",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "traffic",
-              "type": "uint256"
-            }
-          ],
-          "internalType": "struct SlotInfo",
-          "name": "",
-          "type": "tuple"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "getSlotsCount",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "slotId",
-          "type": "uint256"
-        }
-      ],
-      "name": "isSlotValid",
-      "outputs": [
-        {
-          "internalType": "bool",
-          "name": "",
-          "type": "bool"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "slotId",
-          "type": "uint256"
-        },
-        {
-          "components": [
-            {
-              "internalType": "string",
-              "name": "name",
-              "type": "string"
-            },
-            {
-              "internalType": "string",
-              "name": "description",
-              "type": "string"
-            },
-            {
-              "internalType": "uint256",
-              "name": "cpu",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "ram",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "ssd",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "hdd",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "bandwidth",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "traffic",
-              "type": "uint256"
-            }
-          ],
-          "internalType": "struct SlotInfo",
-          "name": "info",
-          "type": "tuple"
-        }
-      ],
-      "name": "modifySlot",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "slotId",
-          "type": "uint256"
-        }
-      ],
-      "name": "removeSlot",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "getSlotManagers",
-      "outputs": [
-        {
-          "internalType": "uint256[]",
-          "name": "",
-          "type": "uint256[]"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "user",
-          "type": "address"
-        }
-      ],
-      "name": "grantAccessToSlots",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "user",
-          "type": "address"
-        }
-      ],
-      "name": "hasSlotsAccess",
-      "outputs": [
-        {
-          "internalType": "bool",
-          "name": "",
-          "type": "bool"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "user",
-          "type": "address"
-        }
-      ],
-      "name": "revokeAccessToSlots",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": false,
-          "internalType": "enum Purpose",
-          "name": "executor",
-          "type": "uint8"
-        },
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "owner",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "amount",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "totalLocked",
-          "type": "uint256"
-        }
-      ],
-      "name": "TokensLocked",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "owner",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "amount",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "totalAmount",
-          "type": "uint256"
-        }
-      ],
-      "name": "TokensStaked",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": false,
-          "internalType": "enum Purpose",
-          "name": "executor",
-          "type": "uint8"
-        },
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "owner",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "amount",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "totalLocked",
-          "type": "uint256"
-        }
-      ],
-      "name": "TokensUnlocked",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "owner",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "amount",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "totalAmount",
-          "type": "uint256"
-        }
-      ],
-      "name": "TokensUnstaked",
-      "type": "event"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "enum Purpose",
-          "name": "executor",
-          "type": "uint8"
-        },
-        {
-          "internalType": "address",
-          "name": "stakeOwner",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "amount",
-          "type": "uint256"
-        }
-      ],
-      "name": "confiscateTokensFrom",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "enum Purpose",
-          "name": "executor",
-          "type": "uint8"
-        },
-        {
-          "internalType": "address",
-          "name": "stakeOwner",
-          "type": "address"
-        }
-      ],
-      "name": "getLockedTokensInfo",
-      "outputs": [
-        {
-          "components": [
-            {
-              "internalType": "uint256",
-              "name": "fromDate",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "toDate",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "amount",
-              "type": "uint256"
-            }
-          ],
-          "internalType": "struct LockedTokens",
-          "name": "ret",
-          "type": "tuple"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "stakeOwner",
-          "type": "address"
-        }
-      ],
-      "name": "getStakeInfo",
-      "outputs": [
-        {
-          "components": [
-            {
-              "internalType": "uint256",
-              "name": "startDate",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "amount",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "profit",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "totalLocked",
-              "type": "uint256"
-            }
-          ],
-          "internalType": "struct StakeInfo",
-          "name": "ret",
-          "type": "tuple"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "enum Purpose",
-          "name": "executor",
-          "type": "uint8"
-        },
-        {
-          "internalType": "address",
-          "name": "stakeOwner",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "amount",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "secondsCount",
-          "type": "uint256"
-        }
-      ],
-      "name": "lockTokens",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "amount",
-          "type": "uint256"
-        }
-      ],
-      "name": "stake",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "beneficiary",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "amount",
-          "type": "uint256"
-        }
-      ],
-      "name": "stakeFor",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "enum Purpose",
-          "name": "executor",
-          "type": "uint8"
-        },
-        {
-          "internalType": "address",
-          "name": "stakeOwner",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "amount",
-          "type": "uint256"
-        }
-      ],
-      "name": "unlockTokens",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "amount",
-          "type": "uint256"
-        }
-      ],
-      "name": "unstake",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
       "inputs": [
         {
           "internalType": "enum ParamName",
@@ -6222,6 +6334,57 @@
         }
       ],
       "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getProtocolIncomeDistribution",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "recipient",
+              "type": "address"
+            },
+            {
+              "internalType": "uint16",
+              "name": "amount",
+              "type": "uint16"
+            }
+          ],
+          "internalType": "struct ProtocolIncomeRecipient[]",
+          "name": "",
+          "type": "tuple[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getProtocolIncomePercent",
+      "outputs": [
+        {
+          "internalType": "uint32",
+          "name": "",
+          "type": "uint32"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getProtocolTotalIncomeDistributionRatio",
+      "outputs": [
+        {
+          "internalType": "uint32",
+          "name": "",
+          "type": "uint32"
+        }
+      ],
+      "stateMutability": "pure",
       "type": "function"
     },
     {
@@ -6281,11 +6444,6 @@
             },
             {
               "internalType": "uint256",
-              "name": "stakingPercentPerDay",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
               "name": "stopDelaySeconds",
               "type": "uint256"
             },
@@ -6311,6 +6469,913 @@
         }
       ],
       "name": "setConfigParams",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bool",
+          "name": "isLocked",
+          "type": "bool"
+        }
+      ],
+      "name": "setLockData",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "recipient",
+              "type": "address"
+            },
+            {
+              "internalType": "uint16",
+              "name": "amount",
+              "type": "uint16"
+            }
+          ],
+          "internalType": "struct ProtocolIncomeRecipient[]",
+          "name": "recipients",
+          "type": "tuple[]"
+        }
+      ],
+      "name": "setProtocolIncomeDistribution",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint32",
+          "name": "percent",
+          "type": "uint32"
+        }
+      ],
+      "name": "setProtocolIncomePercent",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "creator",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "teeOfferId",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "optionId",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "externalId",
+          "type": "bytes32"
+        }
+      ],
+      "name": "OptionAdded",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "teeOfferId",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "optionId",
+          "type": "uint256"
+        }
+      ],
+      "name": "OptionDeleted",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "teeOfferId",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "optionId",
+          "type": "uint256"
+        }
+      ],
+      "name": "OptionUpdated",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "teeOfferId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "externalId",
+          "type": "bytes32"
+        },
+        {
+          "components": [
+            {
+              "internalType": "uint64",
+              "name": "bandwidth",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint64",
+              "name": "traffic",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint64",
+              "name": "externalPort",
+              "type": "uint64"
+            }
+          ],
+          "internalType": "struct OptionInfo",
+          "name": "info",
+          "type": "tuple"
+        },
+        {
+          "components": [
+            {
+              "internalType": "enum PriceType",
+              "name": "priceType",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint256",
+              "name": "price",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint64",
+              "name": "minTimeMinutes",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint64",
+              "name": "maxTimeMinutes",
+              "type": "uint64"
+            }
+          ],
+          "internalType": "struct SlotUsage",
+          "name": "usage",
+          "type": "tuple"
+        }
+      ],
+      "name": "addOption",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "teeOfferId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "optionId",
+          "type": "uint256"
+        }
+      ],
+      "name": "deleteOption",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "optionId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getOptionById",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "id",
+              "type": "uint256"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint64",
+                  "name": "bandwidth",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "traffic",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "externalPort",
+                  "type": "uint64"
+                }
+              ],
+              "internalType": "struct OptionInfo",
+              "name": "info",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "enum PriceType",
+                  "name": "priceType",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "price",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "minTimeMinutes",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "maxTimeMinutes",
+                  "type": "uint64"
+                }
+              ],
+              "internalType": "struct SlotUsage",
+              "name": "usage",
+              "type": "tuple"
+            }
+          ],
+          "internalType": "struct TeeOfferOption",
+          "name": "result",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getOptionsCount",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "teeOfferId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "begin",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "end",
+          "type": "uint256"
+        }
+      ],
+      "name": "getTeeOfferOptions",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "id",
+              "type": "uint256"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint64",
+                  "name": "bandwidth",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "traffic",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "externalPort",
+                  "type": "uint64"
+                }
+              ],
+              "internalType": "struct OptionInfo",
+              "name": "info",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "enum PriceType",
+                  "name": "priceType",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "price",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "minTimeMinutes",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "maxTimeMinutes",
+                  "type": "uint64"
+                }
+              ],
+              "internalType": "struct SlotUsage",
+              "name": "usage",
+              "type": "tuple"
+            }
+          ],
+          "internalType": "struct TeeOfferOption[]",
+          "name": "",
+          "type": "tuple[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "optionId",
+          "type": "uint256"
+        }
+      ],
+      "name": "isOptionExists",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "teeOfferId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "optionId",
+          "type": "uint256"
+        },
+        {
+          "components": [
+            {
+              "internalType": "uint64",
+              "name": "bandwidth",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint64",
+              "name": "traffic",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint64",
+              "name": "externalPort",
+              "type": "uint64"
+            }
+          ],
+          "internalType": "struct OptionInfo",
+          "name": "info",
+          "type": "tuple"
+        },
+        {
+          "components": [
+            {
+              "internalType": "enum PriceType",
+              "name": "priceType",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint256",
+              "name": "price",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint64",
+              "name": "minTimeMinutes",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint64",
+              "name": "maxTimeMinutes",
+              "type": "uint64"
+            }
+          ],
+          "internalType": "struct SlotUsage",
+          "name": "usage",
+          "type": "tuple"
+        }
+      ],
+      "name": "updateOption",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "creator",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "offerId",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "slotId",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "externalId",
+          "type": "bytes32"
+        }
+      ],
+      "name": "TeeSlotAdded",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "offerId",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "slotId",
+          "type": "uint256"
+        }
+      ],
+      "name": "TeeSlotDeleted",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "offerId",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "slotId",
+          "type": "uint256"
+        }
+      ],
+      "name": "TeeSlotUpdated",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "teeOfferId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "externalId",
+          "type": "bytes32"
+        },
+        {
+          "components": [
+            {
+              "internalType": "uint64",
+              "name": "cpuCores",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint64",
+              "name": "ram",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint64",
+              "name": "hdd",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint64",
+              "name": "ssd",
+              "type": "uint64"
+            }
+          ],
+          "internalType": "struct SlotInfo",
+          "name": "info",
+          "type": "tuple"
+        },
+        {
+          "components": [
+            {
+              "internalType": "enum PriceType",
+              "name": "priceType",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint256",
+              "name": "price",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint64",
+              "name": "minTimeMinutes",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint64",
+              "name": "maxTimeMinutes",
+              "type": "uint64"
+            }
+          ],
+          "internalType": "struct SlotUsage",
+          "name": "usage",
+          "type": "tuple"
+        }
+      ],
+      "name": "addTeeOfferSlot",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "teeOfferId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "slotId",
+          "type": "uint256"
+        }
+      ],
+      "name": "deleteTeeOfferSlot",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "teeOfferId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "slotId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getTeeOfferSlotById",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "id",
+              "type": "uint256"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint64",
+                  "name": "cpuCores",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "ram",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "hdd",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "ssd",
+                  "type": "uint64"
+                }
+              ],
+              "internalType": "struct SlotInfo",
+              "name": "info",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "enum PriceType",
+                  "name": "priceType",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "price",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "minTimeMinutes",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "maxTimeMinutes",
+                  "type": "uint64"
+                }
+              ],
+              "internalType": "struct SlotUsage",
+              "name": "usage",
+              "type": "tuple"
+            }
+          ],
+          "internalType": "struct TeeOfferSlot",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "teeOfferId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "begin",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "end",
+          "type": "uint256"
+        }
+      ],
+      "name": "getTeeOfferSlots",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "id",
+              "type": "uint256"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint64",
+                  "name": "cpuCores",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "ram",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "hdd",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "ssd",
+                  "type": "uint64"
+                }
+              ],
+              "internalType": "struct SlotInfo",
+              "name": "info",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "enum PriceType",
+                  "name": "priceType",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "price",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "minTimeMinutes",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "maxTimeMinutes",
+                  "type": "uint64"
+                }
+              ],
+              "internalType": "struct SlotUsage",
+              "name": "usage",
+              "type": "tuple"
+            }
+          ],
+          "internalType": "struct TeeOfferSlot[]",
+          "name": "",
+          "type": "tuple[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getTeeOffersSlotsCount",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "teeOfferId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "slotId",
+          "type": "uint256"
+        }
+      ],
+      "name": "isTeeOfferSlotExists",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "teeOfferId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "slotId",
+          "type": "uint256"
+        },
+        {
+          "components": [
+            {
+              "internalType": "uint64",
+              "name": "cpuCores",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint64",
+              "name": "ram",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint64",
+              "name": "hdd",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint64",
+              "name": "ssd",
+              "type": "uint64"
+            }
+          ],
+          "internalType": "struct SlotInfo",
+          "name": "info",
+          "type": "tuple"
+        },
+        {
+          "components": [
+            {
+              "internalType": "enum PriceType",
+              "name": "priceType",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint256",
+              "name": "price",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint64",
+              "name": "minTimeMinutes",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint64",
+              "name": "maxTimeMinutes",
+              "type": "uint64"
+            }
+          ],
+          "internalType": "struct SlotUsage",
+          "name": "usage",
+          "type": "tuple"
+        }
+      ],
+      "name": "updateTeeOfferSlot",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
@@ -6592,6 +7657,556 @@
       "anonymous": false,
       "inputs": [
         {
+          "indexed": false,
+          "internalType": "address",
+          "name": "creator",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "offerId",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "slotId",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "externalId",
+          "type": "bytes32"
+        }
+      ],
+      "name": "ValueSlotAdded",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "offerId",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "slotId",
+          "type": "uint256"
+        }
+      ],
+      "name": "ValueSlotDeleted",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "offerId",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "slotId",
+          "type": "uint256"
+        }
+      ],
+      "name": "ValueSlotUpdated",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "offerId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "externalId",
+          "type": "bytes32"
+        },
+        {
+          "components": [
+            {
+              "internalType": "uint64",
+              "name": "cpuCores",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint64",
+              "name": "ram",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint64",
+              "name": "hdd",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint64",
+              "name": "ssd",
+              "type": "uint64"
+            }
+          ],
+          "internalType": "struct SlotInfo",
+          "name": "info",
+          "type": "tuple"
+        },
+        {
+          "components": [
+            {
+              "internalType": "uint64",
+              "name": "bandwidth",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint64",
+              "name": "traffic",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint64",
+              "name": "externalPort",
+              "type": "uint64"
+            }
+          ],
+          "internalType": "struct OptionInfo",
+          "name": "option",
+          "type": "tuple"
+        },
+        {
+          "components": [
+            {
+              "internalType": "enum PriceType",
+              "name": "priceType",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint256",
+              "name": "price",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint64",
+              "name": "minTimeMinutes",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint64",
+              "name": "maxTimeMinutes",
+              "type": "uint64"
+            }
+          ],
+          "internalType": "struct SlotUsage",
+          "name": "usage",
+          "type": "tuple"
+        }
+      ],
+      "name": "addValueOfferSlot",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "offerId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "slotId",
+          "type": "uint256"
+        }
+      ],
+      "name": "deleteValueOfferSlot",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "offerId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getCheapestValueOffersPrice",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "price",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "offerId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "slotId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getValueOfferSlotById",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "id",
+              "type": "uint256"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint64",
+                  "name": "cpuCores",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "ram",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "hdd",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "ssd",
+                  "type": "uint64"
+                }
+              ],
+              "internalType": "struct SlotInfo",
+              "name": "info",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint64",
+                  "name": "bandwidth",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "traffic",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "externalPort",
+                  "type": "uint64"
+                }
+              ],
+              "internalType": "struct OptionInfo",
+              "name": "option",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "enum PriceType",
+                  "name": "priceType",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "price",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "minTimeMinutes",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "maxTimeMinutes",
+                  "type": "uint64"
+                }
+              ],
+              "internalType": "struct SlotUsage",
+              "name": "usage",
+              "type": "tuple"
+            }
+          ],
+          "internalType": "struct ValueOfferSlot",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "offerId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "begin",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "end",
+          "type": "uint256"
+        }
+      ],
+      "name": "getValueOfferSlots",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "id",
+              "type": "uint256"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint64",
+                  "name": "cpuCores",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "ram",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "hdd",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "ssd",
+                  "type": "uint64"
+                }
+              ],
+              "internalType": "struct SlotInfo",
+              "name": "info",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint64",
+                  "name": "bandwidth",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "traffic",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "externalPort",
+                  "type": "uint64"
+                }
+              ],
+              "internalType": "struct OptionInfo",
+              "name": "option",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "enum PriceType",
+                  "name": "priceType",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "price",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "minTimeMinutes",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "maxTimeMinutes",
+                  "type": "uint64"
+                }
+              ],
+              "internalType": "struct SlotUsage",
+              "name": "usage",
+              "type": "tuple"
+            }
+          ],
+          "internalType": "struct ValueOfferSlot[]",
+          "name": "",
+          "type": "tuple[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getValueOffersSlotsCount",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "offerId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "slotId",
+          "type": "uint256"
+        }
+      ],
+      "name": "isValueOfferSlotExists",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "offerId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "slotId",
+          "type": "uint256"
+        },
+        {
+          "components": [
+            {
+              "internalType": "uint64",
+              "name": "cpuCores",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint64",
+              "name": "ram",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint64",
+              "name": "hdd",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint64",
+              "name": "ssd",
+              "type": "uint64"
+            }
+          ],
+          "internalType": "struct SlotInfo",
+          "name": "info",
+          "type": "tuple"
+        },
+        {
+          "components": [
+            {
+              "internalType": "uint64",
+              "name": "bandwidth",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint64",
+              "name": "traffic",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint64",
+              "name": "externalPort",
+              "type": "uint64"
+            }
+          ],
+          "internalType": "struct OptionInfo",
+          "name": "option",
+          "type": "tuple"
+        },
+        {
+          "components": [
+            {
+              "internalType": "enum PriceType",
+              "name": "priceType",
+              "type": "uint8"
+            },
+            {
+              "internalType": "uint256",
+              "name": "price",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint64",
+              "name": "minTimeMinutes",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint64",
+              "name": "maxTimeMinutes",
+              "type": "uint64"
+            }
+          ],
+          "internalType": "struct SlotUsage",
+          "name": "usage",
+          "type": "tuple"
+        }
+      ],
+      "name": "updateValueOfferSlot",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
           "indexed": true,
           "internalType": "address",
           "name": "consumer",
@@ -6612,11 +8227,17 @@
         {
           "indexed": false,
           "internalType": "uint256",
+          "name": "parentOrderId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
           "name": "orderId",
           "type": "uint256"
         }
       ],
-      "name": "WorkflowCreated",
+      "name": "OrderCreated",
       "type": "event"
     },
     {
@@ -6665,7 +8286,7 @@
               "components": [
                 {
                   "internalType": "uint256",
-                  "name": "slots",
+                  "name": "slots_DEPRECATED",
                   "type": "uint256"
                 },
                 {
@@ -6675,7 +8296,7 @@
                 },
                 {
                   "internalType": "uint256[]",
-                  "name": "selectedOffers",
+                  "name": "outputOffers",
                   "type": "uint256[]"
                 }
               ],
@@ -6687,6 +8308,26 @@
               "internalType": "bytes32",
               "name": "externalId",
               "type": "bytes32"
+            },
+            {
+              "internalType": "uint256",
+              "name": "slotId",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint32",
+              "name": "slotCount",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint256[]",
+              "name": "optionsIds",
+              "type": "uint256[]"
+            },
+            {
+              "internalType": "uint32[]",
+              "name": "optionsCount",
+              "type": "uint32[]"
             }
           ],
           "internalType": "struct OrderInfo",
@@ -6695,7 +8336,7 @@
         },
         {
           "internalType": "uint256",
-          "name": "holdDeposit",
+          "name": "wokflowDeposit",
           "type": "uint256"
         },
         {
@@ -6729,7 +8370,7 @@
               "components": [
                 {
                   "internalType": "uint256",
-                  "name": "slots",
+                  "name": "slots_DEPRECATED",
                   "type": "uint256"
                 },
                 {
@@ -6739,7 +8380,7 @@
                 },
                 {
                   "internalType": "uint256[]",
-                  "name": "selectedOffers",
+                  "name": "outputOffers",
                   "type": "uint256[]"
                 }
               ],
@@ -6751,6 +8392,26 @@
               "internalType": "bytes32",
               "name": "externalId",
               "type": "bytes32"
+            },
+            {
+              "internalType": "uint256",
+              "name": "slotId",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint32",
+              "name": "slotCount",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint256[]",
+              "name": "optionsIds",
+              "type": "uint256[]"
+            },
+            {
+              "internalType": "uint32[]",
+              "name": "optionsCount",
+              "type": "uint32[]"
             }
           ],
           "internalType": "struct OrderInfo[]",
@@ -6759,19 +8420,6 @@
         }
       ],
       "name": "createWorkflow",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "parentOrderId",
-          "type": "uint256"
-        }
-      ],
-      "name": "withdrawWorkflowChange",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
@@ -7746,22 +9394,84 @@
     {
       "inputs": [
         {
-          "internalType": "uint256",
-          "name": "offerId",
-          "type": "uint256"
+          "internalType": "address",
+          "name": "depositOwner",
+          "type": "address"
         },
         {
           "internalType": "uint256",
-          "name": "startDate",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "orderPrice",
+          "name": "amount",
           "type": "uint256"
         }
       ],
-      "name": "getOfferClosingPrice",
+      "name": "addProfit",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "depositOwner",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "confiscateTokensFrom",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "depositOwner",
+          "type": "address"
+        }
+      ],
+      "name": "getDepositInfo",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "totalLocked",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "profit",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct DepositInfo",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "depositOwner",
+          "type": "address"
+        }
+      ],
+      "name": "getLockedTokensAmount",
       "outputs": [
         {
           "internalType": "uint256",
@@ -7770,6 +9480,86 @@
         }
       ],
       "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "depositOwner",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "lockDeposit",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "replenish",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "depositOwner",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "replenishFor",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "depositOwner",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "unlockDeposit",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "withdraw",
+      "outputs": [],
+      "stateMutability": "nonpayable",
       "type": "function"
     },
     {
@@ -7797,14 +9587,53 @@
           "internalType": "uint256",
           "name": "offerId",
           "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "slotId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint32",
+          "name": "slotCount",
+          "type": "uint32"
+        },
+        {
+          "internalType": "uint256[]",
+          "name": "optionsIds",
+          "type": "uint256[]"
+        },
+        {
+          "internalType": "uint32[]",
+          "name": "optionsCount",
+          "type": "uint32[]"
         }
       ],
-      "name": "getOfferHoldDeposit",
+      "name": "getOfferMinDeposit",
       "outputs": [
         {
           "internalType": "uint256",
           "name": "",
           "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "offerId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getOfferProviderActionAccount",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
         }
       ],
       "stateMutability": "view",
@@ -7925,24 +9754,9 @@
                   "type": "string"
                 },
                 {
-                  "internalType": "uint32",
-                  "name": "slots",
-                  "type": "uint32"
-                },
-                {
-                  "internalType": "uint64",
-                  "name": "minTimeMinutes",
-                  "type": "uint64"
-                },
-                {
                   "internalType": "string",
                   "name": "properties",
                   "type": "string"
-                },
-                {
-                  "internalType": "address",
-                  "name": "tcb",
-                  "type": "address"
                 },
                 {
                   "internalType": "string",
@@ -7955,9 +9769,60 @@
                   "type": "string"
                 },
                 {
-                  "internalType": "uint256",
-                  "name": "maxDurationTimeMinutes",
-                  "type": "uint256"
+                  "components": [
+                    {
+                      "components": [
+                        {
+                          "internalType": "uint64",
+                          "name": "cpuCores",
+                          "type": "uint64"
+                        },
+                        {
+                          "internalType": "uint64",
+                          "name": "ram",
+                          "type": "uint64"
+                        },
+                        {
+                          "internalType": "uint64",
+                          "name": "hdd",
+                          "type": "uint64"
+                        },
+                        {
+                          "internalType": "uint64",
+                          "name": "ssd",
+                          "type": "uint64"
+                        }
+                      ],
+                      "internalType": "struct SlotInfo",
+                      "name": "slotInfo",
+                      "type": "tuple"
+                    },
+                    {
+                      "components": [
+                        {
+                          "internalType": "uint64",
+                          "name": "bandwidth",
+                          "type": "uint64"
+                        },
+                        {
+                          "internalType": "uint64",
+                          "name": "traffic",
+                          "type": "uint64"
+                        },
+                        {
+                          "internalType": "uint64",
+                          "name": "externalPort",
+                          "type": "uint64"
+                        }
+                      ],
+                      "internalType": "struct OptionInfo",
+                      "name": "optionInfo",
+                      "type": "tuple"
+                    }
+                  ],
+                  "internalType": "struct HardwareInfo",
+                  "name": "hardwareInfo",
+                  "type": "tuple"
                 }
               ],
               "internalType": "struct TeeOfferInfo",
@@ -7972,6 +9837,76 @@
           ],
           "internalType": "struct TeeOfferData",
           "name": "ret",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "teeOfferId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getTeeOfferHardwareInfo",
+      "outputs": [
+        {
+          "components": [
+            {
+              "components": [
+                {
+                  "internalType": "uint64",
+                  "name": "cpuCores",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "ram",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "hdd",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "ssd",
+                  "type": "uint64"
+                }
+              ],
+              "internalType": "struct SlotInfo",
+              "name": "slotInfo",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint64",
+                  "name": "bandwidth",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "traffic",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "externalPort",
+                  "type": "uint64"
+                }
+              ],
+              "internalType": "struct OptionInfo",
+              "name": "optionInfo",
+              "type": "tuple"
+            }
+          ],
+          "internalType": "struct HardwareInfo",
+          "name": "",
           "type": "tuple"
         }
       ],
@@ -8028,11 +9963,6 @@
                   "type": "string"
                 },
                 {
-                  "internalType": "uint256",
-                  "name": "holdSum",
-                  "type": "uint256"
-                },
-                {
                   "components": [
                     {
                       "internalType": "uint256[]",
@@ -8048,16 +9978,6 @@
                   "internalType": "struct OfferRestrictions",
                   "name": "restrictions",
                   "type": "tuple"
-                },
-                {
-                  "internalType": "string",
-                  "name": "properties",
-                  "type": "string"
-                },
-                {
-                  "internalType": "uint256",
-                  "name": "maxDurationTimeMinutes",
-                  "type": "uint256"
                 },
                 {
                   "internalType": "string",
@@ -8205,6 +10125,25 @@
           "internalType": "uint256",
           "name": "offerId",
           "type": "uint256"
+        }
+      ],
+      "name": "isOfferExists",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "offerId",
+          "type": "uint256"
         },
         {
           "internalType": "enum OfferType",
@@ -8322,7 +10261,7 @@
               "components": [
                 {
                   "internalType": "uint256",
-                  "name": "slots",
+                  "name": "slots_DEPRECATED",
                   "type": "uint256"
                 },
                 {
@@ -8332,7 +10271,7 @@
                 },
                 {
                   "internalType": "uint256[]",
-                  "name": "selectedOffers",
+                  "name": "outputOffers",
                   "type": "uint256[]"
                 }
               ],
@@ -8344,6 +10283,26 @@
               "internalType": "bytes32",
               "name": "externalId",
               "type": "bytes32"
+            },
+            {
+              "internalType": "uint256",
+              "name": "slotId",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint32",
+              "name": "slotCount",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint256[]",
+              "name": "optionsIds",
+              "type": "uint256[]"
+            },
+            {
+              "internalType": "uint32[]",
+              "name": "optionsCount",
+              "type": "uint32[]"
             }
           ],
           "internalType": "struct OrderInfo",
@@ -8352,7 +10311,7 @@
         },
         {
           "internalType": "uint256",
-          "name": "holdDeposit",
+          "name": "deposit",
           "type": "uint256"
         },
         {
@@ -8415,7 +10374,7 @@
               "components": [
                 {
                   "internalType": "uint256",
-                  "name": "slots",
+                  "name": "slots_DEPRECATED",
                   "type": "uint256"
                 },
                 {
@@ -8425,7 +10384,7 @@
                 },
                 {
                   "internalType": "uint256[]",
-                  "name": "selectedOffers",
+                  "name": "outputOffers",
                   "type": "uint256[]"
                 }
               ],
@@ -8437,6 +10396,26 @@
               "internalType": "bytes32",
               "name": "externalId",
               "type": "bytes32"
+            },
+            {
+              "internalType": "uint256",
+              "name": "slotId",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint32",
+              "name": "slotCount",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint256[]",
+              "name": "optionsIds",
+              "type": "uint256[]"
+            },
+            {
+              "internalType": "uint32[]",
+              "name": "optionsCount",
+              "type": "uint32[]"
             }
           ],
           "internalType": "struct OrderInfo",
@@ -8452,7 +10431,7 @@
             },
             {
               "internalType": "uint256",
-              "name": "holdSum",
+              "name": "deposit",
               "type": "uint256"
             }
           ],
@@ -8518,7 +10497,7 @@
               "components": [
                 {
                   "internalType": "uint256",
-                  "name": "slots",
+                  "name": "slots_DEPRECATED",
                   "type": "uint256"
                 },
                 {
@@ -8528,7 +10507,7 @@
                 },
                 {
                   "internalType": "uint256[]",
-                  "name": "selectedOffers",
+                  "name": "outputOffers",
                   "type": "uint256[]"
                 }
               ],
@@ -8540,6 +10519,26 @@
               "internalType": "bytes32",
               "name": "externalId",
               "type": "bytes32"
+            },
+            {
+              "internalType": "uint256",
+              "name": "slotId",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint32",
+              "name": "slotCount",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint256[]",
+              "name": "optionsIds",
+              "type": "uint256[]"
+            },
+            {
+              "internalType": "uint32[]",
+              "name": "optionsCount",
+              "type": "uint32[]"
             }
           ],
           "internalType": "struct OrderInfo",
@@ -8611,6 +10610,25 @@
           "type": "uint256"
         }
       ],
+      "name": "calculateOrderFinalPrice",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "orderId",
+          "type": "uint256"
+        }
+      ],
       "name": "calculateOrderOutputReserve",
       "outputs": [
         {
@@ -8619,6 +10637,71 @@
           "type": "uint256"
         }
       ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "enum OfferGroup",
+          "name": "parentOfferGroup",
+          "type": "uint8"
+        },
+        {
+          "internalType": "enum OfferGroup",
+          "name": "subOfferGroup",
+          "type": "uint8"
+        }
+      ],
+      "name": "checkOrderAllowedGroup",
+      "outputs": [],
+      "stateMutability": "pure",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "enum OrderStatus",
+          "name": "prev",
+          "type": "uint8"
+        },
+        {
+          "internalType": "enum OrderStatus",
+          "name": "next",
+          "type": "uint8"
+        }
+      ],
+      "name": "checkOrderAllowedStatus",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "parentOrderId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "subOfferId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "enum OfferGroup",
+          "name": "subOfferGroup",
+          "type": "uint8"
+        }
+      ],
+      "name": "checkOrderRestrictions",
+      "outputs": [],
       "stateMutability": "view",
       "type": "function"
     },
@@ -8706,7 +10789,7 @@
               "components": [
                 {
                   "internalType": "uint256",
-                  "name": "slots",
+                  "name": "slots_DEPRECATED",
                   "type": "uint256"
                 },
                 {
@@ -8716,7 +10799,7 @@
                 },
                 {
                   "internalType": "uint256[]",
-                  "name": "selectedOffers",
+                  "name": "outputOffers",
                   "type": "uint256[]"
                 }
               ],
@@ -8728,6 +10811,26 @@
               "internalType": "bytes32",
               "name": "externalId",
               "type": "bytes32"
+            },
+            {
+              "internalType": "uint256",
+              "name": "slotId",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint32",
+              "name": "slotCount",
+              "type": "uint32"
+            },
+            {
+              "internalType": "uint256[]",
+              "name": "optionsIds",
+              "type": "uint256[]"
+            },
+            {
+              "internalType": "uint32[]",
+              "name": "optionsCount",
+              "type": "uint32[]"
             }
           ],
           "internalType": "struct OrderInfo",
@@ -8763,26 +10866,7 @@
           "type": "uint256"
         }
       ],
-      "name": "getOrderChangeWithdrawn",
-      "outputs": [
-        {
-          "internalType": "bool",
-          "name": "",
-          "type": "bool"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "orderId",
-          "type": "uint256"
-        }
-      ],
-      "name": "getOrderHoldDeposit",
+      "name": "getOrderDeposit",
       "outputs": [
         {
           "internalType": "uint256",
@@ -8880,25 +10964,6 @@
           "type": "uint256"
         }
       ],
-      "name": "getOrderProfitWithdrawn",
-      "outputs": [
-        {
-          "internalType": "bool",
-          "name": "",
-          "type": "bool"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "orderId",
-          "type": "uint256"
-        }
-      ],
       "name": "getOrderSubOrders",
       "outputs": [
         {
@@ -8951,6 +11016,25 @@
         }
       ],
       "name": "isOrderCompleted",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "orderId",
+          "type": "uint256"
+        }
+      ],
+      "name": "isOrderProcessing",
       "outputs": [
         {
           "internalType": "bool",
@@ -9231,12 +11315,303 @@
     {
       "inputs": [
         {
-          "internalType": "address",
-          "name": "user",
-          "type": "address"
+          "internalType": "uint256",
+          "name": "offerId",
+          "type": "uint256"
         }
       ],
-      "name": "hasSlotsAccess",
+      "name": "getCheapestValueOffersPrice",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "price",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "optionId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getOptionById",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "id",
+              "type": "uint256"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint64",
+                  "name": "bandwidth",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "traffic",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "externalPort",
+                  "type": "uint64"
+                }
+              ],
+              "internalType": "struct OptionInfo",
+              "name": "info",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "enum PriceType",
+                  "name": "priceType",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "price",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "minTimeMinutes",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "maxTimeMinutes",
+                  "type": "uint64"
+                }
+              ],
+              "internalType": "struct SlotUsage",
+              "name": "usage",
+              "type": "tuple"
+            }
+          ],
+          "internalType": "struct TeeOfferOption",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "teeOfferId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "slotId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getTeeOfferSlotById",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "id",
+              "type": "uint256"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint64",
+                  "name": "cpuCores",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "ram",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "hdd",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "ssd",
+                  "type": "uint64"
+                }
+              ],
+              "internalType": "struct SlotInfo",
+              "name": "info",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "enum PriceType",
+                  "name": "priceType",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "price",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "minTimeMinutes",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "maxTimeMinutes",
+                  "type": "uint64"
+                }
+              ],
+              "internalType": "struct SlotUsage",
+              "name": "usage",
+              "type": "tuple"
+            }
+          ],
+          "internalType": "struct TeeOfferSlot",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "offerId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "slotId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getValueOfferSlotById",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "id",
+              "type": "uint256"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint64",
+                  "name": "cpuCores",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "ram",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "hdd",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "ssd",
+                  "type": "uint64"
+                }
+              ],
+              "internalType": "struct SlotInfo",
+              "name": "info",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint64",
+                  "name": "bandwidth",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "traffic",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "externalPort",
+                  "type": "uint64"
+                }
+              ],
+              "internalType": "struct OptionInfo",
+              "name": "option",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "enum PriceType",
+                  "name": "priceType",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "price",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "minTimeMinutes",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "maxTimeMinutes",
+                  "type": "uint64"
+                }
+              ],
+              "internalType": "struct SlotUsage",
+              "name": "usage",
+              "type": "tuple"
+            }
+          ],
+          "internalType": "struct ValueOfferSlot",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "teeOfferId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "slotId",
+          "type": "uint256"
+        }
+      ],
+      "name": "isTeeOfferSlotExists",
       "outputs": [
         {
           "internalType": "bool",
@@ -9250,201 +11625,25 @@
     {
       "inputs": [
         {
-          "internalType": "enum Purpose",
-          "name": "executor",
-          "type": "uint8"
-        },
-        {
-          "internalType": "address",
-          "name": "stakeOwner",
-          "type": "address"
+          "internalType": "uint256",
+          "name": "offerId",
+          "type": "uint256"
         },
         {
           "internalType": "uint256",
-          "name": "amount",
+          "name": "slotId",
           "type": "uint256"
         }
       ],
-      "name": "confiscateTokensFrom",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "enum Purpose",
-          "name": "executor",
-          "type": "uint8"
-        },
-        {
-          "internalType": "address",
-          "name": "stakeOwner",
-          "type": "address"
-        }
-      ],
-      "name": "getLockedTokensInfo",
+      "name": "isValueOfferSlotExists",
       "outputs": [
         {
-          "components": [
-            {
-              "internalType": "uint256",
-              "name": "fromDate",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "toDate",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "amount",
-              "type": "uint256"
-            }
-          ],
-          "internalType": "struct LockedTokens",
+          "internalType": "bool",
           "name": "",
-          "type": "tuple"
+          "type": "bool"
         }
       ],
       "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "stakeOwner",
-          "type": "address"
-        }
-      ],
-      "name": "getStakeInfo",
-      "outputs": [
-        {
-          "components": [
-            {
-              "internalType": "uint256",
-              "name": "startDate",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "amount",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "profit",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "totalLocked",
-              "type": "uint256"
-            }
-          ],
-          "internalType": "struct StakeInfo",
-          "name": "",
-          "type": "tuple"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "enum Purpose",
-          "name": "executor",
-          "type": "uint8"
-        },
-        {
-          "internalType": "address",
-          "name": "stakeOwner",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "amount",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "secondsCount",
-          "type": "uint256"
-        }
-      ],
-      "name": "lockTokens",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "amount",
-          "type": "uint256"
-        }
-      ],
-      "name": "stake",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "stakeOwner",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "amount",
-          "type": "uint256"
-        }
-      ],
-      "name": "stakeFor",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "enum Purpose",
-          "name": "executor",
-          "type": "uint8"
-        },
-        {
-          "internalType": "address",
-          "name": "stakeOwner",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "amount",
-          "type": "uint256"
-        }
-      ],
-      "name": "unlockTokens",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "amount",
-          "type": "uint256"
-        }
-      ],
-      "name": "unstake",
-      "outputs": [],
-      "stateMutability": "nonpayable",
       "type": "function"
     },
     {
@@ -9461,6 +11660,44 @@
           "internalType": "uint256",
           "name": "",
           "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getProtocolIncomeDistribution",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "recipient",
+              "type": "address"
+            },
+            {
+              "internalType": "uint16",
+              "name": "amount",
+              "type": "uint16"
+            }
+          ],
+          "internalType": "struct ProtocolIncomeRecipient[]",
+          "name": "",
+          "type": "tuple[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getProtocolIncomePercent",
+      "outputs": [
+        {
+          "internalType": "uint32",
+          "name": "",
+          "type": "uint32"
         }
       ],
       "stateMutability": "view",
@@ -9573,24 +11810,6 @@
         }
       ],
       "name": "burnFrom",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "receiver",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "amount",
-          "type": "uint256"
-        }
-      ],
-      "name": "mint",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
@@ -10036,24 +12255,6 @@
       "type": "function"
     },
     {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "receiver",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "amount",
-          "type": "uint256"
-        }
-      ],
-      "name": "mint",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
       "inputs": [],
       "name": "name",
       "outputs": [
@@ -10064,19 +12265,6 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "newApp",
-          "type": "address"
-        }
-      ],
-      "name": "setApp",
-      "outputs": [],
-      "stateMutability": "nonpayable",
       "type": "function"
     },
     {

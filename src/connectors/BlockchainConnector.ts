@@ -2,11 +2,7 @@ import { BaseConnector, Config } from "./BaseConnector";
 import Web3 from "web3";
 import { BlockTransactionObject } from "web3-eth/types";
 import { errors } from "web3-core-helpers";
-import {
-    BLOCK_SIZE_TO_FETCH_TRANSACTION,
-    POLYGON_MATIC_EVENT_PATH,
-    defaultBlockchainUrl,
-} from "../constants";
+import { BLOCK_SIZE_TO_FETCH_TRANSACTION, POLYGON_MATIC_EVENT_PATH, defaultBlockchainUrl } from "../constants";
 import { checkIfActionAccountInitialized, incrementMethodCall } from "../utils";
 import { Transaction, TransactionOptions, EventData, BlockInfo } from "../types/Web3";
 import BlockchainTransaction from "../types/blockchainConnector/StorageAccess";
@@ -15,14 +11,13 @@ import appJSON from "../contracts/app.json";
 import { TransactionReceipt } from "web3-core";
 import { Wallet } from "ethers";
 import { AbiItem } from "web3-utils";
-const Jsonrpc = require('web3-core-requestmanager/src/jsonrpc');
+const Jsonrpc = require("web3-core-requestmanager/src/jsonrpc");
 
 // TODO: remove this dependencies
 import store from "../store";
 import Superpro from "../staticModels/Superpro";
 import SuperproToken from "../staticModels/SuperproToken";
 import { Monitoring } from "../utils/Monitoring";
-
 
 class BlockchainConnector extends BaseConnector {
     private defaultActionAccount?: string;
@@ -155,7 +150,7 @@ class BlockchainConnector extends BaseConnector {
     /**
      * Function for adding event listeners on TEE offer created event in TEE offers factory contract
      * @param callback - function for processing created TEE offer
-     * @return unsubscribe - unsubscribe function from event
+     * @returns unsubscribe - unsubscribe function from event
      */
     public async getLastBlockInfo(): Promise<BlockInfo> {
         this.checkIfInitialized();
@@ -226,26 +221,25 @@ class BlockchainConnector extends BaseConnector {
                 if (error) return reject(error);
                 results = results || [];
 
-                var response = requests.map((request: any, index: number) => {
-                    return results[index] || {};
+                var response = requests
+                    .map((request: any, index: number) => {
+                        return results[index] || {};
+                    })
+                    .map((result: any, index: number) => {
+                        if (result && result.error) {
+                            return errors.ErrorResponse(result);
+                        }
 
-                }).map((result: any, index: number) => {
+                        if (!Jsonrpc.isValidResponse(result)) {
+                            return errors.InvalidResponse(result);
+                        }
 
-                    if (result && result.error) {
-                        return errors.ErrorResponse(result);
-                    }
-
-                    if (!Jsonrpc.isValidResponse(result)) {
-                        return errors.InvalidResponse(result);
-                    }
-
-                    return requests[index].format ? requests[index].format(result.result) : result.result;
-                });
+                        return requests[index].format ? requests[index].format(result.result) : result.result;
+                    });
 
                 resolve(response);
             });
-        })
-
+        });
     }
 
     /**
@@ -290,7 +284,7 @@ class BlockchainConnector extends BaseConnector {
             for (let blockNumber = startBlock; blockNumber! <= batchLastBlock; blockNumber!++) {
                 batch.add(getBlock.request(blockNumber, true));
             }
-            const blocks = await this.executeBatchAsync(batch) as BlockTransactionObject[];
+            const blocks = (await this.executeBatchAsync(batch)) as BlockTransactionObject[];
 
             blocks.forEach((block: BlockTransactionObject) => {
                 if (!block?.transactions) return;

@@ -6,6 +6,7 @@ import {
     BLOCK_SIZE_TO_FETCH_TRANSACTION,
     POLYGON_MATIC_EVENT_PATH,
     defaultBlockchainUrl,
+    defaultGasPrice,
 } from "../constants";
 import { checkIfActionAccountInitialized, incrementMethodCall } from "../utils";
 import { Transaction, TransactionOptions, EventData, BlockInfo } from "../types/Web3";
@@ -15,7 +16,7 @@ import appJSON from "../contracts/app.json";
 import { TransactionReceipt } from "web3-core";
 import { Wallet } from "ethers";
 import { AbiItem } from "web3-utils";
-const Jsonrpc = require('web3-core-requestmanager/src/jsonrpc');
+const Jsonrpc = require("web3-core-requestmanager/src/jsonrpc");
 
 // TODO: remove this dependencies
 import store from "../store";
@@ -64,7 +65,7 @@ class BlockchainConnector extends BaseConnector {
         this.provider = new Web3.providers.HttpProvider(url);
         store.web3Https = new Web3(this.provider);
 
-        if (config?.gasPrice) store.gasPrice = config.gasPrice;
+        store.gasPrice = config?.gasPrice ?? defaultGasPrice;
         if (config?.gasLimit) store.gasLimit = config.gasLimit;
         if (config?.gasLimitMultiplier) store.gasLimitMultiplier = config.gasLimitMultiplier;
         if (config?.gasPriceMultiplier) store.gasPriceMultiplier = config.gasPriceMultiplier;

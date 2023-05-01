@@ -2,7 +2,12 @@ import { BaseConnector, Config } from "./BaseConnector";
 import Web3 from "web3";
 import { BlockTransactionObject } from "web3-eth/types";
 import { errors } from "web3-core-helpers";
-import { BLOCK_SIZE_TO_FETCH_TRANSACTION, POLYGON_MATIC_EVENT_PATH, defaultBlockchainUrl } from "../constants";
+import {
+    BLOCK_SIZE_TO_FETCH_TRANSACTION,
+    POLYGON_MATIC_EVENT_PATH,
+    defaultBlockchainUrl,
+    defaultGasPrice,
+} from "../constants";
 import { checkIfActionAccountInitialized, incrementMethodCall } from "../utils";
 import { Transaction, TransactionOptions, EventData, BlockInfo } from "../types/Web3";
 import BlockchainTransaction from "../types/blockchainConnector/StorageAccess";
@@ -59,7 +64,7 @@ class BlockchainConnector extends BaseConnector {
         this.provider = new Web3.providers.HttpProvider(url);
         store.web3Https = new Web3(this.provider);
 
-        if (config?.gasPrice) store.gasPrice = config.gasPrice;
+        store.gasPrice = config?.gasPrice ?? defaultGasPrice;
         if (config?.gasLimit) store.gasLimit = config.gasLimit;
         if (config?.gasLimitMultiplier) store.gasLimitMultiplier = config.gasLimitMultiplier;
         if (config?.gasPriceMultiplier) store.gasPriceMultiplier = config.gasPriceMultiplier;

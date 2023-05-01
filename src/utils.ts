@@ -40,16 +40,17 @@ export const createTransactionOptions = async (options?: TransactionOptions): Pr
     if (!options.gas) options.gas = store.gasLimit;
     if (!options.gasPriceMultiplier) options.gasPriceMultiplier = store.gasPriceMultiplier;
     if (!options.gasPrice) {
-        if (store.gasPrice) {
-            options.gasPrice = store.gasPrice;
-        } else {
-            const web3 = options.web3 || store.web3Https;
-            if (!web3) {
-                throw Error(
-                    "web3 is undefined, define it in transaction options or initialize BlockchainConnector with web3 instance.",
-                );
+        const web3 = options.web3 || store.web3Https;
+        if (web3) {
+            try {
+                options.gasPrice = await getGasPrice(web3);
+            } catch (e) {
+                options.gasPrice = store.gasPrice;
             }
-            options.gasPrice = await getGasPrice(web3);
+        } else {
+            throw Error(
+                "web3 is undefined, define it in transaction options or initialize BlockchainConnector with web3 instance.",
+            );
         }
     }
     delete options.web3;

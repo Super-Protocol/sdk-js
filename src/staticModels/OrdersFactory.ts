@@ -95,16 +95,26 @@ class OrdersFactory {
     }
 
     @incrementMethodCall()
-    public static async getOrder(consumer: string, externalId: string): Promise<OrderCreatedEvent> {
+    public static async getOrder(
+        consumer = "",
+        externalId = "",
+        fromBlock?: number | string,
+        toBlock?: number | string,
+    ): Promise<OrderCreatedEvent> {
         const contract = BlockchainConnector.getInstance().getContract();
+
         const filter = {
             consumer,
             externalId: formatBytes32String(externalId),
         };
-        const foundIds = await contract.getPastEvents("OrderCreated", { filter });
+
+        const foundIds = await contract.getPastEvents("OrderCreated", {
+            filter,
+            fromBlock,
+            toBlock,
+        });
         const notFound = {
-            consumer,
-            externalId,
+            ...filter,
             offerId: "-1",
             orderId: "-1",
         };

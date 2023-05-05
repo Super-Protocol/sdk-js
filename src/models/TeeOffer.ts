@@ -8,6 +8,8 @@ import {
     objectToTuple,
     incrementMethodCall,
     tupleToObjectsArray,
+    unpackSlotInfo,
+    packSlotInfo,
 } from "../utils";
 import { TeeOfferInfo, TeeOfferInfoStructure } from "../types/TeeOfferInfo";
 import { TransactionOptions } from "../types/Web3";
@@ -213,7 +215,8 @@ class TeeOffer {
      * @param slotId - Slot ID
      */
     public async getSlotById(slotId: string): Promise<TeeOfferSlot> {
-        const slot = await TeeOffer.contract.methods.getTeeOfferSlotById(this.id, slotId).call();
+        let slot = await TeeOffer.contract.methods.getTeeOfferSlotById(this.id, slotId).call();
+        slot.info = unpackSlotInfo(slot.info, +(await TeeOffer.contract.methods.getCpuDenominator().call()));
 
         return tupleToObject(slot, TeeOfferSlotStructure);
     }
@@ -225,7 +228,10 @@ class TeeOffer {
      * @returns {Promise<TeeOfferSlot[]>}
      */
     public async getSlots(begin: number, end: number): Promise<TeeOfferSlot[]> {
-        const slots = await TeeOffer.contract.methods.getTeeOfferSlots(this.id, begin, end).call();
+        let slots = await TeeOffer.contract.methods.getTeeOfferSlots(this.id, begin, end).call();
+        for (let slot of slots) {
+            slot.info = unpackSlotInfo(slot.info, +(await TeeOffer.contract.methods.getCpuDenominator().call()));
+        }
 
         return tupleToObjectsArray(slots, TeeOfferSlotStructure);
     }
@@ -246,6 +252,7 @@ class TeeOffer {
         const contract = BlockchainConnector.getInstance().getContract(transactionOptions);
         checkIfActionAccountInitialized(transactionOptions);
 
+        info = packSlotInfo(info, +(await TeeOffer.contract.methods.getCpuDenominator().call()));
         const infoTuple = objectToTuple(info, SlotInfoStructure);
         const usageTuple = objectToTuple(usage, SlotUsageStructure);
         const formattedExternalId = formatBytes32String(externalId);
@@ -273,6 +280,7 @@ class TeeOffer {
         const contract = BlockchainConnector.getInstance().getContract(transactionOptions);
         checkIfActionAccountInitialized(transactionOptions);
 
+        newInfo = packSlotInfo(newInfo, +(await TeeOffer.contract.methods.getCpuDenominator().call()));
         const newInfoTuple = objectToTuple(newInfo, SlotInfoStructure);
         const newUsageTuple = objectToTuple(newUsage, SlotUsageStructure);
         await TxManager.execute(

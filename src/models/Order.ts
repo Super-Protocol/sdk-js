@@ -74,6 +74,13 @@ class Order {
     }
 
     /**
+     * Function for fetching order price
+     */
+    public async calculateCurrentPrice(): Promise<string> {
+        return await Order.contract.methods.calculateOrderCurrentPrice(this.id).call();
+    }
+
+    /**
      * Function for fetching order info from blockchain
      */
     @incrementMethodCall()
@@ -122,14 +129,6 @@ class Order {
         this.parentOrder = await Order.contract.methods.getOrderParentOrder(this.id).call();
 
         return this.parentOrder!;
-    }
-
-    /**
-     * Function for fetching order deposit spent from blockchain
-     */
-    @incrementMethodCall()
-    public async getDepositSpent(): Promise<string> {
-        return Order.contract.methods.getOrderDepositSpent(this.id).call();
     }
 
     /**
@@ -248,17 +247,6 @@ class Order {
         checkIfActionAccountInitialized(transactionOptions);
 
         await TxManager.execute(Order.contract.methods.updateOrderPrice, [this.id, price], transactionOptions);
-    }
-
-    /**
-     * Sets deposit spent
-     */
-    @incrementMethodCall()
-    public async setDepositSpent(value: string, transactionOptions?: TransactionOptions): Promise<void> {
-        transactionOptions ?? this.checkInitOrder(transactionOptions!);
-        checkIfActionAccountInitialized(transactionOptions);
-
-        await TxManager.execute(Order.contract.methods.setDepositSpent, [this.id, value], transactionOptions);
     }
 
     /**

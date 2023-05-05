@@ -8,6 +8,8 @@ import {
     objectToTuple,
     incrementMethodCall,
     tupleToObjectsArray,
+    unpackSlotInfo,
+    packSlotInfo,
 } from "../utils";
 import { OfferInfo, OfferInfoStructure, OfferType } from "../types/Offer";
 import { TransactionOptions } from "../types/Web3";
@@ -205,7 +207,8 @@ class Offer {
      * @param slotId - Slot ID
      */
     public async getSlotById(slotId: string): Promise<ValueOfferSlot> {
-        const slot = await Offer.contract.methods.getValueOfferSlotById(this.id, slotId).call();
+        let slot = await Offer.contract.methods.getValueOfferSlotById(this.id, slotId).call();
+        slot.info = unpackSlotInfo(slot.info, +(await Offer.contract.methods.getCpuDenominator().call()));
 
         return tupleToObject(slot, ValueOfferSlotStructure);
     }
@@ -217,9 +220,12 @@ class Offer {
      * @returns {Promise<ValueOfferSlot[]>}
      */
     public async getSlots(begin: number, end: number): Promise<ValueOfferSlot[]> {
-        const slot = await Offer.contract.methods.getValueOfferSlots(this.id, begin, end).call();
+        let slots = await Offer.contract.methods.getValueOfferSlots(this.id, begin, end).call();
+        for (let slot of slots) {
+            slot.info = unpackSlotInfo(slot.info, +(await Offer.contract.methods.getCpuDenominator().call()));
+        }
 
-        return tupleToObjectsArray(slot, ValueOfferSlotStructure);
+        return tupleToObjectsArray(slots, ValueOfferSlotStructure);
     }
 
     /**
@@ -240,6 +246,7 @@ class Offer {
         const contract = BlockchainConnector.getInstance().getContract(transactionOptions);
         checkIfActionAccountInitialized(transactionOptions);
 
+        slotInfo = packSlotInfo(slotInfo, +(await Offer.contract.methods.getCpuDenominator().call()));
         const slotInfoTuple = objectToTuple(slotInfo, SlotInfoStructure);
         const optionInfoTuple = objectToTuple(optionInfo, OptionInfoStructure);
         const slotUsageTuple = objectToTuple(slotUsage, SlotUsageStructure);
@@ -269,6 +276,7 @@ class Offer {
         const contract = BlockchainConnector.getInstance().getContract(transactionOptions);
         checkIfActionAccountInitialized(transactionOptions);
 
+        newSlotInfo = packSlotInfo(newSlotInfo, +(await Offer.contract.methods.getCpuDenominator().call()));
         const newSlotInfoTuple = objectToTuple(newSlotInfo, SlotInfoStructure);
         const newOptionInfoTuple = objectToTuple(newOptionInfo, OptionInfoStructure);
         const newSlotUsageTuple = objectToTuple(newUsage, SlotUsageStructure);

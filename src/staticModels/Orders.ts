@@ -315,39 +315,6 @@ class Orders {
     }
 
     /**
-     * Function for adding event listeners on order price updated event in orders contract
-     * @param callback - function for processing order price updated event
-     * @param orderId - order id
-     * @returns unsubscribe - unsubscribe function from event
-     */
-    public static onPriceUpdated(callback: onOrderPriceUpdatedCallback, orderId?: string): () => void {
-        const contract = BlockchainEventsListener.getInstance().getContract();
-        const logger = this.logger.child({ method: "onOrderPriceUpdated" });
-
-        const subscription = contract.events
-            .OrderPriceUpdated()
-            .on("data", async (event: ContractEvent) => {
-                if (orderId && event.returnValues.orderId != orderId) {
-                    return;
-                }
-                callback(
-                    <string>event.returnValues.orderId,
-                    <string>event.returnValues.price,
-                    <BlockInfo>{
-                        index: <number>event.blockNumber,
-                        hash: <string>event.blockHash,
-                    },
-                );
-            })
-            .on("error", (error: Error, receipt: string) => {
-                if (receipt) return; // Used to avoid logging of transaction rejected
-                logger.warn(error);
-            });
-
-        return () => subscription.unsubscribe();
-    }
-
-    /**
      * Function for adding event listeners on order changed withdrawn event in orders contract
      * @param callback - function for processing order changed withdrawn event
      * @param orderId - order id
@@ -451,48 +418,6 @@ class Orders {
                     <string>event.returnValues.orderId,
                     <string>event.returnValues.consumer,
                     <boolean>event.returnValues.awaitingPayment,
-                    <BlockInfo>{
-                        index: <number>event.blockNumber,
-                        hash: <string>event.blockHash,
-                    },
-                );
-            })
-            .on("error", (error: Error, receipt: string) => {
-                if (receipt) return; // Used to avoid logging of transaction rejected
-                logger.warn(error);
-            });
-
-        return () => subscription.unsubscribe();
-    }
-
-    /**
-     * Function for adding event listeners on order deposit spent event in orders contract
-     * @param callback - function for processing order deposit spent event
-     * @param consumer - order creator address
-     * @param orderId - order id
-     * @returns unsubscribe - unsubscribe function from event
-     */
-    public static onDepositSpentChanged(
-        callback: onOrderDepositSpentChangedCallback,
-        consumer?: string,
-        orderId?: string,
-    ): () => void {
-        const contract = BlockchainEventsListener.getInstance().getContract();
-        const logger = this.logger.child({ method: "onOrderDepositSpentChanged" });
-
-        const subscription = contract.events
-            .OrderDepositSpentChanged()
-            .on("data", async (event: ContractEvent) => {
-                if (orderId && event.returnValues.orderId != orderId) {
-                    return;
-                }
-                if (consumer && event.returnValues.consumer != consumer) {
-                    return;
-                }
-                callback(
-                    <string>event.returnValues.orderId,
-                    <string>event.returnValues.consumer,
-                    <string>event.returnValues.value,
                     <BlockInfo>{
                         index: <number>event.blockNumber,
                         hash: <string>event.blockHash,
@@ -636,7 +561,6 @@ class Orders {
 
 export type onOrderStartedCallback = (orderId: string, consumer: string, block?: BlockInfo) => void;
 export type onOrdersStatusUpdatedCallback = (orderId: string, status: OrderStatus, block?: BlockInfo) => void;
-export type onOrderPriceUpdatedCallback = (orderId: string, price: string, block?: BlockInfo) => void;
 export type onOrderCreatedCallback = (
     consumer: string,
     externalId: string,
@@ -661,12 +585,6 @@ export type onOrderProfitWithdrawnCallback = (
     orderId: string,
     tokenReceiver: string,
     profit: string,
-    block?: BlockInfo,
-) => void;
-export type onOrderDepositSpentChangedCallback = (
-    orderId: string,
-    consumer: string,
-    spent: string,
     block?: BlockInfo,
 ) => void;
 export type onOrderAwaitingPaymentChangedCallback = (

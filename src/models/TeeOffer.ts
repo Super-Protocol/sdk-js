@@ -25,6 +25,7 @@ import { OptionInfo, OptionInfoStructure } from "../types/OptionInfo";
 import { SlotUsage, SlotUsageStructure } from "../types/SlotUsage";
 import { formatBytes32String } from "ethers/lib/utils";
 import { SlotInfo, SlotInfoStructure } from "../types/SlotInfo";
+import TeeOffers from "../staticModels/TeeOffers";
 
 class TeeOffer {
     private static contract: Contract;
@@ -46,6 +47,7 @@ class TeeOffer {
     public tcbAddedTime?: number;
     public origins?: Origins;
     public isCancelable?: boolean;
+    public cpuDenominator?: number;
 
     constructor(offerId: string) {
         this.id = offerId;
@@ -92,6 +94,7 @@ class TeeOffer {
         const [, , teeOfferInfoParams] = await TeeOffer.contract.methods.getTeeOffer(this.id).call();
 
         this.offerInfo = tupleToObject(teeOfferInfoParams, TeeOfferInfoStructure);
+        this.offerInfo.hardwareInfo = await TeeOffers.unpackHardwareInfo(this.offerInfo.hardwareInfo);
 
         return this.offerInfo;
     }
@@ -101,9 +104,10 @@ class TeeOffer {
      */
     @incrementMethodCall()
     public async getHardwareInfo(): Promise<HardwareInfo> {
-        const hardwareInfo = await TeeOffer.contract.methods.getTeeOfferHardwareInfo(this.id).call();
+        let hardwareInfo = await TeeOffer.contract.methods.getTeeOfferHardwareInfo(this.id).call();
+        hardwareInfo = tupleToObject(hardwareInfo, HardwareInfoStructure);
 
-        return tupleToObject(hardwareInfo, HardwareInfoStructure);
+        return await TeeOffers.unpackHardwareInfo(hardwareInfo);
     }
 
     /**
@@ -216,9 +220,10 @@ class TeeOffer {
      */
     public async getSlotById(slotId: string): Promise<TeeOfferSlot> {
         let slot = await TeeOffer.contract.methods.getTeeOfferSlotById(this.id, slotId).call();
-        slot.info = unpackSlotInfo(slot.info, +(await TeeOffer.contract.methods.getCpuDenominator().call()));
+        slot = tupleToObject(slot, TeeOfferSlotStructure);
+        slot.info = unpackSlotInfo(slot.info, await TeeOffers.getDenominator());
 
-        return tupleToObject(slot, TeeOfferSlotStructure);
+        return slot;
     }
 
     /**
@@ -229,11 +234,12 @@ class TeeOffer {
      */
     public async getSlots(begin: number, end: number): Promise<TeeOfferSlot[]> {
         let slots = await TeeOffer.contract.methods.getTeeOfferSlots(this.id, begin, end).call();
+        slots = tupleToObjectsArray(slots, TeeOfferSlotStructure);
         for (let slot of slots) {
-            slot.info = unpackSlotInfo(slot.info, +(await TeeOffer.contract.methods.getCpuDenominator().call()));
+            slot.info = unpackSlotInfo(slot.info, await TeeOffers.getDenominator());
         }
 
-        return tupleToObjectsArray(slots, TeeOfferSlotStructure);
+        return slots;
     }
 
     /**
@@ -252,7 +258,7 @@ class TeeOffer {
         const contract = BlockchainConnector.getInstance().getContract(transactionOptions);
         checkIfActionAccountInitialized(transactionOptions);
 
-        info = packSlotInfo(info, +(await TeeOffer.contract.methods.getCpuDenominator().call()));
+        info = packSlotInfo(info, await TeeOffers.getDenominator());
         const infoTuple = objectToTuple(info, SlotInfoStructure);
         const usageTuple = objectToTuple(usage, SlotUsageStructure);
         const formattedExternalId = formatBytes32String(externalId);
@@ -280,7 +286,7 @@ class TeeOffer {
         const contract = BlockchainConnector.getInstance().getContract(transactionOptions);
         checkIfActionAccountInitialized(transactionOptions);
 
-        newInfo = packSlotInfo(newInfo, +(await TeeOffer.contract.methods.getCpuDenominator().call()));
+        newInfo = packSlotInfo(newInfo, await TeeOffers.getDenominator());
         const newInfoTuple = objectToTuple(newInfo, SlotInfoStructure);
         const newUsageTuple = objectToTuple(newUsage, SlotUsageStructure);
         await TxManager.execute(
@@ -446,6 +452,7 @@ class TeeOffer {
         transactionOptions ?? this.checkInitTeeOffer(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
+        newHardwareInfo = await TeeOffers.packHardwareInfo(newHardwareInfo);
         const newHardwareInfoTuple = objectToTuple(newHardwareInfo, TeeOfferInfoStructure);
 
         await TxManager.execute(

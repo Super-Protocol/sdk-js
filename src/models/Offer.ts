@@ -208,9 +208,10 @@ class Offer {
      */
     public async getSlotById(slotId: string): Promise<ValueOfferSlot> {
         let slot = await Offer.contract.methods.getValueOfferSlotById(this.id, slotId).call();
+        slot = tupleToObject(slot, ValueOfferSlotStructure);
         slot.info = unpackSlotInfo(slot.info, +(await Offer.contract.methods.getCpuDenominator().call()));
 
-        return tupleToObject(slot, ValueOfferSlotStructure);
+        return slot;
     }
 
     /**
@@ -221,11 +222,12 @@ class Offer {
      */
     public async getSlots(begin: number, end: number): Promise<ValueOfferSlot[]> {
         let slots = await Offer.contract.methods.getValueOfferSlots(this.id, begin, end).call();
+        slots = tupleToObjectsArray(slots, ValueOfferSlotStructure);
         for (let slot of slots) {
             slot.info = unpackSlotInfo(slot.info, +(await Offer.contract.methods.getCpuDenominator().call()));
         }
 
-        return tupleToObjectsArray(slots, ValueOfferSlotStructure);
+        return slots;
     }
 
     /**

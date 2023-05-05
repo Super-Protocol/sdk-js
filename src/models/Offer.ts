@@ -22,6 +22,7 @@ import { SlotInfo, SlotInfoStructure } from "../types/SlotInfo";
 import { OptionInfo, OptionInfoStructure } from "../types/OptionInfo";
 import { SlotUsage, SlotUsageStructure } from "../types/SlotUsage";
 import { formatBytes32String } from "ethers/lib/utils";
+import TeeOffers from "../staticModels/TeeOffers";
 
 class Offer {
     private static contract: Contract;
@@ -209,7 +210,7 @@ class Offer {
     public async getSlotById(slotId: string): Promise<ValueOfferSlot> {
         let slot = await Offer.contract.methods.getValueOfferSlotById(this.id, slotId).call();
         slot = tupleToObject(slot, ValueOfferSlotStructure);
-        slot.info = unpackSlotInfo(slot.info, +(await Offer.contract.methods.getCpuDenominator().call()));
+        slot.info = unpackSlotInfo(slot.info, await TeeOffers.getDenominator());
 
         return slot;
     }
@@ -224,7 +225,7 @@ class Offer {
         let slots = await Offer.contract.methods.getValueOfferSlots(this.id, begin, end).call();
         slots = tupleToObjectsArray(slots, ValueOfferSlotStructure);
         for (let slot of slots) {
-            slot.info = unpackSlotInfo(slot.info, +(await Offer.contract.methods.getCpuDenominator().call()));
+            slot.info = unpackSlotInfo(slot.info, await TeeOffers.getDenominator());
         }
 
         return slots;
@@ -248,7 +249,7 @@ class Offer {
         const contract = BlockchainConnector.getInstance().getContract(transactionOptions);
         checkIfActionAccountInitialized(transactionOptions);
 
-        slotInfo = packSlotInfo(slotInfo, +(await Offer.contract.methods.getCpuDenominator().call()));
+        slotInfo = packSlotInfo(slotInfo, await TeeOffers.getDenominator());
         const slotInfoTuple = objectToTuple(slotInfo, SlotInfoStructure);
         const optionInfoTuple = objectToTuple(optionInfo, OptionInfoStructure);
         const slotUsageTuple = objectToTuple(slotUsage, SlotUsageStructure);
@@ -278,7 +279,7 @@ class Offer {
         const contract = BlockchainConnector.getInstance().getContract(transactionOptions);
         checkIfActionAccountInitialized(transactionOptions);
 
-        newSlotInfo = packSlotInfo(newSlotInfo, +(await Offer.contract.methods.getCpuDenominator().call()));
+        newSlotInfo = packSlotInfo(newSlotInfo, await TeeOffers.getDenominator());
         const newSlotInfoTuple = objectToTuple(newSlotInfo, SlotInfoStructure);
         const newOptionInfoTuple = objectToTuple(newOptionInfo, OptionInfoStructure);
         const newSlotUsageTuple = objectToTuple(newUsage, SlotUsageStructure);

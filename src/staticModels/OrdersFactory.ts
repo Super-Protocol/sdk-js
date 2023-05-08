@@ -123,6 +123,8 @@ class OrdersFactory {
         const response: OrderCreatedEvent =
             foundIds.length > 0 ? (foundIds[0].returnValues as OrderCreatedEvent) : notFound;
 
+        response.externalId = parseBytes32String(response.externalId);
+
         return response;
     }
 

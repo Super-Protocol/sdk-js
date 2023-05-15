@@ -269,39 +269,8 @@ class Consensus {
 
         return () => subscription.unsubscribe();
     }
-
-    public static onTeeOfferViolationRateChanged(callback: onTeeOfferViolationRateChangedCallback): () => void {
-        const contract = BlockchainEventsListener.getInstance().getContract();
-        const logger = this.logger.child({ method: "onTeeOfferViolationRateChanged" });
-
-        const subscription = contract.events
-            .TeeOfferViolationRateChanged()
-            .on("data", async (event: ContractEvent) => {
-                callback(
-                    <string>event.returnValues.providerAuth,
-                    <string>event.returnValues.teeOfferId,
-                    <string>event.returnValues.violationRate,
-                    <BlockInfo>{
-                        index: <number>event.blockNumber,
-                        hash: <string>event.blockHash,
-                    },
-                );
-            })
-            .on("error", (error: Error, receipt: string) => {
-                if (receipt) return; // Used to avoid logging of transaction rejected
-                logger.warn(error);
-            });
-
-        return () => subscription.unsubscribe();
-    }
 }
 
-export type onTeeOfferViolationRateChangedCallback = (
-    providerAuth: string,
-    teeOfferId: string,
-    violationRate: string,
-    block?: BlockInfo,
-) => void;
 export type onRewardsClaimedCallback = (tcbId: string, amount: string, claimer: string, block?: BlockInfo) => void;
 export type onTcbBenchmarkChangedCallback = (tcbId: string, provider: string, block?: BlockInfo) => void;
 export type onTcbInitializedCallback = (tcbId: string, provider: string, block?: BlockInfo) => void;

@@ -8,6 +8,8 @@ import {
     objectToTuple,
     incrementMethodCall,
     tupleToObjectsArray,
+    unpackSlotInfo,
+    packSlotInfo,
 } from "../utils";
 import { OfferInfo, OfferInfoStructure, OfferType } from "../types/Offer";
 import { TransactionOptions } from "../types/Web3";
@@ -20,6 +22,7 @@ import { SlotInfo, SlotInfoStructure } from "../types/SlotInfo";
 import { OptionInfo, OptionInfoStructure } from "../types/OptionInfo";
 import { SlotUsage, SlotUsageStructure } from "../types/SlotUsage";
 import { formatBytes32String } from "ethers/lib/utils";
+import TeeOffers from "../staticModels/TeeOffers";
 
 class Offer {
     private static contract: Contract;
@@ -205,9 +208,11 @@ class Offer {
      * @param slotId - Slot ID
      */
     public async getSlotById(slotId: string): Promise<ValueOfferSlot> {
-        const slot = await Offer.contract.methods.getValueOfferSlotById(this.id, slotId).call();
+        let slot = await Offer.contract.methods.getValueOfferSlotById(this.id, slotId).call();
+        slot = tupleToObject(slot, ValueOfferSlotStructure);
+        slot.info = unpackSlotInfo(slot.info, await TeeOffers.getDenominator());
 
-        return tupleToObject(slot, ValueOfferSlotStructure);
+        return slot;
     }
 
     /**
@@ -217,9 +222,13 @@ class Offer {
      * @returns {Promise<ValueOfferSlot[]>}
      */
     public async getSlots(begin: number, end: number): Promise<ValueOfferSlot[]> {
-        const slot = await Offer.contract.methods.getValueOfferSlots(this.id, begin, end).call();
+        let slots = await Offer.contract.methods.getValueOfferSlots(this.id, begin, end).call();
+        slots = tupleToObjectsArray(slots, ValueOfferSlotStructure);
+        for (let slot of slots) {
+            slot.info = unpackSlotInfo(slot.info, await TeeOffers.getDenominator());
+        }
 
-        return tupleToObjectsArray(slot, ValueOfferSlotStructure);
+        return slots;
     }
 
     /**
@@ -240,6 +249,7 @@ class Offer {
         const contract = BlockchainConnector.getInstance().getContract(transactionOptions);
         checkIfActionAccountInitialized(transactionOptions);
 
+        slotInfo = packSlotInfo(slotInfo, await TeeOffers.getDenominator());
         const slotInfoTuple = objectToTuple(slotInfo, SlotInfoStructure);
         const optionInfoTuple = objectToTuple(optionInfo, OptionInfoStructure);
         const slotUsageTuple = objectToTuple(slotUsage, SlotUsageStructure);
@@ -269,6 +279,7 @@ class Offer {
         const contract = BlockchainConnector.getInstance().getContract(transactionOptions);
         checkIfActionAccountInitialized(transactionOptions);
 
+        newSlotInfo = packSlotInfo(newSlotInfo, await TeeOffers.getDenominator());
         const newSlotInfoTuple = objectToTuple(newSlotInfo, SlotInfoStructure);
         const newOptionInfoTuple = objectToTuple(newOptionInfo, OptionInfoStructure);
         const newSlotUsageTuple = objectToTuple(newUsage, SlotUsageStructure);

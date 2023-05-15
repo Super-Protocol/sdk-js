@@ -37,6 +37,7 @@ export const OfferInfoStructure = {
     resultResource: String,
     linkage: String,
     hash: String,
+    metadata: String,
 };
 
 export type OfferInfo = {
@@ -54,4 +55,5 @@ export type OfferInfo = {
     resultResource: string;
     linkage: string;
     hash: string;
+    metadata: string;
 };

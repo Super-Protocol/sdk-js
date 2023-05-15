@@ -13,25 +13,27 @@ export enum OrderStatus {
 
 // Order of keys and type conversion functions for this object in blockchain contract
 export const OrderArgsStructure = {
-    slots: Number,
     inputOffers: [String],
     selectedOffers: [String],
 };
 export type OrderArgs = {
-    slots: number;
     inputOffers: string[];
     selectedOffers: string[];
 };
 
 // Order of keys and type conversion functions for this object in blockchain contract
 export const OrderInfoStructure = {
-    offer: String,
+    offerId: String,
     resultPublicKey: String,
     encryptedRequirements: String,
     encryptedArgs: String,
     status: OrderStatus,
     args: OrderArgsStructure,
     externalId: parseBytes32String,
+    slotId: String,
+    slotCount: String,
+    optionsIds: [String],
+    optionsCount: [String],
 };
 
 // Array of order info structures
@@ -60,12 +62,13 @@ export const OrderResultStructure = {
     encryptedResult: String,
     orderPrice: String,
 };
+
 export type OrderResult = {
     encryptedResult: string;
     orderPrice: string;
 };
 
 export type SubOrderParams = {
-    blockParentOrder: Boolean;
+    blockParentOrder: boolean;
     holdSum: string;
 };

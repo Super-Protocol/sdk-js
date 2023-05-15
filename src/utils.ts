@@ -3,6 +3,7 @@ import { TransactionOptions } from "./types/Web3";
 import { isArray } from "lodash";
 import Web3 from "web3";
 import { Monitoring } from "./utils/Monitoring";
+import { SlotInfo } from "./types/SlotInfo";
 
 /**
  * Function for checking if provider action account initialized (required for set methods)
@@ -175,4 +176,20 @@ export function unpackDeviceId(bytes32: string): string {
 
     // removes '0x'
     return bytes32.slice(2, 66);
+}
+
+export function unpackSlotInfo(slotInfo: SlotInfo, cpuDenominator: number): SlotInfo {
+    return {
+        cpuCores: slotInfo.cpuCores / cpuDenominator,
+        ram: slotInfo.ram,
+        diskUsage: slotInfo.diskUsage,
+    };
+}
+
+export function packSlotInfo(slotInfo: SlotInfo, cpuDenominator: number): SlotInfo {
+    return {
+        cpuCores: slotInfo.cpuCores * cpuDenominator,
+        ram: slotInfo.ram,
+        diskUsage: slotInfo.diskUsage,
+    };
 }

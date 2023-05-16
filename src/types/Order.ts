@@ -14,11 +14,11 @@ export enum OrderStatus {
 // Order of keys and type conversion functions for this object in blockchain contract
 export const OrderArgsStructure = {
     inputOffers: [String],
-    selectedOffers: [String],
+    outputOffers: [String],
 };
 export type OrderArgs = {
     inputOffers: string[];
-    selectedOffers: string[];
+    outputOffers: string[];
 };
 
 // Order of keys and type conversion functions for this object in blockchain contract
@@ -54,7 +54,7 @@ export type OrderInfo = {
 };
 export type ExtendedOrderInfo = OrderInfo & {
     blocking: boolean;
-    holdSum: string;
+    deposit: string;
 };
 
 // Order of keys and type conversion functions for this object in blockchain contract
@@ -70,5 +70,5 @@ export type OrderResult = {
 
 export type SubOrderParams = {
     blockParentOrder: boolean;
-    holdSum: string;
+    deposit: string;
 };

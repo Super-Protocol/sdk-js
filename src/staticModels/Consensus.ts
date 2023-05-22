@@ -12,6 +12,7 @@ import { ConsensusConstants, ConsensusConstantsStructure } from "../types/Consen
 
 class Consensus {
     private static readonly logger = rootLogger.child({ className: "Consensus" });
+    private static tcbIds: string[];
 
     public static get address(): string {
         return Superpro.address;
@@ -45,6 +46,23 @@ class Consensus {
             .call();
 
         return offerNotBlocked && newEpochStarted && halfEpochPassed && benchmarkVerified;
+    }
+
+    /**
+     * Function for fetching list of all tcb ids
+     * @returns list of tcb ids
+     */
+    public static async getAll(): Promise<string[]> {
+        const contract = BlockchainConnector.getInstance().getContract();
+        const tcbSet = new Set(this.tcbIds ?? []);
+
+        const tcbsCount = await contract.methods.getTcbsCount().call();
+        for (let tcbId = tcbSet.size + 1; tcbId <= tcbsCount; tcbId++) {
+            tcbSet.add(tcbId.toString());
+        }
+        this.tcbIds = Array.from(tcbSet);
+
+        return this.tcbIds;
     }
 
     /**

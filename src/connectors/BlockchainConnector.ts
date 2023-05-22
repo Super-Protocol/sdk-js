@@ -279,14 +279,23 @@ class BlockchainConnector extends BaseConnector {
         }
 
         const transactionsByAddress: { [key: string]: Transaction[] } = {};
-        addresses.forEach((address) => (transactionsByAddress[address] = []));
+
+        const validAddresses = addresses.filter((address) => store.web3Https?.utils.isAddress(address));
+        if (!validAddresses.length) {
+            return {
+                transactionsByAddress,
+                lastBlock,
+            };
+        }
+
+        validAddresses.forEach((address) => (transactionsByAddress[address] = []));
 
         while (startBlock <= lastBlock) {
             const batch = new store.web3Https!.eth.BatchRequest();
             const getBlock: any = store.web3Https!.eth.getBlock;
             const batchLastBlock = Math.min(startBlock + batchSize - 1, lastBlock);
 
-            for (let blockNumber = startBlock; blockNumber! <= batchLastBlock; blockNumber!++) {
+            for (let blockNumber = startBlock; blockNumber <= batchLastBlock; blockNumber++) {
                 batch.add(getBlock.request(blockNumber, true));
             }
             const blocks = (await this.executeBatchAsync(batch)) as BlockTransactionObject[];
@@ -296,8 +305,8 @@ class BlockchainConnector extends BaseConnector {
 
                 block.transactions.forEach((transaction) => {
                     let address: string | null = null;
-                    if (addresses.includes(transaction.from)) address = transaction.from;
-                    else if (transaction.to && addresses.includes(transaction.to)) address = transaction.to;
+                    if (validAddresses.includes(transaction.from)) address = transaction.from;
+                    else if (transaction.to && validAddresses.includes(transaction.to)) address = transaction.to;
 
                     if (address) {
                         transactionsByAddress[address].push({

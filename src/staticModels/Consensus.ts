@@ -36,7 +36,7 @@ class Consensus {
      * Function for fetching list of all tcb ids
      * @returns list of tcb ids
      */
-    public static async getAll(): Promise<string[]> {
+    public static async getAllTcbs(): Promise<string[]> {
         const contract = BlockchainConnector.getInstance().getContract();
         const tcbSet = new Set(this.tcbIds ?? []);
 

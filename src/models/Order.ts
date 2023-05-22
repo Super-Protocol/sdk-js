@@ -341,15 +341,15 @@ class Order {
     /**
      * Function for creating sub orders for current order
      * @param subOrderInfo - order info for new subOrder
-     * @param blocking - is sub order blocking
+     * @param blockParentOrder - is sub order blocking
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
-     * @returns {Promise<void>} - Does not return id of created sub order!
+     * @returns Promise<void> - Does not return id of created sub order!
      */
     @incrementMethodCall()
     public async createSubOrder(
         subOrderInfo: OrderInfo,
-        blocking: boolean,
-        holdSum = "0",
+        blockParentOrder: boolean,
+        deposit = "0",
         transactionOptions?: TransactionOptions,
     ): Promise<void> {
         transactionOptions ?? this.checkInitOrder(transactionOptions!);
@@ -361,8 +361,8 @@ class Order {
         };
         const tupleSubOrder = objectToTuple(preparedInfo, OrderInfoStructure);
         const params: SubOrderParams = {
-            blockParentOrder: blocking,
-            holdSum,
+            blockParentOrder,
+            deposit,
         };
         await TxManager.execute(
             Order.contract.methods.createSubOrder,
@@ -395,7 +395,7 @@ class Order {
                 const tupleSubOrder = objectToTuple(preparedInfo, OrderInfoStructure);
                 const params: SubOrderParams = {
                     blockParentOrder: subOrderInfo.blocking,
-                    holdSum: subOrderInfo.holdSum,
+                    deposit: subOrderInfo.deposit,
                 };
 
                 const request = Order.contract.methods.createSubOrder(this.id, tupleSubOrder, params).send.request(

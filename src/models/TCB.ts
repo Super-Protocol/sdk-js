@@ -6,7 +6,7 @@ import { TransactionOptions } from "../types/Web3";
 import Superpro from "../staticModels/Superpro";
 import TxManager from "../utils/TxManager";
 import BlockchainConnector from "../connectors/BlockchainConnector";
-import { TcbData, TcbStatus, PublicData, TcbStructure, TcbVerifiedStatus } from "../types/Consensus";
+import { TcbData, TcbStatus, TcbPublicData, TcbStructure, TcbVerifiedStatus } from "../types/Consensus";
 
 class TCB {
     public tcbId: string;
@@ -29,7 +29,7 @@ class TCB {
         await TxManager.execute(this.contract.methods.applyTcbMarks, [marks, this.tcbId], transactionOptions);
     }
 
-    private async setTcbData(pb: PublicData, quote: string, transactionOptions?: TransactionOptions) {
+    private async setTcbData(pb: TcbPublicData, quote: string, transactionOptions?: TransactionOptions) {
         checkIfActionAccountInitialized(transactionOptions);
 
         const fromattedDeviceId = packDevicId(pb.deviceID);
@@ -48,7 +48,7 @@ class TCB {
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
     public async addToSupply(
-        pb: PublicData,
+        pb: TcbPublicData,
         quote: string,
         marks: TcbVerifiedStatus[],
         transactionOptions?: TransactionOptions,

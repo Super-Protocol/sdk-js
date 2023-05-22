@@ -12,7 +12,7 @@ export const PublicDataStructure = {
     benchmark: Number,
     properties: String,
 };
-export type PublicData = {
+export type TcbPublicData = {
     teeOffer?: string;
     deviceID: string;
     benchmark: number;
@@ -33,7 +33,7 @@ export const UtilityDataStructure = {
     checked: Boolean,
     rewardClaimed: Boolean,
 };
-export type UtilityData = {
+export type TcbUtilityData = {
     checkingBlocks: [string];
     checkingBlockMarks: [TcbVerifiedStatus];
     lastBlocksTakenAmount: number;
@@ -80,8 +80,8 @@ export type TcbData = {
     quote: string;
     timeInitialized: number;
     timeAdded: number;
-    publicData: PublicData;
-    utilData: UtilityData;
+    publicData: TcbPublicData;
+    utilData: TcbUtilityData;
     status: TcbStatus;
 };
 

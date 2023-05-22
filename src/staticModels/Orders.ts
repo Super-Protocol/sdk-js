@@ -1,7 +1,8 @@
+import { PastEventOptions } from "web3-eth-contract";
+import { formatBytes32String, parseBytes32String } from "ethers/lib/utils";
 import rootLogger from "../logger";
 import { checkIfActionAccountInitialized, incrementMethodCall, objectToTuple } from "../utils";
 import { OrderInfo, OrderInfoStructure, OrderInfoStructureArray, OrderStatus } from "../types/Order";
-import { formatBytes32String, parseBytes32String } from "ethers/lib/utils";
 import { BlockInfo, ContractEvent, TransactionOptions } from "../types/Web3";
 import { OrderCreatedEvent } from "../types/Events";
 import Superpro from "./Superpro";
@@ -75,16 +76,26 @@ class Orders {
     }
 
     @incrementMethodCall()
-    public static async getByExternalId(consumer: string, externalId: string): Promise<OrderCreatedEvent> {
+    public static async getOrder(
+        consumer = "",
+        externalId = "",
+        fromBlock?: number | string,
+        toBlock?: number | string,
+    ): Promise<OrderCreatedEvent> {
         const contract = BlockchainConnector.getInstance().getContract();
+
         const filter = {
             consumer,
             externalId: formatBytes32String(externalId),
         };
-        const foundIds = await contract.getPastEvents("OrderCreated", { filter });
+        const options: PastEventOptions = { filter };
+
+        if (fromBlock) options.fromBlock = fromBlock;
+        if (toBlock) options.toBlock = toBlock;
+
+        const foundIds = await contract.getPastEvents("OrderCreated", options);
         const notFound = {
-            consumer,
-            externalId,
+            ...filter,
             offerId: "-1",
             parentOrderId: "-1",
             orderId: "-1",
@@ -92,6 +103,8 @@ class Orders {
 
         const response: OrderCreatedEvent =
             foundIds.length > 0 ? (foundIds[0].returnValues as OrderCreatedEvent) : notFound;
+
+        response.externalId = parseBytes32String(response.externalId);
 
         return response;
     }

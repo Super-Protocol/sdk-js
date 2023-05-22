@@ -11,8 +11,11 @@ import BlockchainConnector from "../connectors/BlockchainConnector";
 import Superpro from "./Superpro";
 import TxManager from "../utils/TxManager";
 import BlockchainEventsListener from "../connectors/BlockchainEventsListener";
+import { HardwareInfo } from "../types/HardwareInfo";
 
 class TeeOffers {
+    private static cpuDenominator?: number;
+
     private static readonly logger = rootLogger.child({ className: "TeeOffers" });
 
     public static teeOffers?: string[];
@@ -21,6 +24,26 @@ class TeeOffers {
         return Superpro.address;
     }
 
+    public static async packHardwareInfo(hw: HardwareInfo): Promise<HardwareInfo> {
+        hw.slotInfo.cpuCores *= await TeeOffers.getDenominator();
+
+        return hw;
+    }
+
+    public static async unpackHardwareInfo(hw: HardwareInfo): Promise<HardwareInfo> {
+        hw.slotInfo.cpuCores /= await TeeOffers.getDenominator();
+
+        return hw;
+    }
+
+    public static async getDenominator(): Promise<number> {
+        if (!this.cpuDenominator) {
+            const contract = BlockchainConnector.getInstance().getContract();
+            this.cpuDenominator = +(await contract.methods.getCpuDenominator().call());
+        }
+
+        return this.cpuDenominator;
+    }
     /**
      * Function for fetching list of all TEE offers addresses
      */
@@ -59,6 +82,7 @@ class TeeOffers {
         checkIfActionAccountInitialized(transactionOptions);
 
         // Converts offer info to array of arrays (used in blockchain)
+        teeOfferInfo.hardwareInfo = await TeeOffers.packHardwareInfo(teeOfferInfo.hardwareInfo);
         const teeOfferInfoParams = objectToTuple(teeOfferInfo, TeeOfferInfoStructure);
         const formattedExternalId = formatBytes32String(externalId);
         await TxManager.execute(

@@ -48,6 +48,7 @@ class TeeOffer {
     public origins?: Origins;
     public isCancelable?: boolean;
     public cpuDenominator?: number;
+    public minDeposit?: string;
 
     constructor(offerId: string) {
         this.id = offerId;
@@ -64,6 +65,30 @@ class TeeOffer {
     @incrementMethodCall()
     public async isEnabled(): Promise<boolean> {
         return TeeOffer.contract.methods.isOfferEnabled(this.id).call();
+    }
+
+    /**
+     * Function for fetching offer hold deposit
+     */
+    @incrementMethodCall()
+    public async getMinDeposit(
+        slotId: string,
+        slotCount: string,
+        optionsIds: string[],
+        optionsCount: string[],
+    ): Promise<string> {
+        this.minDeposit = await TeeOffer.contract.methods
+            .getOfferMinDeposit(this.id, slotId, slotCount, optionsIds, optionsCount)
+            .call();
+
+        return this.minDeposit!;
+    }
+
+    /**
+     * @returns this TEE offer slots count
+     */
+    public async getSlotsCount(): Promise<string> {
+        return await TeeOffer.contract.methods.getTeeOfferSlotsCount().call();
     }
 
     /**
@@ -116,7 +141,7 @@ class TeeOffer {
      * @param end - One past the final element in the range.
      * @returns {Promise<TeeOfferOption[]>}
      */
-    public async getOptions(begin: number, end: number): Promise<TeeOfferOption[]> {
+    public async getOptions(begin = 0, end = 999999): Promise<TeeOfferOption[]> {
         const teeOfferOption = await TeeOffer.contract.methods.getTeeOfferOptions(this.id, begin, end).call();
 
         return tupleToObjectsArray(teeOfferOption, TeeOfferOptionStructure);
@@ -127,7 +152,7 @@ class TeeOffer {
      * @param optionId - Slot ID
      */
     public async getOptionById(optionId: string): Promise<TeeOfferOption> {
-        const teeOfferOption = await TeeOffer.contract.methods.getTeeOfferSlotById(this.id, optionId).call();
+        const teeOfferOption = await TeeOffer.contract.methods.getOptionById(optionId).call();
 
         return tupleToObject(teeOfferOption, TeeOfferOptionStructure);
     }
@@ -232,7 +257,7 @@ class TeeOffer {
      * @param end - One past the final element in the range.
      * @returns {Promise<TeeOfferSlot[]>}
      */
-    public async getSlots(begin: number, end: number): Promise<TeeOfferSlot[]> {
+    public async getSlots(begin = 0, end = 999999): Promise<TeeOfferSlot[]> {
         let slots = await TeeOffer.contract.methods.getTeeOfferSlots(this.id, begin, end).call();
         slots = tupleToObjectsArray(slots, TeeOfferSlotStructure);
         for (let slot of slots) {

@@ -169,15 +169,8 @@ class Offer {
      * Function for fetching offer hold deposit
      */
     @incrementMethodCall()
-    public async getMinDeposit(
-        slotId: number,
-        slotCount: number,
-        optionsIds: number[],
-        optionsCount: number[],
-    ): Promise<string> {
-        this.minDeposit = await Offer.contract.methods
-            .getOfferMinDeposit(this.id, slotId, slotCount, optionsIds, optionsCount)
-            .call();
+    public async getMinDeposit(slotId: string): Promise<string> {
+        this.minDeposit = await Offer.contract.methods.getOfferMinDeposit(this.id, slotId, "0", [], []).call();
 
         return this.minDeposit!;
     }
@@ -216,12 +209,19 @@ class Offer {
     }
 
     /**
+     * @returns this TEE offer slots count
+     */
+    public async getSlotsCount(): Promise<string> {
+        return await Offer.contract.methods.getValueOfferSlotsCount().call();
+    }
+
+    /**
      * Function for fetching  offer slots info from blockchain
      * @param begin - The first element of range.
      * @param end - One past the final element in the range.
      * @returns {Promise<ValueOfferSlot[]>}
      */
-    public async getSlots(begin: number, end: number): Promise<ValueOfferSlot[]> {
+    public async getSlots(begin = 0, end = 999999): Promise<ValueOfferSlot[]> {
         let slots = await Offer.contract.methods.getValueOfferSlots(this.id, begin, end).call();
         slots = tupleToObjectsArray(slots, ValueOfferSlotStructure);
         for (let slot of slots) {

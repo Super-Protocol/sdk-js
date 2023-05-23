@@ -1,7 +1,8 @@
+import { PastEventOptions } from "web3-eth-contract";
+import { formatBytes32String, parseBytes32String } from "ethers/lib/utils";
 import rootLogger from "../logger";
 import { checkIfActionAccountInitialized, incrementMethodCall, objectToTuple } from "../utils";
 import { OrderInfo, OrderInfoStructure, OrderInfoStructureArray, OrderStatus } from "../types/Order";
-import { formatBytes32String, parseBytes32String } from "ethers/lib/utils";
 import { BlockInfo, ContractEvent, TransactionOptions } from "../types/Web3";
 import { OrderCreatedEvent } from "../types/Events";
 import Superpro from "./Superpro";

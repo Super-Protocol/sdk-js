@@ -4213,9 +4213,9 @@
                   "type": "uint256[]"
                 },
                 {
-                  "internalType": "uint256[]",
-                  "name": "outputOffers",
-                  "type": "uint256[]"
+                  "internalType": "uint256",
+                  "name": "outputOffer",
+                  "type": "uint256"
                 }
               ],
               "internalType": "struct OrderArgs",
@@ -4316,9 +4316,9 @@
                   "type": "uint256[]"
                 },
                 {
-                  "internalType": "uint256[]",
-                  "name": "outputOffers",
-                  "type": "uint256[]"
+                  "internalType": "uint256",
+                  "name": "outputOffer",
+                  "type": "uint256"
                 }
               ],
               "internalType": "struct OrderArgs",
@@ -4419,9 +4419,9 @@
                   "type": "uint256[]"
                 },
                 {
-                  "internalType": "uint256[]",
-                  "name": "outputOffers",
-                  "type": "uint256[]"
+                  "internalType": "uint256",
+                  "name": "outputOffer",
+                  "type": "uint256"
                 }
               ],
               "internalType": "struct OrderArgs",
@@ -4534,9 +4534,9 @@
                   "type": "uint256[]"
                 },
                 {
-                  "internalType": "uint256[]",
-                  "name": "outputOffers",
-                  "type": "uint256[]"
+                  "internalType": "uint256",
+                  "name": "outputOffer",
+                  "type": "uint256"
                 }
               ],
               "internalType": "struct OrderArgs",
@@ -5246,9 +5246,9 @@
                   "type": "uint256[]"
                 },
                 {
-                  "internalType": "uint256[]",
-                  "name": "outputOffers",
-                  "type": "uint256[]"
+                  "internalType": "uint256",
+                  "name": "outputOffer",
+                  "type": "uint256"
                 }
               ],
               "internalType": "struct OrderArgs",
@@ -7136,8 +7136,27 @@
       "type": "function"
     },
     {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "teeOfferId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getTeeOfferSlotsCount",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
       "inputs": [],
-      "name": "getTeeOffersSlotsCount",
+      "name": "getTeeOffersSlotsCountTotal",
       "outputs": [
         {
           "internalType": "uint256",
@@ -7917,8 +7936,27 @@
       "type": "function"
     },
     {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "offerId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getValueOfferSlotsCount",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
       "inputs": [],
-      "name": "getValueOffersSlotsCount",
+      "name": "getValueOffersSlotsCountTotal",
       "outputs": [
         {
           "internalType": "uint256",
@@ -8129,9 +8167,9 @@
                   "type": "uint256[]"
                 },
                 {
-                  "internalType": "uint256[]",
-                  "name": "outputOffers",
-                  "type": "uint256[]"
+                  "internalType": "uint256",
+                  "name": "outputOffer",
+                  "type": "uint256"
                 }
               ],
               "internalType": "struct OrderArgs",
@@ -8208,9 +8246,9 @@
                   "type": "uint256[]"
                 },
                 {
-                  "internalType": "uint256[]",
-                  "name": "outputOffers",
-                  "type": "uint256[]"
+                  "internalType": "uint256",
+                  "name": "outputOffer",
+                  "type": "uint256"
                 }
               ],
               "internalType": "struct OrderArgs",
@@ -10108,9 +10146,9 @@
                   "type": "uint256[]"
                 },
                 {
-                  "internalType": "uint256[]",
-                  "name": "outputOffers",
-                  "type": "uint256[]"
+                  "internalType": "uint256",
+                  "name": "outputOffer",
+                  "type": "uint256"
                 }
               ],
               "internalType": "struct OrderArgs",
@@ -10216,9 +10254,9 @@
                   "type": "uint256[]"
                 },
                 {
-                  "internalType": "uint256[]",
-                  "name": "outputOffers",
-                  "type": "uint256[]"
+                  "internalType": "uint256",
+                  "name": "outputOffer",
+                  "type": "uint256"
                 }
               ],
               "internalType": "struct OrderArgs",
@@ -10334,9 +10372,9 @@
                   "type": "uint256[]"
                 },
                 {
-                  "internalType": "uint256[]",
-                  "name": "outputOffers",
-                  "type": "uint256[]"
+                  "internalType": "uint256",
+                  "name": "outputOffer",
+                  "type": "uint256"
                 }
               ],
               "internalType": "struct OrderArgs",
@@ -10583,9 +10621,9 @@
                   "type": "uint256[]"
                 },
                 {
-                  "internalType": "uint256[]",
-                  "name": "outputOffers",
-                  "type": "uint256[]"
+                  "internalType": "uint256",
+                  "name": "outputOffer",
+                  "type": "uint256"
                 }
               ],
               "internalType": "struct OrderArgs",

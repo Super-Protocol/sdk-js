@@ -331,7 +331,7 @@ class TeeOffer {
         const contract = BlockchainConnector.getInstance().getContract(transactionOptions);
         checkIfActionAccountInitialized(transactionOptions);
 
-        await TxManager.execute(contract.methods.updateTeeOfferSlot, [this.id, slotId], transactionOptions);
+        await TxManager.execute(contract.methods.deleteTeeOfferSlot, [this.id, slotId], transactionOptions);
     }
 
     /**

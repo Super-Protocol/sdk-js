@@ -97,18 +97,12 @@ class Offers extends StaticModel {
         filter: { creator: string; offerId: string; externalId: string },
         fromBlock?: number | string,
         toBlock?: number | string,
-    ): Promise<ValueSlotAddedEvent> {
+    ): Promise<ValueSlotAddedEvent | null> {
         filter.externalId = formatBytes32String(filter.externalId);
 
         const foundEvents = await this.getPastEvents("ValueSlotAdded", filter, fromBlock, toBlock);
-        const response =
-            foundEvents.length > 0
-                ? (foundEvents[0].returnValues as ValueSlotAddedEvent)
-                : {
-                      ...filter,
-                      slotId: "-1",
-                  };
-        response.externalId = parseBytes32String(response.externalId);
+
+        const response = foundEvents.length ? (foundEvents[0].returnValues as ValueSlotAddedEvent) : null;
 
         return response;
     }

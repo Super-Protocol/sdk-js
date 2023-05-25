@@ -25,3 +25,10 @@ export type ValueSlotAddedEvent = {
     slotId: string;
     externalId: string;
 };
+
+export type OptionAddedEvent = {
+    creator: string;
+    teeOfferId: string;
+    optionId: string;
+    externalId: string;
+};

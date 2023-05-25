@@ -11,3 +11,17 @@ export type OrderCreatedEvent = {
     parentOrderId: string;
     orderId: string;
 };
+
+export type TeeSlotAddedEvent = {
+    creator: string;
+    offerId: string;
+    slotId: string;
+    externalId: string;
+};
+
+export type ValueSlotAddedEvent = {
+    creator: string;
+    offerId: string;
+    slotId: string;
+    externalId: string;
+};

@@ -5,15 +5,16 @@ import { packDevicId } from "../utils";
 import { BlockInfo, ContractEvent, TransactionOptions } from "../types/Web3";
 import { TeeOfferInfo, TeeOfferInfoStructure } from "../types/TeeOfferInfo";
 import { OfferType } from "../types/Offer";
-import { OfferCreatedEvent } from "../types/Events";
+import { OfferCreatedEvent, OptionAddedEvent, TeeSlotAddedEvent } from "../types/Events";
 import { TeeOfferOption } from "../types/TeeOfferOption";
 import BlockchainConnector from "../connectors/BlockchainConnector";
 import Superpro from "./Superpro";
 import TxManager from "../utils/TxManager";
 import BlockchainEventsListener from "../connectors/BlockchainEventsListener";
 import { HardwareInfo } from "../types/HardwareInfo";
+import { StaticModel } from "./BaseStaticModel";
 
-class TeeOffers {
+class TeeOffers extends StaticModel {
     private static cpuDenominator?: number;
 
     private static readonly logger = rootLogger.child({ className: "TeeOffers" });
@@ -160,6 +161,34 @@ class TeeOffers {
         const contract = BlockchainConnector.getInstance().getContract();
 
         return await contract.methods.getOptionById(optionId).call();
+    }
+
+    public static async getSlotByExternalId(
+        filter: { creator: string; offerId: string; externalId: string },
+        fromBlock?: number | string,
+        toBlock?: number | string,
+    ): Promise<TeeSlotAddedEvent | null> {
+        filter.externalId = formatBytes32String(filter.externalId);
+
+        const foundEvents = await this.getPastEvents("TeeSlotAdded", filter, fromBlock, toBlock);
+
+        const response = foundEvents.length ? (foundEvents[0].returnValues as TeeSlotAddedEvent) : null;
+
+        return response;
+    }
+
+    public static async getOptionByExternalId(
+        filter: { creator: string; teeOfferId: string; externalId: string },
+        fromBlock?: number | string,
+        toBlock?: number | string,
+    ): Promise<OptionAddedEvent | null> {
+        filter.externalId = formatBytes32String(filter.externalId);
+
+        const foundEvents = await this.getPastEvents("OptionAdded", filter, fromBlock, toBlock);
+
+        const response = foundEvents.length ? (foundEvents[0].returnValues as OptionAddedEvent) : null;
+
+        return response;
     }
 
     /**

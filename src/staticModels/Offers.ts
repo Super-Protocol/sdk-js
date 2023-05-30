@@ -3,13 +3,14 @@ import { checkIfActionAccountInitialized, objectToTuple } from "../utils";
 import { OfferInfo, OfferInfoStructure, OfferType } from "../types/Offer";
 import { BytesLike, formatBytes32String, parseBytes32String } from "ethers/lib/utils";
 import { BlockInfo, ContractEvent, TransactionOptions } from "../types/Web3";
-import { OfferCreatedEvent } from "../types/Events";
+import { OfferCreatedEvent, ValueSlotAddedEvent } from "../types/Events";
 import Superpro from "./Superpro";
 import TxManager from "../utils/TxManager";
 import BlockchainConnector from "../connectors/BlockchainConnector";
 import BlockchainEventsListener from "../connectors/BlockchainEventsListener";
+import { StaticModel } from "./BaseStaticModel";
 
-class Offers {
+class Offers extends StaticModel {
     private static readonly logger = rootLogger.child({ className: "Offers" });
 
     public static offers?: string[];
@@ -88,6 +89,20 @@ class Offers {
                       externalId,
                       offerId: "-1",
                   };
+
+        return response;
+    }
+
+    public static async getSlotByExternalId(
+        filter: { creator: string; offerId: string; externalId: string },
+        fromBlock?: number | string,
+        toBlock?: number | string,
+    ): Promise<ValueSlotAddedEvent | null> {
+        filter.externalId = formatBytes32String(filter.externalId);
+
+        const foundEvents = await this.getPastEvents("ValueSlotAdded", filter, fromBlock, toBlock);
+
+        const response = foundEvents.length ? (foundEvents[0].returnValues as ValueSlotAddedEvent) : null;
 
         return response;
     }

@@ -5412,12 +5412,117 @@
           "type": "uint256"
         }
       ],
-      "name": "getOrderSubOrders",
+      "name": "getOrderSelectedUsage",
       "outputs": [
         {
-          "internalType": "uint256[]",
+          "components": [
+            {
+              "components": [
+                {
+                  "internalType": "uint64",
+                  "name": "cpuCores",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "ram",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "diskUsage",
+                  "type": "uint64"
+                }
+              ],
+              "internalType": "struct SlotInfo",
+              "name": "slotInfo",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "enum PriceType",
+                  "name": "priceType",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "price",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "minTimeMinutes",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "maxTimeMinutes",
+                  "type": "uint64"
+                }
+              ],
+              "internalType": "struct SlotUsage",
+              "name": "slotUsage",
+              "type": "tuple"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint64",
+                  "name": "bandwidth",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "traffic",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "externalPort",
+                  "type": "uint64"
+                }
+              ],
+              "internalType": "struct OptionInfo[]",
+              "name": "optionInfo",
+              "type": "tuple[]"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "enum PriceType",
+                  "name": "priceType",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "uint256",
+                  "name": "price",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "minTimeMinutes",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint64",
+                  "name": "maxTimeMinutes",
+                  "type": "uint64"
+                }
+              ],
+              "internalType": "struct SlotUsage[]",
+              "name": "optionUsage",
+              "type": "tuple[]"
+            },
+            {
+              "internalType": "uint32[]",
+              "name": "optionsCount",
+              "type": "uint32[]"
+            }
+          ],
+          "internalType": "struct OrderUsage",
           "name": "",
-          "type": "uint256[]"
+          "type": "tuple"
         }
       ],
       "stateMutability": "view",
@@ -5431,34 +5536,12 @@
           "type": "uint256"
         }
       ],
-      "name": "getOrderTeeOptions",
+      "name": "getOrderSubOrders",
       "outputs": [
         {
-          "components": [
-            {
-              "internalType": "uint64",
-              "name": "bandwidth",
-              "type": "uint64"
-            },
-            {
-              "internalType": "uint64",
-              "name": "traffic",
-              "type": "uint64"
-            },
-            {
-              "internalType": "uint64",
-              "name": "externalPort",
-              "type": "uint64"
-            }
-          ],
-          "internalType": "struct OptionInfo[]",
+          "internalType": "uint256[]",
           "name": "",
-          "type": "tuple[]"
-        },
-        {
-          "internalType": "uint32[]",
-          "name": "",
-          "type": "uint32[]"
+          "type": "uint256[]"
         }
       ],
       "stateMutability": "view",

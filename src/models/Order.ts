@@ -6,6 +6,8 @@ import {
     ExtendedOrderInfo,
     OrderStatus,
     SubOrderParams,
+    OrderUsage,
+    OrderUsageStructure,
 } from "../types/Order";
 import { Contract } from "web3-eth-contract";
 import rootLogger from "../logger";
@@ -13,25 +15,19 @@ import { ContractEvent, TransactionOptions } from "../types/Web3";
 import { AbiItem } from "web3-utils";
 import appJSON from "../contracts/app.json";
 import store from "../store";
-import {
-    checkIfActionAccountInitialized,
-    incrementMethodCall,
-    objectToTuple,
-    tupleToObject,
-    tupleToObjectsArray,
-} from "../utils";
+import { checkIfActionAccountInitialized, incrementMethodCall, objectToTuple, tupleToObject } from "../utils";
 import { Origins, OriginsStructure } from "../types/Origins";
 import { formatBytes32String } from "ethers/lib/utils";
 import BlockchainConnector from "../connectors/BlockchainConnector";
 import Superpro from "../staticModels/Superpro";
 import TxManager from "../utils/TxManager";
 import BlockchainEventsListener from "../connectors/BlockchainEventsListener";
-import { OptionInfo, OptionInfoStructure } from "../types/OptionInfo";
 
 class Order {
     private static contract: Contract;
     private logger: typeof rootLogger;
 
+    public selectedUsage?: OrderUsage;
     public orderInfo?: OrderInfo;
     public orderResult?: OrderResult;
     public subOrders?: string[];
@@ -143,15 +139,14 @@ class Order {
      * Function for fetching order deposit spent from blockchain
      */
     @incrementMethodCall()
-    public async getOrderTeeOptions(): Promise<{ options: OptionInfo[]; count: number[] }> {
-        let [options, count] = await Order.contract.methods.getOrderTeeOptions(this.id).call();
-        options = tupleToObjectsArray(options, OptionInfoStructure);
-        count = count.map((item: string) => +item);
+    public async getSelectedUsage(): Promise<OrderUsage> {
+        this.selectedUsage = tupleToObject(
+            await Order.contract.methods.getOrderSelectedUsgae(this.id).call(),
+            OrderUsageStructure,
+        );
+        this.selectedUsage.optionsCount = this.selectedUsage.optionsCount.map((item) => +item);
 
-        return {
-            options,
-            count,
-        };
+        return this.selectedUsage;
     }
 
     /**

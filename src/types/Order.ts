@@ -1,4 +1,7 @@
 import { parseBytes32String } from "ethers/lib/utils";
+import { SlotUsage, SlotUsageStructure } from "./SlotUsage";
+import { SlotInfo, SlotInfoStructure } from "./SlotInfo";
+import { OptionInfo, OptionInfoStructure } from "./OptionInfo";
 
 export enum OrderStatus {
     New = "0",
@@ -71,4 +74,20 @@ export type OrderResult = {
 export type SubOrderParams = {
     blockParentOrder: boolean;
     deposit: string;
+};
+
+export type OrderUsage = {
+    slotInfo: SlotInfo;
+    slotUsage: SlotUsage;
+    optionInfo: OptionInfo[];
+    optionUsage: SlotUsage[];
+    optionsCount: number[];
+};
+
+export const OrderUsageStructure = {
+    slotInfo: SlotInfoStructure,
+    slotUsage: SlotUsageStructure,
+    optionInfo: [OptionInfoStructure],
+    optionUsage: [SlotUsageStructure],
+    optionsCount: [Number],
 };

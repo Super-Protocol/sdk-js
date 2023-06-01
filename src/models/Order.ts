@@ -141,7 +141,7 @@ class Order {
     @incrementMethodCall()
     public async getSelectedUsage(): Promise<OrderUsage> {
         this.selectedUsage = tupleToObject(
-            await Order.contract.methods.getOrderSelectedUsgae(this.id).call(),
+            await Order.contract.methods.getOrderSelectedUsage(this.id).call(),
             OrderUsageStructure,
         );
         this.selectedUsage.optionsCount = this.selectedUsage.optionsCount.map((item) => +item);

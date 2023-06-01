@@ -146,7 +146,7 @@ class Order {
             OrderUsageStructure,
         );
         this.selectedUsage.optionsCount = this.selectedUsage.optionsCount.map((item) => +item);
-        unpackSlotInfo(this.selectedUsage.slotInfo, await TeeOffers.getDenominator());
+        this.selectedUsage.slotInfo = unpackSlotInfo(this.selectedUsage.slotInfo, await TeeOffers.getDenominator());
 
         return this.selectedUsage;
     }

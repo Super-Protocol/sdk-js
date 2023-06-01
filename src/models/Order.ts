@@ -15,13 +15,14 @@ import { ContractEvent, TransactionOptions } from "../types/Web3";
 import { AbiItem } from "web3-utils";
 import appJSON from "../contracts/app.json";
 import store from "../store";
-import { checkIfActionAccountInitialized, incrementMethodCall, objectToTuple, tupleToObject } from "../utils";
+import { checkIfActionAccountInitialized, incrementMethodCall, objectToTuple, tupleToObject, unpackSlotInfo } from "../utils";
 import { Origins, OriginsStructure } from "../types/Origins";
 import { formatBytes32String } from "ethers/lib/utils";
 import BlockchainConnector from "../connectors/BlockchainConnector";
 import Superpro from "../staticModels/Superpro";
 import TxManager from "../utils/TxManager";
 import BlockchainEventsListener from "../connectors/BlockchainEventsListener";
+import TeeOffers from "../staticModels/TeeOffers";
 
 class Order {
     private static contract: Contract;
@@ -145,6 +146,7 @@ class Order {
             OrderUsageStructure,
         );
         this.selectedUsage.optionsCount = this.selectedUsage.optionsCount.map((item) => +item);
+        unpackSlotInfo(this.selectedUsage.slotInfo, await TeeOffers.getDenominator());
 
         return this.selectedUsage;
     }

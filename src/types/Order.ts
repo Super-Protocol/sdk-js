@@ -24,6 +24,13 @@ export type OrderArgs = {
     outputOffer: string;
 };
 
+export const OrderSlotsStructure = {
+    slotId: String,
+    slotCount: String,
+    optionsIds: [String],
+    optionsCount: [String],
+};
+
 // Order of keys and type conversion functions for this object in blockchain contract
 export const OrderInfoStructure = {
     offerId: String,
@@ -32,15 +39,19 @@ export const OrderInfoStructure = {
     encryptedArgs: String,
     status: OrderStatus,
     args: OrderArgsStructure,
+    slots: OrderSlotsStructure,
     externalId: parseBytes32String,
-    slotId: String,
-    slotCount: String,
-    optionsIds: [String],
-    optionsCount: [String],
 };
 
 // Array of order info structures
 export const OrderInfoStructureArray = [OrderInfoStructure];
+
+export type OrderSlots = {
+    slotId: string;
+    slotCount: string;
+    optionsIds: string[];
+    optionsCount: string[];
+};
 
 export type OrderInfo = {
     offerId: string;
@@ -49,12 +60,10 @@ export type OrderInfo = {
     encryptedArgs: string;
     status: OrderStatus;
     args: OrderArgs;
+    slots: OrderSlots;
     externalId: string;
-    slotId: string;
-    slotCount: string;
-    optionsIds: string[];
-    optionsCount: string[];
 };
+
 export type ExtendedOrderInfo = OrderInfo & {
     blocking: boolean;
     deposit: string;

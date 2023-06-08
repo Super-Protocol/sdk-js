@@ -4223,29 +4223,36 @@
               "type": "tuple"
             },
             {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "slotId",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint32",
+                  "name": "slotCount",
+                  "type": "uint32"
+                },
+                {
+                  "internalType": "uint256[]",
+                  "name": "optionsIds",
+                  "type": "uint256[]"
+                },
+                {
+                  "internalType": "uint32[]",
+                  "name": "optionsCount",
+                  "type": "uint32[]"
+                }
+              ],
+              "internalType": "struct OrderSlots",
+              "name": "slots",
+              "type": "tuple"
+            },
+            {
               "internalType": "bytes32",
               "name": "externalId",
               "type": "bytes32"
-            },
-            {
-              "internalType": "uint256",
-              "name": "slotId",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint32",
-              "name": "slotCount",
-              "type": "uint32"
-            },
-            {
-              "internalType": "uint256[]",
-              "name": "optionsIds",
-              "type": "uint256[]"
-            },
-            {
-              "internalType": "uint32[]",
-              "name": "optionsCount",
-              "type": "uint32[]"
             }
           ],
           "internalType": "struct OrderInfo",
@@ -4326,29 +4333,36 @@
               "type": "tuple"
             },
             {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "slotId",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint32",
+                  "name": "slotCount",
+                  "type": "uint32"
+                },
+                {
+                  "internalType": "uint256[]",
+                  "name": "optionsIds",
+                  "type": "uint256[]"
+                },
+                {
+                  "internalType": "uint32[]",
+                  "name": "optionsCount",
+                  "type": "uint32[]"
+                }
+              ],
+              "internalType": "struct OrderSlots",
+              "name": "slots",
+              "type": "tuple"
+            },
+            {
               "internalType": "bytes32",
               "name": "externalId",
               "type": "bytes32"
-            },
-            {
-              "internalType": "uint256",
-              "name": "slotId",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint32",
-              "name": "slotCount",
-              "type": "uint32"
-            },
-            {
-              "internalType": "uint256[]",
-              "name": "optionsIds",
-              "type": "uint256[]"
-            },
-            {
-              "internalType": "uint32[]",
-              "name": "optionsCount",
-              "type": "uint32[]"
             }
           ],
           "internalType": "struct OrderInfo",
@@ -4429,29 +4443,36 @@
               "type": "tuple"
             },
             {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "slotId",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint32",
+                  "name": "slotCount",
+                  "type": "uint32"
+                },
+                {
+                  "internalType": "uint256[]",
+                  "name": "optionsIds",
+                  "type": "uint256[]"
+                },
+                {
+                  "internalType": "uint32[]",
+                  "name": "optionsCount",
+                  "type": "uint32[]"
+                }
+              ],
+              "internalType": "struct OrderSlots",
+              "name": "slots",
+              "type": "tuple"
+            },
+            {
               "internalType": "bytes32",
               "name": "externalId",
               "type": "bytes32"
-            },
-            {
-              "internalType": "uint256",
-              "name": "slotId",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint32",
-              "name": "slotCount",
-              "type": "uint32"
-            },
-            {
-              "internalType": "uint256[]",
-              "name": "optionsIds",
-              "type": "uint256[]"
-            },
-            {
-              "internalType": "uint32[]",
-              "name": "optionsCount",
-              "type": "uint32[]"
             }
           ],
           "internalType": "struct OrderInfo",
@@ -4544,29 +4565,36 @@
               "type": "tuple"
             },
             {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "slotId",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint32",
+                  "name": "slotCount",
+                  "type": "uint32"
+                },
+                {
+                  "internalType": "uint256[]",
+                  "name": "optionsIds",
+                  "type": "uint256[]"
+                },
+                {
+                  "internalType": "uint32[]",
+                  "name": "optionsCount",
+                  "type": "uint32[]"
+                }
+              ],
+              "internalType": "struct OrderSlots",
+              "name": "slots",
+              "type": "tuple"
+            },
+            {
               "internalType": "bytes32",
               "name": "externalId",
               "type": "bytes32"
-            },
-            {
-              "internalType": "uint256",
-              "name": "slotId",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint32",
-              "name": "slotCount",
-              "type": "uint32"
-            },
-            {
-              "internalType": "uint256[]",
-              "name": "optionsIds",
-              "type": "uint256[]"
-            },
-            {
-              "internalType": "uint32[]",
-              "name": "optionsCount",
-              "type": "uint32[]"
             }
           ],
           "internalType": "struct OrderInfo",
@@ -5256,29 +5284,36 @@
               "type": "tuple"
             },
             {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "slotId",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint32",
+                  "name": "slotCount",
+                  "type": "uint32"
+                },
+                {
+                  "internalType": "uint256[]",
+                  "name": "optionsIds",
+                  "type": "uint256[]"
+                },
+                {
+                  "internalType": "uint32[]",
+                  "name": "optionsCount",
+                  "type": "uint32[]"
+                }
+              ],
+              "internalType": "struct OrderSlots",
+              "name": "slots",
+              "type": "tuple"
+            },
+            {
               "internalType": "bytes32",
               "name": "externalId",
               "type": "bytes32"
-            },
-            {
-              "internalType": "uint256",
-              "name": "slotId",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint32",
-              "name": "slotCount",
-              "type": "uint32"
-            },
-            {
-              "internalType": "uint256[]",
-              "name": "optionsIds",
-              "type": "uint256[]"
-            },
-            {
-              "internalType": "uint32[]",
-              "name": "optionsCount",
-              "type": "uint32[]"
             }
           ],
           "internalType": "struct OrderInfo",
@@ -8260,29 +8295,36 @@
               "type": "tuple"
             },
             {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "slotId",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint32",
+                  "name": "slotCount",
+                  "type": "uint32"
+                },
+                {
+                  "internalType": "uint256[]",
+                  "name": "optionsIds",
+                  "type": "uint256[]"
+                },
+                {
+                  "internalType": "uint32[]",
+                  "name": "optionsCount",
+                  "type": "uint32[]"
+                }
+              ],
+              "internalType": "struct OrderSlots",
+              "name": "slots",
+              "type": "tuple"
+            },
+            {
               "internalType": "bytes32",
               "name": "externalId",
               "type": "bytes32"
-            },
-            {
-              "internalType": "uint256",
-              "name": "slotId",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint32",
-              "name": "slotCount",
-              "type": "uint32"
-            },
-            {
-              "internalType": "uint256[]",
-              "name": "optionsIds",
-              "type": "uint256[]"
-            },
-            {
-              "internalType": "uint32[]",
-              "name": "optionsCount",
-              "type": "uint32[]"
             }
           ],
           "internalType": "struct OrderInfo",
@@ -8339,29 +8381,36 @@
               "type": "tuple"
             },
             {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "slotId",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint32",
+                  "name": "slotCount",
+                  "type": "uint32"
+                },
+                {
+                  "internalType": "uint256[]",
+                  "name": "optionsIds",
+                  "type": "uint256[]"
+                },
+                {
+                  "internalType": "uint32[]",
+                  "name": "optionsCount",
+                  "type": "uint32[]"
+                }
+              ],
+              "internalType": "struct OrderSlots",
+              "name": "slots",
+              "type": "tuple"
+            },
+            {
               "internalType": "bytes32",
               "name": "externalId",
               "type": "bytes32"
-            },
-            {
-              "internalType": "uint256",
-              "name": "slotId",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint32",
-              "name": "slotCount",
-              "type": "uint32"
-            },
-            {
-              "internalType": "uint256[]",
-              "name": "optionsIds",
-              "type": "uint256[]"
-            },
-            {
-              "internalType": "uint32[]",
-              "name": "optionsCount",
-              "type": "uint32[]"
             }
           ],
           "internalType": "struct OrderInfo[]",
@@ -10239,29 +10288,36 @@
               "type": "tuple"
             },
             {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "slotId",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint32",
+                  "name": "slotCount",
+                  "type": "uint32"
+                },
+                {
+                  "internalType": "uint256[]",
+                  "name": "optionsIds",
+                  "type": "uint256[]"
+                },
+                {
+                  "internalType": "uint32[]",
+                  "name": "optionsCount",
+                  "type": "uint32[]"
+                }
+              ],
+              "internalType": "struct OrderSlots",
+              "name": "slots",
+              "type": "tuple"
+            },
+            {
               "internalType": "bytes32",
               "name": "externalId",
               "type": "bytes32"
-            },
-            {
-              "internalType": "uint256",
-              "name": "slotId",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint32",
-              "name": "slotCount",
-              "type": "uint32"
-            },
-            {
-              "internalType": "uint256[]",
-              "name": "optionsIds",
-              "type": "uint256[]"
-            },
-            {
-              "internalType": "uint32[]",
-              "name": "optionsCount",
-              "type": "uint32[]"
             }
           ],
           "internalType": "struct OrderInfo",
@@ -10347,29 +10403,36 @@
               "type": "tuple"
             },
             {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "slotId",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint32",
+                  "name": "slotCount",
+                  "type": "uint32"
+                },
+                {
+                  "internalType": "uint256[]",
+                  "name": "optionsIds",
+                  "type": "uint256[]"
+                },
+                {
+                  "internalType": "uint32[]",
+                  "name": "optionsCount",
+                  "type": "uint32[]"
+                }
+              ],
+              "internalType": "struct OrderSlots",
+              "name": "slots",
+              "type": "tuple"
+            },
+            {
               "internalType": "bytes32",
               "name": "externalId",
               "type": "bytes32"
-            },
-            {
-              "internalType": "uint256",
-              "name": "slotId",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint32",
-              "name": "slotCount",
-              "type": "uint32"
-            },
-            {
-              "internalType": "uint256[]",
-              "name": "optionsIds",
-              "type": "uint256[]"
-            },
-            {
-              "internalType": "uint32[]",
-              "name": "optionsCount",
-              "type": "uint32[]"
             }
           ],
           "internalType": "struct OrderInfo",
@@ -10465,29 +10528,36 @@
               "type": "tuple"
             },
             {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "slotId",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint32",
+                  "name": "slotCount",
+                  "type": "uint32"
+                },
+                {
+                  "internalType": "uint256[]",
+                  "name": "optionsIds",
+                  "type": "uint256[]"
+                },
+                {
+                  "internalType": "uint32[]",
+                  "name": "optionsCount",
+                  "type": "uint32[]"
+                }
+              ],
+              "internalType": "struct OrderSlots",
+              "name": "slots",
+              "type": "tuple"
+            },
+            {
               "internalType": "bytes32",
               "name": "externalId",
               "type": "bytes32"
-            },
-            {
-              "internalType": "uint256",
-              "name": "slotId",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint32",
-              "name": "slotCount",
-              "type": "uint32"
-            },
-            {
-              "internalType": "uint256[]",
-              "name": "optionsIds",
-              "type": "uint256[]"
-            },
-            {
-              "internalType": "uint32[]",
-              "name": "optionsCount",
-              "type": "uint32[]"
             }
           ],
           "internalType": "struct OrderInfo",
@@ -10714,29 +10784,36 @@
               "type": "tuple"
             },
             {
+              "components": [
+                {
+                  "internalType": "uint256",
+                  "name": "slotId",
+                  "type": "uint256"
+                },
+                {
+                  "internalType": "uint32",
+                  "name": "slotCount",
+                  "type": "uint32"
+                },
+                {
+                  "internalType": "uint256[]",
+                  "name": "optionsIds",
+                  "type": "uint256[]"
+                },
+                {
+                  "internalType": "uint32[]",
+                  "name": "optionsCount",
+                  "type": "uint32[]"
+                }
+              ],
+              "internalType": "struct OrderSlots",
+              "name": "slots",
+              "type": "tuple"
+            },
+            {
               "internalType": "bytes32",
               "name": "externalId",
               "type": "bytes32"
-            },
-            {
-              "internalType": "uint256",
-              "name": "slotId",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint32",
-              "name": "slotCount",
-              "type": "uint32"
-            },
-            {
-              "internalType": "uint256[]",
-              "name": "optionsIds",
-              "type": "uint256[]"
-            },
-            {
-              "internalType": "uint32[]",
-              "name": "optionsCount",
-              "type": "uint32[]"
             }
           ],
           "internalType": "struct OrderInfo",

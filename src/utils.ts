@@ -82,6 +82,10 @@ export const tupleToObject = <T>(data: unknown[], format: Format): T => {
         if ((formatItem as FormatFunctions)?.$obj) {
             return (formatItem as FormatFunctions).$obj!(dataItem);
         } else if (typeof formatItem === "function") {
+            if (formatItem.name === "Number") {
+                const value = (formatItem as Function)(dataItem);
+                return value < Number.MAX_SAFE_INTEGER ? value : Number.MAX_SAFE_INTEGER;
+            }
             return (formatItem as Function)(dataItem);
         } else if (typeof formatItem === "object" && typeof dataItem === "object") {
             return tupleToObject(dataItem as unknown[], formatItem as Format);

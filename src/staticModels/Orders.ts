@@ -76,16 +76,26 @@ class Orders {
     }
 
     @incrementMethodCall()
-    public static async getByExternalId(consumer: string, externalId: string): Promise<OrderCreatedEvent> {
+    public static async getByExternalId(
+        consumer = "",
+        externalId = "",
+        fromBlock?: number | string,
+        toBlock?: number | string,
+    ): Promise<OrderCreatedEvent> {
         const contract = BlockchainConnector.getInstance().getContract();
+
         const filter = {
             consumer,
             externalId: formatBytes32String(externalId),
         };
-        const foundIds = await contract.getPastEvents("OrderCreated", { filter });
+        const options: PastEventOptions = { filter };
+
+        if (fromBlock) options.fromBlock = fromBlock;
+        if (toBlock) options.toBlock = toBlock;
+
+        const foundIds = await contract.getPastEvents("OrderCreated", options);
         const notFound = {
-            consumer,
-            externalId,
+            ...filter,
             offerId: "-1",
             parentOrderId: "-1",
             orderId: "-1",
@@ -93,6 +103,8 @@ class Orders {
 
         const response: OrderCreatedEvent =
             foundIds.length > 0 ? (foundIds[0].returnValues as OrderCreatedEvent) : notFound;
+
+        response.externalId = parseBytes32String(response.externalId);
 
         return response;
     }

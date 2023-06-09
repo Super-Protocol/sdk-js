@@ -210,8 +210,4 @@ export class DownloadDecorator implements IStorageProvider {
     getLastModified(remotePath: string): Promise<Date> {
         return this.provider.getLastModified(remotePath);
     }
-
-    calculateStorageDeposit(offer: Offer, sizeMb: number, hours: number): Promise<string> {
-        return this.provider.calculateStorageDeposit(offer, sizeMb, hours);
-    }
 }

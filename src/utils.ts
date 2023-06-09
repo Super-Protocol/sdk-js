@@ -3,6 +3,7 @@ import { TransactionOptions } from "./types/Web3";
 import { isArray } from "lodash";
 import Web3 from "web3";
 import { Monitoring } from "./utils/Monitoring";
+import { SlotInfo } from "./types/SlotInfo";
 
 /**
  * Function for checking if provider action account initialized (required for set methods)
@@ -81,6 +82,10 @@ export const tupleToObject = <T>(data: unknown[], format: Format): T => {
         if ((formatItem as FormatFunctions)?.$obj) {
             return (formatItem as FormatFunctions).$obj!(dataItem);
         } else if (typeof formatItem === "function") {
+            if (formatItem.name === "Number") {
+                const value = (formatItem as Function)(dataItem);
+                return value < Number.MAX_SAFE_INTEGER ? value : Number.MAX_SAFE_INTEGER;
+            }
             return (formatItem as Function)(dataItem);
         } else if (typeof formatItem === "object" && typeof dataItem === "object") {
             return tupleToObject(dataItem as unknown[], formatItem as Format);
@@ -108,6 +113,10 @@ export const tupleToObject = <T>(data: unknown[], format: Format): T => {
 
         return result as unknown as T;
     }
+};
+
+export const tupleToObjectsArray = <T>(data: unknown[], format: Format): T[] => {
+    return data.map((item) => tupleToObject(item as unknown[], format));
 };
 
 export const objectToTuple = (data: unknown, format: Format): unknown[] => {
@@ -171,4 +180,20 @@ export function unpackDeviceId(bytes32: string): string {
 
     // removes '0x'
     return bytes32.slice(2, 66);
+}
+
+export function unpackSlotInfo(slotInfo: SlotInfo, cpuDenominator: number): SlotInfo {
+    return {
+        cpuCores: slotInfo.cpuCores / cpuDenominator,
+        ram: slotInfo.ram,
+        diskUsage: slotInfo.diskUsage,
+    };
+}
+
+export function packSlotInfo(slotInfo: SlotInfo, cpuDenominator: number): SlotInfo {
+    return {
+        cpuCores: slotInfo.cpuCores * cpuDenominator,
+        ram: slotInfo.ram,
+        diskUsage: slotInfo.diskUsage,
+    };
 }

@@ -1,9 +1,9 @@
-import TCB from "../models/TCB";
 import rootLogger from "../logger";
+import TCB from "../models/TCB";
 import { checkIfActionAccountInitialized, tupleToObject } from "../utils";
 import { EpochInfo } from "../types/Consensus";
 import { TeeConfirmationBlock, GetTcbRequest } from "@super-protocol/dto-js";
-import { TransactionOptions, BlockInfo, ContractEvent } from "../types/Web3";
+import { TransactionOptions, ContractEvent, BlockInfo } from "../types/Web3";
 import Superpro from "./Superpro";
 import BlockchainConnector from "../connectors/BlockchainConnector";
 import BlockchainEventsListener from "../connectors/BlockchainEventsListener";
@@ -12,7 +12,7 @@ import { ConsensusConstants, ConsensusConstantsStructure } from "../types/Consen
 
 class Consensus {
     private static readonly logger = rootLogger.child({ className: "Consensus" });
-    private static tcbIds: string[];
+    private static tcbIds?: string[];
 
     public static get address(): string {
         return Superpro.address;
@@ -32,22 +32,6 @@ class Consensus {
         return tcb;
     }
 
-    public static async initializeTcb(teeOfferId: string, transactionOptions?: TransactionOptions): Promise<void> {
-        const contract = BlockchainConnector.getInstance().getContract();
-        checkIfActionAccountInitialized();
-
-        await TxManager.execute(contract.methods.initializeTcb, [teeOfferId], transactionOptions);
-    }
-
-    public static async isTcbCreationAvailable(teeOfferId: string): Promise<boolean> {
-        const contract = BlockchainConnector.getInstance().getContract();
-        const [offerNotBlocked, newEpochStarted, halfEpochPassed, benchmarkVerified] = await contract.methods
-            .isTcbCreationAvailable(teeOfferId)
-            .call();
-
-        return offerNotBlocked && newEpochStarted && halfEpochPassed && benchmarkVerified;
-    }
-
     /**
      * Function for fetching list of all tcb ids
      * @returns list of tcb ids
@@ -63,6 +47,22 @@ class Consensus {
         this.tcbIds = Array.from(tcbSet);
 
         return this.tcbIds;
+    }
+
+    public static async initializeTcb(teeOfferId: string, transactionOptions?: TransactionOptions): Promise<void> {
+        const contract = BlockchainConnector.getInstance().getContract();
+        checkIfActionAccountInitialized();
+
+        await TxManager.execute(contract.methods.initializeTcb, [teeOfferId], transactionOptions);
+    }
+
+    public static async isTcbCreationAvailable(teeOfferId: string): Promise<boolean> {
+        const contract = BlockchainConnector.getInstance().getContract();
+        const [offerNotBlocked, newEpochStarted, halfEpochPassed, benchmarkVerified] = await contract.methods
+            .isTcbCreationAvailable(teeOfferId)
+            .call();
+
+        return offerNotBlocked && newEpochStarted && halfEpochPassed && benchmarkVerified;
     }
 
     /**
@@ -166,9 +166,6 @@ class Consensus {
 
         return tupleToObject(response, ConsensusConstantsStructure);
     }
-
-    // TODO: get locked rewards info
-    // TODO: claim avaliable rewards
 
     public static onTcbBanned(callback: onTcbBannedCallback): () => void {
         const contract = BlockchainEventsListener.getInstance().getContract();
@@ -297,5 +294,4 @@ export type onTcbBenchmarkChangedCallback = (tcbId: string, provider: string, bl
 export type onTcbInitializedCallback = (tcbId: string, provider: string, block?: BlockInfo) => void;
 export type onTcbCompletedCallback = (tcbId: string, provider: string, block?: BlockInfo) => void;
 export type onTcbBannedCallback = (tcbId: string, provider: string, block?: BlockInfo) => void;
-
 export default Consensus;

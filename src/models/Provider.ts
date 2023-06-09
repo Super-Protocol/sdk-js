@@ -92,7 +92,9 @@ class Provider {
      * Function for fetching violationRate for this provider
      */
     public async getViolationRate(): Promise<number> {
-        this.violationRate = await Provider.contractProviders.methods.getProviderViolationRate(this.providerId).call();
+        this.violationRate = +(await Provider.contractProviders.methods
+            .getProviderViolationRate(this.providerId)
+            .call());
 
         return this.violationRate!;
     }

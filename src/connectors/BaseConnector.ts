@@ -27,7 +27,7 @@ export class BaseConnector {
         return this.initialized;
     }
 
-    public checkIfInitialized () {
+    public checkIfInitialized() {
         if (!this.initialized)
             throw new Error(
                 `${this.constructor["name"]} is not initialized, needs to run '${this.constructor["name"]}.initialize(CONFIG)' first`,
@@ -35,7 +35,7 @@ export class BaseConnector {
     }
 
     /**
-     * 
+     *
      * @returns initialized contract
      */
     public getContract(): Contract {

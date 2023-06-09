@@ -24,7 +24,6 @@ import Superpro from "../staticModels/Superpro";
 import SuperproToken from "../staticModels/SuperproToken";
 import { Monitoring } from "../utils/Monitoring";
 
-
 class BlockchainConnector extends BaseConnector {
     private defaultActionAccount?: string;
 
@@ -156,7 +155,7 @@ class BlockchainConnector extends BaseConnector {
     /**
      * Function for adding event listeners on TEE offer created event in TEE offers factory contract
      * @param callback - function for processing created TEE offer
-     * @return unsubscribe - unsubscribe function from event
+     * @returns unsubscribe - unsubscribe function from event
      */
     public async getLastBlockInfo(): Promise<BlockInfo> {
         this.checkIfInitialized();
@@ -227,26 +226,25 @@ class BlockchainConnector extends BaseConnector {
                 if (error) return reject(error);
                 results = results || [];
 
-                var response = requests.map((request: any, index: number) => {
-                    return results[index] || {};
+                var response = requests
+                    .map((request: any, index: number) => {
+                        return results[index] || {};
+                    })
+                    .map((result: any, index: number) => {
+                        if (result && result.error) {
+                            return errors.ErrorResponse(result);
+                        }
 
-                }).map((result: any, index: number) => {
+                        if (!Jsonrpc.isValidResponse(result)) {
+                            return errors.InvalidResponse(result);
+                        }
 
-                    if (result && result.error) {
-                        return errors.ErrorResponse(result);
-                    }
-
-                    if (!Jsonrpc.isValidResponse(result)) {
-                        return errors.InvalidResponse(result);
-                    }
-
-                    return requests[index].format ? requests[index].format(result.result) : result.result;
-                });
+                        return requests[index].format ? requests[index].format(result.result) : result.result;
+                    });
 
                 resolve(response);
             });
-        })
-
+        });
     }
 
     /**

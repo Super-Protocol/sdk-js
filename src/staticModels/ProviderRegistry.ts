@@ -89,7 +89,7 @@ class ProviderRegistry {
     /**
      * Function for adding event listeners on provider registered event in provider registry
      * @param callback - function for processing new provider
-     * @return unsubscribe - unsubscribe function from event
+     * @returns unsubscribe - unsubscribe function from event
      */
     public static onProviderRegistered(callback: onProviderRegisteredCallback): () => void {
         const contract = BlockchainEventsListener.getInstance().getContract();

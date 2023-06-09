@@ -22,5 +22,4 @@ export default interface IStorageProvider {
     listObjects(remotePath: string): Promise<StorageObject[]>;
     getObjectSize(remotePath: string): Promise<number>;
     getLastModified(remotePath: string): Promise<Date>;
-    calculateStorageDeposit(offer: Offer, sizeMb: number, hours: number): Promise<string>;
 }

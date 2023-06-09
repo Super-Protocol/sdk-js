@@ -1,4 +1,4 @@
-import { ContractName, ParamName } from "../types/Superpro";
+import { ParamName } from "../types/Superpro";
 import BlockchainConnector from "../connectors/BlockchainConnector";
 import { Contract } from "web3-eth-contract";
 
@@ -8,7 +8,7 @@ class Superpro {
     /**
      * Fetching address of contract by name
      */
-    public static async getContractAddress(name: ContractName): Promise<string> {
+    public static async getContractAddress(): Promise<string> {
         return this.address;
     }
 

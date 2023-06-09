@@ -19,7 +19,7 @@ class Crypto {
      * @param content - string data to encrypt
      * @param key - key in string format (default encoding base64)
      * @param encoding - encoding of key and output data
-     * @return {Promise<Encryption>} - object what contains encrypted data, key and spec to decryption
+     * @returns {Promise<Encryption>} - object what contains encrypted data, key and spec to decryption
      */
     static async encrypt(content: string, encryption: Encryption): Promise<Encryption> {
         switch (encryption.algo) {
@@ -46,7 +46,7 @@ class Crypto {
      * @param outputStream - place where it will be saved
      * @param algorithm - file encryption algorithm
      * @param key – key that will be used to encrypt data
-     * @return {Promise<Encryption>} - encryption info
+     * @returns {Promise<Encryption>} - encryption info
      */
     public static async encryptStream(
         inputStream: fs.ReadStream,
@@ -68,7 +68,7 @@ class Crypto {
     /**
      * Used to decrypt data from blockchain
      * @param encryption - object what contains encrypted data, key and spec to decryption
-     * @return {Promise<string>} - decrypted string
+     * @returns {Promise<string>} - decrypted string
      */
     static async decrypt(encryption: Encryption): Promise<string> {
         switch (encryption.algo) {

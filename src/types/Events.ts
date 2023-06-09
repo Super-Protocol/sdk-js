@@ -8,20 +8,27 @@ export type OrderCreatedEvent = {
     consumer: string;
     externalId: string;
     offerId: string;
-    orderId: string;
-};
-
-export type SubOrderCreatedEvent = {
-    consumer: string;
-    externalId: string;
-    subOfferId: string;
-    subOrderId: string;
     parentOrderId: string;
+    orderId: string;
 };
 
-export type WorkflowCreatedEvent = {
-    consumer: string;
-    externalId: string;
+export type TeeSlotAddedEvent = {
+    creator: string;
     offerId: string;
-    orderId: string;
+    slotId: string;
+    externalId: string;
+};
+
+export type ValueSlotAddedEvent = {
+    creator: string;
+    offerId: string;
+    slotId: string;
+    externalId: string;
+};
+
+export type OptionAddedEvent = {
+    creator: string;
+    teeOfferId: string;
+    optionId: string;
+    externalId: string;
 };

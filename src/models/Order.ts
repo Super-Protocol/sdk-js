@@ -6,6 +6,8 @@ import {
     ExtendedOrderInfo,
     OrderStatus,
     SubOrderParams,
+    OrderUsage,
+    OrderUsageStructure,
 } from "../types/Order";
 import { Contract } from "web3-eth-contract";
 import rootLogger from "../logger";
@@ -13,19 +15,20 @@ import { ContractEvent, TransactionOptions } from "../types/Web3";
 import { AbiItem } from "web3-utils";
 import appJSON from "../contracts/app.json";
 import store from "../store";
-import { checkIfActionAccountInitialized, incrementMethodCall, objectToTuple, tupleToObject } from "../utils";
+import { checkIfActionAccountInitialized, incrementMethodCall, objectToTuple, tupleToObject, unpackSlotInfo } from "../utils";
 import { Origins, OriginsStructure } from "../types/Origins";
-import { SubOrderCreatedEvent } from "../types/Events";
 import { formatBytes32String } from "ethers/lib/utils";
 import BlockchainConnector from "../connectors/BlockchainConnector";
 import Superpro from "../staticModels/Superpro";
 import TxManager from "../utils/TxManager";
 import BlockchainEventsListener from "../connectors/BlockchainEventsListener";
+import TeeOffers from "../staticModels/TeeOffers";
 
 class Order {
     private static contract: Contract;
     private logger: typeof rootLogger;
 
+    public selectedUsage?: OrderUsage;
     public orderInfo?: OrderInfo;
     public orderResult?: OrderResult;
     public subOrders?: string[];
@@ -61,6 +64,20 @@ class Order {
     }
 
     /**
+     * Check if order is in `processing` state
+     */
+    public async isOrderProcessing(): Promise<boolean> {
+        return await Order.contract.methods.isOrderProcessing(this.id).call();
+    }
+
+    /**
+     * Function for fetching order price
+     */
+    public async calculateCurrentPrice(): Promise<string> {
+        return await Order.contract.methods.calculateOrderCurrentPrice(this.id).call();
+    }
+
+    /**
      * Function for fetching order info from blockchain
      */
     @incrementMethodCall()
@@ -77,6 +94,7 @@ class Order {
     public async getConsumer(): Promise<string> {
         const orderInfoParams = await Order.contract.methods.getOrder(this.id).call();
         this.consumer = orderInfoParams[0];
+
         return this.consumer!;
     }
 
@@ -96,6 +114,7 @@ class Order {
     @incrementMethodCall()
     public async getSubOrders(): Promise<string[]> {
         this.subOrders = await Order.contract.methods.getOrderSubOrders(this.id).call();
+
         return this.subOrders!;
     }
 
@@ -105,23 +124,39 @@ class Order {
     @incrementMethodCall()
     public async getParentOrder(): Promise<string> {
         this.parentOrder = await Order.contract.methods.getOrderParentOrder(this.id).call();
+
         return this.parentOrder!;
+    }
+
+    /**
+     * Function for fetching order options deposit spent from blockchain
+     */
+    @incrementMethodCall()
+    public async getOptionsDepositSpent(): Promise<string> {
+        return Order.contract.methods.getOptionsDepositSpent(this.id).call();
     }
 
     /**
      * Function for fetching order deposit spent from blockchain
      */
     @incrementMethodCall()
-    public async getDepositSpent(): Promise<string> {
-        return Order.contract.methods.getDepositSpent(this.id).call();
+    public async getSelectedUsage(): Promise<OrderUsage> {
+        this.selectedUsage = tupleToObject(
+            await Order.contract.methods.getOrderSelectedUsage(this.id).call(),
+            OrderUsageStructure,
+        );
+        this.selectedUsage.optionsCount = this.selectedUsage.optionsCount.map((item) => +item);
+        this.selectedUsage.slotInfo = unpackSlotInfo(this.selectedUsage.slotInfo, await TeeOffers.getDenominator());
+
+        return this.selectedUsage;
     }
 
     /**
      * Function for fetching hold deposits sum of the order and its suborders
      */
     @incrementMethodCall()
-    public async calculateTotalHoldDeposit(): Promise<string> {
-        return Order.contract.methods.calculateTotalHoldDeposit(this.id).call();
+    public async calculateTotalOrderDeposit(): Promise<string> {
+        return Order.contract.methods.calculateTotalOrderDeposit(this.id).call();
     }
 
     /**
@@ -170,15 +205,15 @@ class Order {
      */
     @incrementMethodCall()
     public async getAwaitingPayment(): Promise<boolean> {
-        return Order.contract.methods.getAwaitingPayment(this.id).call(); 
+        return Order.contract.methods.getAwaitingPayment(this.id).call();
     }
 
     /**
-     * Function for fetching hold deposit of order from blockchain
+     * Function for fetching deposit of order from blockchain
      */
     @incrementMethodCall()
-    public async getHoldDeposit(): Promise<string> {
-        return Order.contract.methods.getOrderHoldDeposit(this.id).call();
+    public async getDeposit(): Promise<string> {
+        return Order.contract.methods.getOrderDeposit(this.id).call();
     }
 
     /**
@@ -212,14 +247,14 @@ class Order {
     }
 
     /**
-     * Sets deposit spent
+     * Sets options deposit spent
      */
     @incrementMethodCall()
-    public async setDepositSpent(value: string, transactionOptions?: TransactionOptions): Promise<void> {
+    public async setOptionsDepositSpent(value: string, transactionOptions?: TransactionOptions): Promise<void> {
         transactionOptions ?? this.checkInitOrder(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
-        await TxManager.execute(Order.contract.methods.setDepositSpent, [this.id, value], transactionOptions);
+        await TxManager.execute(Order.contract.methods.setOptionsDepositSpent, [this.id, value], transactionOptions);
     }
 
     /**
@@ -290,17 +325,28 @@ class Order {
     }
 
     /**
+     * Unlocks profit
+     */
+    @incrementMethodCall()
+    public async unlockProfit(transactionOptions?: TransactionOptions) {
+        transactionOptions ?? this.checkInitOrder(transactionOptions!);
+        checkIfActionAccountInitialized(transactionOptions);
+
+        await TxManager.execute(Order.contract.methods.unlockProfit, [this.id], transactionOptions);
+    }
+
+    /**
      * Function for creating sub orders for current order
      * @param subOrderInfo - order info for new subOrder
-     * @param blocking - is sub order blocking
+     * @param blockParentOrder - is sub order blocking
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
-     * @returns {Promise<void>} - Does not return id of created sub order!
+     * @returns Promise<void> - Does not return id of created sub order!
      */
     @incrementMethodCall()
     public async createSubOrder(
         subOrderInfo: OrderInfo,
-        blocking: boolean,
-        holdSum = "0",
+        blockParentOrder: boolean,
+        deposit = "0",
         transactionOptions?: TransactionOptions,
     ): Promise<void> {
         transactionOptions ?? this.checkInitOrder(transactionOptions!);
@@ -312,8 +358,8 @@ class Order {
         };
         const tupleSubOrder = objectToTuple(preparedInfo, OrderInfoStructure);
         const params: SubOrderParams = {
-            blockParentOrder: blocking,
-            holdSum,
+            blockParentOrder,
+            deposit,
         };
         await TxManager.execute(
             Order.contract.methods.createSubOrder,
@@ -346,7 +392,7 @@ class Order {
                 const tupleSubOrder = objectToTuple(preparedInfo, OrderInfoStructure);
                 const params: SubOrderParams = {
                     blockParentOrder: subOrderInfo.blocking,
-                    holdSum: subOrderInfo.holdSum,
+                    deposit: subOrderInfo.deposit,
                 };
 
                 const request = Order.contract.methods.createSubOrder(this.id, tupleSubOrder, params).send.request(
@@ -370,50 +416,12 @@ class Order {
         return txs.reduce((a: any, b: any) => a.concat(b), []) as string[];
     }
 
-    @incrementMethodCall()
-    public async getSubOrder(consumer: string, externalId: string): Promise<SubOrderCreatedEvent> {
-        const filter = {
-            consumer,
-            externalId: formatBytes32String(externalId),
-        };
-        const foundIds = await Order.contract.getPastEvents("SubOrderCreated", { filter });
-        const notFound = { consumer, externalId, subOfferId: "-1", subOrderId: "-1", parentOrderId: "-1" };
-
-        const response: SubOrderCreatedEvent =
-            foundIds.length > 0 ? (foundIds[0].returnValues as SubOrderCreatedEvent) : notFound;
-
-        return response;
-    }
-
-    /**
-     * Function for withdrawing profit from order
-     * @param transactionOptions - object what contains alternative action account or gas limit (optional)
-     */
-    @incrementMethodCall()
-    public async withdrawProfit(transactionOptions?: TransactionOptions) {
-        transactionOptions ?? this.checkInitOrder(transactionOptions!);
-        checkIfActionAccountInitialized(transactionOptions);
-
-        await TxManager.execute(Order.contract.methods.withdrawProfit, [this.id], transactionOptions);
-    }
-
-    /**
-     * Function for withdrawing change from order
-     * @param transactionOptions - object what contains alternative action account or gas limit (optional)
-     */
-    public async withdrawChange(transactionOptions?: TransactionOptions) {
-        transactionOptions ?? this.checkInitOrder(transactionOptions!);
-        checkIfActionAccountInitialized(transactionOptions);
-
-        await TxManager.execute(Order.contract.methods.withdrawChange, [this.id], transactionOptions);
-    }
-
     /**
      * Function for adding event listeners to contract events
      * @param callback - function for processing each order related with event
-     * @return unsubscribe - function unsubscribing from event
+     * @returns unsubscribe - function unsubscribing from event
      */
-    public onOrderStatusUpdated(callback: onOrderStatusUpdatedCallback): () => void {
+    public onStatusUpdated(callback: onOrderStatusUpdatedCallback): () => void {
         const logger = this.logger.child({ method: "onOrderStatusUpdated" });
 
         // TODO: add ability to use this event without https provider initialization

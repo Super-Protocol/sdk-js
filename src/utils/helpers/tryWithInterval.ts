@@ -23,14 +23,14 @@ export const tryWithInterval = async <T>(params: TryWithIntervalParams<T>): Prom
             const intervalFn = async (): Promise<void> => {
                 try {
                     const result = await handler();
-                    const isResultOk = (checkResult && checkResult(result).isResultOk) || true;
+                    const isResultOk = checkResult ? checkResult(result).isResultOk : true;
                     if (isResultOk) {
                         resolve(result);
                     }
 
                     checkTimes();
                 } catch (err) {
-                    const isErrorRetryable = (checkError && checkError(err).retryable) || true;
+                    const isErrorRetryable = checkError ? checkError(err).retryable : true;
                     if (!isErrorRetryable) {
                         reject(err);
                     }

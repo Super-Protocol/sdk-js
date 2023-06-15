@@ -7,41 +7,40 @@ export interface TryWithIntervalParams<T> {
 }
 
 export const tryWithInterval = async <T>(params: TryWithIntervalParams<T>): Promise<T> => {
-    let interval: NodeJS.Timer | null = null;
     let checkedTimes = 0;
     const { handler, checkResult, checkError, retryInterval, retryMax } = params;
 
-    const checkTimes = (): void => {
-        checkedTimes += 1;
-        if (checkedTimes >= retryMax) {
-            throw new Error(`checkWithInterval: MaxCheck count reached!}`);
-        }
-    };
+    return await new Promise((resolve, reject) => {
+        const checkTimes = (): void => {
+            checkedTimes += 1;
+            if (checkedTimes >= retryMax) {
+                reject(new Error(`checkWithInterval: MaxCheck count reached!}`));
+            } else {
+                setTimeout(timeoutFn, retryInterval);
+            }
+        };
 
-    try {
-        return await new Promise((resolve, reject) => {
-            const intervalFn = async (): Promise<void> => {
-                try {
-                    const result = await handler();
-                    const isResultOk = checkResult ? checkResult(result).isResultOk : true;
-                    if (isResultOk) {
-                        resolve(result);
-                    }
+        const timeoutFn = async (): Promise<void> => {
+            try {
+                const result = await handler();
+                const isResultOk = checkResult ? checkResult(result).isResultOk : true;
+                if (isResultOk) {
+                    resolve(result);
 
-                    checkTimes();
-                } catch (err) {
-                    const isErrorRetryable = checkError ? checkError(err).retryable : true;
-                    if (!isErrorRetryable) {
-                        reject(err);
-                    }
-
-                    checkTimes();
+                    return;
                 }
-            };
+                checkTimes();
+            } catch (err) {
+                const isErrorRetryable = checkError ? checkError(err).retryable : true;
+                if (!isErrorRetryable) {
+                    reject(err);
 
-            interval = setInterval(intervalFn, retryInterval);
-        });
-    } finally {
-        clearInterval(interval!);
-    }
+                    return;
+                }
+                checkTimes();
+            }
+        };
+
+        setTimeout(timeoutFn, retryInterval);
+    });
 };

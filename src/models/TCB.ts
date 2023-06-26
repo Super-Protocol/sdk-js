@@ -81,11 +81,11 @@ class TCB {
      * @param tcbId - TEE Offer's completed and valid TCB contract
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
-    public async claimRewards(tcbId: string, transactionOptions?: TransactionOptions): Promise<void> {
+    public async claimRewards(transactionOptions?: TransactionOptions): Promise<void> {
         const contract = this.checkInitTcb(transactionOptions);
         checkIfActionAccountInitialized();
 
-        await TxManager.execute(contract.methods.claimRewards, [tcbId], transactionOptions);
+        await TxManager.execute(contract.methods.claimRewards, [this.tcbId], transactionOptions);
     }
 
     /**
@@ -94,15 +94,11 @@ class TCB {
      * @param unlockAmount - amount of tokens to unlock, max available amount = TeeOffer.getLockInfo(tcbAddress)
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
-    public async unlockRewards(
-        tcbId: string,
-        unlockAmount: number,
-        transactionOptions?: TransactionOptions,
-    ): Promise<void> {
+    public async unlockRewards(transactionOptions?: TransactionOptions): Promise<void> {
         const contract = this.checkInitTcb(transactionOptions);
         checkIfActionAccountInitialized();
 
-        await TxManager.execute(contract.methods.unlockRewards, [tcbId, unlockAmount], transactionOptions);
+        await TxManager.execute(contract.methods.unlockTcbReward, [this.tcbId], transactionOptions);
     }
 
     /**
@@ -130,10 +126,10 @@ class TCB {
     }
 
     /**
-     * Function for fetching TCB status
+     * Function for fetching TCB avaliable reward
      */
-    public async getStatus(): Promise<TcbStatus> {
-        return this.contract.methods.getTcbStatus().call();
+    public async getRewardAmount(): Promise<string> {
+        return this.contract.methods.getTcbReward(this.tcbId).call();
     }
 }
 

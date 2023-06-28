@@ -39,6 +39,29 @@ class ActiveOrders {
 
         return await contract.methods.getListOfActiveOrdersRange(begin, end).call();
     }
+
+    /**
+     * Function returns ids of active orders by offers
+     * @returns {Promise<string[]>}
+     */
+    @incrementMethodCall()
+    public static async getActiveOrdersRangeByOffers(
+        offerIds: string[],
+        begin?: BigNumber | number,
+        end?: BigNumber | number,
+    ): Promise<string[]> {
+        const contract = BlockchainConnector.getInstance().getContract();
+        const response: string[] = [];
+
+        begin = begin ?? 0;
+        end = end ?? 999; // max active orders for one offer
+
+        for (const offerId in offerIds) {
+            response.push(await contract.methods.getOfferActiveOrdersRange(offerId, begin, end));
+        }
+
+        return response;
+    }
 }
 
 export default ActiveOrders;

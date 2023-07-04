@@ -3,7 +3,7 @@ import { formatBytes32String, parseBytes32String } from "ethers/lib/utils";
 import rootLogger from "../logger";
 import { checkIfActionAccountInitialized, incrementMethodCall, objectToTuple } from "../utils";
 import { OrderInfo, OrderInfoStructure, OrderInfoStructureArray, OrderStatus } from "../types/Order";
-import { BlockInfo, ContractEvent, TransactionOptions } from "../types/Web3";
+import { BlockInfo, ContractEvent, TransactionOptions, TxExecutionError } from "../types/Web3";
 import { OrderCreatedEvent } from "../types/Events";
 import Superpro from "./Superpro";
 import TxManager from "../utils/TxManager";
@@ -59,7 +59,8 @@ class Orders {
         deposit = "0",
         suspended = false,
         transactionOptions?: TransactionOptions,
-    ): Promise<void> {
+        checkTxBeforeSend?: boolean,
+    ): Promise<void | TxExecutionError> {
         const contract = BlockchainConnector.getInstance().getContract(transactionOptions);
         checkIfActionAccountInitialized(transactionOptions);
         const preparedInfo = {
@@ -67,6 +68,15 @@ class Orders {
             externalId: formatBytes32String(orderInfo.externalId),
         };
         const orderInfoArguments = objectToTuple(preparedInfo, OrderInfoStructure);
+
+        if (checkTxBeforeSend) {
+            const response = await TxManager.dryRun(
+                contract.methods.createOrder,
+                [orderInfoArguments, deposit, suspended],
+                transactionOptions,
+            );
+            if (!response.status) return response;
+        }
 
         await TxManager.execute(
             contract.methods.createOrder,
@@ -123,7 +133,8 @@ class Orders {
         subOrdersInfo: OrderInfo[],
         workflowDeposit = "0",
         transactionOptions?: TransactionOptions,
-    ): Promise<void> {
+        checkTxBeforeSend = true,
+    ): Promise<void | TxExecutionError> {
         const contract = BlockchainConnector.getInstance().getContract(transactionOptions);
         checkIfActionAccountInitialized(transactionOptions);
 
@@ -138,6 +149,15 @@ class Orders {
             externalId: formatBytes32String(o.externalId),
         }));
         const subOrdersInfoArgs = objectToTuple(preparedSubOrdersInfo, OrderInfoStructureArray);
+
+        if (checkTxBeforeSend) {
+            const response = await TxManager.dryRun(
+                contract.methods.createWorkflow,
+                [parentOrderInfoArgs, workflowDeposit, subOrdersInfoArgs],
+                transactionOptions,
+            );
+            if (!response.status) return response;
+        }
 
         await TxManager.execute(
             contract.methods.createWorkflow,

@@ -5,7 +5,7 @@ import { Transaction } from "web3-core";
 import appJSON from "../contracts/app.json";
 import store from "../store";
 import { checkIfActionAccountInitialized } from "../utils";
-import { TransactionOptions, ContractEvent, BlockInfo } from "../types/Web3";
+import { TransactionOptions, ContractEvent, BlockInfo, TxExecutionError } from "../types/Web3";
 import TxManager from "../utils/TxManager";
 
 class SuperproToken {
@@ -79,9 +79,15 @@ class SuperproToken {
         to: string,
         amount: string,
         transactionOptions?: TransactionOptions,
-    ): Promise<Transaction> {
+        checkTxBeforeSend = true,
+    ): Promise<Transaction | TxExecutionError> {
         const contract = this.checkInit(transactionOptions);
         checkIfActionAccountInitialized(transactionOptions);
+
+        if (checkTxBeforeSend) {
+            const response = await TxManager.dryRun(contract.methods.transfer, [to, amount], transactionOptions);
+            if (!response.status) return response;
+        }
 
         const receipt = await TxManager.execute(
             contract.methods.transfer,
@@ -103,9 +109,15 @@ class SuperproToken {
         address: string,
         amount: string,
         transactionOptions?: TransactionOptions,
-    ): Promise<void> {
+        checkTxBeforeSend = true,
+    ): Promise<void | TxExecutionError> {
         const contract = this.checkInit(transactionOptions);
         checkIfActionAccountInitialized(transactionOptions);
+
+        if (checkTxBeforeSend) {
+            const response = await TxManager.dryRun(contract.methods.approve, [address, amount], transactionOptions);
+            if (!response.status) return response;
+        }
 
         await TxManager.execute(
             contract.methods.approve,

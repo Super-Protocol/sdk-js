@@ -40,3 +40,8 @@ export type Transaction = {
     input: string;
     timestamp: number;
 };
+
+export type TxExecutionError = {
+    status: boolean;
+    errorMsg: string | null;
+};

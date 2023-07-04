@@ -11,11 +11,17 @@ import {
 } from "../types/Order";
 import { Contract } from "web3-eth-contract";
 import rootLogger from "../logger";
-import { ContractEvent, TransactionOptions } from "../types/Web3";
+import { ContractEvent, TransactionOptions, TxExecutionError } from "../types/Web3";
 import { AbiItem } from "web3-utils";
 import appJSON from "../contracts/app.json";
 import store from "../store";
-import { checkIfActionAccountInitialized, incrementMethodCall, objectToTuple, tupleToObject, unpackSlotInfo } from "../utils";
+import {
+    checkIfActionAccountInitialized,
+    incrementMethodCall,
+    objectToTuple,
+    tupleToObject,
+    unpackSlotInfo,
+} from "../utils";
 import { Origins, OriginsStructure } from "../types/Origins";
 import { formatBytes32String } from "ethers/lib/utils";
 import BlockchainConnector from "../connectors/BlockchainConnector";
@@ -357,7 +363,8 @@ class Order {
         blockParentOrder: boolean,
         deposit = "0",
         transactionOptions?: TransactionOptions,
-    ): Promise<void> {
+        checkTxBeforeSend = true,
+    ): Promise<void | TxExecutionError> {
         transactionOptions ?? this.checkInitOrder(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
@@ -370,6 +377,16 @@ class Order {
             blockParentOrder,
             deposit,
         };
+
+        if (checkTxBeforeSend) {
+            const response = await TxManager.dryRun(
+                Order.contract.methods.createSubOrder,
+                [this.id, tupleSubOrder, params],
+                transactionOptions,
+            );
+            if (!response.status) return response;
+        }
+
         await TxManager.execute(
             Order.contract.methods.createSubOrder,
             [this.id, tupleSubOrder, params],

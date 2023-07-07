@@ -3,7 +3,7 @@ import { ContractSendMethod } from "web3-eth-contract";
 import NonceTracker from "./NonceTracker";
 import rootLogger from "../logger";
 import store from "../store";
-import { TransactionOptions, TxExecutionError } from "../types/Web3";
+import { TransactionOptions, DryRunError } from "../types/Web3";
 import { checkForUsingExternalTxManager, checkIfActionAccountInitialized, createTransactionOptions } from "../utils";
 import Superpro from "../staticModels/Superpro";
 import { defaultGasLimit } from "../constants";
@@ -64,24 +64,19 @@ class TxManager {
         method: (...args: ArgumentsType) => MethodReturnType,
         args: ArgumentsType,
         transactionOptions?: TransactionOptions,
-    ): Promise<TxExecutionError> {
+    ): Promise<any> {
         const transaction = method(...args);
-
-        let status = false;
-        let errorMsg = null;
         const from = transactionOptions?.from ?? store.actionAccount;
+        let result;
 
         try {
-            await transaction.call({ from });
-            status = true;
-        } catch (e) {
-            errorMsg = (e as EvmError).data.message || "Error text is undefined";
-        }
+            result = await transaction.call({ from });
 
-        return {
-            status,
-            errorMsg,
-        };
+            return result;
+        } catch (e) {
+            (e as DryRunError).txErrorMsg = (e as EvmError).data.message || "Error text is undefined";
+            throw e;
+        }
     }
 
     public static async publishTransaction(

@@ -41,7 +41,6 @@ export type Transaction = {
     timestamp: number;
 };
 
-export type TxExecutionError = {
-    status: boolean;
-    errorMsg: string | null;
+export type DryRunError = Error & {
+    txErrorMsg: string | null;
 };

@@ -11,7 +11,7 @@ import {
 } from "../types/Order";
 import { Contract } from "web3-eth-contract";
 import rootLogger from "../logger";
-import { ContractEvent, TransactionOptions, TxExecutionError } from "../types/Web3";
+import { ContractEvent, TransactionOptions } from "../types/Web3";
 import { AbiItem } from "web3-utils";
 import appJSON from "../contracts/app.json";
 import store from "../store";
@@ -363,8 +363,8 @@ class Order {
         blockParentOrder: boolean,
         deposit = "0",
         transactionOptions?: TransactionOptions,
-        checkTxBeforeSend = true,
-    ): Promise<void | TxExecutionError> {
+        checkTxBeforeSend = false,
+    ): Promise<void> {
         transactionOptions ?? this.checkInitOrder(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
@@ -379,12 +379,11 @@ class Order {
         };
 
         if (checkTxBeforeSend) {
-            const response = await TxManager.dryRun(
+            await TxManager.dryRun(
                 Order.contract.methods.createSubOrder,
                 [this.id, tupleSubOrder, params],
                 transactionOptions,
             );
-            if (!response.status) return response;
         }
 
         await TxManager.execute(

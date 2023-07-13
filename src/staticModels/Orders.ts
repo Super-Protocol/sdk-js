@@ -59,6 +59,7 @@ class Orders {
         deposit = "0",
         suspended = false,
         transactionOptions?: TransactionOptions,
+        checkTxBeforeSend = false,
     ): Promise<void> {
         const contract = BlockchainConnector.getInstance().getContract(transactionOptions);
         checkIfActionAccountInitialized(transactionOptions);
@@ -67,6 +68,14 @@ class Orders {
             externalId: formatBytes32String(orderInfo.externalId),
         };
         const orderInfoArguments = objectToTuple(preparedInfo, OrderInfoStructure);
+
+        if (checkTxBeforeSend) {
+            await TxManager.dryRun(
+                contract.methods.createOrder,
+                [orderInfoArguments, deposit, suspended],
+                transactionOptions,
+            );
+        }
 
         await TxManager.execute(
             contract.methods.createOrder,
@@ -123,6 +132,7 @@ class Orders {
         subOrdersInfo: OrderInfo[],
         workflowDeposit = "0",
         transactionOptions?: TransactionOptions,
+        checkTxBeforeSend = false,
     ): Promise<void> {
         const contract = BlockchainConnector.getInstance().getContract(transactionOptions);
         checkIfActionAccountInitialized(transactionOptions);
@@ -138,6 +148,14 @@ class Orders {
             externalId: formatBytes32String(o.externalId),
         }));
         const subOrdersInfoArgs = objectToTuple(preparedSubOrdersInfo, OrderInfoStructureArray);
+
+        if (checkTxBeforeSend) {
+            await TxManager.dryRun(
+                contract.methods.createWorkflow,
+                [parentOrderInfoArgs, workflowDeposit, subOrdersInfoArgs],
+                transactionOptions,
+            );
+        }
 
         await TxManager.execute(
             contract.methods.createWorkflow,

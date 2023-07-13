@@ -40,3 +40,7 @@ export type Transaction = {
     input: string;
     timestamp: number;
 };
+
+export type DryRunError = Error & {
+    txErrorMsg: string | null;
+};

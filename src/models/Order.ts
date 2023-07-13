@@ -15,7 +15,13 @@ import { ContractEvent, TransactionOptions } from "../types/Web3";
 import { AbiItem } from "web3-utils";
 import appJSON from "../contracts/app.json";
 import store from "../store";
-import { checkIfActionAccountInitialized, incrementMethodCall, objectToTuple, tupleToObject, unpackSlotInfo } from "../utils";
+import {
+    checkIfActionAccountInitialized,
+    incrementMethodCall,
+    objectToTuple,
+    tupleToObject,
+    unpackSlotInfo,
+} from "../utils";
 import { Origins, OriginsStructure } from "../types/Origins";
 import { formatBytes32String } from "ethers/lib/utils";
 import BlockchainConnector from "../connectors/BlockchainConnector";
@@ -68,6 +74,15 @@ class Order {
      */
     public async isOrderProcessing(): Promise<boolean> {
         return await Order.contract.methods.isOrderProcessing(this.id).call();
+    }
+
+    /**
+     * Function for fetching avaliable for unlock order profit.
+     */
+    public async isOrderProfitAvailable(): Promise<string> {
+        const [, profit] = await Order.contract.methods.isOrderProfitAvailable(this.id).call();
+
+        return profit;
     }
 
     /**
@@ -348,6 +363,7 @@ class Order {
         blockParentOrder: boolean,
         deposit = "0",
         transactionOptions?: TransactionOptions,
+        checkTxBeforeSend = false,
     ): Promise<void> {
         transactionOptions ?? this.checkInitOrder(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
@@ -361,6 +377,15 @@ class Order {
             blockParentOrder,
             deposit,
         };
+
+        if (checkTxBeforeSend) {
+            await TxManager.dryRun(
+                Order.contract.methods.createSubOrder,
+                [this.id, tupleSubOrder, params],
+                transactionOptions,
+            );
+        }
+
         await TxManager.execute(
             Order.contract.methods.createSubOrder,
             [this.id, tupleSubOrder, params],

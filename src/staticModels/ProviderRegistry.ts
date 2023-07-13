@@ -45,6 +45,24 @@ class ProviderRegistry {
     }
 
     /**
+     * Refills security provider deposit
+     * Call this function with provider authority account (in transactionOptions)
+     * @param amount - amount of additional tokens
+     * @param recipient - target provider authority address
+     * @param transactionOptions - object what contains alternative action account or gas limit (optional)
+     */
+    public static async refillSecurityDepositFor(
+        amount: string,
+        recipient: string,
+        transactionOptions?: TransactionOptions,
+    ): Promise<void> {
+        const contract = BlockchainConnector.getInstance().getContract(transactionOptions);
+        checkIfActionAccountInitialized(transactionOptions);
+
+        await TxManager.execute(contract.methods.refillProviderSecurityDepo, [amount, recipient], transactionOptions);
+    }
+
+    /**
      * Reg new provider
      * @param providerInfo - data of new provider
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)

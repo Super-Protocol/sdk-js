@@ -1648,7 +1648,7 @@
                 },
                 {
                   "internalType": "bool",
-                  "name": "assignedToEpoch_DEPRICATED",
+                  "name": "assignedToEpoch_DEPRECATED",
                   "type": "bool"
                 },
                 {
@@ -9587,7 +9587,7 @@
                 },
                 {
                   "internalType": "bool",
-                  "name": "assignedToEpoch_DEPRICATED",
+                  "name": "assignedToEpoch_DEPRECATED",
                   "type": "bool"
                 },
                 {

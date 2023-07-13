@@ -4276,6 +4276,16 @@
               "internalType": "bytes32",
               "name": "externalId",
               "type": "bytes32"
+            },
+            {
+              "internalType": "uint256",
+              "name": "expectedPrice",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "maxPriceSlippage",
+              "type": "uint256"
             }
           ],
           "internalType": "struct OrderInfo",
@@ -4386,6 +4396,16 @@
               "internalType": "bytes32",
               "name": "externalId",
               "type": "bytes32"
+            },
+            {
+              "internalType": "uint256",
+              "name": "expectedPrice",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "maxPriceSlippage",
+              "type": "uint256"
             }
           ],
           "internalType": "struct OrderInfo",
@@ -4496,6 +4516,16 @@
               "internalType": "bytes32",
               "name": "externalId",
               "type": "bytes32"
+            },
+            {
+              "internalType": "uint256",
+              "name": "expectedPrice",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "maxPriceSlippage",
+              "type": "uint256"
             }
           ],
           "internalType": "struct OrderInfo",
@@ -4618,6 +4648,16 @@
               "internalType": "bytes32",
               "name": "externalId",
               "type": "bytes32"
+            },
+            {
+              "internalType": "uint256",
+              "name": "expectedPrice",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "maxPriceSlippage",
+              "type": "uint256"
             }
           ],
           "internalType": "struct OrderInfo",
@@ -5361,6 +5401,16 @@
               "internalType": "bytes32",
               "name": "externalId",
               "type": "bytes32"
+            },
+            {
+              "internalType": "uint256",
+              "name": "expectedPrice",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "maxPriceSlippage",
+              "type": "uint256"
             }
           ],
           "internalType": "struct OrderInfo",
@@ -8390,6 +8440,16 @@
               "internalType": "bytes32",
               "name": "externalId",
               "type": "bytes32"
+            },
+            {
+              "internalType": "uint256",
+              "name": "expectedPrice",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "maxPriceSlippage",
+              "type": "uint256"
             }
           ],
           "internalType": "struct OrderInfo",
@@ -8476,6 +8536,16 @@
               "internalType": "bytes32",
               "name": "externalId",
               "type": "bytes32"
+            },
+            {
+              "internalType": "uint256",
+              "name": "expectedPrice",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "maxPriceSlippage",
+              "type": "uint256"
             }
           ],
           "internalType": "struct OrderInfo[]",
@@ -10406,6 +10476,16 @@
               "internalType": "bytes32",
               "name": "externalId",
               "type": "bytes32"
+            },
+            {
+              "internalType": "uint256",
+              "name": "expectedPrice",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "maxPriceSlippage",
+              "type": "uint256"
             }
           ],
           "internalType": "struct OrderInfo",
@@ -10521,6 +10601,16 @@
               "internalType": "bytes32",
               "name": "externalId",
               "type": "bytes32"
+            },
+            {
+              "internalType": "uint256",
+              "name": "expectedPrice",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "maxPriceSlippage",
+              "type": "uint256"
             }
           ],
           "internalType": "struct OrderInfo",
@@ -10646,6 +10736,16 @@
               "internalType": "bytes32",
               "name": "externalId",
               "type": "bytes32"
+            },
+            {
+              "internalType": "uint256",
+              "name": "expectedPrice",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "maxPriceSlippage",
+              "type": "uint256"
             }
           ],
           "internalType": "struct OrderInfo",
@@ -10902,6 +11002,16 @@
               "internalType": "bytes32",
               "name": "externalId",
               "type": "bytes32"
+            },
+            {
+              "internalType": "uint256",
+              "name": "expectedPrice",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "maxPriceSlippage",
+              "type": "uint256"
             }
           ],
           "internalType": "struct OrderInfo",

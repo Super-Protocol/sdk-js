@@ -142,6 +142,11 @@ class TeeOffer {
      * @returns {Promise<TeeOfferOption[]>}
      */
     public async getOptions(begin = 0, end = 999999): Promise<TeeOfferOption[]> {
+        const optionsCount = +(await TeeOffer.contract.methods.getTeeOfferOptionsCount(this.id).call());
+        if (optionsCount === 0) {
+            return [];
+        }
+
         const teeOfferOption = await TeeOffer.contract.methods.getTeeOfferOptions(this.id, begin, end).call();
 
         return tupleToObjectsArray(teeOfferOption, TeeOfferOptionStructure);
@@ -258,6 +263,11 @@ class TeeOffer {
      * @returns {Promise<TeeOfferSlot[]>}
      */
     public async getSlots(begin = 0, end = 999999): Promise<TeeOfferSlot[]> {
+        const teeOfferSlotsCount = +(await TeeOffer.contract.methods.getTeeOfferSlotsCount(this.id).call());
+        if (teeOfferSlotsCount === 0) {
+            return [];
+        }
+
         let slots = await TeeOffer.contract.methods.getTeeOfferSlots(this.id, begin, end).call();
         slots = tupleToObjectsArray(slots, TeeOfferSlotStructure);
         for (let slot of slots) {

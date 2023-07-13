@@ -56,6 +56,33 @@ class Consensus {
         await TxManager.execute(contract.methods.initializeTcb, [teeOfferId], transactionOptions);
     }
 
+    public static async unlockProfitByTcbList(
+        tcbIds: string[],
+        transactionOptions?: TransactionOptions,
+    ): Promise<void> {
+        const contract = BlockchainConnector.getInstance().getContract(transactionOptions);
+        checkIfActionAccountInitialized(transactionOptions);
+
+        let executedCount;
+        try {
+            executedCount = +(await TxManager.dryRun(
+                contract.methods.unlockTcbRewardByList,
+                [tcbIds],
+                transactionOptions,
+            ));
+        } catch (e) {
+            executedCount = 0;
+        }
+
+        if (executedCount === tcbIds.length) {
+            await TxManager.execute(contract.methods.unlockTcbRewardByList, [tcbIds], transactionOptions);
+        } else {
+            for (const tcbId of tcbIds) {
+                await new TCB(tcbId).unlockRewards();
+            }
+        }
+    }
+
     public static async isTcbCreationAvailable(teeOfferId: string): Promise<boolean> {
         const contract = BlockchainConnector.getInstance().getContract();
         const [offerNotBlocked, newEpochStarted, halfEpochPassed, benchmarkVerified] = await contract.methods
@@ -287,10 +314,35 @@ class Consensus {
 
         return () => subscription.unsubscribe();
     }
+
+    public static onTcbRewardUnlocked(callback: onTcbRewardUnlockedCallback): () => void {
+        const contract = BlockchainEventsListener.getInstance().getContract();
+        const logger = this.logger.child({ method: "onTcbRewardUnlocked" });
+
+        const subscription = contract.events
+            .TcbRewardUnlocked()
+            .on("data", async (event: ContractEvent) => {
+                callback(
+                    <string>event.returnValues.tcbId,
+                    <string>event.returnValues.rewards,
+                    <BlockInfo>{
+                        index: <number>event.blockNumber,
+                        hash: <string>event.blockHash,
+                    },
+                );
+            })
+            .on("error", (error: Error, receipt: string) => {
+                if (receipt) return; // Used to avoid logging of transaction rejected
+                logger.warn(error);
+            });
+
+        return () => subscription.unsubscribe();
+    }
 }
 
 export type onRewardsClaimedCallback = (tcbId: string, amount: string, claimer: string, block?: BlockInfo) => void;
 export type onTcbBenchmarkChangedCallback = (tcbId: string, provider: string, block?: BlockInfo) => void;
+export type onTcbRewardUnlockedCallback = (tcbId: string, rewards: string, block?: BlockInfo) => void;
 export type onTcbInitializedCallback = (tcbId: string, provider: string, block?: BlockInfo) => void;
 export type onTcbCompletedCallback = (tcbId: string, provider: string, block?: BlockInfo) => void;
 export type onTcbBannedCallback = (tcbId: string, provider: string, block?: BlockInfo) => void;

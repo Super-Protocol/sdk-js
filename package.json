@@ -1,6 +1,6 @@
 {
   "name": "@super-protocol/sdk-js",
-  "version": "0.14.0-beta.0",
+  "version": "0.15.0-beta.0",
   "main": "build/index.js",
   "license": "MIT",
   "files": [
@@ -54,7 +54,7 @@
   "dependencies": {
     "@super-protocol/dto-js": "0.0.24",
     "@super-protocol/tee-lib": "^0.1.2",
-    "@super-protocol/uplink-nodejs": "1.2.12",
+    "@super-protocol/uplink-nodejs": "1.2.16",
     "ethers": "^5.5.3",
     "hybrid-crypto-js": "^0.2.4",
     "lodash": "^4.17.21",

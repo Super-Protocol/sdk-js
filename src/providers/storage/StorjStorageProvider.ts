@@ -19,8 +19,9 @@ export default class StorJStorageProvider implements IStorageProvider {
     private _access?: Access;
     private _project?: Project;
     private _storj?: any;
+    private maximumConcurrent?: number
 
-    constructor(credentials: any) {
+    constructor(credentials: any, maximumConcurrent?: number) {
         if (!isNodeJS()) {
             throw Error("StorageProvider: StorJ is supported only in the node.js execution environment");
         }
@@ -37,6 +38,7 @@ export default class StorJStorageProvider implements IStorageProvider {
         }
 
         this.accessToken = credentials.token;
+        this.maximumConcurrent = maximumConcurrent;
     }
 
     async uploadFile(
@@ -172,7 +174,7 @@ export default class StorJStorageProvider implements IStorageProvider {
     private async lazyProject(): Promise<Project> {
         if (!this._project) {
             const access = await this.lazyAccess();
-            this._project = await access.openProject();
+            this._project = await access.openProject(this.maximumConcurrent);
         }
 
         return this._project;

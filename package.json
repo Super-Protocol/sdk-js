@@ -64,5 +64,8 @@
     "web3": "^1.7.1",
     "web3-parse-receipt-events": "^1.0.2"
   },
-  "repository": "git://github.com/Super-Protocol/sdk-js.git"
+  "repository": "git://github.com/Super-Protocol/sdk-js.git",
+  "resolutions": {
+    "wrap-ansi": "7.0.0"
+  }
 }

@@ -7,6 +7,7 @@ import Crypto from "./crypto";
 import Offer from "./models/Offer";
 import Order from "./models/Order";
 import TeeOffer from "./models/TeeOffer";
+import TCB from "./models/TCB";
 import { OrderInfo } from "./types/Order";
 import { OfferInfo } from "./types/Offer";
 import {
@@ -23,7 +24,6 @@ import {
     UrlResource,
 } from "@super-protocol/dto-js";
 import { TLBlockSerializerV1, TLBlockUnserializeResultType } from "@super-protocol/tee-lib";
-import { TeeOfferInfo } from "./types/TeeOfferInfo";
 
 class TIIGenerator {
     public static async generateByOffer(
@@ -35,7 +35,14 @@ class TIIGenerator {
         encryption: Encryption,
     ): Promise<string> {
         const teeOffer: TeeOffer = new TeeOffer(offerId);
-        const teeOfferInfo: TeeOfferInfo = await teeOffer.getInfo();
+        const teeOfferInfo = await teeOffer.getInfo();
+        const tcbId = await teeOffer.getActualTcbId();
+
+        if (tcbId === "0") {
+            throw Error("Tee offer isn't avaliable before added TCB");
+        }
+
+        const tcb = await new TCB(tcbId).get();
 
         const linkage: Linkage = linkageString
             ? JSON.parse(linkageString)
@@ -44,9 +51,8 @@ class TIIGenerator {
                   mrenclave: "",
               };
 
-        // TODO: get real tlb
         const tlb: TLBlockUnserializeResultType = new TLBlockSerializerV1().unserializeTlb(
-            Buffer.from(teeOfferInfo.tlb, "base64"),
+            Buffer.from(tcb.quote, "base64"),
         );
 
         // TODO: check env with SP-149
@@ -155,6 +161,7 @@ class TIIGenerator {
         }
 
         const decoded = TRI.decode(decompressed);
+
         return {
             solutionHashes: decoded.solutionHashes.map((hash) => ({
                 hash: Buffer.from(hash.hash).toString(Encoding.base64),
@@ -179,6 +186,7 @@ class TIIGenerator {
 
     public static async getUrl(tii: string, decryptionKey: Buffer): Promise<string> {
         const res = await TIIGenerator.getResource<UrlResource>(tii, decryptionKey);
+
         return res.url;
     }
 
@@ -186,6 +194,7 @@ class TIIGenerator {
         const encryptedResource = JSON.parse(tii).encryptedResource as Encryption;
         encryptedResource.key = decryptionKey.toString(encryptedResource.encoding);
         const resource: string = await Crypto.decrypt(encryptedResource);
+
         return JSON.parse(resource) as T;
     }
 }

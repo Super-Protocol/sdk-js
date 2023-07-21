@@ -53,6 +53,7 @@ export class S3StorageProvider implements IStorageProvider {
                 Body: inputStream,
                 Bucket: this.bucket,
                 Key: remotePath,
+                ContentLength: contentLength,
             })
             .on("httpUploadProgress", ({ total, loaded }) => progressListener?.(total, loaded))
             .promise();

@@ -83,6 +83,5 @@ export { default as StorageAccess } from "./types/storage/StorageAccess";
 
 export { default as getStorageProvider } from "./providers/storage/getStorageProvider";
 export { default as IStorageProvider } from "./providers/storage/IStorageProvider";
-export * from "./providers/storage/StorjS3StorageProvider";
 
 export * as helpers from "./utils/helpers";

@@ -2,13 +2,14 @@ export interface TryWithIntervalParams<T> {
     handler: () => Promise<T>;
     checkResult?: (result: T) => { isResultOk: boolean };
     checkError?: (err: unknown) => { retryable: boolean };
+    startDelay?: number;
     retryInterval: number;
     retryMax: number;
 }
 
 export const tryWithInterval = async <T>(params: TryWithIntervalParams<T>): Promise<T> => {
     let checkedTimes = 0;
-    const { handler, checkResult, checkError, retryInterval, retryMax } = params;
+    const { handler, checkResult, checkError, startDelay = 0, retryInterval, retryMax } = params;
 
     return await new Promise((resolve, reject) => {
         const checkTimes = (): void => {
@@ -41,6 +42,6 @@ export const tryWithInterval = async <T>(params: TryWithIntervalParams<T>): Prom
             }
         };
 
-        setTimeout(timeoutFn, retryInterval);
+        setTimeout(timeoutFn, startDelay);
     });
 };

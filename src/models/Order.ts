@@ -29,6 +29,8 @@ import Superpro from "../staticModels/Superpro";
 import TxManager from "../utils/TxManager";
 import BlockchainEventsListener from "../connectors/BlockchainEventsListener";
 import TeeOffers from "../staticModels/TeeOffers";
+import { tryWithInterval } from "../utils/helpers";
+import { BLOCKCHAIN_CALL_RETRY_INTERVAL, BLOCKCHAIN_CALL_RETRY_ATTEMPTS } from "../constants";
 
 class Order {
     private static contract: Contract;
@@ -97,12 +99,27 @@ class Order {
      */
     @incrementMethodCall()
     public async getOrderInfo(): Promise<OrderInfo> {
-        if (!(await this.isExist())) {
+        if (!(await this.checkIfOrderExistsWithInterval())) {
             throw Error(`Order ${this.id} does not exist`);
         }
         const orderInfoParams = await Order.contract.methods.getOrder(this.id).call();
 
         return (this.orderInfo = tupleToObject(orderInfoParams[1], OrderInfoStructure));
+    }
+
+    private async checkIfOrderExistsWithInterval(): Promise<boolean> {
+        const offerExists = await tryWithInterval({
+            handler: () => this.isExist(),
+            checkResult: (exists) => {
+                if (!exists) this.logger.debug(`Order ${this.id} exists: ${exists}`);
+
+                return { isResultOk: exists };
+            },
+            retryInterval: BLOCKCHAIN_CALL_RETRY_INTERVAL,
+            retryMax: BLOCKCHAIN_CALL_RETRY_ATTEMPTS,
+        });
+
+        return offerExists;
     }
 
     @incrementMethodCall()

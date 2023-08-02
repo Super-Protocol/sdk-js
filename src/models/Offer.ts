@@ -23,6 +23,8 @@ import { OptionInfo, OptionInfoStructure } from "../types/OptionInfo";
 import { SlotUsage, SlotUsageStructure } from "../types/SlotUsage";
 import { formatBytes32String } from "ethers/lib/utils";
 import TeeOffers from "../staticModels/TeeOffers";
+import { tryWithInterval } from "../utils/helpers";
+import { BLOCKCHAIN_CALL_RETRY_INTERVAL, BLOCKCHAIN_CALL_RETRY_ATTEMPTS } from "../constants";
 
 class Offer {
     private static contract: Contract;
@@ -111,6 +113,9 @@ class Offer {
      */
     @incrementMethodCall()
     public async getInfo(): Promise<OfferInfo> {
+        if (!(await this.checkIfOfferExistsWithInterval())) {
+            throw Error(`Offer ${this.id} does not exist`);
+        }
         const [, , offerInfoParams] = await Offer.contract.methods.getValueOffer(this.id).call();
 
         this.offerInfo = tupleToObject(offerInfoParams, OfferInfoStructure);
@@ -186,6 +191,21 @@ class Offer {
     @incrementMethodCall()
     public async isOfferExists(): Promise<boolean> {
         return await Offer.contract.methods.isOfferExists(this.id).call();
+    }
+
+    private async checkIfOfferExistsWithInterval(): Promise<boolean> {
+        const offerExists = await tryWithInterval({
+            handler: () => this.isOfferExists(),
+            checkResult: (exists) => {
+                if (!exists) this.logger.debug(`Offer ${this.id} exists: ${exists}`);
+
+                return { isResultOk: exists };
+            },
+            retryInterval: BLOCKCHAIN_CALL_RETRY_INTERVAL,
+            retryMax: BLOCKCHAIN_CALL_RETRY_ATTEMPTS,
+        });
+
+        return offerExists;
     }
 
     /**

@@ -242,6 +242,11 @@ class Offer {
      * @returns {Promise<ValueOfferSlot[]>}
      */
     public async getSlots(begin = 0, end = 999999): Promise<ValueOfferSlot[]> {
+        const slotsCount = +(await Offer.contract.methods.getValueOfferSlotsCount(this.id).call());
+        if (slotsCount === 0) {
+            return [];
+        }
+
         let slots = await Offer.contract.methods.getValueOfferSlots(this.id, begin, end).call();
         slots = tupleToObjectsArray(slots, ValueOfferSlotStructure);
         for (let slot of slots) {

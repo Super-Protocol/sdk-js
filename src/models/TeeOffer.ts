@@ -26,6 +26,8 @@ import { SlotUsage, SlotUsageStructure } from "../types/SlotUsage";
 import { formatBytes32String } from "ethers/lib/utils";
 import { SlotInfo, SlotInfoStructure } from "../types/SlotInfo";
 import TeeOffers from "../staticModels/TeeOffers";
+import TCB from "../models/TCB";
+import { TeeConfirmationBlock, GetTcbRequest } from "@super-protocol/dto-js";
 
 class TeeOffer {
     private static contract: Contract;
@@ -142,6 +144,11 @@ class TeeOffer {
      * @returns {Promise<TeeOfferOption[]>}
      */
     public async getOptions(begin = 0, end = 999999): Promise<TeeOfferOption[]> {
+        const optionsCount = +(await TeeOffer.contract.methods.getTeeOfferOptionsCount(this.id).call());
+        if (optionsCount === 0) {
+            return [];
+        }
+
         const teeOfferOption = await TeeOffer.contract.methods.getTeeOfferOptions(this.id, begin, end).call();
 
         return tupleToObjectsArray(teeOfferOption, TeeOfferOptionStructure);
@@ -231,6 +238,60 @@ class TeeOffer {
         await TxManager.execute(contract.methods.deleteOption, [this.id, optionId], transactionOptions);
     }
 
+    @incrementMethodCall()
+    public async initializeTcb(transactionOptions?: TransactionOptions): Promise<void> {
+        const contract = BlockchainConnector.getInstance().getContract();
+        checkIfActionAccountInitialized();
+
+        await TxManager.execute(contract.methods.initializeTcb, [this.id], transactionOptions);
+    }
+
+    @incrementMethodCall()
+    private async initializeTcbAndAssignBlocks(transactionOptions?: TransactionOptions): Promise<TCB> {
+        await this.initializeTcb(transactionOptions);
+        const tcbId = await this.getInitializedTcbId();
+        const tcb = new TCB(tcbId);
+
+        await tcb.assignLastBlocksToCheck(transactionOptions);
+        await tcb.assignSuspiciousBlocksToCheck(transactionOptions);
+
+        return tcb;
+    }
+
+    /**
+     * Function initialize TCB and returns list of anothers' TCB for their checking
+     * @param teeOfferId - id of TEE offer
+     * @param transactionOptions - object what contains alternative action account or gas limit (optional)
+     * @returns tcbId and lists of anothers' TCB for their checking
+     */
+    @incrementMethodCall()
+    public async getListsForVerification(transactionOptions?: TransactionOptions): Promise<GetTcbRequest> {
+        checkIfActionAccountInitialized();
+
+        const tcb = await this.initializeTcbAndAssignBlocks(transactionOptions);
+        const { blocksIds } = await tcb.getCheckingBlocksMarks();
+        const tcbsForVerification: TeeConfirmationBlock[] = [];
+
+        for (let blockIndex = 0; blockIndex < blocksIds.length; blockIndex++) {
+            const tcb = new TCB(blocksIds[blockIndex]);
+            const tcbInfo = await tcb.get();
+            tcbsForVerification.push({
+                tcbId: blocksIds[blockIndex].toString(),
+                deviceId: tcbInfo.publicData.deviceID,
+                properties: tcbInfo.publicData.properties,
+                benchmark: tcbInfo.publicData.benchmark,
+                quote: tcbInfo.quote,
+                marks: tcbInfo.utilData.checkingBlockMarks,
+                checkingBlocks: tcbInfo.utilData.checkingBlocks,
+            });
+        }
+
+        return {
+            tcbId: tcb.tcbId,
+            tcbsForVerification,
+        };
+    }
+
     /**
      * Function for fetching whether tee offer slot exists or not
      * @param slotId - Slot ID
@@ -258,6 +319,11 @@ class TeeOffer {
      * @returns {Promise<TeeOfferSlot[]>}
      */
     public async getSlots(begin = 0, end = 999999): Promise<TeeOfferSlot[]> {
+        const teeOfferSlotsCount = +(await TeeOffer.contract.methods.getTeeOfferSlotsCount(this.id).call());
+        if (teeOfferSlotsCount === 0) {
+            return [];
+        }
+
         let slots = await TeeOffer.contract.methods.getTeeOfferSlots(this.id, begin, end).call();
         slots = tupleToObjectsArray(slots, TeeOfferSlotStructure);
         for (let slot of slots) {
@@ -335,6 +401,30 @@ class TeeOffer {
     }
 
     /**
+     * @param teeOfferId - TEE offer ID
+     * @returns {Promise<string>} - Actual TCB ID
+     */
+    public async getActualTcbId(): Promise<string> {
+        return TeeOffer.contract.methods.getActualTcbId(this.id).call();
+    }
+
+    /**
+     * Function return last inited TCB of TEE offer
+     * @param teeOfferId - id of TEE offer
+     * */
+    public async getInitializedTcbId(): Promise<string> {
+        return TeeOffer.contract.methods.getInitializedTcbId(this.id).call();
+    }
+
+    public async isTcbCreationAvailable(): Promise<boolean> {
+        const [offerNotBlocked, newEpochStarted, halfEpochPassed, benchmarkVerified] = await TeeOffer.contract.methods
+            .isTcbCreationAvailable(this.id)
+            .call();
+
+        return offerNotBlocked && newEpochStarted && halfEpochPassed && benchmarkVerified;
+    }
+
+    /**
      * Function for fetching TEE offer provider authority account from blockchain
      */
     @incrementMethodCall()
@@ -370,41 +460,12 @@ class TeeOffer {
     }
 
     /**
-     * Function for fetching last TLB addition time for this TEE offer
-     */
-    public async getLastTlbAddedTime(): Promise<number> {
-        this.tlbAddedTime = await TeeOffer.contract.methods.getTeeOfferLastTlbAddedTime().call();
-
-        return this.tlbAddedTime!;
-    }
-
-    /**
-     * Function for fetching last TCB addition time for this TEE offer
-     */
-    public async getLastTcbAddedTime(): Promise<number> {
-        // this.tcbAddedTime = await TeeOffer.contract.methods.getLastTcbAddedTime().call();
-        // return this.tcbAddedTime!;
-        // TODO: stub
-        return 0;
-    }
-
-    /**
      * Function for fetching violationRate for this TEE offer
      */
     public async getViolationRate(): Promise<number> {
         this.violationRate = await TeeOffer.contract.methods.getTeeOfferViolationRate(this.id).call();
 
         return this.violationRate!;
-    }
-
-    /**
-     * Function for fetching amount of total locked tokens
-     */
-    public async getTotalLocked(): Promise<number> {
-        // this.totalLocked = await TeeOffer.contract.methods.getTotalLocked().call();
-        // return this.totalLocked!;
-        // TODO: stub
-        return 0;
     }
 
     /**

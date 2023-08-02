@@ -41,6 +41,8 @@ export const OrderInfoStructure = {
     args: OrderArgsStructure,
     slots: OrderSlotsStructure,
     externalId: parseBytes32String,
+    expectedPrice: String,
+    maxPriceSlippage: String,
 };
 
 // Array of order info structures
@@ -62,6 +64,8 @@ export type OrderInfo = {
     args: OrderArgs;
     slots: OrderSlots;
     externalId: string;
+    expectedPrice: string;
+    maxPriceSlippage: string;
 };
 
 export type ExtendedOrderInfo = OrderInfo & {

@@ -79,9 +79,14 @@ class SuperproToken {
         to: string,
         amount: string,
         transactionOptions?: TransactionOptions,
+        checkTxBeforeSend = false,
     ): Promise<Transaction> {
         const contract = this.checkInit(transactionOptions);
         checkIfActionAccountInitialized(transactionOptions);
+
+        if (checkTxBeforeSend) {
+            TxManager.dryRun(contract.methods.transfer, [to, amount], transactionOptions);
+        }
 
         const receipt = await TxManager.execute(
             contract.methods.transfer,
@@ -103,9 +108,14 @@ class SuperproToken {
         address: string,
         amount: string,
         transactionOptions?: TransactionOptions,
+        checkTxBeforeSend = false,
     ): Promise<void> {
         const contract = this.checkInit(transactionOptions);
         checkIfActionAccountInitialized(transactionOptions);
+
+        if (checkTxBeforeSend) {
+            await TxManager.dryRun(contract.methods.approve, [address, amount], transactionOptions);
+        }
 
         await TxManager.execute(
             contract.methods.approve,

@@ -9,6 +9,7 @@ import Superpro from "./Superpro";
 import TxManager from "../utils/TxManager";
 import BlockchainConnector from "../connectors/BlockchainConnector";
 import BlockchainEventsListener from "../connectors/BlockchainEventsListener";
+import Order from "../models/Order";
 
 class Orders {
     private static readonly logger = rootLogger.child({ className: "Orders" });
@@ -59,6 +60,7 @@ class Orders {
         deposit = "0",
         suspended = false,
         transactionOptions?: TransactionOptions,
+        checkTxBeforeSend = false,
     ): Promise<void> {
         const contract = BlockchainConnector.getInstance().getContract(transactionOptions);
         checkIfActionAccountInitialized(transactionOptions);
@@ -67,6 +69,14 @@ class Orders {
             externalId: formatBytes32String(orderInfo.externalId),
         };
         const orderInfoArguments = objectToTuple(preparedInfo, OrderInfoStructure);
+
+        if (checkTxBeforeSend) {
+            await TxManager.dryRun(
+                contract.methods.createOrder,
+                [orderInfoArguments, deposit, suspended],
+                transactionOptions,
+            );
+        }
 
         await TxManager.execute(
             contract.methods.createOrder,
@@ -123,6 +133,7 @@ class Orders {
         subOrdersInfo: OrderInfo[],
         workflowDeposit = "0",
         transactionOptions?: TransactionOptions,
+        checkTxBeforeSend = false,
     ): Promise<void> {
         const contract = BlockchainConnector.getInstance().getContract(transactionOptions);
         checkIfActionAccountInitialized(transactionOptions);
@@ -138,6 +149,14 @@ class Orders {
             externalId: formatBytes32String(o.externalId),
         }));
         const subOrdersInfoArgs = objectToTuple(preparedSubOrdersInfo, OrderInfoStructureArray);
+
+        if (checkTxBeforeSend) {
+            await TxManager.dryRun(
+                contract.methods.createWorkflow,
+                [parentOrderInfoArgs, workflowDeposit, subOrdersInfoArgs],
+                transactionOptions,
+            );
+        }
 
         await TxManager.execute(
             contract.methods.createWorkflow,
@@ -184,6 +203,33 @@ class Orders {
         checkIfActionAccountInitialized(transactionOptions);
 
         await TxManager.execute(contract.methods.refillOrder, [orderId, amount], transactionOptions);
+    }
+
+    public static async unlockProfitByOrderList(
+        orderIds: string[],
+        transactionOptions?: TransactionOptions,
+    ): Promise<void> {
+        const contract = BlockchainConnector.getInstance().getContract(transactionOptions);
+        checkIfActionAccountInitialized(transactionOptions);
+
+        let executedCount;
+        try {
+            executedCount = +(await TxManager.dryRun(
+                contract.methods.unlockProfitByList,
+                [orderIds],
+                transactionOptions,
+            ));
+        } catch (e) {
+            executedCount = 0;
+        }
+
+        if (executedCount === orderIds.length) {
+            await TxManager.execute(contract.methods.unlockProfitByList, [orderIds], transactionOptions);
+        } else {
+            for (const orderId of orderIds) {
+                await new Order(orderId).unlockProfit();
+            }
+        }
     }
 
     /**

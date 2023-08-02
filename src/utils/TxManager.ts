@@ -3,12 +3,18 @@ import { ContractSendMethod } from "web3-eth-contract";
 import NonceTracker from "./NonceTracker";
 import rootLogger from "../logger";
 import store from "../store";
-import { TransactionOptions } from "../types/Web3";
+import { TransactionOptions, DryRunError } from "../types/Web3";
 import { checkForUsingExternalTxManager, checkIfActionAccountInitialized, createTransactionOptions } from "../utils";
 import Superpro from "../staticModels/Superpro";
 import { defaultGasLimit } from "../constants";
 import lodash from "lodash";
 import Web3 from "web3";
+
+interface EvmError extends Error {
+    data: {
+        message?: string;
+    };
+}
 
 type ArgumentsType = any | any[];
 
@@ -51,7 +57,26 @@ class TxManager {
             data: transaction.encodeABI(),
         };
 
-        return TxManager.publishTransaction(txData, transactionOptions, transaction);
+        return await TxManager.publishTransaction(txData, transactionOptions, transaction);
+    }
+
+    public static async dryRun(
+        method: (...args: ArgumentsType) => MethodReturnType,
+        args: ArgumentsType,
+        transactionOptions?: TransactionOptions,
+    ): Promise<any> {
+        const transaction = method(...args);
+        const from = transactionOptions?.from ?? store.actionAccount;
+        let result;
+
+        try {
+            result = await transaction.call({ from });
+
+            return result;
+        } catch (e) {
+            (e as DryRunError).txErrorMsg = (e as EvmError).data.message || "Error text is undefined";
+            throw e;
+        }
     }
 
     public static async publishTransaction(

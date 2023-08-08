@@ -60,6 +60,7 @@
     "hybrid-crypto-js": "^0.2.4",
     "lodash": "^4.17.21",
     "node-gzip": "^1.1.2",
+    "p-queue": "^7.3.4",
     "pino": "^7.2.0",
     "protobufjs": "^6.11.2",
     "web3": "^1.7.1",

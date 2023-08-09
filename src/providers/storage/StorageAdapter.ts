@@ -1,4 +1,4 @@
-import { performance } from "perf_hooks";
+// import { performance } from "perf_hooks";
 import { LRUCache } from "lru-cache";
 import { createHash, randomUUID } from "crypto";
 import Queue from "p-queue";
@@ -193,14 +193,14 @@ export default class StorageAdapter<V extends object> {
         this.cache.get(key)?.forEach((instance, instanseId) => {
             if (instance.value === null) {
                 const fileName = `${key}/${instanseId}`;
-                const startDownload = performance.now();
+                // const startDownload = performance.now();
 
                 promises.push(
                     this.storageKeyValueAdapter
                         .get(fileName, password)
                         .then((file) => {
-                            const finishDownload = performance.now();
-                            logger.info(`Downloading took ${(finishDownload - startDownload).toFixed(1)} ms`);
+                            // const finishDownload = performance.now();
+                            // logger.info(`Downloading took ${(finishDownload - startDownload).toFixed(1)} ms`);
                             this.setByInstance(key, instanseId, {
                                 ...instance,
                                 value: file,

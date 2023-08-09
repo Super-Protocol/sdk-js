@@ -1,5 +1,5 @@
 import { LRUCache } from "lru-cache";
-import { performance } from "perf_hooks";
+// import { performance } from "perf_hooks";
 import Queue from "p-queue";
 import logger, { Logger } from "../../logger";
 import { CacheRecord } from "./types";
@@ -91,10 +91,10 @@ export default class StorageContentWriter<K extends string, V extends object> {
             return;
         }
         if (instance.value) {
-            const startUpload = performance.now();
+            // const startUpload = performance.now();
             await this.storageKeyValueAdapter.set(`${key}/${this.instanceId}`, instance.value, password);
-            const finishUpload = performance.now();
-            logger.info(`Uploading took ${(finishUpload - startUpload).toFixed(1)} ms`);
+            // const finishUpload = performance.now();
+            // logger.info(`Uploading took ${(finishUpload - startUpload).toFixed(1)} ms`);
         }
         await this.deleteOutdatedInstances(key, instances);
     }

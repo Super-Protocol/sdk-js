@@ -6,28 +6,18 @@ import { Readable } from "stream";
 import { Encryption } from "@super-protocol/dto-js";
 import logger, { Logger } from "../../logger";
 
-export interface ICipherService {
-    setPrivateKey(privateKey: string, type?: "hex"): ICipherService;
+export interface StorageKeyValueAdapterCipher {
+    setPrivateKey(privateKey: string, type?: "hex"): StorageKeyValueAdapterCipher;
     encrypt(content: string): Promise<Encryption>;
     decrypt(encryption: Encryption): Promise<string>;
 }
 
-export interface Config {
-    retryPolicy: {
-        maxCount: number;
-        minDelay: number;
-        maxDelay: number;
-    };
-    concurrency: number;
-    chunkSize: number;
-}
-
 export default class StorageKeyValueAdapter<V extends object> {
-    private readonly cipher: ICipherService;
+    private readonly cipher: StorageKeyValueAdapterCipher;
     private readonly storageProvider: IStorageProvider;
     private readonly logger: Logger;
 
-    constructor(storageAccess: StorageAccess, cipherService: ICipherService) {
+    constructor(storageAccess: StorageAccess, cipherService: StorageKeyValueAdapterCipher) {
         if (!storageAccess?.credentials) throw new Error("Credentials is empty");
 
         this.logger = logger.child({ class: StorageKeyValueAdapter.name });

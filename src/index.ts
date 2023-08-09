@@ -78,6 +78,20 @@ export * from "./types/Origins";
 
 export * as ChunkedStorageProvider from "./providers/storage/ChunksDownloadDecorator";
 export { default as StorjAdapter, StorjConfig } from "./providers/storage/StorjAdapter";
+export {
+    default as StorageMetadataReader,
+    StorageMetadataReaderConfig,
+} from "./providers/storage/StorageMetadataReader";
+export {
+    default as StorageKeyValueAdapter,
+    StorageKeyValueAdapterCipher,
+} from "./providers/storage/StorageKeyValueAdapter";
+export { default as StorageAdapter, CacheEvents, StorageAdapterConfig } from "./providers/storage/StorageAdapter";
+export {
+    default as StorageContentWriter,
+    StorageContentWriterConfig,
+    ContentWriterType,
+} from "./providers/storage/StorageContentWriter";
 export { default as StorageFileAccess } from "./types/storage/StorageFileAccess";
 export { default as StorageObject } from "./types/storage/StorageObject";
 export { default as StorageAccess } from "./types/storage/StorageAccess";

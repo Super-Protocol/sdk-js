@@ -2,9 +2,9 @@ import { performance } from "node:perf_hooks";
 import { LRUCache } from "lru-cache";
 import { createHash, randomUUID } from "node:crypto";
 import Queue from "p-queue";
-import StorageKeyValueAdapter, { ICipherService } from "./StorageKeyValueAdapter";
-import { StorageContentWriter, ContentWriterType } from "./StorageContentWriter";
-import { StorageMetadataReader } from "./StorageMetadataReader";
+import StorageKeyValueAdapter, { StorageKeyValueAdapterCipher } from "./StorageKeyValueAdapter";
+import StorageContentWriter, { ContentWriterType } from "./StorageContentWriter";
+import StorageMetadataReader from "./StorageMetadataReader";
 import StorageAccess from "../../types/storage/StorageAccess";
 import logger, { Logger } from "../../logger";
 import { CacheRecord } from "./types";
@@ -14,12 +14,12 @@ export interface LRUCacheConfig {
     max: number;
 }
 
-export interface Config {
+export interface StorageAdapterConfig {
     lruCache: LRUCacheConfig;
     writeInterval: number;
     readInterval: number;
     objectDeletedFlag: string;
-    cipherService: ICipherService;
+    cipherService: StorageKeyValueAdapterCipher;
     readMetadataConcurrency?: number;
 }
 
@@ -47,7 +47,7 @@ export default class StorageAdapter<V extends object> {
     private readonly pubSub: PubSub<string, { type: CacheEvents; message: unknown }> = new PubSub();
     private readonly eventName = "storage-adapter";
 
-    constructor(storageAccess: StorageAccess, config: Config) {
+    constructor(storageAccess: StorageAccess, config: StorageAdapterConfig) {
         this.logger = logger.child({ class: StorageAdapter.name });
         const { readInterval, writeInterval, lruCache, objectDeletedFlag, cipherService, readMetadataConcurrency } =
             config;

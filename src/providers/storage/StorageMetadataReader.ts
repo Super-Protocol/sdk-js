@@ -8,17 +8,17 @@ export interface InstancesUpdates {
     deleted: Set<string>;
 }
 
-interface Config<V extends object> {
+export interface StorageMetadataReaderConfig<V extends object> {
     storageKeyValueAdapter: StorageKeyValueAdapter<V>;
     objectDeletedFlag: string;
 }
 
-export class StorageMetadataReader<K extends string, V extends object> {
+export default class StorageMetadataReader<K extends string, V extends object> {
     private readonly logger: Logger;
     private readonly storageKeyValueAdapter: StorageKeyValueAdapter<V>;
     private readonly objectDeletedFlag: string;
 
-    constructor(config: Config<V>) {
+    constructor(config: StorageMetadataReaderConfig<V>) {
         this.logger = logger.child({ class: StorageMetadataReader.name });
         this.storageKeyValueAdapter = config.storageKeyValueAdapter;
         this.objectDeletedFlag = config.objectDeletedFlag;

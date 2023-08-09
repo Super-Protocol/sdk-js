@@ -5,7 +5,7 @@ import logger, { Logger } from "../../logger";
 import { CacheRecord } from "./types";
 import StorageKeyValueAdapter from "./StorageKeyValueAdapter";
 
-export interface Config<V extends object> {
+export interface StorageContentWriterConfig<V extends object> {
     interval: number;
     storageKeyValueAdapter: StorageKeyValueAdapter<V>;
     instanceId: string;
@@ -28,7 +28,7 @@ interface StorageWriteRecord {
     password: string;
 }
 
-export class StorageContentWriter<K extends string, V extends object> {
+export default class StorageContentWriter<K extends string, V extends object> {
     private timeout: ReturnType<typeof setTimeout> | null = null;
     private readonly INTERVAL: number;
     private readonly storageKeyValueAdapter: StorageKeyValueAdapter<V>;
@@ -39,7 +39,7 @@ export class StorageContentWriter<K extends string, V extends object> {
     private readonly objectDeletedFlag: string;
     private readonly queueWriteContent: Queue;
 
-    constructor(config: Config<V>) {
+    constructor(config: StorageContentWriterConfig<V>) {
         this.logger = logger.child({ class: StorageContentWriter.name });
         const {
             writeContentConcurrency,

@@ -1,6 +1,6 @@
 import StorageAccess from "../../types/storage/StorageAccess";
 import logger, { Logger } from "../../logger";
-import StorageAdapter, { Config as StorageAdapterConfig, CacheEvents } from "./StorageAdapter";
+import StorageAdapter, { StorageAdapterConfig, CacheEvents } from "./StorageAdapter";
 
 export type StorjConfig = StorageAdapterConfig;
 

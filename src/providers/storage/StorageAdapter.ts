@@ -1,6 +1,6 @@
-import { performance } from "node:perf_hooks";
+import { performance } from "perf_hooks";
 import { LRUCache } from "lru-cache";
-import { createHash, randomUUID } from "node:crypto";
+import { createHash, randomUUID } from "crypto";
 import Queue from "p-queue";
 import StorageKeyValueAdapter, { StorageKeyValueAdapterCipher } from "./StorageKeyValueAdapter";
 import StorageContentWriter, { ContentWriterType } from "./StorageContentWriter";

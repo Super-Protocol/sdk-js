@@ -1,4 +1,4 @@
-import LRUCache from "lru-cache";
+import { LRUCache } from "lru-cache";
 import { performance } from "node:perf_hooks";
 import Queue from "p-queue";
 import logger, { Logger } from "../../logger";

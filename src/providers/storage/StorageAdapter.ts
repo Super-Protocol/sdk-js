@@ -1,5 +1,5 @@
 import { performance } from "node:perf_hooks";
-import LRUCache from "lru-cache";
+import { LRUCache } from "lru-cache";
 import { createHash, randomUUID } from "node:crypto";
 import Queue from "p-queue";
 import StorageKeyValueAdapter, { ICipherService } from "./StorageKeyValueAdapter";

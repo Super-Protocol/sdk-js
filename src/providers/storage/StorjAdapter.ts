@@ -2,12 +2,12 @@ import StorageAccess from "../../types/storage/StorageAccess";
 import logger, { Logger } from "../../logger";
 import StorageAdapter, { Config as StorageAdapterConfig, CacheEvents } from "./StorageAdapter";
 
-export type Config = StorageAdapterConfig;
+export type StorjConfig = StorageAdapterConfig;
 
 export default class StorjAdapter<V extends object> {
     private storageAdapter: StorageAdapter<V>;
     private readonly logger: Logger;
-    constructor(storageAccess: StorageAccess, config: Config) {
+    constructor(storageAccess: StorageAccess, config: StorjConfig) {
         this.logger = logger.child({ class: StorjAdapter.name });
         this.storageAdapter = new StorageAdapter(storageAccess, config);
         this.storageAdapter.run();

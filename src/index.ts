@@ -77,7 +77,7 @@ export * from "./types/Consensus";
 export * from "./types/Origins";
 
 export * as ChunkedStorageProvider from "./providers/storage/ChunksDownloadDecorator";
-export * from "./providers/storage/StorjAdapter";
+export { default as StorjAdapter, StorjConfig } from "./providers/storage/StorjAdapter";
 export { default as StorageFileAccess } from "./types/storage/StorageFileAccess";
 export { default as StorageObject } from "./types/storage/StorageObject";
 export { default as StorageAccess } from "./types/storage/StorageAccess";

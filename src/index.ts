@@ -82,10 +82,7 @@ export {
     default as StorageMetadataReader,
     StorageMetadataReaderConfig,
 } from "./providers/storage/StorageMetadataReader";
-export {
-    default as StorageKeyValueAdapter,
-    StorageKeyValueAdapterCipher,
-} from "./providers/storage/StorageKeyValueAdapter";
+export { default as StorageKeyValueAdapter } from "./providers/storage/StorageKeyValueAdapter";
 export { default as StorageAdapter, CacheEvents, StorageAdapterConfig } from "./providers/storage/StorageAdapter";
 export {
     default as StorageContentWriter,

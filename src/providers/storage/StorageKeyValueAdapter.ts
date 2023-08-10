@@ -1,42 +1,40 @@
+import { Readable } from "stream";
+import { Encryption, CryptoAlgorithm, Encoding, Cipher } from "@super-protocol/dto-js";
 import StorageAccess from "../../types/storage/StorageAccess";
 import StorageObject from "../../types/storage/StorageObject";
 import getStorageProvider from "./getStorageProvider";
 import IStorageProvider from "./IStorageProvider";
-import { Readable } from "stream";
-import { Encryption } from "@super-protocol/dto-js";
 import logger, { Logger } from "../../logger";
-
-export interface StorageKeyValueAdapterCipher {
-    setPrivateKey(privateKey: string, type?: "hex"): StorageKeyValueAdapterCipher;
-    encrypt(content: string): Promise<Encryption>;
-    decrypt(encryption: Encryption): Promise<string>;
-}
+import Crypto from "../../crypto/Crypto";
 
 export default class StorageKeyValueAdapter<V extends object> {
-    private readonly cipher: StorageKeyValueAdapterCipher;
     private readonly storageProvider: IStorageProvider;
     private readonly logger: Logger;
 
-    constructor(storageAccess: StorageAccess, cipherService: StorageKeyValueAdapterCipher) {
+    constructor(storageAccess: StorageAccess) {
         if (!storageAccess?.credentials) throw new Error("Credentials is empty");
 
         this.logger = logger.child({ class: StorageKeyValueAdapter.name });
         this.storageProvider = getStorageProvider(storageAccess);
-        this.cipher = cipherService;
     }
 
-    public async decrypt(encryption: Encryption, privateKey: string): Promise<V | null> {
+    public async decrypt(encryption: Encryption, key: string): Promise<V | null> {
         if (!encryption) return null;
-        if (!privateKey) throw new Error("Private cannot be empty!");
+        if (!key) throw new Error("Key cannot be empty!");
 
-        return JSON.parse(await this.cipher.setPrivateKey(privateKey).decrypt(encryption));
+        return JSON.parse(await Crypto.decrypt(encryption));
     }
 
-    public async encrypt(data: V | null, privateKey: string): Promise<Encryption> {
+    public async encrypt(data: V | null, key: string): Promise<Encryption> {
         if (data === undefined) throw new Error("Data cannot be empty!");
-        if (!privateKey) throw new Error("Private cannot be empty!");
+        if (!key) throw new Error("Private cannot be empty!");
 
-        return this.cipher.setPrivateKey(privateKey).encrypt(JSON.stringify(data));
+        return Crypto.encrypt(JSON.stringify(data), {
+            algo: CryptoAlgorithm.AES,
+            encoding: Encoding.base64,
+            key,
+            cipher: Cipher.AES_256_GCM,
+        });
     }
 
     private async downloadFromStorage(filepath: string): Promise<string> {

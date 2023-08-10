@@ -25,7 +25,7 @@ const DEFAULT_CACHE_EXPIRATION_TS = 5 * 60 * 1000;
 interface StorageWriteRecord {
     type: ContentWriterType;
     index: number;
-    password: string;
+    encryptionKey: string;
 }
 
 export default class StorageContentWriter<K extends string, V extends object> {
@@ -63,20 +63,20 @@ export default class StorageContentWriter<K extends string, V extends object> {
         });
     }
 
-    private async actualizeCacheDelete(key: K, password: string): Promise<void> {
+    private async actualizeCacheDelete(key: K, encryptionKey: string): Promise<void> {
         const objects = await this.storageKeyValueAdapter.listFiles(key);
         const objectsToDelete = objects.filter((object) => !object.name.endsWith(this.objectDeletedFlag));
 
         await Promise.all(objectsToDelete.map((object) => this.storageKeyValueAdapter.delete(object.name)));
 
         if (objectsToDelete.length === objects.length) {
-            await this.storageKeyValueAdapter.set(`${key}/${this.objectDeletedFlag}`, null, password);
+            await this.storageKeyValueAdapter.set(`${key}/${this.objectDeletedFlag}`, null, encryptionKey);
         }
     }
 
     private async actualizeCacheUpload(
         key: K,
-        password: string,
+        encryptionKey: string,
         cache: LRUCache<K, Map<string, CacheRecord<V>>>,
     ): Promise<void> {
         const instances = cache.get(key);
@@ -95,7 +95,7 @@ export default class StorageContentWriter<K extends string, V extends object> {
         }
         if (instance.value) {
             const startUpload: number | undefined = this.performance?.now();
-            await this.storageKeyValueAdapter.set(`${key}/${this.instanceId}`, instance.value, password);
+            await this.storageKeyValueAdapter.set(`${key}/${this.instanceId}`, instance.value, encryptionKey);
             if (this.performance && startUpload !== undefined) {
                 const finishUpload = this.performance.now();
                 logger.info(`Uploading took ${(finishUpload - startUpload).toFixed(1)} ms`);
@@ -108,15 +108,15 @@ export default class StorageContentWriter<K extends string, V extends object> {
         const logger = this.logger.child({ method: this.actualizeCache.name });
 
         if (this.storageWrites.size) {
-            Array.from(this.storageWrites.entries()).forEach(([key, { type, index, password }]) => {
+            Array.from(this.storageWrites.entries()).forEach(([key, { type, index, encryptionKey }]) => {
                 this.queueWriteContent.add(async () => {
                     try {
                         switch (type) {
                             case ContentWriterType.NEEDS_DELETE:
-                                await this.actualizeCacheDelete(key, password);
+                                await this.actualizeCacheDelete(key, encryptionKey);
                                 break;
                             case ContentWriterType.NEEDS_UPLOAD:
-                                await this.actualizeCacheUpload(key, password, cache);
+                                await this.actualizeCacheUpload(key, encryptionKey, cache);
                                 break;
                             default:
                                 break;
@@ -200,12 +200,12 @@ export default class StorageContentWriter<K extends string, V extends object> {
         this.timeout = null;
     }
 
-    public set(key: K, type: ContentWriterType, password: string): void {
+    public set(key: K, type: ContentWriterType, encryptionKey: string): void {
         const oldValue = this.storageWrites.get(key);
         this.storageWrites.set(key, {
             type,
             index: oldValue?.index ? oldValue.index + 1 : 1,
-            password,
+            encryptionKey,
         });
     }
 

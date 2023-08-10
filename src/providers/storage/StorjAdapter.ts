@@ -15,7 +15,7 @@ export default class StorjAdapter<V extends object> {
     public subscribe(cb: (props: { type: CacheEvents; message: unknown }) => void) {
         return this.storageAdapter?.subscribe(cb);
     }
-    public async get(key: string, password: string) {
+    public async get(key: string, password: Buffer) {
         return this.storageAdapter.get(key, password).catch((err: Error) => {
             if (err.message.includes("object not found")) {
                 this.logger.info({ key }, "Object not found");
@@ -28,7 +28,7 @@ export default class StorjAdapter<V extends object> {
     public async has(key: string) {
         return this.storageAdapter.has(key);
     }
-    public async set(key: string, value: V, password: string) {
+    public async set(key: string, value: V, password: Buffer) {
         return this.storageAdapter.set(key, value, password);
     }
     public async del(key: string) {

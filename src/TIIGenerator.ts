@@ -7,7 +7,7 @@ import Crypto from "./crypto";
 import Offer from "./models/Offer";
 import Order from "./models/Order";
 import TeeOffer from "./models/TeeOffer";
-import TCB from "./models/TCB";
+import { TeeOfferInfo } from "./types/TeeOfferInfo";
 import { OrderInfo } from "./types/Order";
 import { OfferInfo } from "./types/Offer";
 import {
@@ -35,14 +35,7 @@ class TIIGenerator {
         encryption: Encryption,
     ): Promise<string> {
         const teeOffer: TeeOffer = new TeeOffer(offerId);
-        const teeOfferInfo = await teeOffer.getInfo();
-        const tcbId = await teeOffer.getActualTcbId();
-
-        if (tcbId === "0") {
-            throw Error("Tee offer isn't avaliable before added TCB");
-        }
-
-        const tcb = await new TCB(tcbId).get();
+        const teeOfferInfo: TeeOfferInfo = await teeOffer.getInfo();
 
         const linkage: Linkage = linkageString
             ? JSON.parse(linkageString)
@@ -52,7 +45,7 @@ class TIIGenerator {
               };
 
         const tlb: TLBlockUnserializeResultType = new TLBlockSerializerV1().unserializeTlb(
-            Buffer.from(tcb.quote, "base64"),
+            Buffer.from(teeOfferInfo.tlb, "base64"),
         );
 
         // TODO: check env with SP-149

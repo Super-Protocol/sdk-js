@@ -22,6 +22,8 @@ export default class StorageKeyValueAdapter<V extends object> {
         if (!encryption) return null;
         if (!key) throw new Error("Key cannot be empty!");
 
+        encryption.key = key;
+
         return JSON.parse(await Crypto.decrypt(encryption));
     }
 

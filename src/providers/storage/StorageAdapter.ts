@@ -46,7 +46,7 @@ export default class StorageAdapter<V extends object> {
     private readonly isUpdating = new Map<string, boolean>();
     private readonly pubSub: PubSub<string, { type: CacheEvents; message: unknown }> = new PubSub();
     private readonly eventName = "storage-adapter";
-    private readonly performance: Performance | null = null;
+    private readonly performance?: Performance;
 
     constructor(storageAccess: StorageAccess, config: StorageAdapterConfig) {
         this.logger = logger.child({ class: StorageAdapter.name });
@@ -59,7 +59,7 @@ export default class StorageAdapter<V extends object> {
             readMetadataConcurrency,
             performance,
         } = config;
-        this.performance = performance || null;
+        this.performance = performance;
         this.instanceId = this.generateHash();
         this.readInterval = readInterval;
         this.storageKeyValueAdapter = new StorageKeyValueAdapter(storageAccess, cipherService);
@@ -73,6 +73,7 @@ export default class StorageAdapter<V extends object> {
             storageKeyValueAdapter: this.storageKeyValueAdapter,
             instanceId: this.instanceId,
             objectDeletedFlag,
+            performance: this.performance,
         });
 
         this.queueReadMetadata = new Queue({

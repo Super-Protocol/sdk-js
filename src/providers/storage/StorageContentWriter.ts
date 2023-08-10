@@ -38,7 +38,7 @@ export default class StorageContentWriter<K extends string, V extends object> {
     private readonly cacheExpirationTs: number;
     private readonly objectDeletedFlag: string;
     private readonly queueWriteContent: Queue;
-    private readonly performance: Performance | null;
+    private readonly performance?: Performance;
 
     constructor(config: StorageContentWriterConfig<V>) {
         this.logger = logger.child({ class: StorageContentWriter.name });
@@ -51,7 +51,7 @@ export default class StorageContentWriter<K extends string, V extends object> {
             cacheExpirationTs,
             performance,
         } = config || {};
-        this.performance = performance || null;
+        this.performance = performance;
         this.INTERVAL = interval;
         this.cacheExpirationTs = cacheExpirationTs || DEFAULT_CACHE_EXPIRATION_TS;
         this.storageKeyValueAdapter = storageKeyValueAdapter;

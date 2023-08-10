@@ -1,8 +1,7 @@
 import { LRUCache } from "lru-cache";
-// import { performance } from "perf_hooks";
 import Queue from "p-queue";
 import logger, { Logger } from "../../logger";
-import { CacheRecord } from "./types";
+import { CacheRecord, Performance } from "./types";
 import StorageKeyValueAdapter from "./StorageKeyValueAdapter";
 
 export interface StorageContentWriterConfig<V extends object> {
@@ -12,6 +11,7 @@ export interface StorageContentWriterConfig<V extends object> {
     objectDeletedFlag: string;
     writeContentConcurrency?: number;
     cacheExpirationTs?: number;
+    performance?: Performance;
 }
 
 export enum ContentWriterType {
@@ -38,6 +38,7 @@ export default class StorageContentWriter<K extends string, V extends object> {
     private readonly cacheExpirationTs: number;
     private readonly objectDeletedFlag: string;
     private readonly queueWriteContent: Queue;
+    private readonly performance: Performance | null;
 
     constructor(config: StorageContentWriterConfig<V>) {
         this.logger = logger.child({ class: StorageContentWriter.name });
@@ -48,7 +49,9 @@ export default class StorageContentWriter<K extends string, V extends object> {
             instanceId,
             objectDeletedFlag,
             cacheExpirationTs,
+            performance,
         } = config || {};
+        this.performance = performance || null;
         this.INTERVAL = interval;
         this.cacheExpirationTs = cacheExpirationTs || DEFAULT_CACHE_EXPIRATION_TS;
         this.storageKeyValueAdapter = storageKeyValueAdapter;
@@ -91,10 +94,12 @@ export default class StorageContentWriter<K extends string, V extends object> {
             return;
         }
         if (instance.value) {
-            // const startUpload = performance.now();
+            const startUpload: number | undefined = this.performance?.now();
             await this.storageKeyValueAdapter.set(`${key}/${this.instanceId}`, instance.value, password);
-            // const finishUpload = performance.now();
-            // logger.info(`Uploading took ${(finishUpload - startUpload).toFixed(1)} ms`);
+            if (this.performance && startUpload !== undefined) {
+                const finishUpload = this.performance.now();
+                logger.info(`Uploading took ${(finishUpload - startUpload).toFixed(1)} ms`);
+            }
         }
         await this.deleteOutdatedInstances(key, instances);
     }

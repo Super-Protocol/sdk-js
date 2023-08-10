@@ -1,4 +1,3 @@
-// import { performance } from "perf_hooks";
 import { LRUCache } from "lru-cache";
 import { createHash, randomUUID } from "crypto";
 import Queue from "p-queue";
@@ -7,7 +6,7 @@ import StorageContentWriter, { ContentWriterType } from "./StorageContentWriter"
 import StorageMetadataReader from "./StorageMetadataReader";
 import StorageAccess from "../../types/storage/StorageAccess";
 import logger, { Logger } from "../../logger";
-import { CacheRecord } from "./types";
+import { CacheRecord, Performance } from "./types";
 import PubSub from "../../utils/PubSub";
 
 export interface LRUCacheConfig {
@@ -21,6 +20,7 @@ export interface StorageAdapterConfig {
     objectDeletedFlag: string;
     cipherService: StorageKeyValueAdapterCipher;
     readMetadataConcurrency?: number;
+    performance?: Performance;
 }
 
 export enum CacheEvents {
@@ -46,11 +46,20 @@ export default class StorageAdapter<V extends object> {
     private readonly isUpdating = new Map<string, boolean>();
     private readonly pubSub: PubSub<string, { type: CacheEvents; message: unknown }> = new PubSub();
     private readonly eventName = "storage-adapter";
+    private readonly performance: Performance | null = null;
 
     constructor(storageAccess: StorageAccess, config: StorageAdapterConfig) {
         this.logger = logger.child({ class: StorageAdapter.name });
-        const { readInterval, writeInterval, lruCache, objectDeletedFlag, cipherService, readMetadataConcurrency } =
-            config;
+        const {
+            readInterval,
+            writeInterval,
+            lruCache,
+            objectDeletedFlag,
+            cipherService,
+            readMetadataConcurrency,
+            performance,
+        } = config;
+        this.performance = performance || null;
         this.instanceId = this.generateHash();
         this.readInterval = readInterval;
         this.storageKeyValueAdapter = new StorageKeyValueAdapter(storageAccess, cipherService);
@@ -193,14 +202,16 @@ export default class StorageAdapter<V extends object> {
         this.cache.get(key)?.forEach((instance, instanseId) => {
             if (instance.value === null) {
                 const fileName = `${key}/${instanseId}`;
-                // const startDownload = performance.now();
+                const startDownload: number | undefined = this.performance?.now();
 
                 promises.push(
                     this.storageKeyValueAdapter
                         .get(fileName, password)
                         .then((file) => {
-                            // const finishDownload = performance.now();
-                            // logger.info(`Downloading took ${(finishDownload - startDownload).toFixed(1)} ms`);
+                            if (this.performance && startDownload !== undefined) {
+                                const finishDownload = this.performance.now();
+                                logger.info(`Downloading took ${(finishDownload - startDownload).toFixed(1)} ms`);
+                            }
                             this.setByInstance(key, instanseId, {
                                 ...instance,
                                 value: file,

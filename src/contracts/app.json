@@ -1648,7 +1648,7 @@
                 },
                 {
                   "internalType": "bool",
-                  "name": "assignedToEpoch_DEPRECATED",
+                  "name": "assignedToEpoch",
                   "type": "bool"
                 },
                 {
@@ -2220,29 +2220,6 @@
         }
       ],
       "name": "replenishFor",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "funder",
-          "type": "address"
-        },
-        {
-          "internalType": "address",
-          "name": "beneficiary",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "amount",
-          "type": "uint256"
-        }
-      ],
-      "name": "replenishForByApp",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
@@ -4276,16 +4253,6 @@
               "internalType": "bytes32",
               "name": "externalId",
               "type": "bytes32"
-            },
-            {
-              "internalType": "uint256",
-              "name": "expectedPrice",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "maxPriceSlippage",
-              "type": "uint256"
             }
           ],
           "internalType": "struct OrderInfo",
@@ -4396,16 +4363,6 @@
               "internalType": "bytes32",
               "name": "externalId",
               "type": "bytes32"
-            },
-            {
-              "internalType": "uint256",
-              "name": "expectedPrice",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "maxPriceSlippage",
-              "type": "uint256"
             }
           ],
           "internalType": "struct OrderInfo",
@@ -4516,16 +4473,6 @@
               "internalType": "bytes32",
               "name": "externalId",
               "type": "bytes32"
-            },
-            {
-              "internalType": "uint256",
-              "name": "expectedPrice",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "maxPriceSlippage",
-              "type": "uint256"
             }
           ],
           "internalType": "struct OrderInfo",
@@ -4648,16 +4595,6 @@
               "internalType": "bytes32",
               "name": "externalId",
               "type": "bytes32"
-            },
-            {
-              "internalType": "uint256",
-              "name": "expectedPrice",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "maxPriceSlippage",
-              "type": "uint256"
             }
           ],
           "internalType": "struct OrderInfo",
@@ -4799,30 +4736,6 @@
           "internalType": "uint256",
           "name": "orderId",
           "type": "uint256"
-        }
-      ],
-      "name": "isOrderProfitAvailable",
-      "outputs": [
-        {
-          "internalType": "bool",
-          "name": "available",
-          "type": "bool"
-        },
-        {
-          "internalType": "uint256",
-          "name": "profit",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "orderId",
-          "type": "uint256"
         },
         {
           "internalType": "uint256",
@@ -4881,25 +4794,6 @@
       ],
       "name": "unlockProfit",
       "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256[]",
-          "name": "orderIds",
-          "type": "uint256[]"
-        }
-      ],
-      "name": "unlockProfitByList",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "ulockedIndex",
-          "type": "uint256"
-        }
-      ],
       "stateMutability": "nonpayable",
       "type": "function"
     },
@@ -5420,16 +5314,6 @@
               "internalType": "bytes32",
               "name": "externalId",
               "type": "bytes32"
-            },
-            {
-              "internalType": "uint256",
-              "name": "expectedPrice",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "maxPriceSlippage",
-              "type": "uint256"
             }
           ],
           "internalType": "struct OrderInfo",
@@ -6166,24 +6050,6 @@
     {
       "inputs": [
         {
-          "internalType": "address",
-          "name": "providerAuth",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "amount",
-          "type": "uint256"
-        }
-      ],
-      "name": "refillProviderSecurityDepoFor",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
           "components": [
             {
               "internalType": "address",
@@ -6230,154 +6096,6 @@
         }
       ],
       "name": "returnProviderSecurityDepo",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "authority",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "orderId",
-          "type": "uint256"
-        }
-      ],
-      "name": "addLockedOrder",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "authority",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "tcbId",
-          "type": "uint256"
-        }
-      ],
-      "name": "addLockedTcb",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256[]",
-          "name": "orderIds",
-          "type": "uint256[]"
-        }
-      ],
-      "name": "getAvaliableOrderRewardsAmount",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "amount",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256[]",
-          "name": "tcbIds",
-          "type": "uint256[]"
-        }
-      ],
-      "name": "getAvaliableTcbRewardsAmount",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "amount",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "authority",
-          "type": "address"
-        }
-      ],
-      "name": "getOrdersLockedProfitList",
-      "outputs": [
-        {
-          "internalType": "uint256[]",
-          "name": "",
-          "type": "uint256[]"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "authority",
-          "type": "address"
-        }
-      ],
-      "name": "getTcbLockedProfitList",
-      "outputs": [
-        {
-          "internalType": "uint256[]",
-          "name": "",
-          "type": "uint256[]"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "authority",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "orderId",
-          "type": "uint256"
-        }
-      ],
-      "name": "removeLockedOrder",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "authority",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "tcbId",
-          "type": "uint256"
-        }
-      ],
-      "name": "removeLockedTcb",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
@@ -7121,25 +6839,6 @@
       "inputs": [
         {
           "internalType": "uint256",
-          "name": "teeOfferId",
-          "type": "uint256"
-        }
-      ],
-      "name": "getTeeOfferOptionsCount",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
           "name": "optionId",
           "type": "uint256"
         }
@@ -7681,25 +7380,6 @@
       "anonymous": false,
       "inputs": [
         {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "tcbId",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "rewards",
-          "type": "uint256"
-        }
-      ],
-      "name": "TcbRewardUnlocked",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
           "indexed": true,
           "internalType": "address",
           "name": "providerAuth",
@@ -7739,19 +7419,6 @@
       ],
       "name": "WarningMessage",
       "type": "event"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "tcbId",
-          "type": "uint256"
-        }
-      ],
-      "name": "_unlockTcbReward",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
     },
     {
       "inputs": [
@@ -7848,6 +7515,25 @@
           "type": "uint256"
         }
       ],
+      "name": "getTeeOfferLastTcbReward",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "teeOfferId",
+          "type": "uint256"
+        }
+      ],
       "name": "getTeeOfferViolationRate",
       "outputs": [
         {
@@ -7889,30 +7575,6 @@
       "name": "incrTeeOfferViolationRate",
       "outputs": [],
       "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "tcbId",
-          "type": "uint256"
-        }
-      ],
-      "name": "isTcbProfitAvailable",
-      "outputs": [
-        {
-          "internalType": "bool",
-          "name": "available",
-          "type": "bool"
-        },
-        {
-          "internalType": "uint256",
-          "name": "amount",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
       "type": "function"
     },
     {
@@ -7966,25 +7628,6 @@
       ],
       "name": "unlockTcbReward",
       "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256[]",
-          "name": "tcbIds",
-          "type": "uint256[]"
-        }
-      ],
-      "name": "unlockTcbRewardByList",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "ulockedIndex",
-          "type": "uint256"
-        }
-      ],
       "stateMutability": "nonpayable",
       "type": "function"
     },
@@ -8682,16 +8325,6 @@
               "internalType": "bytes32",
               "name": "externalId",
               "type": "bytes32"
-            },
-            {
-              "internalType": "uint256",
-              "name": "expectedPrice",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "maxPriceSlippage",
-              "type": "uint256"
             }
           ],
           "internalType": "struct OrderInfo",
@@ -8778,16 +8411,6 @@
               "internalType": "bytes32",
               "name": "externalId",
               "type": "bytes32"
-            },
-            {
-              "internalType": "uint256",
-              "name": "expectedPrice",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "maxPriceSlippage",
-              "type": "uint256"
             }
           ],
           "internalType": "struct OrderInfo[]",
@@ -9587,7 +9210,7 @@
                 },
                 {
                   "internalType": "bool",
-                  "name": "assignedToEpoch_DEPRECATED",
+                  "name": "assignedToEpoch",
                   "type": "bool"
                 },
                 {
@@ -9652,30 +9275,6 @@
           "internalType": "bool",
           "name": "",
           "type": "bool"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "tcbId",
-          "type": "uint256"
-        }
-      ],
-      "name": "isTcbProfitAvailable",
-      "outputs": [
-        {
-          "internalType": "bool",
-          "name": "",
-          "type": "bool"
-        },
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
         }
       ],
       "stateMutability": "view",
@@ -9927,29 +9526,6 @@
         }
       ],
       "name": "replenishFor",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "funder",
-          "type": "address"
-        },
-        {
-          "internalType": "address",
-          "name": "depositOwner",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "amount",
-          "type": "uint256"
-        }
-      ],
-      "name": "replenishForByApp",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
@@ -10742,16 +10318,6 @@
               "internalType": "bytes32",
               "name": "externalId",
               "type": "bytes32"
-            },
-            {
-              "internalType": "uint256",
-              "name": "expectedPrice",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "maxPriceSlippage",
-              "type": "uint256"
             }
           ],
           "internalType": "struct OrderInfo",
@@ -10867,16 +10433,6 @@
               "internalType": "bytes32",
               "name": "externalId",
               "type": "bytes32"
-            },
-            {
-              "internalType": "uint256",
-              "name": "expectedPrice",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "maxPriceSlippage",
-              "type": "uint256"
             }
           ],
           "internalType": "struct OrderInfo",
@@ -11002,16 +10558,6 @@
               "internalType": "bytes32",
               "name": "externalId",
               "type": "bytes32"
-            },
-            {
-              "internalType": "uint256",
-              "name": "expectedPrice",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "maxPriceSlippage",
-              "type": "uint256"
             }
           ],
           "internalType": "struct OrderInfo",
@@ -11268,16 +10814,6 @@
               "internalType": "bytes32",
               "name": "externalId",
               "type": "bytes32"
-            },
-            {
-              "internalType": "uint256",
-              "name": "expectedPrice",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "maxPriceSlippage",
-              "type": "uint256"
             }
           ],
           "internalType": "struct OrderInfo",
@@ -11496,30 +11032,6 @@
       "inputs": [
         {
           "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "name": "isOrderProfitAvailable",
-      "outputs": [
-        {
-          "internalType": "bool",
-          "name": "",
-          "type": "bool"
-        },
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
           "name": "orderId",
           "type": "uint256"
         }
@@ -11678,78 +11190,6 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "authority",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "orderId",
-          "type": "uint256"
-        }
-      ],
-      "name": "addLockedOrder",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "authority",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "tcbId",
-          "type": "uint256"
-        }
-      ],
-      "name": "addLockedTcb",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "authority",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "orderId",
-          "type": "uint256"
-        }
-      ],
-      "name": "removeLockedOrder",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "authority",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "tcbId",
-          "type": "uint256"
-        }
-      ],
-      "name": "removeLockedTcb",
-      "outputs": [],
-      "stateMutability": "nonpayable",
       "type": "function"
     },
     {
@@ -12447,6 +11887,25 @@
       "name": "confisacateAllRewards",
       "outputs": [],
       "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "offerId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getTeeOfferLastTcbReward",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
       "type": "function"
     },
     {

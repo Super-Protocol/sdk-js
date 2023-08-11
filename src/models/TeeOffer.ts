@@ -138,23 +138,6 @@ class TeeOffer {
     }
 
     /**
-     * Function for fetching TEE offer options info from blockchain
-     * @param begin - The first element of range.
-     * @param end - One past the final element in the range.
-     * @returns {Promise<TeeOfferOption[]>}
-     */
-    public async getOptions(begin = 0, end = 999999): Promise<TeeOfferOption[]> {
-        const optionsCount = +(await TeeOffer.contract.methods.getTeeOfferOptionsCount(this.id).call());
-        if (optionsCount === 0) {
-            return [];
-        }
-
-        const teeOfferOption = await TeeOffer.contract.methods.getTeeOfferOptions(this.id, begin, end).call();
-
-        return tupleToObjectsArray(teeOfferOption, TeeOfferOptionStructure);
-    }
-
-    /**
      * Function for fetching tee offer slot by id
      * @param optionId - Slot ID
      */

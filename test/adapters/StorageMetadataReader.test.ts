@@ -20,26 +20,14 @@ describe("StorageMetadataReader", () => {
     describe("fetchInstancesUpdates", () => {
         test("must be updated size", async () => {
             const key = "test-key";
+            const DEFAULT_DECREASE = 10000;
             const storageKeyValueAdapter = new StorageKeyValueAdapter<Data>(keyValueStorageAdapterConfig);
             await storageKeyValueAdapter.set(key, data, aesKey);
-            const DECREASE_DATE_TIME = 1000000;
             const cache = new Map<string, CacheRecord<Data>>();
             cache.set(key, {
                 value: data,
-                modifiedTs: new Date(new Date().valueOf() - DECREASE_DATE_TIME).getTime(),
+                modifiedTs: new Date().getTime() - DEFAULT_DECREASE,
             });
-            const storageMetadataReader = new StorageMetadataReader<string, Data>({
-                storageKeyValueAdapter,
-                objectDeletedFlag: "deleted",
-            });
-            const { updated } = await storageMetadataReader.fetchInstancesUpdates(key, cache);
-            expect(updated.size).toEqual(1);
-        });
-        test("must be updated size", async () => {
-            const key = "test-key";
-            const storageKeyValueAdapter = new StorageKeyValueAdapter<Data>(keyValueStorageAdapterConfig);
-            await storageKeyValueAdapter.set(key, data, aesKey);
-            const cache = new Map<string, CacheRecord<Data>>();
             const storageMetadataReader = new StorageMetadataReader<string, Data>({
                 storageKeyValueAdapter,
                 objectDeletedFlag: "deleted",

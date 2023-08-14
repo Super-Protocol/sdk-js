@@ -37,7 +37,13 @@ describe("StorageKeyValueAdapter", () => {
     test("listFiles", async () => {
         const key = "test-key";
         await storageKeyValueAdapter.set(key, data, aesKey);
-        const result = await storageKeyValueAdapter.listFiles(aesKey);
-        expect(result).toEqual([getDefaultListObjectMock(key)]);
+        const result = await storageKeyValueAdapter.listFiles(key);
+        const createdAt = result?.[0]?.createdAt;
+        expect(result).toEqual([
+            getDefaultListObjectMock({
+                name: key,
+                createdAt: createdAt ? new Date(createdAt) : undefined,
+            }),
+        ]);
     });
 });

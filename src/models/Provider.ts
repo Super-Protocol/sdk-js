@@ -121,14 +121,6 @@ class Provider {
 
         return violationRate >= CONSENSUS_MAX_PENALTIES;
     }
-
-    public async getOrdersLockedProfitList(): Promise<string[]> {
-        return Provider.contractProviders.methods.getOrdersLockedProfitList(this.providerId);
-    }
-
-    public async getTcbLockedProfitList(): Promise<string[]> {
-        return Provider.contractProviders.methods.getTcbLockedProfitList(this.providerId);
-    }
 }
 
 export default Provider;

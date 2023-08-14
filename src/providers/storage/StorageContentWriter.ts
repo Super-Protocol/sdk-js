@@ -12,6 +12,7 @@ export interface StorageContentWriterConfig<V extends object> {
     writeContentConcurrency?: number;
     cacheExpirationTs?: number;
     performance?: Performance;
+    showLogs?: boolean;
 }
 
 export enum ContentWriterType {
@@ -32,16 +33,15 @@ export default class StorageContentWriter<K extends string, V extends object> {
     private timeout: ReturnType<typeof setTimeout> | null = null;
     private readonly INTERVAL: number;
     private readonly storageKeyValueAdapter: StorageKeyValueAdapter<V>;
-    private readonly logger: Logger;
-    private readonly storageWrites: Map<K, StorageWriteRecord> = new Map();
+    private readonly logger?: Logger | null;
     private readonly instanceId: string;
     private readonly cacheExpirationTs: number;
     private readonly objectDeletedFlag: string;
     private readonly queueWriteContent: Queue;
     private readonly performance?: Performance;
+    public readonly storageWrites: Map<K, StorageWriteRecord> = new Map();
 
     constructor(config: StorageContentWriterConfig<V>) {
-        this.logger = logger.child({ class: StorageContentWriter.name });
         const {
             writeContentConcurrency,
             interval,
@@ -50,7 +50,9 @@ export default class StorageContentWriter<K extends string, V extends object> {
             objectDeletedFlag,
             cacheExpirationTs,
             performance,
+            showLogs = true,
         } = config || {};
+        this.logger = showLogs ? logger.child({ class: StorageContentWriter.name }) : null;
         this.performance = performance;
         this.INTERVAL = interval;
         this.cacheExpirationTs = cacheExpirationTs || DEFAULT_CACHE_EXPIRATION_TS;
@@ -105,7 +107,7 @@ export default class StorageContentWriter<K extends string, V extends object> {
     }
 
     private async actualizeCache(cache: LRUCache<K, Map<string, CacheRecord<V>>>): Promise<void> {
-        const logger = this.logger.child({ method: this.actualizeCache.name });
+        const logger = this.logger?.child({ method: this.actualizeCache.name });
 
         if (this.storageWrites.size) {
             Array.from(this.storageWrites.entries()).forEach(([key, { type, index, encryptionKey }]) => {
@@ -126,7 +128,7 @@ export default class StorageContentWriter<K extends string, V extends object> {
                             this.storageWrites.delete(key);
                         }
                     } catch (err) {
-                        logger.error(
+                        logger?.error(
                             {
                                 err,
                                 size: this.storageWrites.size,
@@ -138,7 +140,7 @@ export default class StorageContentWriter<K extends string, V extends object> {
             });
 
             await this.queueWriteContent.onIdle();
-            logger.info({ size: this.storageWrites.size }, "Success storage writing");
+            logger?.info({ size: this.storageWrites.size }, "Success storage writing");
         }
     }
 
@@ -180,7 +182,7 @@ export default class StorageContentWriter<K extends string, V extends object> {
                     .then(() => {
                         instances.delete(instanceId);
                     })
-                    .catch((err) => this.logger.error({ err }, "Error deleting outdated instance")),
+                    .catch((err) => this.logger?.error({ err }, "Error deleting outdated instance")),
             ),
         );
     }

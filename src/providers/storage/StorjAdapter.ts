@@ -17,7 +17,8 @@ export default class StorjAdapter<V extends object> {
     }
     public async get(key: string, encryptionKey: Buffer) {
         return this.storageAdapter.get(key, encryptionKey).catch((err: Error) => {
-            if (err.message.includes("object not found")) {
+            const message = err.message?.toLowerCase() || "";
+            if (message.includes("object not found") || message.includes("object has been deleted")) {
                 this.logger.info({ key }, "Object not found");
 
                 return null;

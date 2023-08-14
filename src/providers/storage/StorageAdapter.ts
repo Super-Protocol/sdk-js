@@ -128,7 +128,7 @@ export default class StorageAdapter<V extends object> {
     }
 
     public async set(key: string, value: V, encryptionKeyBuffer: Buffer): Promise<void> {
-        if (this.contentWriter.storageWrites.has(key)) {
+        if (this.contentWriter.storageWrites.get(key)?.type === ContentWriterType.NEEDS_DELETE) {
             throw new Error("Object has been deleted");
         }
         const encryptionKey = this.getEnryptionKey(key, encryptionKeyBuffer);

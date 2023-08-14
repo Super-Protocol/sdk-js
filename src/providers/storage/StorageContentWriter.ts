@@ -84,7 +84,7 @@ export default class StorageContentWriter<K extends string, V extends object> {
         const instances = cache.get(key);
         const instance = instances?.get(this.instanceId);
         if (!instances || !instance) {
-            logger.error(
+            this.logger?.error(
                 {
                     key,
                     instancesSize: instances?.size,
@@ -100,7 +100,7 @@ export default class StorageContentWriter<K extends string, V extends object> {
             await this.storageKeyValueAdapter.set(`${key}/${this.instanceId}`, instance.value, encryptionKey);
             if (this.performance && startUpload !== undefined) {
                 const finishUpload = this.performance.now();
-                logger.info(`Uploading took ${(finishUpload - startUpload).toFixed(1)} ms`);
+                this.logger?.info(`Uploading took ${(finishUpload - startUpload).toFixed(1)} ms`);
             }
         }
         await this.deleteOutdatedInstances(key, instances);

@@ -1,5 +1,5 @@
 import { LRUCache } from "lru-cache";
-import StorageContentWriter, { ContentWriterType } from "../../src/providers/storage/StorageContentWriter";
+import StorageContentWriter, { ContentWriterType, StorageContentWriterConfig } from "../../src/providers/storage/StorageContentWriter";
 import { CacheRecord } from "../../src/providers/storage/types";
 import StorageKeyValueAdapter from "../../src/providers/storage/StorageKeyValueAdapter";
 import StorageProviderMock from "../mocks/StorageProvider.mock";
@@ -10,12 +10,13 @@ interface Data {
     message: string;
 }
 const aesKey = "Bf+uvMpBdwr0JdS6m057zf9TIjfcqTHBkqNtlNtzB9Q=";
-const config = {
+const config: StorageContentWriterConfig<Data> = {
     interval: 1,
-    storageKeyValueAdapter: new StorageKeyValueAdapter<Data>(keyValueStorageAdapterConfig),
+    storageKeyValueAdapter: new StorageKeyValueAdapter<Data>(keyValueStorageAdapterConfig, { showLogs: false }),
     instanceId: "test-instance-id",
     objectDeletedFlag: "deleted",
     writeContentConcurrency: 1,
+    showLogs: false,
 };
 
 jest.mock(

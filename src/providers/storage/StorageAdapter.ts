@@ -24,7 +24,7 @@ export interface StorageAdapterConfig {
 }
 
 export enum CacheEvents {
-    INSTANCES_CHANGED = "MESSAGES_CHANGED",
+    INSTANCES_CHANGED = "INSTANCES_CHANGED",
     KEY_DELETED = "KEY_DELETED",
 }
 

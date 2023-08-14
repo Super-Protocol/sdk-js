@@ -11,7 +11,7 @@ jest.mock(
 );
 
 describe("StorageKeyValueAdapter", () => {
-    const storageKeyValueAdapter = new StorageKeyValueAdapter(keyValueStorageAdapterConfig);
+    const storageKeyValueAdapter = new StorageKeyValueAdapter(keyValueStorageAdapterConfig, { showLogs: false });
     test("encrypt/decrypt", async () => {
         const encrypted = await storageKeyValueAdapter.encrypt(data, aesKey);
         const decrypted = await storageKeyValueAdapter.decrypt(encrypted, aesKey);

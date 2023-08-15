@@ -79,6 +79,15 @@ class Order {
     }
 
     /**
+     * Function for fetching avaliable for unlock order profit.
+     */
+    public async isOrderProfitAvailable(): Promise<string> {
+        const [, profit] = await Order.contract.methods.isOrderProfitAvailable(this.id).call();
+
+        return profit;
+    }
+
+    /**
      * Function for fetching order price
      */
     public async calculateCurrentPrice(): Promise<string> {

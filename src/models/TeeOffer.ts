@@ -147,6 +147,17 @@ class TeeOffer {
         return tupleToObject(teeOfferOption, TeeOfferOptionStructure);
     }
 
+    public async getOptions(begin = 0, end = 999999): Promise<TeeOfferOption[]> {
+        const optionsCount = +(await TeeOffer.contract.methods.getTeeOfferOptionsCount(this.id).call());
+        if (optionsCount === 0) {
+            return [];
+        }
+
+        const teeOfferOption = await TeeOffer.contract.methods.getTeeOfferOptions(this.id, begin, end).call();
+
+        return tupleToObjectsArray(teeOfferOption, TeeOfferOptionStructure);
+    }
+
     /**
      * Function for fetching whether tee offer slot exists or not
      * @param optionId - Option ID

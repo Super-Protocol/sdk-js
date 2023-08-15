@@ -205,6 +205,33 @@ class Orders {
         await TxManager.execute(contract.methods.refillOrder, [orderId, amount], transactionOptions);
     }
 
+    public static async unlockProfitByOrderList(
+        orderIds: string[],
+        transactionOptions?: TransactionOptions,
+    ): Promise<void> {
+        const contract = BlockchainConnector.getInstance().getContract(transactionOptions);
+        checkIfActionAccountInitialized(transactionOptions);
+
+        let executedCount;
+        try {
+            executedCount = +(await TxManager.dryRun(
+                contract.methods.unlockProfitByList,
+                [orderIds],
+                transactionOptions,
+            ));
+        } catch (e) {
+            executedCount = 0;
+        }
+
+        if (executedCount === orderIds.length) {
+            await TxManager.execute(contract.methods.unlockProfitByList, [orderIds], transactionOptions);
+        } else {
+            for (const orderId of orderIds) {
+                await new Order(orderId).unlockProfit();
+            }
+        }
+    }
+
     /**
      * Function for adding event listeners on order created event in orders factory contract
      * @param callback - function for processing created order

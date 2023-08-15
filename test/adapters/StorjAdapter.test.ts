@@ -25,7 +25,7 @@ jest.mock(
     jest.fn(() => () => storageProviderMockInstance),
 );
 
-describe("StorageAdapter", () => {
+describe("StorjAdapter", () => {
     beforeEach(() => {
         storageProviderMockInstance = new StorageProviderMock();
     });

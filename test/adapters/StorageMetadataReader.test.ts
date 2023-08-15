@@ -2,14 +2,13 @@ import StorageMetadataReader from "../../src/providers/storage/StorageMetadataRe
 import StorageKeyValueAdapter from "../../src/providers/storage/StorageKeyValueAdapter";
 import StorageProviderMock from "../mocks/StorageProvider.mock";
 import { CacheRecord } from "../../src/providers/storage/types";
-import { keyValueStorageAdapterConfig } from "./utls";
+import { keyValueStorageAdapterConfig, aesKey } from "./utils";
 
 interface Data {
     message: string;
 }
 
 const data = { message: "I am a secret data!" };
-const aesKey = "Bf+uvMpBdwr0JdS6m057zf9TIjfcqTHBkqNtlNtzB9Q=";
 
 jest.mock(
     "../../src/providers/storage/getStorageProvider",

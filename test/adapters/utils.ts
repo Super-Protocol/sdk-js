@@ -10,3 +10,6 @@ export const keyValueStorageAdapterConfig = {
     },
     maximumConcurrent: 1,
 };
+
+export const aesKey = "Bf+uvMpBdwr0JdS6m057zf9TIjfcqTHBkqNtlNtzB9Q=";
+export const bufferAesKey = Buffer.from(aesKey, "base64");

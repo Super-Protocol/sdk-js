@@ -1,9 +1,8 @@
 import StorageKeyValueAdapter from "../../src/providers/storage/StorageKeyValueAdapter";
 import StorageProviderMock, { getDefaultListObjectMock } from "../mocks/StorageProvider.mock";
-import { keyValueStorageAdapterConfig } from "./utls";
+import { keyValueStorageAdapterConfig, aesKey } from "./utils";
 
 const data = { message: "I am a secret data!" };
-const aesKey = "Bf+uvMpBdwr0JdS6m057zf9TIjfcqTHBkqNtlNtzB9Q=";
 
 jest.mock(
     "../../src/providers/storage/getStorageProvider",

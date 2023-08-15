@@ -6,9 +6,10 @@ export type StorjConfig = StorageAdapterConfig;
 
 export default class StorjAdapter<V extends object> {
     private storageAdapter: StorageAdapter<V>;
-    private readonly logger: Logger;
+    private readonly logger?: Logger | null;
     constructor(storageAccess: StorageAccess, config: StorjConfig) {
-        this.logger = logger.child({ class: StorjAdapter.name });
+        const { showLogs = true } = config || {};
+        this.logger = showLogs ? logger.child({ class: StorjAdapter.name }) : null;
         this.storageAdapter = new StorageAdapter(storageAccess, config);
         this.storageAdapter.run();
     }
@@ -19,7 +20,7 @@ export default class StorjAdapter<V extends object> {
         return this.storageAdapter.get(key, encryptionKey).catch((err: Error) => {
             const message = err.message?.toLowerCase() || "";
             if (message.includes("object not found") || message.includes("object has been deleted")) {
-                this.logger.info({ key }, "Object not found");
+                this.logger?.info({ key }, "Object not found");
 
                 return null;
             }
@@ -30,7 +31,15 @@ export default class StorjAdapter<V extends object> {
         return this.storageAdapter.has(key);
     }
     public async set(key: string, value: V, encryptionKey: Buffer) {
-        return this.storageAdapter.set(key, value, encryptionKey);
+        return this.storageAdapter.set(key, value, encryptionKey).catch((err: Error) => {
+            const message = err.message?.toLowerCase() || "";
+            if (message.includes("object has been deleted")) {
+                this.logger?.info({ key }, "Object has been deleted");
+
+                return null;
+            }
+            throw err;
+        });
     }
     public async del(key: string) {
         return this.storageAdapter.delete(key);

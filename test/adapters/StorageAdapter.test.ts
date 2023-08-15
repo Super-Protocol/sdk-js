@@ -1,13 +1,11 @@
 import StorageAdapter, { StorageAdapterConfig, CacheEvents } from "../../src/providers/storage/StorageAdapter";
 import StorageProviderMock from "../mocks/StorageProvider.mock";
-import { keyValueStorageAdapterConfig } from "./utls";
+import { keyValueStorageAdapterConfig, bufferAesKey } from "./utils";
 import { sleep } from "../utils";
 
 interface Data {
     message: string;
 }
-const aesKey = "Bf+uvMpBdwr0JdS6m057zf9TIjfcqTHBkqNtlNtzB9Q=";
-const bufferAesKey = Buffer.from(aesKey, "base64");
 const storageAccessConfig = {
     ...keyValueStorageAdapterConfig,
 };

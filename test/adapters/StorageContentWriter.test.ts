@@ -3,13 +3,12 @@ import StorageContentWriter, { ContentWriterType, StorageContentWriterConfig } f
 import { CacheRecord } from "../../src/providers/storage/types";
 import StorageKeyValueAdapter from "../../src/providers/storage/StorageKeyValueAdapter";
 import StorageProviderMock from "../mocks/StorageProvider.mock";
-import { keyValueStorageAdapterConfig } from "./utls";
+import { keyValueStorageAdapterConfig, aesKey } from "./utils";
 import { sleep } from "../utils";
 
 interface Data {
     message: string;
 }
-const aesKey = "Bf+uvMpBdwr0JdS6m057zf9TIjfcqTHBkqNtlNtzB9Q=";
 const config: StorageContentWriterConfig<Data> = {
     interval: 1,
     storageKeyValueAdapter: new StorageKeyValueAdapter<Data>(keyValueStorageAdapterConfig, { showLogs: false }),

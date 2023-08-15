@@ -16,6 +16,15 @@ interface EvmError extends Error {
     };
 }
 
+class Web3TransactionError extends Error {
+    public readonly originalError: unknown;
+    constructor(originalError: unknown, message: string) {
+        super(message);
+        this.name = "Web3TransactionError";
+        this.originalError = originalError;
+    }
+}
+
 type ArgumentsType = any | any[];
 
 type MethodReturnType = ContractSendMethod & {
@@ -176,9 +185,10 @@ class TxManager {
 
             return transactionResultData;
         } catch (e) {
-            TxManager.logger.error(e, "Error during transaction execution");
+            const message = "Error during transaction execution";
+            TxManager.logger.error(e, message);
             if (nonceTracker) await nonceTracker.onTransactionError();
-            throw e;
+            throw new Web3TransactionError(e, message);
         }
     }
 }

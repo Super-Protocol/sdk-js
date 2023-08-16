@@ -25,6 +25,13 @@ class Web3TransactionError extends Error {
     }
 }
 
+class RevertedByEvmError extends Web3TransactionError {
+    constructor(originalError: unknown, message: string) {
+        super(originalError, message);
+        this.name = "RevertedByEvmError";
+    }
+}
+
 type ArgumentsType = any | any[];
 
 type MethodReturnType = ContractSendMethod & {
@@ -184,11 +191,15 @@ class TxManager {
             if (nonceTracker) nonceTracker.onTransactionPublished();
 
             return transactionResultData;
-        } catch (e) {
+        } catch (e: any) {
             const message = "Error during transaction execution";
             TxManager.logger.error(e, message);
             if (nonceTracker) await nonceTracker.onTransactionError();
-            throw new Web3TransactionError(e, message);
+            if (e.message?.includes("Transaction has been reverted by the EVM")) {
+                throw new RevertedByEvmError(e, message);
+            } else {
+                throw new Web3TransactionError(e, message);
+            }
         }
     }
 }

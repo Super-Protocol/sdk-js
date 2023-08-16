@@ -207,7 +207,7 @@ export class DownloadDecorator implements IStorageProvider {
         return this.provider.getObjectSize(remotePath);
     }
 
-    getLastModified(remotePath: string): Promise<Date> {
+    getLastModified(remotePath: string): Promise<Date | null> {
         return this.provider.getLastModified(remotePath);
     }
 }

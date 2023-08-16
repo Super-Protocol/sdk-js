@@ -7,14 +7,18 @@ import IStorageProvider from "./IStorageProvider";
 import logger, { Logger } from "../../logger";
 import Crypto from "../../crypto/Crypto";
 
+export interface StorageKeyValueAdapterConfig {
+    showLogs?: boolean;
+}
+
 export default class StorageKeyValueAdapter<V extends object> {
     private readonly storageProvider: IStorageProvider;
-    private readonly logger: Logger;
+    private readonly logger?: Logger | null;
 
-    constructor(storageAccess: StorageAccess) {
+    constructor(storageAccess: StorageAccess, config?: StorageKeyValueAdapterConfig) {
         if (!storageAccess?.credentials) throw new Error("Credentials is empty");
-
-        this.logger = logger.child({ class: StorageKeyValueAdapter.name });
+        const { showLogs = true } = config || {};
+        this.logger = showLogs ? logger.child({ class: StorageKeyValueAdapter.name }) : null;
         this.storageProvider = getStorageProvider(storageAccess);
     }
 
@@ -62,9 +66,9 @@ export default class StorageKeyValueAdapter<V extends object> {
             const encryptedValue = await this.encrypt(value, privateKey);
             const buffer = Buffer.from(JSON.stringify(encryptedValue));
             await this.storageProvider.uploadFile(Readable.from(buffer), key, buffer.byteLength);
-            this.logger.info({ data: key }, "Success uploading to storage");
+            this.logger?.info({ data: key }, "Success uploading to storage");
         } catch (err) {
-            this.logger.error({ err }, "Error uploading to storage");
+            this.logger?.error({ err }, "Error uploading to storage");
             throw err;
         }
     }
@@ -72,9 +76,9 @@ export default class StorageKeyValueAdapter<V extends object> {
     private async storageDelete(key: string) {
         try {
             await this.storageProvider.deleteObject(key);
-            this.logger.info({ data: key }, "Success deleting from storage");
+            this.logger?.info({ data: key }, "Success deleting from storage");
         } catch (err) {
-            this.logger.info({ err }, "Error deleting from storage");
+            this.logger?.info({ err }, "Error deleting from storage");
             throw err;
         }
     }
@@ -82,7 +86,7 @@ export default class StorageKeyValueAdapter<V extends object> {
     private async storageDownload(key: string, privateKey: string): Promise<V | null> {
         try {
             const downloaded = await this.downloadFromStorage(key);
-            this.logger.info({ key }, "Success download data from storage");
+            this.logger?.info({ key }, "Success download data from storage");
 
             if (!downloaded) return null;
 
@@ -90,7 +94,7 @@ export default class StorageKeyValueAdapter<V extends object> {
 
             return decryptedValue;
         } catch (err) {
-            this.logger.info(
+            this.logger?.info(
                 {
                     err,
                     key,
@@ -104,7 +108,7 @@ export default class StorageKeyValueAdapter<V extends object> {
     private async storageListFiles(key: string): Promise<StorageObject[]> {
         try {
             const listObjects = await this.storageProvider.listObjects(key);
-            this.logger.trace(
+            this.logger?.trace(
                 {
                     data: listObjects,
                     key,
@@ -114,7 +118,7 @@ export default class StorageKeyValueAdapter<V extends object> {
 
             return listObjects.filter((obj) => !obj.isFolder);
         } catch (err) {
-            this.logger.info(
+            this.logger?.info(
                 {
                     err,
                     key,

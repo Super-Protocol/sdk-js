@@ -20,21 +20,21 @@ export interface StorageAdapterConfig {
     objectDeletedFlag: string;
     readMetadataConcurrency?: number;
     performance?: Performance;
+    showLogs?: boolean;
 }
 
 export enum CacheEvents {
-    INSTANCES_CHANGED = "MESSAGES_CHANGED",
+    INSTANCES_CHANGED = "INSTANCES_CHANGED",
     KEY_DELETED = "KEY_DELETED",
 }
 
 const DEFAULT_READ_METADATA_CONCUREENCY = 16;
 
 export default class StorageAdapter<V extends object> {
-    private readonly logger: Logger;
+    private readonly logger?: Logger | null;
     private readonly storageKeyValueAdapter: StorageKeyValueAdapter<V>;
     private readonly cache: LRUCache<string, Map<string, CacheRecord<V>>>;
     private readonly encryptionKeys = new Map<string, string>(); // key -> encryption key (base64)
-    private readonly deleted = new Set<string>();
     private readonly contentWriter: StorageContentWriter<string, V>;
     private readonly metadataReader: StorageMetadataReader<string, V>;
     private readonly instanceId: string;
@@ -48,17 +48,25 @@ export default class StorageAdapter<V extends object> {
     private readonly performance?: Performance;
 
     constructor(storageAccess: StorageAccess, config: StorageAdapterConfig) {
-        this.logger = logger.child({ class: StorageAdapter.name });
-        const { readInterval, writeInterval, lruCache, objectDeletedFlag, readMetadataConcurrency, performance } =
-            config;
+        const {
+            readInterval,
+            writeInterval,
+            lruCache,
+            objectDeletedFlag,
+            readMetadataConcurrency,
+            performance,
+            showLogs = true,
+        } = config;
+        this.logger = showLogs ? logger.child({ class: StorageAdapter.name }) : null;
         this.performance = performance;
         this.instanceId = this.generateHash();
         this.readInterval = readInterval;
-        this.storageKeyValueAdapter = new StorageKeyValueAdapter(storageAccess);
+        this.storageKeyValueAdapter = new StorageKeyValueAdapter(storageAccess, { showLogs });
         this.cache = new LRUCache(lruCache);
         this.metadataReader = new StorageMetadataReader({
             storageKeyValueAdapter: this.storageKeyValueAdapter,
             objectDeletedFlag,
+            showLogs,
         });
         this.contentWriter = new StorageContentWriter({
             interval: writeInterval,
@@ -66,6 +74,7 @@ export default class StorageAdapter<V extends object> {
             instanceId: this.instanceId,
             objectDeletedFlag,
             performance: this.performance,
+            showLogs,
         });
 
         this.queueReadMetadata = new Queue({
@@ -119,7 +128,7 @@ export default class StorageAdapter<V extends object> {
     }
 
     public async set(key: string, value: V, encryptionKeyBuffer: Buffer): Promise<void> {
-        if (this.deleted.has(key)) {
+        if (this.contentWriter.storageWrites.get(key)?.type === ContentWriterType.NEEDS_DELETE) {
             throw new Error("Object has been deleted");
         }
         const encryptionKey = this.getEnryptionKey(key, encryptionKeyBuffer);
@@ -138,7 +147,6 @@ export default class StorageAdapter<V extends object> {
     }
 
     public async delete(key: string): Promise<void> {
-        this.deleted.add(key);
         this.cache.delete(key);
         this.isUpdating.delete(key);
 
@@ -147,7 +155,7 @@ export default class StorageAdapter<V extends object> {
             this.contentWriter.set(key, ContentWriterType.NEEDS_DELETE, encryptionKey);
             this.encryptionKeys.delete(key);
         } else {
-            this.logger.error(`Encryption key for key ${key} is not set`);
+            this.logger?.error(`Encryption key for key ${key} is not set`);
         }
 
         this.clearQueue(key);
@@ -156,7 +164,10 @@ export default class StorageAdapter<V extends object> {
     // the first value is always the current instance, if key exists
     public async get(key: string, encryptionKeyBuffer: Buffer): Promise<(V | null)[] | null> {
         if (!encryptionKeyBuffer) throw new Error("Encryption key required");
-        if (this.deleted.has(key) || !(await this.has(key))) {
+        if (
+            this.contentWriter.storageWrites.get(key)?.type === ContentWriterType.NEEDS_DELETE ||
+            !(await this.has(key))
+        ) {
             return null;
         }
         const encryptionKey = this.getEnryptionKey(key, encryptionKeyBuffer);
@@ -221,7 +232,7 @@ export default class StorageAdapter<V extends object> {
                                 value: file,
                             });
                         })
-                        .catch((err) => this.logger.error({ err }, "Error fetching content")),
+                        .catch((err) => this.logger?.error({ err }, "Error fetching content")),
                 );
             }
         });
@@ -243,7 +254,10 @@ export default class StorageAdapter<V extends object> {
     }
 
     private async checkUpdates(key: string) {
-        if (this.isUpdating.get(key) || this.deleted.has(key)) {
+        if (
+            this.isUpdating.get(key) ||
+            this.contentWriter.storageWrites.get(key)?.type === ContentWriterType.NEEDS_DELETE
+        ) {
             return;
         }
         this.isUpdating.set(key, true);
@@ -285,7 +299,7 @@ export default class StorageAdapter<V extends object> {
                 this.cache.delete(key);
             }
         } catch (err) {
-            this.logger.error({ err }, "Error checking updates");
+            this.logger?.error({ err }, "Error checking updates");
 
             return;
         } finally {

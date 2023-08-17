@@ -25,10 +25,10 @@ class Web3TransactionError extends Error {
     }
 }
 
-class RevertedByEvmError extends Web3TransactionError {
+class Web3TransactionRevertedByEvmError extends Web3TransactionError {
     constructor(originalError: unknown, message: string) {
         super(originalError, message);
-        this.name = "RevertedByEvmError";
+        this.name = "Web3TransactionRevertedByEvmError";
     }
 }
 
@@ -196,7 +196,7 @@ class TxManager {
             TxManager.logger.error(e, message);
             if (nonceTracker) await nonceTracker.onTransactionError();
             if (e.message?.includes("Transaction has been reverted by the EVM")) {
-                throw new RevertedByEvmError(e, message);
+                throw new Web3TransactionRevertedByEvmError(e, message);
             } else {
                 throw new Web3TransactionError(e, message);
             }

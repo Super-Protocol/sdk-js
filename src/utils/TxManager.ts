@@ -25,7 +25,7 @@ class Web3TransactionError extends Error {
     }
 }
 
-class Web3TransactionRevertedByEvmError extends Web3TransactionError {
+export class Web3TransactionRevertedByEvmError extends Web3TransactionError {
     constructor(originalError: unknown, message: string) {
         super(originalError, message);
         this.name = "Web3TransactionRevertedByEvmError";

@@ -59,7 +59,11 @@ class ProviderRegistry {
         const contract = BlockchainConnector.getInstance().getContract(transactionOptions);
         checkIfActionAccountInitialized(transactionOptions);
 
-        await TxManager.execute(contract.methods.refillProviderSecurityDepo, [amount, recipient], transactionOptions);
+        await TxManager.execute(
+            contract.methods.refillProviderSecurityDepoFor,
+            [amount, recipient],
+            transactionOptions,
+        );
     }
 
     /**

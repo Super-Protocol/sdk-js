@@ -97,3 +97,5 @@ export { default as getStorageProvider } from "./providers/storage/getStoragePro
 export { default as IStorageProvider } from "./providers/storage/IStorageProvider";
 
 export * as helpers from "./utils/helpers";
+
+export { Web3TransactionRevertedByEvmError } from "./utils/TxManager";

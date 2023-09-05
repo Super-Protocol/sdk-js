@@ -3,7 +3,7 @@ import { ContractSendMethod } from "web3-eth-contract";
 import NonceTracker from "./NonceTracker";
 import rootLogger from "../logger";
 import store from "../store";
-import { TransactionOptions, DryRunError } from "../types/Web3";
+import { TransactionOptions, DryRunError, TransactionOptionsRequired } from "../types/Web3";
 import { checkForUsingExternalTxManager, checkIfActionAccountInitialized, createTransactionOptions } from "../utils";
 import Superpro from "../staticModels/Superpro";
 import { defaultGasLimit } from "../constants";
@@ -82,19 +82,24 @@ class TxManager {
         transactionOptions?: TransactionOptions,
         transactionCall?: MethodReturnType,
     ): Promise<any> {
-        const txSender = transactionOptions?.from || store.actionAccount;
-        if (!txSender) {
+        this.checkIfInitialized();
+        checkIfActionAccountInitialized(transactionOptions);
+
+        const options = await createTransactionOptions({ ...transactionOptions });
+        options.web3 = transactionOptions?.web3 || this.web3;
+        if (!options.from) {
             throw Error("From account is undefined. You should pass it to transactionOptions or init action account.");
         }
-        if (!this.queues[txSender]) {
-            this.queues[txSender] = new Bottleneck({
+
+        if (!this.queues[options.from]) {
+            this.queues[options.from] = new Bottleneck({
                 maxConcurrent: store.txConcurrency,
                 minTime: store.txIntervalMs,
             });
         }
 
-        return this.queues[txSender].schedule(async () =>
-            TxManager._publishTransaction(txData, transactionOptions, transactionCall),
+        return this.queues[options.from].schedule(async () =>
+            TxManager._publishTransaction(txData, options as TransactionOptionsRequired, transactionCall),
         );
     }
 
@@ -119,20 +124,13 @@ class TxManager {
 
     private static async _publishTransaction(
         txData: Record<string, any>,
-        transactionOptions?: TransactionOptions,
+        transactionOptions: TransactionOptionsRequired,
         transactionCall?: MethodReturnType,
     ): Promise<TransactionReceipt> {
-        this.checkIfInitialized();
-        checkIfActionAccountInitialized(transactionOptions);
-
-        const web3 = transactionOptions?.web3 || this.web3;
-        const options = await createTransactionOptions({ ...transactionOptions });
-        if (!options.from) {
-            throw Error("From account is undefined. You should pass it to transactionOptions or init action account.");
-        }
+        const { web3 } = transactionOptions;
 
         txData = {
-            ...options,
+            ...transactionOptions,
             ...txData,
         };
 
@@ -149,17 +147,17 @@ class TxManager {
             // defaultGasLimit is max gas limit
             txData.gas = txData.gas < defaultGasLimit ? txData.gas : defaultGasLimit;
 
-            if (options.gas) {
-                if (options.gas < estimatedGas) {
+            if (transactionOptions.gas) {
+                if (transactionOptions.gas < estimatedGas) {
                     TxManager.logger.warn(
                         {
                             estimated: estimatedGas,
-                            specified: options.gas,
+                            specified: transactionOptions.gas,
                         },
                         "Fail to calculate estimated gas",
                     );
                 }
-                txData.gas = options.gas;
+                txData.gas = transactionOptions.gas;
             }
 
             txData.gasPrice = Math.ceil(txData.gasPrice * store.gasPriceMultiplier);
@@ -167,12 +165,12 @@ class TxManager {
 
         let nonceTracker;
         // TODO: Consider a better way to organize different strategies for publishing transactions.
-        if (!checkForUsingExternalTxManager(transactionOptions) && this.nonceTrackers[options.from]) {
-            nonceTracker = this.nonceTrackers[options.from];
+        if (!checkForUsingExternalTxManager(transactionOptions) && this.nonceTrackers[transactionOptions.from]) {
+            nonceTracker = this.nonceTrackers[transactionOptions.from];
             await nonceTracker.onTransactionStartPublishing();
             txData.nonce = nonceTracker.consumeNonce();
         }
-        const signingKey = store.keys[options.from];
+        const signingKey = store.keys[transactionOptions.from];
         try {
             let transactionResultData;
             if (signingKey) {

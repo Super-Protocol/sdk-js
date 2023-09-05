@@ -18,6 +18,8 @@ export type EventData = {
     data: any;
 };
 
+export type TransactionOptionsRequired = Required<TransactionOptions>;
+
 export type TransactionOptions = {
     from?: string;
     gas?: number;

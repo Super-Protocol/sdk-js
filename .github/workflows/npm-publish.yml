@@ -52,7 +52,7 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - run: yarn run prepare --if-present
-      - run: npm publish --tag beta --access public
+      - run: npm publish --beta --access public
         if: |
           contains(github.ref_name, 'beta') ||
           github.event.inputs.release_type == 'beta'

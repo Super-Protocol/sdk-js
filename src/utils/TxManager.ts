@@ -6,10 +6,10 @@ import store from "../store";
 import { TransactionOptions, DryRunError } from "../types/Web3";
 import { checkForUsingExternalTxManager, checkIfActionAccountInitialized, createTransactionOptions } from "../utils";
 import Superpro from "../staticModels/Superpro";
-import { TX_QUEUE_CONCURRENCY, defaultGasLimit } from "../constants";
+import { defaultGasLimit } from "../constants";
 import lodash from "lodash";
 import Web3 from "web3";
-import Queue from "p-queue";
+import Bottleneck from "bottleneck";
 
 interface EvmError extends Error {
     data: {
@@ -45,8 +45,7 @@ class TxManager {
     private static web3: Web3;
     private static logger = rootLogger.child({ className: "TxManager" });
     private static nonceTrackers: { [address: string]: NonceTracker } = {};
-    private static queues: { [address: string]: Queue } = {};
-
+    private static queues: { [address: string]: Bottleneck } = {};
     public static init(web3: Web3) {
         this.web3 = web3;
     }
@@ -78,7 +77,7 @@ class TxManager {
         return await TxManager.publishTransaction(txData, transactionOptions, transaction);
     }
 
-    public static publishTransaction(
+    public static async publishTransaction(
         txData: Record<string, any>,
         transactionOptions?: TransactionOptions,
         transactionCall?: MethodReturnType,
@@ -88,10 +87,13 @@ class TxManager {
             throw Error("From account is undefined. You should pass it to transactionOptions or init action account.");
         }
         if (!this.queues[txSender]) {
-            this.queues[txSender] = new Queue({ concurrency: TX_QUEUE_CONCURRENCY });
+            this.queues[txSender] = new Bottleneck({
+                maxConcurrent: store.txConcurrency,
+                minTime: store.txIntervalMs,
+            });
         }
 
-        return this.queues[txSender].add<TransactionReceipt>(async () =>
+        return this.queues[txSender].schedule(async () =>
             TxManager._publishTransaction(txData, transactionOptions, transactionCall),
         );
     }

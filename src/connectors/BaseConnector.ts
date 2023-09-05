@@ -9,6 +9,8 @@ export type Config = {
     gasLimit?: number;
     gasLimitMultiplier?: number;
     gasPriceMultiplier?: number;
+    txConcurrency?: number;
+    txIntervalMs?: number;
     reconnect?: {
         auto?: boolean;
         delay?: number;
@@ -18,7 +20,7 @@ export type Config = {
 };
 
 export class BaseConnector {
-    protected initialized: boolean = false;
+    protected initialized = false;
     protected logger = rootLogger.child({ className: this.constructor["name"] });
     protected contract?: Contract;
     protected provider?: WebsocketProviderBase | HttpProviderBase;

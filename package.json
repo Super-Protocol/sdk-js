@@ -57,6 +57,7 @@
     "@super-protocol/tee-lib": "^0.1.2",
     "@super-protocol/uplink-nodejs": "1.2.16",
     "aws-sdk": "^2.1418.0",
+    "bottleneck": "^2.19.5",
     "ethers": "^5.5.3",
     "hybrid-crypto-js": "^0.2.4",
     "lodash": "^4.17.21",

@@ -48,11 +48,12 @@ jobs:
           scope: super-protocol
           registry-url: 'https://registry.npmjs.org'
       - run: echo "release_type=${{github.event.inputs.release_type}}"
+      - run: echo "ref_name=${{github.ref_name}}"
       - run: yarn --frozen-lock --ignore-scripts
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - run: yarn run prepare --if-present
-      - run: npm publish --beta --access public
+      - run: npm publish --access public && npm dist-tag add @super-protocol/sdk-js@github.ref_name beta
         if: |
           contains(github.ref_name, 'beta') ||
           github.event.inputs.release_type == 'beta'

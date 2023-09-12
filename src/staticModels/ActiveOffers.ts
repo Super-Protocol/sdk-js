@@ -1,12 +1,12 @@
-import rootLogger from "../logger";
-import { BigNumber } from "ethers";
-import { TransactionOptions } from "../types/Web3";
-import Superpro from "./Superpro";
-import TxManager from "../utils/TxManager";
-import BlockchainConnector from "../connectors/BlockchainConnector";
+import rootLogger from '../logger';
+import { BigNumber } from 'ethers';
+import { TransactionOptions } from '../types/Web3';
+import Superpro from './Superpro';
+import TxManager from '../utils/TxManager';
+import BlockchainConnector from '../connectors/BlockchainConnector';
 
 class ActiveOffers {
-    private static readonly logger = rootLogger.child({ className: "ActiveOffers" });
+    private static readonly logger = rootLogger.child({ className: 'ActiveOffers' });
 
     public static offers?: string[];
 
@@ -38,7 +38,7 @@ class ActiveOffers {
         end?: BigNumber | number,
     ): Promise<string[]> {
         const contract = BlockchainConnector.getInstance().getContract();
-        const logger = this.logger.child({ method: "getListOfActiveOffersRange" });
+        const logger = this.logger.child({ method: 'getListOfActiveOffersRange' });
 
         begin = begin ?? 0;
         end = end ?? (await contract.methods.getListOfActiveOffersSize().call());
@@ -57,7 +57,11 @@ class ActiveOffers {
     ): Promise<void> {
         const contract = BlockchainConnector.getInstance().getContract();
 
-        await TxManager.execute(contract.methods.updateListOfActiveOffers, [maxProcessedEvents], transactionOptions);
+        await TxManager.execute(
+            contract.methods.updateListOfActiveOffers,
+            [maxProcessedEvents],
+            transactionOptions,
+        );
     }
 }
 

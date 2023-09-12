@@ -1,4 +1,4 @@
-import StorageAccess from "./StorageAccess";
+import StorageAccess from './StorageAccess';
 
 type StorageFileAccess = StorageAccess & {
     filepath: string;

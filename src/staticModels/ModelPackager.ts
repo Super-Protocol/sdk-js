@@ -1,5 +1,5 @@
-import { Compression } from "../proto/Compression";
-import { GzipCompressor, UncompressedCompressor } from "../utils/compressors";
+import { Compression } from '../proto/Compression';
+import { GzipCompressor, UncompressedCompressor } from '../utils/compressors';
 
 export class ModelPackager {
     private static compressors = [GzipCompressor, UncompressedCompressor];
@@ -43,7 +43,9 @@ export class ModelPackager {
     public static async unpack<T = unknown>(message: Buffer): Promise<T> {
         const decoded = Compression.decode(message);
 
-        const Compressor = ModelPackager.compressors.find((CompressorClass) => CompressorClass.type === decoded.type);
+        const Compressor = ModelPackager.compressors.find(
+            (CompressorClass) => CompressorClass.type === decoded.type,
+        );
 
         if (!Compressor) {
             throw new Error(`Cannot unpack message. Compressor ${decoded.type} isn't supported`);

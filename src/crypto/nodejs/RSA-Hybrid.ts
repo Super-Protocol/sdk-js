@@ -1,5 +1,11 @@
-import { ReadStream, WriteStream } from "fs";
-import { Cipher, CryptoAlgorithm, Encryption, EncryptionWithMacIV, RSAHybridEncryption } from "@super-protocol/dto-js";
+import { ReadStream, WriteStream } from 'fs';
+import {
+    Cipher,
+    CryptoAlgorithm,
+    Encryption,
+    EncryptionWithMacIV,
+    RSAHybridEncryption,
+} from '@super-protocol/dto-js';
 import {
     createPublicKey,
     createPrivateKey,
@@ -10,48 +16,48 @@ import {
     publicEncrypt,
     privateDecrypt,
     randomBytes,
-} from "crypto";
-import NativeCrypto from "./NativeCrypto";
+} from 'crypto';
+import NativeCrypto from './NativeCrypto';
 
 type KeysType = Record<string, string>;
 
 class RSAHybrid {
     public static getKeyFingerprint(key: KeyObject): string {
-        const jsonKey: JsonWebKey = key.export({ format: "jwk" });
+        const jsonKey: JsonWebKey = key.export({ format: 'jwk' });
         const buffer = Buffer.concat([
-            Buffer.from("ssh-rsa"),
-            Buffer.from(jsonKey.e || ""),
-            Buffer.from(jsonKey.n || ""),
+            Buffer.from('ssh-rsa'),
+            Buffer.from(jsonKey.e || ''),
+            Buffer.from(jsonKey.n || ''),
         ]);
-        const hex = createHash("md5").update(buffer).digest("hex");
+        const hex = createHash('md5').update(buffer).digest('hex');
 
-        return hex.match(/.{2}/g)!.join(":");
+        return hex.match(/.{2}/g)!.join(':');
     }
 
     private static publicEncrypt(rsaKey: string, aesKey: Buffer): KeysType {
         const publicKey = createPublicKey({
             key: rsaKey,
-            format: "pem",
+            format: 'pem',
         });
         const encryptedKey = publicEncrypt(
             {
                 key: publicKey,
                 padding: CryptoConstants.RSA_PKCS1_OAEP_PADDING,
-                oaepHash: "sha256",
+                oaepHash: 'sha256',
             },
             Buffer.from(aesKey),
         );
         const keyFingerprint = this.getKeyFingerprint(publicKey);
 
         return {
-            [keyFingerprint]: encryptedKey.toString("base64"),
+            [keyFingerprint]: encryptedKey.toString('base64'),
         };
     }
 
     private static privateDecrypt(rsaKey: string, keys: KeysType): Buffer {
         const privateKey = createPrivateKey({
             key: rsaKey,
-            format: "pem",
+            format: 'pem',
         });
 
         const keyFingerprint = this.getKeyFingerprint(privateKey);
@@ -61,9 +67,9 @@ class RSAHybrid {
             {
                 key: privateKey,
                 padding: CryptoConstants.RSA_PKCS1_OAEP_PADDING,
-                oaepHash: "sha256",
+                oaepHash: 'sha256',
             },
-            Buffer.from(encryptedKey, "base64"),
+            Buffer.from(encryptedKey, 'base64'),
         );
 
         return aesKey;
@@ -117,7 +123,10 @@ class RSAHybrid {
     public static decrypt(encryption: RSAHybridEncryption): string {
         const iv: Buffer = Buffer.from(encryption.iv, encryption.encoding);
         const mac: Buffer = Buffer.from(encryption.mac, encryption.encoding);
-        const aesKey: Buffer = this.privateDecrypt(encryption.key as string, JSON.parse(encryption.keys));
+        const aesKey: Buffer = this.privateDecrypt(
+            encryption.key as string,
+            JSON.parse(encryption.keys),
+        );
 
         const decrypted: string = NativeCrypto.decrypt(
             aesKey,
@@ -140,7 +149,10 @@ class RSAHybrid {
     ): Promise<void> {
         const iv: Buffer = Buffer.from(encryption.iv, encryption.encoding);
         const mac: Buffer = Buffer.from(encryption.mac, encryption.encoding);
-        const aesKey: Buffer = this.privateDecrypt(encryption.key as string, JSON.parse(encryption.keys));
+        const aesKey: Buffer = this.privateDecrypt(
+            encryption.key as string,
+            JSON.parse(encryption.keys),
+        );
 
         await NativeCrypto.decryptStream(aesKey, inputStream, outputStream, Cipher.AES_256_GCM, {
             iv,

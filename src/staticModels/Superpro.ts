@@ -1,6 +1,6 @@
-import { ParamName } from "../types/Superpro";
-import BlockchainConnector from "../connectors/BlockchainConnector";
-import { Contract } from "web3-eth-contract";
+import { ParamName } from '../types/Superpro';
+import BlockchainConnector from '../connectors/BlockchainConnector';
+import { Contract } from 'web3-eth-contract';
 
 class Superpro {
     public static address: string;

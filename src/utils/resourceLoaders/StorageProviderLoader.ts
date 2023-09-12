@@ -1,16 +1,16 @@
-import fs from "fs";
-import stream from "stream";
-import { Resource, ResourceType, StorageProviderResource } from "@super-protocol/dto-js";
+import fs from 'fs';
+import stream from 'stream';
+import { Resource, ResourceType, StorageProviderResource } from '@super-protocol/dto-js';
 import {
     createDownloadChunkMethodWithRetry,
     downloadChunkMethod,
     DownloadDecorator,
     RetryDownloadChunkOptions,
-} from "../../providers/storage/ChunksDownloadDecorator";
-import { IResourceLoader, ResourceLoaderConfig } from "../../types/ResourceLoader";
-import getStorageProvider from "../../providers/storage/getStorageProvider";
-import IStorageProvider from "../../providers/storage/IStorageProvider";
-import { BaseResourceLoader } from "./BaseResourceLoader";
+} from '../../providers/storage/ChunksDownloadDecorator';
+import { IResourceLoader, ResourceLoaderConfig } from '../../types/ResourceLoader';
+import getStorageProvider from '../../providers/storage/getStorageProvider';
+import IStorageProvider from '../../providers/storage/IStorageProvider';
+import { BaseResourceLoader } from './BaseResourceLoader';
 
 export class StorageProviderLoader extends BaseResourceLoader implements IResourceLoader {
     private static DEFAULT_RETRY_COUNT = 3;
@@ -54,13 +54,20 @@ export class StorageProviderLoader extends BaseResourceLoader implements IResour
         let storageProviderToInvoke: IStorageProvider;
 
         if (this.chunkSize && this.concurrency) {
-            const chunkedDownloadWithRetry = createDownloadChunkMethodWithRetry(downloadChunkMethod, this.retry);
+            const chunkedDownloadWithRetry = createDownloadChunkMethodWithRetry(
+                downloadChunkMethod,
+                this.retry,
+            );
 
-            storageProviderToInvoke = new DownloadDecorator(storageProvider, chunkedDownloadWithRetry, {
-                chunkSize: this.chunkSize,
-                concurrency: this.concurrency,
-                offset: this.startOffset,
-            });
+            storageProviderToInvoke = new DownloadDecorator(
+                storageProvider,
+                chunkedDownloadWithRetry,
+                {
+                    chunkSize: this.chunkSize,
+                    concurrency: this.concurrency,
+                    offset: this.startOffset,
+                },
+            );
         } else {
             storageProviderToInvoke = storageProvider;
         }

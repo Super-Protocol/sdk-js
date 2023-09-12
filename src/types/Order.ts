@@ -1,17 +1,17 @@
-import { parseBytes32String } from "ethers/lib/utils";
-import { SlotUsage, SlotUsageStructure } from "./SlotUsage";
-import { SlotInfo, SlotInfoStructure } from "./SlotInfo";
-import { OptionInfo, OptionInfoStructure } from "./OptionInfo";
+import { parseBytes32String } from 'ethers/lib/utils';
+import { SlotUsage, SlotUsageStructure } from './SlotUsage';
+import { SlotInfo, SlotInfoStructure } from './SlotInfo';
+import { OptionInfo, OptionInfoStructure } from './OptionInfo';
 
 export enum OrderStatus {
-    New = "0",
-    Processing = "1",
-    Canceling = "2",
-    Canceled = "3",
-    Done = "4",
-    Error = "5",
-    Blocked = "6",
-    Suspended = "7",
+    New = '0',
+    Processing = '1',
+    Canceling = '2',
+    Canceled = '3',
+    Done = '4',
+    Error = '5',
+    Blocked = '6',
+    Suspended = '7',
 }
 
 // Order of keys and type conversion functions for this object in blockchain contract

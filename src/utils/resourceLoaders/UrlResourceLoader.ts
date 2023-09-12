@@ -1,9 +1,9 @@
-import fs from "fs";
-import http from "http";
-import https from "https";
-import stream from "stream";
-import { Resource, ResourceType, UrlResource } from "@super-protocol/dto-js";
-import { BaseResourceLoader } from "./BaseResourceLoader";
+import fs from 'fs';
+import http from 'http';
+import https from 'https';
+import stream from 'stream';
+import { Resource, ResourceType, UrlResource } from '@super-protocol/dto-js';
+import { BaseResourceLoader } from './BaseResourceLoader';
 
 export class UrlResourceLoader extends BaseResourceLoader {
     public static type = ResourceType.Url;
@@ -24,7 +24,7 @@ export class UrlResourceLoader extends BaseResourceLoader {
         let { url } = resource;
 
         return new Promise((resolve, reject): void => {
-            const fileProtocol = "file://";
+            const fileProtocol = 'file://';
 
             if (url.startsWith(fileProtocol)) {
                 url = url.substring(fileProtocol.length);
@@ -35,12 +35,12 @@ export class UrlResourceLoader extends BaseResourceLoader {
                     reject(error);
                 }
             } else {
-                const module: typeof https | typeof http = url.startsWith("https:") ? https : http;
+                const module: typeof https | typeof http = url.startsWith('https:') ? https : http;
                 module
                     .get(url, (response: http.IncomingMessage): void => {
                         resolve(response);
                     })
-                    .on("error", (error: Error): void => {
+                    .on('error', (error: Error): void => {
                         reject(error);
                     });
             }

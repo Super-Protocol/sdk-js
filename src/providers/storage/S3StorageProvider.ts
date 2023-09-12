@@ -1,7 +1,7 @@
-import { S3 } from "aws-sdk";
-import IStorageProvider, { DownloadConfig } from "./IStorageProvider";
-import { Readable } from "stream";
-import StorageObject from "../../types/storage/StorageObject";
+import { S3 } from 'aws-sdk';
+import IStorageProvider, { DownloadConfig } from './IStorageProvider';
+import { Readable } from 'stream';
+import StorageObject from '../../types/storage/StorageObject';
 
 export type S3ClientConfig = {
     accessKeyId: string;
@@ -17,10 +17,10 @@ export class S3StorageProvider implements IStorageProvider {
 
     constructor(storageAccess: S3ClientConfig) {
         const { accessKeyId, secretAccessKey, endpoint, bucket } = storageAccess;
-        if (!accessKeyId) throw new Error("Access key id is undefined");
-        if (!secretAccessKey) throw new Error("Secret access is undefined");
-        if (!endpoint) throw new Error("Endpoint is undefined");
-        if (!bucket) throw new Error("Bucket is undefined");
+        if (!accessKeyId) throw new Error('Access key id is undefined');
+        if (!secretAccessKey) throw new Error('Secret access is undefined');
+        if (!endpoint) throw new Error('Endpoint is undefined');
+        if (!bucket) throw new Error('Bucket is undefined');
 
         this.bucket = bucket;
 
@@ -31,7 +31,7 @@ export class S3StorageProvider implements IStorageProvider {
             },
             endpoint,
             s3ForcePathStyle: true,
-            signatureVersion: "v4",
+            signatureVersion: 'v4',
             httpOptions: { timeout: 0 },
         });
     }
@@ -55,7 +55,7 @@ export class S3StorageProvider implements IStorageProvider {
                 Key: remotePath,
                 ContentLength: contentLength,
             })
-            .on("httpUploadProgress", ({ total, loaded }) => progressListener?.(total, loaded))
+            .on('httpUploadProgress', ({ total, loaded }) => progressListener?.(total, loaded))
             .promise();
         if (result.$response.error) {
             throw result.$response.error;
@@ -76,7 +76,7 @@ export class S3StorageProvider implements IStorageProvider {
             .promise();
 
         if (!multipart.UploadId) {
-            throw new Error("UploadId property is empty");
+            throw new Error('UploadId property is empty');
         }
         try {
             let totalWritten = 0;
@@ -152,7 +152,7 @@ export class S3StorageProvider implements IStorageProvider {
         if (config) {
             const start = config.offset || 0;
             const end = start + (config.length || 0);
-            getObjectParams.Range = `bytes=${start}-${end || ""}`;
+            getObjectParams.Range = `bytes=${start}-${end || ''}`;
         }
 
         const downloadStream = this.s3Client.getObject(getObjectParams).createReadStream();
@@ -161,7 +161,7 @@ export class S3StorageProvider implements IStorageProvider {
         if (progressListener) {
             const fileBytesSize = config.length || (await this.getObjectSize(remotePath));
 
-            downloadStream.on("data", (chunk) => {
+            downloadStream.on('data', (chunk) => {
                 current += chunk.length;
                 progressListener(fileBytesSize, current);
             });
@@ -171,7 +171,7 @@ export class S3StorageProvider implements IStorageProvider {
     }
 
     async listObjects(remotePath: string): Promise<StorageObject[]> {
-        const prefix = remotePath.endsWith("/") ? remotePath : `${remotePath}/`;
+        const prefix = remotePath.endsWith('/') ? remotePath : `${remotePath}/`;
 
         const listObjects = await this.s3Client
             .listObjectsV2({
@@ -187,7 +187,7 @@ export class S3StorageProvider implements IStorageProvider {
         let result: StorageObject[] = [];
         if (listObjects.Contents) {
             result = listObjects.Contents.map((object) => ({
-                name: object.Key || "",
+                name: object.Key || '',
                 createdAt: object.LastModified || new Date(),
                 size: object.Size || 0,
             }));
@@ -212,7 +212,7 @@ export class S3StorageProvider implements IStorageProvider {
     async getObjectSize(remotePath: string): Promise<number> {
         const metadata = await this.getMetadata(remotePath);
         if (metadata.ContentLength === undefined) {
-            throw new Error("ContentLength property is empty");
+            throw new Error('ContentLength property is empty');
         }
 
         return metadata.ContentLength || 0;
@@ -221,7 +221,7 @@ export class S3StorageProvider implements IStorageProvider {
     async getLastModified(remotePath: string): Promise<Date> {
         const metadata = await this.getMetadata(remotePath);
         if (!metadata.LastModified) {
-            throw new Error("LastModified property is empty");
+            throw new Error('LastModified property is empty');
         }
 
         return metadata.LastModified;

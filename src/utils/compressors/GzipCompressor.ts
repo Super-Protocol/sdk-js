@@ -1,6 +1,6 @@
-import { gzip, ungzip } from "node-gzip";
-import { Compression_TYPE } from "../../proto/Compression";
-import { Compressor } from "../../types/Compressor";
+import { gzip, ungzip } from 'node-gzip';
+import { Compression_TYPE } from '../../proto/Compression';
+import { Compressor } from '../../types/Compressor';
 
 export class GzipCompressor<T> implements Compressor<T> {
     public static type = Compression_TYPE.GZIP;

@@ -1,11 +1,11 @@
-import Web3 from "web3";
+import Web3 from 'web3';
 import {
     defaultGasLimitMultiplier,
     defaultGasPriceMultiplier,
     defaultGasLimit,
     txIntervalMs,
     txConcurrency,
-} from "./constants";
+} from './constants';
 
 export type Store = {
     web3Wss?: Web3;

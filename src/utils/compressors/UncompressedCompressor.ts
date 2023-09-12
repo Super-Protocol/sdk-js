@@ -1,5 +1,5 @@
-import { Compression_TYPE } from "../../proto/Compression";
-import { Compressor } from "../../types/Compressor";
+import { Compression_TYPE } from '../../proto/Compression';
+import { Compressor } from '../../types/Compressor';
 
 export class UncompressedCompressor<T = unknown> implements Compressor<T> {
     public static type = Compression_TYPE.Uncompressed;

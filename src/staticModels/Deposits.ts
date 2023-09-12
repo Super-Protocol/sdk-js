@@ -1,14 +1,14 @@
-import rootLogger from "../logger";
-import { checkIfActionAccountInitialized, incrementMethodCall, tupleToObject } from "../utils";
-import { BlockInfo, ContractEvent, TransactionOptions } from "../types/Web3";
-import Superpro from "./Superpro";
-import TxManager from "../utils/TxManager";
-import BlockchainConnector from "../connectors/BlockchainConnector";
-import BlockchainEventsListener from "../connectors/BlockchainEventsListener";
-import { DepositInfo, DepositInfoStructure } from "../types/DepositInfo";
+import rootLogger from '../logger';
+import { checkIfActionAccountInitialized, incrementMethodCall, tupleToObject } from '../utils';
+import { BlockInfo, ContractEvent, TransactionOptions } from '../types/Web3';
+import Superpro from './Superpro';
+import TxManager from '../utils/TxManager';
+import BlockchainConnector from '../connectors/BlockchainConnector';
+import BlockchainEventsListener from '../connectors/BlockchainEventsListener';
+import { DepositInfo, DepositInfoStructure } from '../types/DepositInfo';
 
 class Deposits {
-    private static readonly logger = rootLogger.child({ className: "Deposits" });
+    private static readonly logger = rootLogger.child({ className: 'Deposits' });
 
     public static get address(): string {
         return Superpro.address;
@@ -21,7 +21,10 @@ class Deposits {
     public static async getDepositInfo(depositOwner: string): Promise<DepositInfo> {
         const contract = BlockchainConnector.getInstance().getContract();
 
-        return tupleToObject(await contract.methods.getDepositInfo(depositOwner).call(), DepositInfoStructure);
+        return tupleToObject(
+            await contract.methods.getDepositInfo(depositOwner).call(),
+            DepositInfoStructure,
+        );
     }
 
     /**
@@ -41,7 +44,10 @@ class Deposits {
      * @returns {Promise<void>} - Does not return id of created order!
      */
     @incrementMethodCall()
-    public static async replenish(amount: string, transactionOptions?: TransactionOptions): Promise<void> {
+    public static async replenish(
+        amount: string,
+        transactionOptions?: TransactionOptions,
+    ): Promise<void> {
         const contract = BlockchainConnector.getInstance().getContract(transactionOptions);
         checkIfActionAccountInitialized(transactionOptions);
 
@@ -64,7 +70,11 @@ class Deposits {
         const contract = BlockchainConnector.getInstance().getContract(transactionOptions);
         checkIfActionAccountInitialized(transactionOptions);
 
-        await TxManager.execute(contract.methods.replenishFor, [beneficiary, amount], transactionOptions);
+        await TxManager.execute(
+            contract.methods.replenishFor,
+            [beneficiary, amount],
+            transactionOptions,
+        );
     }
 
     /**
@@ -74,7 +84,10 @@ class Deposits {
      * @returns {Promise<void>} - Does not return id of created order!
      */
     @incrementMethodCall()
-    public static async withdraw(amount: string, transactionOptions?: TransactionOptions): Promise<void> {
+    public static async withdraw(
+        amount: string,
+        transactionOptions?: TransactionOptions,
+    ): Promise<void> {
         const contract = BlockchainConnector.getInstance().getContract(transactionOptions);
         checkIfActionAccountInitialized(transactionOptions);
 
@@ -87,13 +100,16 @@ class Deposits {
      * @param callback - function for processing created order
      * @returns unsubscribe - unsubscribe function from event
      */
-    public static onDepositReplenished(callback: onDepositReplenishedCallback, owner?: string): () => void {
+    public static onDepositReplenished(
+        callback: onDepositReplenishedCallback,
+        owner?: string,
+    ): () => void {
         const contract = BlockchainEventsListener.getInstance().getContract();
-        const logger = this.logger.child({ method: "onDepositReplenished" });
+        const logger = this.logger.child({ method: 'onDepositReplenished' });
 
         const subscription = contract.events
             .DepositReplenished()
-            .on("data", async (event: ContractEvent) => {
+            .on('data', async (event: ContractEvent) => {
                 if (owner && event.returnValues.owner != owner) {
                     return;
                 }
@@ -107,7 +123,7 @@ class Deposits {
                     },
                 );
             })
-            .on("error", (error: Error, receipt: string) => {
+            .on('error', (error: Error, receipt: string) => {
                 if (receipt) return;
                 logger.warn(error);
             });
@@ -121,13 +137,16 @@ class Deposits {
      * @param callback - function for processing created order
      * @returns unsubscribe - unsubscribe function from event
      */
-    public static onDepositWithdrawn(callback: onDepositWithdrawnCallback, owner?: string): () => void {
+    public static onDepositWithdrawn(
+        callback: onDepositWithdrawnCallback,
+        owner?: string,
+    ): () => void {
         const contract = BlockchainEventsListener.getInstance().getContract();
-        const logger = this.logger.child({ method: "onDepositWithdrawn" });
+        const logger = this.logger.child({ method: 'onDepositWithdrawn' });
 
         const subscription = contract.events
             .DepositWithdrawn()
-            .on("data", async (event: ContractEvent) => {
+            .on('data', async (event: ContractEvent) => {
                 if (owner && event.returnValues.owner != owner) {
                     return;
                 }
@@ -141,7 +160,7 @@ class Deposits {
                     },
                 );
             })
-            .on("error", (error: Error, receipt: string) => {
+            .on('error', (error: Error, receipt: string) => {
                 if (receipt) return;
                 logger.warn(error);
             });
@@ -155,13 +174,16 @@ class Deposits {
      * @param callback - function for processing created order
      * @returns unsubscribe - unsubscribe function from event
      */
-    public static onDepositPartLocked(callback: onDepositPartLockedCallback, owner?: string): () => void {
+    public static onDepositPartLocked(
+        callback: onDepositPartLockedCallback,
+        owner?: string,
+    ): () => void {
         const contract = BlockchainEventsListener.getInstance().getContract();
-        const logger = this.logger.child({ method: "onDepositPartLocked" });
+        const logger = this.logger.child({ method: 'onDepositPartLocked' });
 
         const subscription = contract.events
             .DepositPartLocked()
-            .on("data", async (event: ContractEvent) => {
+            .on('data', async (event: ContractEvent) => {
                 if (owner && event.returnValues.owner != owner) {
                     return;
                 }
@@ -175,7 +197,7 @@ class Deposits {
                     },
                 );
             })
-            .on("error", (error: Error, receipt: string) => {
+            .on('error', (error: Error, receipt: string) => {
                 if (receipt) return;
                 logger.warn(error);
             });
@@ -189,13 +211,16 @@ class Deposits {
      * @param callback - function for processing created order
      * @returns unsubscribe - unsubscribe function from event
      */
-    public static onDepositPartUnlocked(callback: onDepositPartUnlockedCallback, owner?: string): () => void {
+    public static onDepositPartUnlocked(
+        callback: onDepositPartUnlockedCallback,
+        owner?: string,
+    ): () => void {
         const contract = BlockchainEventsListener.getInstance().getContract();
-        const logger = this.logger.child({ method: "onDepositPartUnlocked" });
+        const logger = this.logger.child({ method: 'onDepositPartUnlocked' });
 
         const subscription = contract.events
             .DepositPartUnlocked()
-            .on("data", async (event: ContractEvent) => {
+            .on('data', async (event: ContractEvent) => {
                 if (owner && event.returnValues.owner != owner) {
                     return;
                 }
@@ -209,7 +234,7 @@ class Deposits {
                     },
                 );
             })
-            .on("error", (error: Error, receipt: string) => {
+            .on('error', (error: Error, receipt: string) => {
                 if (receipt) return;
                 logger.warn(error);
             });

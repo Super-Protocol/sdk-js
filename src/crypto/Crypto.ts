@@ -5,12 +5,12 @@ import {
     ECIESEncryption,
     Encryption,
     RSAHybridEncryption,
-} from "@super-protocol/dto-js";
-import fs from "fs";
-import AES from "./nodejs/AES";
-import ARIA from "./nodejs/ARIA";
-import ECIES from "./nodejs/ECIES";
-import RSAHybrid from "./nodejs/RSA-Hybrid";
+} from '@super-protocol/dto-js';
+import fs from 'fs';
+import AES from './nodejs/AES';
+import ARIA from './nodejs/ARIA';
+import ECIES from './nodejs/ECIES';
+import RSAHybrid from './nodejs/RSA-Hybrid';
 
 class Crypto {
     /**
@@ -102,11 +102,23 @@ class Crypto {
     ): Promise<void> {
         switch (encryption.algo) {
             case CryptoAlgorithm.AES:
-                return await AES.decryptStream(inputStream, outputStream, encryption as AESEncryption);
+                return await AES.decryptStream(
+                    inputStream,
+                    outputStream,
+                    encryption as AESEncryption,
+                );
             case CryptoAlgorithm.ARIA:
-                return await ARIA.decryptStream(inputStream, outputStream, encryption as ARIAEncryption);
+                return await ARIA.decryptStream(
+                    inputStream,
+                    outputStream,
+                    encryption as ARIAEncryption,
+                );
             case CryptoAlgorithm.RSAHybrid:
-                return await RSAHybrid.decryptStream(inputStream, outputStream, encryption as RSAHybridEncryption);
+                return await RSAHybrid.decryptStream(
+                    inputStream,
+                    outputStream,
+                    encryption as RSAHybridEncryption,
+                );
             default:
                 throw Error(`${encryption.algo} algorithm not supported`);
         }

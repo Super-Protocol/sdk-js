@@ -1,4 +1,4 @@
-import Web3 from "web3";
+import Web3 from 'web3';
 
 // Event what used as payload for Web3 events
 export type ContractEvent = {

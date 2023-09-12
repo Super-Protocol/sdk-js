@@ -1,11 +1,11 @@
-import rootLogger from "../logger";
-import Superpro from "./Superpro";
-import { BigNumber } from "ethers";
-import BlockchainConnector from "../connectors/BlockchainConnector";
-import { incrementMethodCall } from "../utils";
+import rootLogger from '../logger';
+import Superpro from './Superpro';
+import { BigNumber } from 'ethers';
+import BlockchainConnector from '../connectors/BlockchainConnector';
+import { incrementMethodCall } from '../utils';
 
 class ActiveOrders {
-    private static readonly logger = rootLogger.child({ className: "ActiveOrders" });
+    private static readonly logger = rootLogger.child({ className: 'ActiveOrders' });
 
     public static get address(): string {
         return Superpro.address;
@@ -32,7 +32,7 @@ class ActiveOrders {
         end?: BigNumber | number,
     ): Promise<string[]> {
         const contract = BlockchainConnector.getInstance().getContract();
-        const logger = this.logger.child({ method: "getListOfActiveOrdersRange" });
+        const logger = this.logger.child({ method: 'getListOfActiveOrdersRange' });
 
         begin = begin ?? 0;
         end = end ?? (await contract.methods.getListOfActiveOrdersSize().call());

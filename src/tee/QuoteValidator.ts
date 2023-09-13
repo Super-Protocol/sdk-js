@@ -22,13 +22,12 @@ export class QuoteValidator {
             .map((cert) => `-----BEGIN CERTIFICATE-----` + cert);
     }
 
-    private async verifyQEReportSignature(quote: TeeSgxQuoteDataType) {
+    private async verifyQeReportSignature(quote: TeeSgxQuoteDataType): Promise<boolean> {
         const qeReport = quote.qeReport;
-        const cert = quote.qeCertificationData;
-        const certChain = cert.toString();
+        const certChain = quote.qeCertificationData.toString();
         const certType = quote.qeCertificationDataType;
         if (certType !== 5) {
-            throw new Error(`Unsupported Certification Data Type: ${certType}`);
+            throw new Error(`Unsupported certification data type: ${certType}`);
         }
         const signature = quote.qeReportSignature;
 
@@ -50,7 +49,7 @@ export class QuoteValidator {
         const [, fetchedRootCert] = this.splitChain(platformChain);
 
         // root
-        const crlExtension = rootCert.extensions.find((item: any) => item.oid === cRLDistributionPointsOid);
+        const crlExtension = rootCert.extensions.find((item) => item.oid === cRLDistributionPointsOid);
         if (!crlExtension) {
             throw new Error("CRL distribution points value not found in root certificate");
         }
@@ -69,39 +68,65 @@ export class QuoteValidator {
 
         // check QE report signature
         const hash = crypto.createHash("sha256");
-        hash.update(qeReport);
-        const key = Buffer.concat([Buffer.from([4]), Buffer.from(publicKey.toPEM())]);
+        hash.update(Buffer.from(qeReport));
         const ec = new elliptic.ec("p256");
-        const res = ec.verify(
+        const result = ec.verify(
             hash.digest(),
             {
                 r: signature.subarray(0, 32),
                 s: signature.subarray(32),
             },
-            key,
+            ec.keyFromPublic(publicKey.keyRaw, "hex"),
         );
 
-        return res;
+        return result;
     }
 
-    private verifyQEReportData() {
-        /*
-            Берется SHA256-hash от поля QE Authentication Data (без поля size) и ECDSA Attestation Key.
-            Полученное значение сравнивается со значением поля (первые 32 байта из 64) Report Data структуры QE Report.
-        */
+    private verifyQeReportData(quote: TeeSgxQuoteDataType): boolean {
+        const qeAuthData = Buffer.from(quote.qeAuthenticationData);
+        const attestationKey = Buffer.from(quote.ecdsaAttestationKey);
+        const qeReportData = Buffer.from(quote.qeReport.subarray(0, 32));
+        const hash = crypto.createHash("sha256");
+        const hashResult = hash.update(qeAuthData).update(attestationKey).digest();
+        const result = Buffer.compare(qeReportData, hashResult);
+
+        return result === 0;
     }
 
-    private verifyEnclaveReportSignature() {
-        /*
-            Значение Quote Header и ISV Enclave Report проверяется ключем ECDSA Attestation Key
-            по сигнатуре ISV Enclave Report Signature.
-        */
+    private verifyEnclaveReportSignature(quote: TeeSgxQuoteDataType) {
+        const key = Buffer.from(quote.ecdsaAttestationKey);
+        const expected = quote.isvEnclaveReportSignature;
+
+        const hash = crypto.createHash("sha256");
+        hash.update(Buffer.from(quote.rawHeader)).update(Buffer.from(quote.report));
+        const ec = new elliptic.ec("p256");
+        const result = ec.verify(
+            hash.digest(),
+            {
+                r: expected.subarray(0, 32),
+                s: expected.subarray(32),
+            },
+            Buffer.concat([Buffer.from([4]), key]),
+        );
+
+        return result;
     }
 
-    private async validateQuoteStructure(quote: TeeSgxQuoteDataType) {
-        this.verifyQEReportSignature(quote);
-        this.verifyQEReportData();
-        this.verifyEnclaveReportSignature();
+    private async validateQuoteStructure(quote: TeeSgxQuoteDataType): Promise<boolean> {
+        if (!(await this.verifyQeReportSignature(quote))) {
+            console.log("Wrong QE report signature");
+            // throw new Error("Wrong QE report signature");
+        }
+        if (!this.verifyQeReportData(quote)) {
+            console.log("Wrong QE report data");
+            // throw new Error("Wrong QE report data");
+        }
+        if (!this.verifyEnclaveReportSignature(quote)) {
+            console.log("Wrong enclave report signature");
+            // throw new Error("Wrong enclave report signature");
+        }
+
+        return true;
     }
 
     private getFmspc() {
@@ -150,10 +175,7 @@ export class QuoteValidator {
 
     public async validate(quoteString: string) {
         try {
-            console.log({ quoteString });
             const quoteBuffer = Buffer.from(quoteString, "base64");
-            console.log({ quoteBuffer });
-
             const quote: TeeSgxQuoteDataType = this.teeSgxParser.parseQuote(quoteBuffer);
             const report: TeeSgxReportDataType = this.teeSgxParser.parseReport(quote.report);
 

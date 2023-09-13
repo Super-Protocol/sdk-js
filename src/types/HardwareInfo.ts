@@ -1,5 +1,5 @@
-import { OptionInfo, OptionInfoStructure } from "./OptionInfo";
-import { SlotInfo, SlotInfoStructure } from "./SlotInfo";
+import { OptionInfo, OptionInfoStructure } from './OptionInfo';
+import { SlotInfo, SlotInfoStructure } from './SlotInfo';
 
 // Order of keys and type conversion functions for this object in blockchain contract
 export const HardwareInfoStructure = {

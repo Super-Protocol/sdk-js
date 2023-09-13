@@ -1,15 +1,15 @@
-import { gzip, ungzip } from "node-gzip";
-import _ from "lodash";
+import { gzip, ungzip } from 'node-gzip';
+import _ from 'lodash';
 
-import { Compression, Compression_TYPE } from "./proto/Compression";
-import { TRI } from "./proto/TRI";
-import Crypto from "./crypto";
-import Offer from "./models/Offer";
-import Order from "./models/Order";
-import TeeOffer from "./models/TeeOffer";
-import { TeeOfferInfo } from "./types/TeeOfferInfo";
-import { OrderInfo } from "./types/Order";
-import { OfferInfo } from "./types/Offer";
+import { Compression, Compression_TYPE } from './proto/Compression';
+import { TRI } from './proto/TRI';
+import Crypto from './crypto';
+import Offer from './models/Offer';
+import Order from './models/Order';
+import TeeOffer from './models/TeeOffer';
+import { TeeOfferInfo } from './types/TeeOfferInfo';
+import { OrderInfo } from './types/Order';
+import { OfferInfo } from './types/Offer';
 import {
     Cipher,
     CryptoAlgorithm,
@@ -22,8 +22,8 @@ import {
     Resource,
     TeeRunInfo,
     UrlResource,
-} from "@super-protocol/dto-js";
-import { TLBlockSerializerV1, TLBlockUnserializeResultType } from "@super-protocol/tee-lib";
+} from '@super-protocol/dto-js';
+import { TLBlockSerializerV1, TLBlockUnserializeResultType } from '@super-protocol/tee-lib';
 
 class TIIGenerator {
     public static async generateByOffer(
@@ -41,11 +41,11 @@ class TIIGenerator {
             ? JSON.parse(linkageString)
             : {
                   encoding: Encoding.base64,
-                  mrenclave: "",
+                  mrenclave: '',
               };
 
         const tlb: TLBlockUnserializeResultType = new TLBlockSerializerV1().unserializeTlb(
-            Buffer.from(teeOfferInfo.tlb, "base64"),
+            Buffer.from(teeOfferInfo.tlb, 'base64'),
         );
 
         // TODO: check env with SP-149
@@ -56,10 +56,12 @@ class TIIGenerator {
                 hash: Buffer.from(hash.hash, hash.encoding),
             })),
             mrenclave: Buffer.from(linkage.mrenclave, linkage.encoding),
-            args: JSON.stringify(args || ""),
+            args: JSON.stringify(args || ''),
             encryption: {
                 ...encryption,
-                ciphertext: encryption.ciphertext ? Buffer.from(encryption.ciphertext, encryption.encoding) : undefined,
+                ciphertext: encryption.ciphertext
+                    ? Buffer.from(encryption.ciphertext, encryption.encoding)
+                    : undefined,
                 key: encryption.key ? Buffer.from(encryption.key, encryption.encoding) : undefined,
                 iv: (encryption as EncryptionWithMacIV).iv
                     ? Buffer.from((encryption as EncryptionWithMacIV).iv, encryption.encoding)
@@ -81,7 +83,7 @@ class TIIGenerator {
             ),
             tri: await Crypto.encrypt(Buffer.from(compressedTri).toString(Encoding.base64), {
                 algo: CryptoAlgorithm.ECIES,
-                key: Buffer.from(tlb.data.teePubKeyData).toString("base64"),
+                key: Buffer.from(tlb.data.teePubKeyData).toString('base64'),
                 encoding: Encoding.base64,
             }),
         });
@@ -99,9 +101,18 @@ class TIIGenerator {
         const parentOrder: Order = new Order(parentOrderId);
         const parentOrderInfo: OrderInfo = await parentOrder.getOrderInfo();
 
-        const { hashes, linkage } = await this.getSolutionHashesAndLinkage(parentOrderInfo.args.inputOffers);
+        const { hashes, linkage } = await this.getSolutionHashesAndLinkage(
+            parentOrderInfo.args.inputOffers,
+        );
 
-        return this.generateByOffer(parentOrderInfo.offerId, hashes, linkage, resource, args, encryption);
+        return this.generateByOffer(
+            parentOrderInfo.offerId,
+            hashes,
+            linkage,
+            resource,
+            args,
+            encryption,
+        );
     }
 
     public static async getSolutionHashesAndLinkage(
@@ -119,9 +130,10 @@ class TIIGenerator {
                     solutionHashes.push(JSON.parse(offerInfo.hash));
                 }
 
-                const restrictions = _.intersection(offerInfo.restrictions.offers, inputOffers).filter(
-                    (restrictedOfferId) => restrictedOfferId !== offer.id,
-                );
+                const restrictions = _.intersection(
+                    offerInfo.restrictions.offers,
+                    inputOffers,
+                ).filter((restrictedOfferId) => restrictedOfferId !== offer.id);
                 if (restrictions.length) {
                     solutionLinkage = offerInfo.linkage;
                 } else {
@@ -141,7 +153,9 @@ class TIIGenerator {
         tiiObj.tri.key = decryptionKey.toString(tiiObj.tri.encoding);
         const tri: string = await Crypto.decrypt(tiiObj.tri as Encryption);
 
-        const compression = Compression.decode(Buffer.from(tri, (tiiObj.tri as Encryption).encoding));
+        const compression = Compression.decode(
+            Buffer.from(tri, (tiiObj.tri as Encryption).encoding),
+        );
 
         let decompressed: Buffer;
         switch (compression.type) {
@@ -150,7 +164,7 @@ class TIIGenerator {
                 break;
 
             default:
-                throw Error("Unknown compression method");
+                throw Error('Unknown compression method');
         }
 
         const decoded = TRI.decode(decompressed);
@@ -171,8 +185,12 @@ class TIIGenerator {
                 cipher: decoded.encryption!.cipher! as Cipher,
                 encoding: Encoding.base64,
                 key: Buffer.from(decoded.encryption!.key!).toString(Encoding.base64),
-                iv: decoded.encryption!.iv && Buffer.from(decoded.encryption!.iv!).toString(Encoding.base64),
-                mac: decoded.encryption!.mac && Buffer.from(decoded.encryption!.mac!).toString(Encoding.base64),
+                iv:
+                    decoded.encryption!.iv &&
+                    Buffer.from(decoded.encryption!.iv!).toString(Encoding.base64),
+                mac:
+                    decoded.encryption!.mac &&
+                    Buffer.from(decoded.encryption!.mac!).toString(Encoding.base64),
             } as EncryptionWithMacIV,
         };
     }

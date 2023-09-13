@@ -8,29 +8,29 @@ import {
     SubOrderParams,
     OrderUsage,
     OrderUsageStructure,
-} from "../types/Order";
-import { Contract } from "web3-eth-contract";
-import rootLogger from "../logger";
-import { ContractEvent, TransactionOptions } from "../types/Web3";
-import { AbiItem } from "web3-utils";
-import appJSON from "../contracts/app.json";
-import store from "../store";
+} from '../types/Order';
+import { Contract } from 'web3-eth-contract';
+import rootLogger from '../logger';
+import { ContractEvent, TransactionOptions } from '../types/Web3';
+import { AbiItem } from 'web3-utils';
+import appJSON from '../contracts/app.json';
+import store from '../store';
 import {
     checkIfActionAccountInitialized,
     incrementMethodCall,
     objectToTuple,
     tupleToObject,
     unpackSlotInfo,
-} from "../utils";
-import { Origins, OriginsStructure } from "../types/Origins";
-import { formatBytes32String } from "ethers/lib/utils";
-import BlockchainConnector from "../connectors/BlockchainConnector";
-import Superpro from "../staticModels/Superpro";
-import TxManager from "../utils/TxManager";
-import BlockchainEventsListener from "../connectors/BlockchainEventsListener";
-import TeeOffers from "../staticModels/TeeOffers";
-import { tryWithInterval } from "../utils/helpers";
-import { BLOCKCHAIN_CALL_RETRY_INTERVAL, BLOCKCHAIN_CALL_RETRY_ATTEMPTS } from "../constants";
+} from '../utils';
+import { Origins, OriginsStructure } from '../types/Origins';
+import { formatBytes32String } from 'ethers/lib/utils';
+import BlockchainConnector from '../connectors/BlockchainConnector';
+import Superpro from '../staticModels/Superpro';
+import TxManager from '../utils/TxManager';
+import BlockchainEventsListener from '../connectors/BlockchainEventsListener';
+import TeeOffers from '../staticModels/TeeOffers';
+import { tryWithInterval } from '../utils/helpers';
+import { BLOCKCHAIN_CALL_RETRY_INTERVAL, BLOCKCHAIN_CALL_RETRY_ATTEMPTS } from '../constants';
 
 class Order {
     private static contract: Contract;
@@ -52,7 +52,7 @@ class Order {
             Order.contract = BlockchainConnector.getInstance().getContract();
         }
 
-        this.logger = rootLogger.child({ className: "Order", orderId: this.id });
+        this.logger = rootLogger.child({ className: 'Order', orderId: this.id });
     }
 
     /**
@@ -60,7 +60,10 @@ class Order {
      */
     private checkInitOrder(transactionOptions: TransactionOptions) {
         if (transactionOptions?.web3) {
-            return new transactionOptions.web3.eth.Contract(<AbiItem[]>appJSON.abi, Superpro.address);
+            return new transactionOptions.web3.eth.Contract(
+                <AbiItem[]>appJSON.abi,
+                Superpro.address,
+            );
         }
     }
 
@@ -137,7 +140,10 @@ class Order {
     public async getOrderResult(): Promise<OrderResult> {
         const orderInfoParams = await Order.contract.methods.getOrder(this.id).call();
 
-        return (this.orderResult = tupleToObject([orderInfoParams[2][0], orderInfoParams[2][1]], OrderResultStructure));
+        return (this.orderResult = tupleToObject(
+            [orderInfoParams[2][0], orderInfoParams[2][1]],
+            OrderResultStructure,
+        ));
     }
 
     /**
@@ -178,7 +184,10 @@ class Order {
             OrderUsageStructure,
         );
         this.selectedUsage.optionsCount = this.selectedUsage.optionsCount.map((item) => +item);
-        this.selectedUsage.slotInfo = unpackSlotInfo(this.selectedUsage.slotInfo, await TeeOffers.getDenominator());
+        this.selectedUsage.slotInfo = unpackSlotInfo(
+            this.selectedUsage.slotInfo,
+            await TeeOffers.getDenominator(),
+        );
 
         return this.selectedUsage;
     }
@@ -260,33 +269,54 @@ class Order {
      * Function for fetching parent order from blockchain
      */
     @incrementMethodCall()
-    public async setAwaitingPayment(value: boolean, transactionOptions?: TransactionOptions): Promise<void> {
+    public async setAwaitingPayment(
+        value: boolean,
+        transactionOptions?: TransactionOptions,
+    ): Promise<void> {
         transactionOptions ?? this.checkInitOrder(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
-        await TxManager.execute(Order.contract.methods.setAwaitingPayment, [this.id, value], transactionOptions);
+        await TxManager.execute(
+            Order.contract.methods.setAwaitingPayment,
+            [this.id, value],
+            transactionOptions,
+        );
     }
 
     /**
      * Updates order price
      */
     @incrementMethodCall()
-    public async updateOrderPrice(price: string, transactionOptions?: TransactionOptions): Promise<void> {
+    public async updateOrderPrice(
+        price: string,
+        transactionOptions?: TransactionOptions,
+    ): Promise<void> {
         transactionOptions ?? this.checkInitOrder(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
-        await TxManager.execute(Order.contract.methods.updateOrderPrice, [this.id, price], transactionOptions);
+        await TxManager.execute(
+            Order.contract.methods.updateOrderPrice,
+            [this.id, price],
+            transactionOptions,
+        );
     }
 
     /**
      * Sets options deposit spent
      */
     @incrementMethodCall()
-    public async setOptionsDepositSpent(value: string, transactionOptions?: TransactionOptions): Promise<void> {
+    public async setOptionsDepositSpent(
+        value: string,
+        transactionOptions?: TransactionOptions,
+    ): Promise<void> {
         transactionOptions ?? this.checkInitOrder(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
-        await TxManager.execute(Order.contract.methods.setOptionsDepositSpent, [this.id, value], transactionOptions);
+        await TxManager.execute(
+            Order.contract.methods.setOptionsDepositSpent,
+            [this.id, value],
+            transactionOptions,
+        );
     }
 
     /**
@@ -298,7 +328,11 @@ class Order {
         checkIfActionAccountInitialized(transactionOptions);
 
         if (status === OrderStatus.Processing) {
-            await TxManager.execute(Order.contract.methods.processOrder, [this.id], transactionOptions);
+            await TxManager.execute(
+                Order.contract.methods.processOrder,
+                [this.id],
+                transactionOptions,
+            );
         }
 
         if (this.orderInfo) this.orderInfo.status = status;
@@ -330,7 +364,7 @@ class Order {
      * Updates order result
      */
     @incrementMethodCall()
-    public async updateOrderResult(encryptedResult = "", transactionOptions?: TransactionOptions) {
+    public async updateOrderResult(encryptedResult = '', transactionOptions?: TransactionOptions) {
         transactionOptions ?? this.checkInitOrder(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
@@ -345,7 +379,11 @@ class Order {
      * Completes order
      */
     @incrementMethodCall()
-    public async complete(status: OrderStatus, encryptedResult = "", transactionOptions?: TransactionOptions) {
+    public async complete(
+        status: OrderStatus,
+        encryptedResult = '',
+        transactionOptions?: TransactionOptions,
+    ) {
         transactionOptions ?? this.checkInitOrder(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
@@ -378,7 +416,7 @@ class Order {
     public async createSubOrder(
         subOrderInfo: OrderInfo,
         blockParentOrder: boolean,
-        deposit = "0",
+        deposit = '0',
         transactionOptions?: TransactionOptions,
         checkTxBeforeSend = false,
     ): Promise<void> {
@@ -437,17 +475,19 @@ class Order {
                     deposit: subOrderInfo.deposit,
                 };
 
-                const request = Order.contract.methods.createSubOrder(this.id, tupleSubOrder, params).send.request(
-                    {
-                        from: transactionOptions.from,
-                        gasPrice: store.gasPrice,
-                        gas: store.gasLimit,
-                    },
-                    (err: any, data: any) => {
-                        if (data) res(data);
-                        if (err) rej(err);
-                    },
-                );
+                const request = Order.contract.methods
+                    .createSubOrder(this.id, tupleSubOrder, params)
+                    .send.request(
+                        {
+                            from: transactionOptions.from,
+                            gasPrice: store.gasPrice,
+                            gas: store.gasLimit,
+                        },
+                        (err: any, data: any) => {
+                            if (data) res(data);
+                            if (err) rej(err);
+                        },
+                    );
                 batch.add(request);
             });
         });
@@ -464,20 +504,20 @@ class Order {
      * @returns unsubscribe - function unsubscribing from event
      */
     public onStatusUpdated(callback: onOrderStatusUpdatedCallback): () => void {
-        const logger = this.logger.child({ method: "onOrderStatusUpdated" });
+        const logger = this.logger.child({ method: 'onOrderStatusUpdated' });
 
         // TODO: add ability to use this event without https provider initialization
         const contractWss = BlockchainEventsListener.getInstance().getContract();
         const subscription = contractWss.events
             .OrderStatusUpdated()
-            .on("data", async (event: ContractEvent) => {
+            .on('data', async (event: ContractEvent) => {
                 if (event.returnValues.orderId != this.id) {
                     return;
                 }
                 if (this.orderInfo) this.orderInfo.status = <OrderStatus>event.returnValues.status;
                 callback(<OrderStatus>event.returnValues.status);
             })
-            .on("error", (error: Error, receipt: string) => {
+            .on('error', (error: Error, receipt: string) => {
                 if (receipt) return; // Used to avoid logging of transaction rejected
                 logger.warn(error);
             });

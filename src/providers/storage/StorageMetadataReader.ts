@@ -1,7 +1,7 @@
-import StorageObject from "../../types/storage/StorageObject";
-import logger, { Logger } from "../../logger";
-import { CacheRecord } from "./types";
-import StorageKeyValueAdapter from "./StorageKeyValueAdapter";
+import StorageObject from '../../types/storage/StorageObject';
+import logger, { Logger } from '../../logger';
+import { CacheRecord } from './types';
+import StorageKeyValueAdapter from './StorageKeyValueAdapter';
 
 export interface InstancesUpdates {
     updated: Map<string, StorageObject>;
@@ -29,10 +29,16 @@ export default class StorageMetadataReader<K extends string, V extends object> {
     private async listInstances(key: K): Promise<Map<string, StorageObject>> {
         return this.storageKeyValueAdapter
             .listFiles(`${key}/`)
-            .then((objects) => new Map(objects.map((obj) => [obj.name.split("/")?.pop() || obj.name, obj])));
+            .then(
+                (objects) =>
+                    new Map(objects.map((obj) => [obj.name.split('/')?.pop() || obj.name, obj])),
+            );
     }
 
-    async fetchInstancesUpdates(key: K, currentInstances: Map<string, CacheRecord<V>>): Promise<InstancesUpdates> {
+    async fetchInstancesUpdates(
+        key: K,
+        currentInstances: Map<string, CacheRecord<V>>,
+    ): Promise<InstancesUpdates> {
         const result: InstancesUpdates = {
             updated: new Map(),
             deleted: new Set(),
@@ -65,12 +71,12 @@ export default class StorageMetadataReader<K extends string, V extends object> {
                     updated: result.updated.size,
                     deleted: result.deleted.size,
                 },
-                "Check result",
+                'Check result',
             );
 
             return result;
         } catch (error) {
-            this.logger?.error({ error }, "Error fetching remote copy");
+            this.logger?.error({ error }, 'Error fetching remote copy');
 
             return result;
         }

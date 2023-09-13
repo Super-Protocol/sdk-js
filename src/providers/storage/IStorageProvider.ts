@@ -1,6 +1,5 @@
-import Offer from "../../models/Offer";
-import StorageObject from "../../types/storage/StorageObject";
-import stream from "stream";
+import StorageObject from '../../types/storage/StorageObject';
+import stream from 'stream';
 
 export type DownloadConfig = {
     offset?: number;

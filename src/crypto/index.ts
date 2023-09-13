@@ -1,2 +1,2 @@
-import Crypto from "./Crypto";
+import Crypto from './Crypto';
 export default Crypto;

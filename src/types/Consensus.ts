@@ -61,10 +61,10 @@ export type Epoch = {
 };
 
 export enum TcbStatus {
-    Inited = "0",
-    Completed = "1",
-    Banned = "2",
-    BenchmarkChanged = "3",
+    Inited = '0',
+    Completed = '1',
+    Banned = '2',
+    BenchmarkChanged = '3',
 }
 
 // Order of keys and type conversion functions for this object in blockchain contract

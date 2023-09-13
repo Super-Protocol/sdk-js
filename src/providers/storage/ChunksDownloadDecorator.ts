@@ -1,7 +1,6 @@
-import { Readable, Transform, TransformCallback } from "stream";
-import Offer from "../../models/Offer";
-import StorageObject from "../../types/storage/StorageObject";
-import IStorageProvider, { DownloadConfig } from "./IStorageProvider";
+import { Readable, Transform, TransformCallback } from 'stream';
+import StorageObject from '../../types/storage/StorageObject';
+import IStorageProvider, { DownloadConfig } from './IStorageProvider';
 
 export type DownloadChunkMethodType = (
     provider: IStorageProvider,
@@ -41,7 +40,10 @@ function* generateChunks(dataSize: bigint, chunkSize: number, startOffset = BigI
 }
 
 class ChunkedReadableTransform extends Transform {
-    constructor(private downloadChunk: (chunk: ChunkType) => Promise<Buffer>, params: { concurrency: number }) {
+    constructor(
+        private downloadChunk: (chunk: ChunkType) => Promise<Buffer>,
+        params: { concurrency: number },
+    ) {
         super({
             objectMode: true,
             highWaterMark: params.concurrency,
@@ -76,7 +78,10 @@ class ChainedChunksReadableTransform extends Transform {
                 callback(null, data);
 
                 if (this.progressListener) {
-                    this.progressListener(Number(obj.chunk.dataSize), Number(obj.chunk.offset) + obj.chunk.length);
+                    this.progressListener(
+                        Number(obj.chunk.dataSize),
+                        Number(obj.chunk.offset) + obj.chunk.length,
+                    );
                 }
             },
             (err) => {
@@ -104,7 +109,7 @@ export const downloadChunkMethod = async (
         position += data.length;
 
         if (position > chunk.length) {
-            throw new Error("Chunk buffer is overflow, read data is more than requested for chunk");
+            throw new Error('Chunk buffer is overflow, read data is more than requested for chunk');
         }
     }
 
@@ -113,9 +118,17 @@ export const downloadChunkMethod = async (
 
 export const createDownloadChunkMethodWithRetry = (
     downloadChunkMethod: DownloadChunkMethodType,
-    { retryMaxCount = 3, retryWaitTimeFactory = () => () => 1000, onRetry }: RetryDownloadChunkOptions = {},
+    {
+        retryMaxCount = 3,
+        retryWaitTimeFactory = () => () => 1000,
+        onRetry,
+    }: RetryDownloadChunkOptions = {},
 ): DownloadChunkMethodType => {
-    return async (provider: IStorageProvider, objectPath: string, chunk: ChunkType): Promise<Buffer> => {
+    return async (
+        provider: IStorageProvider,
+        objectPath: string,
+        chunk: ChunkType,
+    ): Promise<Buffer> => {
         const retryWaitTime = retryWaitTimeFactory();
         //let lastError: unknown = null;
         let retryCount = retryMaxCount;
@@ -139,7 +152,9 @@ export const createDownloadChunkMethodWithRetry = (
         }
 
         throw new Error(
-            `Max retry attempts was reached for object path ${objectPath}, offset ${chunk.offset}, length ${
+            `Max retry attempts was reached for object path ${objectPath}, offset ${
+                chunk.offset
+            }, length ${
                 chunk.length
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
             }`,
@@ -174,7 +189,9 @@ export class DownloadDecorator implements IStorageProvider {
 
         const offset = BigInt(this.options.offset ?? 0);
         const objectSize = await this.provider.getObjectSize(remotePath);
-        const chunksStream = Readable.from(generateChunks(BigInt(objectSize), this.options.chunkSize, offset));
+        const chunksStream = Readable.from(
+            generateChunks(BigInt(objectSize), this.options.chunkSize, offset),
+        );
 
         const downloadStream = new ChunkedReadableTransform(
             async (chunk: ChunkType): Promise<Buffer> => {
@@ -189,8 +206,8 @@ export class DownloadDecorator implements IStorageProvider {
 
         return chunksStream
             .pipe(downloadStream)
-            .on("error", (error) => {
-                chainedStream.emit("error", error);
+            .on('error', (error) => {
+                chainedStream.emit('error', error);
             })
             .pipe(chainedStream);
     }

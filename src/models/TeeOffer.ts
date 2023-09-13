@@ -1,7 +1,7 @@
-import { Contract } from "web3-eth-contract";
-import rootLogger from "../logger";
-import { AbiItem } from "web3-utils";
-import appJSON from "../contracts/app.json";
+import { Contract } from 'web3-eth-contract';
+import rootLogger from '../logger';
+import { AbiItem } from 'web3-utils';
+import appJSON from '../contracts/app.json';
 import {
     checkIfActionAccountInitialized,
     tupleToObject,
@@ -10,24 +10,24 @@ import {
     tupleToObjectsArray,
     unpackSlotInfo,
     packSlotInfo,
-} from "../utils";
-import { TeeOfferInfo, TeeOfferInfoStructure } from "../types/TeeOfferInfo";
-import { TransactionOptions } from "../types/Web3";
-import { OfferType } from "../types/Offer";
-import { Origins, OriginsStructure } from "../types/Origins";
-import Superpro from "../staticModels/Superpro";
-import BlockchainConnector from "../connectors/BlockchainConnector";
-import TxManager from "../utils/TxManager";
-import { HardwareInfo, HardwareInfoStructure } from "../types/HardwareInfo";
-import { TeeOfferOption, TeeOfferOptionStructure } from "../types/TeeOfferOption";
-import { TeeOfferSlot, TeeOfferSlotStructure } from "../types/TeeOfferSlot";
-import { OptionInfo, OptionInfoStructure } from "../types/OptionInfo";
-import { SlotUsage, SlotUsageStructure } from "../types/SlotUsage";
-import { formatBytes32String } from "ethers/lib/utils";
-import { SlotInfo, SlotInfoStructure } from "../types/SlotInfo";
-import TeeOffers from "../staticModels/TeeOffers";
-import TCB from "../models/TCB";
-import { TeeConfirmationBlock, GetTcbRequest } from "@super-protocol/dto-js";
+} from '../utils';
+import { TeeOfferInfo, TeeOfferInfoStructure } from '../types/TeeOfferInfo';
+import { TransactionOptions } from '../types/Web3';
+import { OfferType } from '../types/Offer';
+import { Origins, OriginsStructure } from '../types/Origins';
+import Superpro from '../staticModels/Superpro';
+import BlockchainConnector from '../connectors/BlockchainConnector';
+import TxManager from '../utils/TxManager';
+import { HardwareInfo, HardwareInfoStructure } from '../types/HardwareInfo';
+import { TeeOfferOption, TeeOfferOptionStructure } from '../types/TeeOfferOption';
+import { TeeOfferSlot, TeeOfferSlotStructure } from '../types/TeeOfferSlot';
+import { OptionInfo, OptionInfoStructure } from '../types/OptionInfo';
+import { SlotUsage, SlotUsageStructure } from '../types/SlotUsage';
+import { formatBytes32String } from 'ethers/lib/utils';
+import { SlotInfo, SlotInfoStructure } from '../types/SlotInfo';
+import TeeOffers from '../staticModels/TeeOffers';
+import TCB from '../models/TCB';
+import { TeeConfirmationBlock, GetTcbRequest } from '@super-protocol/dto-js';
 
 class TeeOffer {
     private static contract: Contract;
@@ -58,7 +58,7 @@ class TeeOffer {
             TeeOffer.contract = BlockchainConnector.getInstance().getContract();
         }
 
-        this.logger = rootLogger.child({ className: "TeeOffer" });
+        this.logger = rootLogger.child({ className: 'TeeOffer' });
     }
 
     /**
@@ -109,7 +109,10 @@ class TeeOffer {
     @incrementMethodCall()
     private checkInitTeeOffer(transactionOptions: TransactionOptions) {
         if (transactionOptions?.web3) {
-            return new transactionOptions.web3.eth.Contract(<AbiItem[]>appJSON.abi, Superpro.address);
+            return new transactionOptions.web3.eth.Contract(
+                <AbiItem[]>appJSON.abi,
+                Superpro.address,
+            );
         }
     }
 
@@ -118,10 +121,14 @@ class TeeOffer {
      */
     @incrementMethodCall()
     public async getInfo(): Promise<TeeOfferInfo> {
-        const [, , teeOfferInfoParams] = await TeeOffer.contract.methods.getTeeOffer(this.id).call();
+        const [, , teeOfferInfoParams] = await TeeOffer.contract.methods
+            .getTeeOffer(this.id)
+            .call();
 
         this.offerInfo = tupleToObject(teeOfferInfoParams, TeeOfferInfoStructure);
-        this.offerInfo.hardwareInfo = await TeeOffers.unpackHardwareInfo(this.offerInfo.hardwareInfo);
+        this.offerInfo.hardwareInfo = await TeeOffers.unpackHardwareInfo(
+            this.offerInfo.hardwareInfo,
+        );
 
         return this.offerInfo;
     }
@@ -148,12 +155,16 @@ class TeeOffer {
     }
 
     public async getOptions(begin = 0, end = 999999): Promise<TeeOfferOption[]> {
-        const optionsCount = +(await TeeOffer.contract.methods.getTeeOfferOptionsCount(this.id).call());
+        const optionsCount = +(await TeeOffer.contract.methods
+            .getTeeOfferOptionsCount(this.id)
+            .call());
         if (optionsCount === 0) {
             return [];
         }
 
-        const teeOfferOption = await TeeOffer.contract.methods.getTeeOfferOptions(this.id, begin, end).call();
+        const teeOfferOption = await TeeOffer.contract.methods
+            .getTeeOfferOptions(this.id, begin, end)
+            .call();
 
         return tupleToObjectsArray(teeOfferOption, TeeOfferOptionStructure);
     }
@@ -177,7 +188,7 @@ class TeeOffer {
     public async addOption(
         info: OptionInfo,
         usage: SlotUsage,
-        externalId = "default",
+        externalId = 'default',
         transactionOptions?: TransactionOptions,
     ): Promise<void> {
         const contract = BlockchainConnector.getInstance().getContract(transactionOptions);
@@ -225,11 +236,18 @@ class TeeOffer {
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
     @incrementMethodCall()
-    public async deleteOption(optionId: string, transactionOptions?: TransactionOptions): Promise<void> {
+    public async deleteOption(
+        optionId: string,
+        transactionOptions?: TransactionOptions,
+    ): Promise<void> {
         const contract = BlockchainConnector.getInstance().getContract(transactionOptions);
         checkIfActionAccountInitialized(transactionOptions);
 
-        await TxManager.execute(contract.methods.deleteOption, [this.id, optionId], transactionOptions);
+        await TxManager.execute(
+            contract.methods.deleteOption,
+            [this.id, optionId],
+            transactionOptions,
+        );
     }
 
     @incrementMethodCall()
@@ -241,7 +259,9 @@ class TeeOffer {
     }
 
     @incrementMethodCall()
-    private async initializeTcbAndAssignBlocks(transactionOptions?: TransactionOptions): Promise<TCB> {
+    private async initializeTcbAndAssignBlocks(
+        transactionOptions?: TransactionOptions,
+    ): Promise<TCB> {
         await this.initializeTcb(transactionOptions);
         const tcbId = await this.getInitializedTcbId();
         const tcb = new TCB(tcbId);
@@ -259,7 +279,9 @@ class TeeOffer {
      * @returns tcbId and lists of anothers' TCB for their checking
      */
     @incrementMethodCall()
-    public async getListsForVerification(transactionOptions?: TransactionOptions): Promise<GetTcbRequest> {
+    public async getListsForVerification(
+        transactionOptions?: TransactionOptions,
+    ): Promise<GetTcbRequest> {
         checkIfActionAccountInitialized();
 
         const tcb = await this.initializeTcbAndAssignBlocks(transactionOptions);
@@ -313,14 +335,16 @@ class TeeOffer {
      * @returns {Promise<TeeOfferSlot[]>}
      */
     public async getSlots(begin = 0, end = 999999): Promise<TeeOfferSlot[]> {
-        const teeOfferSlotsCount = +(await TeeOffer.contract.methods.getTeeOfferSlotsCount(this.id).call());
+        const teeOfferSlotsCount = +(await TeeOffer.contract.methods
+            .getTeeOfferSlotsCount(this.id)
+            .call());
         if (teeOfferSlotsCount === 0) {
             return [];
         }
 
         let slots = await TeeOffer.contract.methods.getTeeOfferSlots(this.id, begin, end).call();
         slots = tupleToObjectsArray(slots, TeeOfferSlotStructure);
-        for (let slot of slots) {
+        for (const slot of slots) {
             slot.info = unpackSlotInfo(slot.info, await TeeOffers.getDenominator());
         }
 
@@ -337,7 +361,7 @@ class TeeOffer {
     public async addSlot(
         info: SlotInfo,
         usage: SlotUsage,
-        externalId = "default",
+        externalId = 'default',
         transactionOptions?: TransactionOptions,
     ): Promise<void> {
         const contract = BlockchainConnector.getInstance().getContract(transactionOptions);
@@ -387,11 +411,18 @@ class TeeOffer {
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
     @incrementMethodCall()
-    public async deleteSlot(slotId: string, transactionOptions?: TransactionOptions): Promise<void> {
+    public async deleteSlot(
+        slotId: string,
+        transactionOptions?: TransactionOptions,
+    ): Promise<void> {
         const contract = BlockchainConnector.getInstance().getContract(transactionOptions);
         checkIfActionAccountInitialized(transactionOptions);
 
-        await TxManager.execute(contract.methods.deleteTeeOfferSlot, [this.id, slotId], transactionOptions);
+        await TxManager.execute(
+            contract.methods.deleteTeeOfferSlot,
+            [this.id, slotId],
+            transactionOptions,
+        );
     }
 
     /**
@@ -411,9 +442,8 @@ class TeeOffer {
     }
 
     public async isTcbCreationAvailable(): Promise<boolean> {
-        const [offerNotBlocked, newEpochStarted, halfEpochPassed, benchmarkVerified] = await TeeOffer.contract.methods
-            .isTcbCreationAvailable(this.id)
-            .call();
+        const [offerNotBlocked, newEpochStarted, halfEpochPassed, benchmarkVerified] =
+            await TeeOffer.contract.methods.isTcbCreationAvailable(this.id).call();
 
         return offerNotBlocked && newEpochStarted && halfEpochPassed && benchmarkVerified;
     }
@@ -423,7 +453,9 @@ class TeeOffer {
      */
     @incrementMethodCall()
     public async getProviderAuthority(): Promise<string> {
-        this.providerAuthority = await TeeOffer.contract.methods.getOfferProviderAuthority(this.id).call();
+        this.providerAuthority = await TeeOffer.contract.methods
+            .getOfferProviderAuthority(this.id)
+            .call();
 
         return this.providerAuthority!;
     }
@@ -457,7 +489,9 @@ class TeeOffer {
      * Function for fetching violationRate for this TEE offer
      */
     public async getViolationRate(): Promise<number> {
-        this.violationRate = await TeeOffer.contract.methods.getTeeOfferViolationRate(this.id).call();
+        this.violationRate = await TeeOffer.contract.methods
+            .getTeeOfferViolationRate(this.id)
+            .call();
 
         return this.violationRate!;
     }
@@ -489,7 +523,11 @@ class TeeOffer {
         transactionOptions ?? this.checkInitTeeOffer(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
-        await TxManager.execute(TeeOffer.contract.methods.setTeeOfferTlb, [this.id, tlb], transactionOptions);
+        await TxManager.execute(
+            TeeOffer.contract.methods.setTeeOfferTlb,
+            [this.id, tlb],
+            transactionOptions,
+        );
         if (this.offerInfo) this.offerInfo.tlb = tlb;
     }
 
@@ -502,7 +540,11 @@ class TeeOffer {
         transactionOptions ?? this.checkInitTeeOffer(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
-        await TxManager.execute(TeeOffer.contract.methods.setOfferName, [this.id, name], transactionOptions);
+        await TxManager.execute(
+            TeeOffer.contract.methods.setOfferName,
+            [this.id, name],
+            transactionOptions,
+        );
         if (this.offerInfo) this.offerInfo.name = name;
     }
 
@@ -511,12 +553,19 @@ class TeeOffer {
      * @param newInfo - new offer info
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
-    public async setInfo(newInfo: TeeOfferInfo, transactionOptions?: TransactionOptions): Promise<void> {
+    public async setInfo(
+        newInfo: TeeOfferInfo,
+        transactionOptions?: TransactionOptions,
+    ): Promise<void> {
         transactionOptions ?? this.checkInitTeeOffer(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
         const newInfoTuple = objectToTuple(newInfo, TeeOfferInfoStructure);
-        await TxManager.execute(TeeOffer.contract.methods.setTeeOfferInfo, [this.id, newInfoTuple], transactionOptions);
+        await TxManager.execute(
+            TeeOffer.contract.methods.setTeeOfferInfo,
+            [this.id, newInfoTuple],
+            transactionOptions,
+        );
         if (this.offerInfo) this.offerInfo = newInfo;
     }
 
@@ -547,7 +596,10 @@ class TeeOffer {
      * @param description - new description
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
-    public async setDescription(description: string, transactionOptions?: TransactionOptions): Promise<void> {
+    public async setDescription(
+        description: string,
+        transactionOptions?: TransactionOptions,
+    ): Promise<void> {
         transactionOptions ?? this.checkInitTeeOffer(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
@@ -564,7 +616,10 @@ class TeeOffer {
      * @param argsPublicKey - new argsPublicKey
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
-    public async setKeys(argsPublicKey: string, transactionOptions?: TransactionOptions): Promise<void> {
+    public async setKeys(
+        argsPublicKey: string,
+        transactionOptions?: TransactionOptions,
+    ): Promise<void> {
         transactionOptions ?? this.checkInitTeeOffer(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
@@ -586,7 +641,11 @@ class TeeOffer {
         transactionOptions ?? this.checkInitTeeOffer(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
-        await TxManager.execute(TeeOffer.contract.methods.disableOffer, [this.id], transactionOptions);
+        await TxManager.execute(
+            TeeOffer.contract.methods.disableOffer,
+            [this.id],
+            transactionOptions,
+        );
     }
 
     /**
@@ -597,7 +656,11 @@ class TeeOffer {
         transactionOptions ?? this.checkInitTeeOffer(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
-        await TxManager.execute(TeeOffer.contract.methods.enableOffer, [this.id], transactionOptions);
+        await TxManager.execute(
+            TeeOffer.contract.methods.enableOffer,
+            [this.id],
+            transactionOptions,
+        );
     }
 }
 

@@ -1,1 +1,1 @@
-export * from "./tryWithInterval";
+export * from './tryWithInterval';

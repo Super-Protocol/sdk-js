@@ -1075,6 +1075,11 @@
   resolved "https://registry.yarnpkg.com/@super-protocol/dto-js/-/dto-js-0.0.28.tgz#05d03c3acce383b34ceb7ca73cf79a806d988ffd"
   integrity sha512-A8kvis6jbaDISgMI3Ct0zW5RjgR/MULdc5XpFCw4ukPuZa0AUQ+EuRAF4YzUNGoFvDFMRG0tAgUPBhgDN2rkxA==
 
+"@super-protocol/eslint-config-typescript@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@super-protocol/eslint-config-typescript/-/eslint-config-typescript-1.0.1.tgz#ccec8938b78da6502029b87b11cacb30a48c09cf"
+  integrity sha512-JE6E6h/N6wEGQaV8dUc21/1MDwtraOoLPyRw+MN+FDNloz8sge6lxuabvfEl4YWgmTyF0rPSh8cBNZxJBklnyQ==
+
 "@super-protocol/tee-lib@^0.1.2":
   version "0.1.3"
   resolved "https://registry.yarnpkg.com/@super-protocol/tee-lib/-/tee-lib-0.1.3.tgz#590a8dfc354ae19916c8c5ff4f3938d196f9d071"
@@ -3000,6 +3005,18 @@ eslint-plugin-tsdoc@^0.2.14:
   dependencies:
     "@microsoft/tsdoc" "0.14.2"
     "@microsoft/tsdoc-config" "0.16.2"
+
+eslint-plugin-unused-imports@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-unused-imports/-/eslint-plugin-unused-imports-2.0.0.tgz#d8db8c4d0cfa0637a8b51ce3fd7d1b6bc3f08520"
+  integrity sha512-3APeS/tQlTrFa167ThtP0Zm0vctjr4M44HMpeg1P4bK6wItarumq0Ma82xorMKdFsWpphQBlRPzw/pxiVELX1A==
+  dependencies:
+    eslint-rule-composer "^0.3.0"
+
+eslint-rule-composer@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/eslint-rule-composer/-/eslint-rule-composer-0.3.0.tgz#79320c927b0c5c0d3d3d2b76c8b4a488f25bbaf9"
+  integrity sha512-bt+Sh8CtDmn2OajxvNO+BX7Wn4CIWMpTRm3MaiKPCQcnnlm0CS2mhui6QaoeQugs+3Kj2ESKEEGJUdVafwhiCg==
 
 eslint-scope@^5.1.1:
   version "5.1.1"

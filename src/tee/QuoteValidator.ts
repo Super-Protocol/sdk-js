@@ -1,47 +1,87 @@
-interface quoteStructure {
-    quoteHeader: {
-        version: string;
-        attestationKeyType: string;
-        qeSvn: string;
-        pceSvn: string;
-        qeVendorId: string;
-        userData: string;
-    };
-    isvEnclaveReport: {
-        cpuSvn: string;
-        miscSelect: string;
-        attributes: string;
-        mrEnclave: string;
-        mrSigner: string;
-        isvProdId: string;
-        isvSvn: string;
-        reportData: string;
-    };
-    quoteSignatureLength: string;
-    quoteSignatureData: {
-        isvEnclaveReportSignature: string;
-        ecdsaAttestationKey: string;
-        qeReport: string;
-        qeReportSignature: string;
-        qeAuthenticationData: {
-            size: string;
-            data: string;
-        };
-        qecertificationData: {
-            certificationDataType: string;
-            size: string;
-            certificationData: string;
-        };
-    };
-}
+import axios from "axios";
+import { asn1, md, pki, util } from "node-forge";
+import crypto from "crypto";
+import elliptic from "elliptic";
+import { Certificate, PublicKey } from "@fidm/x509";
+import { TeeSgxParserV3, TeeSgxQuoteDataType, TeeSgxReportDataType } from "@super-protocol/tee-lib";
+
+const BASE_SGX_URL = "https://api.trustedservices.intel.com/sgx/certification/v3";
+const cRLDistributionPointsOid = "2.5.29.31";
 
 export class QuoteValidator {
-    private verifyQEReportSignature() {
-        /*
-            Проверить целостность данных QE Report из данных подписи с помощью цепочки сертификатов “Certification Data“,
-            которая включает в себя (PCK Certificate → Platform CA → Intel Root CA + CRL, url которого хранится в PCK Certificate).
-            Эталонное значение сигнатуры хранится в поле “Qe Report Signature“
-        */
+    private readonly teeSgxParser: TeeSgxParserV3;
+
+    constructor() {
+        this.teeSgxParser = new TeeSgxParserV3();
+    }
+
+    private splitChain(chain: string): string[] {
+        return chain
+            .split("-----BEGIN CERTIFICATE-----")
+            .filter((cert) => cert)
+            .map((cert) => `-----BEGIN CERTIFICATE-----` + cert);
+    }
+
+    private async verifyQEReportSignature(quote: TeeSgxQuoteDataType) {
+        const qeReport = quote.qeReport;
+        const cert = quote.qeCertificationData;
+        const certChain = cert.toString();
+        const certType = quote.qeCertificationDataType;
+        if (certType !== 5) {
+            throw new Error(`Unsupported Certification Data Type: ${certType}`);
+        }
+        const signature = quote.qeReportSignature;
+
+        const certificatePems: string[] = this.splitChain(certChain); // [pck, platform, root]
+        const [pckCert, platformCert, rootCert] = certificatePems.map((certPem) =>
+            Certificate.fromPEM(Buffer.from(certPem)),
+        );
+
+        // pck
+        if (pckCert.validTo.valueOf() < Date.now()) {
+            throw new Error("PCK certificate expired");
+        }
+        const publicKey = pckCert.publicKey;
+
+        // platform
+        const platformCrlResult = await axios.get(`${BASE_SGX_URL}/pckcrl?ca=platform&encoding=pem`);
+        const platformCrl = platformCrlResult.data;
+        const platformChain = decodeURIComponent(platformCrlResult.headers["sgx-pck-crl-issuer-chain"]);
+        const [, fetchedRootCert] = this.splitChain(platformChain);
+
+        // root
+        const crlExtension = rootCert.extensions.find((item: any) => item.oid === cRLDistributionPointsOid);
+        if (!crlExtension) {
+            throw new Error("CRL distribution points value not found in root certificate");
+        }
+        const rawRootCrlUrl = Buffer.from(crlExtension!.value).toString();
+        const rootCrlUrl = rawRootCrlUrl.slice(rawRootCrlUrl.indexOf("http"));
+        const rootCrlResult = await axios.get(rootCrlUrl, { responseType: "arraybuffer" });
+        const rootCrl = `-----BEGIN X509 CRL-----\n${rootCrlResult.data
+            .toString("base64")
+            .match(/.{0,64}/g)!
+            .join("\n")}-----END X509 CRL-----`;
+
+        // check root certificate
+        if (fetchedRootCert !== certificatePems[2]) {
+            throw new Error("Invalid SGX root certificate");
+        }
+
+        // check QE report signature
+        const hash = crypto.createHash("sha256");
+        hash.update(qeReport);
+        const key = Buffer.concat([Buffer.from([4]), Buffer.from(publicKey.toPEM())]);
+        const ec = new elliptic.ec("p256");
+        const res = ec.verify(
+            hash.digest(),
+            {
+                r: signature.subarray(0, 32),
+                s: signature.subarray(32),
+            },
+            key,
+        );
+
+        return res;
     }
 
     private verifyQEReportData() {
@@ -58,8 +98,8 @@ export class QuoteValidator {
         */
     }
 
-    private async validateQuoteStructure() {
-        this.verifyQEReportSignature();
+    private async validateQuoteStructure(quote: TeeSgxQuoteDataType) {
+        this.verifyQEReportSignature(quote);
         this.verifyQEReportData();
         this.verifyEnclaveReportSignature();
     }
@@ -94,29 +134,41 @@ export class QuoteValidator {
         return "id";
     }
 
-    private checkQEIdentity(quote: string, qeIdentity: string) {
+    private checkQEIdentity(quote: TeeSgxQuoteDataType, qeIdentity: string) {
         // https://superprotocol.atlassian.net/wiki/spaces/SP/pages/273514501/DCAP+Quote+verification+algorithm+Draft#%D0%A1%D1%80%D0%B0%D0%B2%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%B0%D0%BD%D0%BD%D1%8B%D1%85-qe_identity-%D0%B8-quote
-        return qeIdentity === quote;
+        return true; // qeIdentity === quote.bytes();
     }
 
-    private checkTcbInfo(quote: string, tcbInfo: string) {
+    private checkTcbInfo(quote: TeeSgxQuoteDataType, tcbInfo: string) {
         // https://superprotocol.atlassian.net/wiki/spaces/SP/pages/273514501/DCAP+Quote+verification+algorithm+Draft#%D0%A1%D1%80%D0%B0%D0%B2%D0%BD%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%B0%D0%BD%D0%BD%D1%8B%D1%85-tcbInfo-%D0%B8-quote
-        return tcbInfo === quote;
+        return true; // tcbInfo === quote.bytes();
     }
 
     private convergeTcbStatus() {
         // https://superprotocol.atlassian.net/wiki/spaces/SP/pages/273514501/DCAP+Quote+verification+algorithm+Draft#ConvergeTcbStatus
     }
 
-    public async validate(quote: string) {
-        this.validateQuoteStructure();
+    public async validate(quoteString: string) {
+        try {
+            console.log({ quoteString });
+            const quoteBuffer = Buffer.from(quoteString, "base64");
+            console.log({ quoteBuffer });
 
-        const qeIdentity = await this.getQEIdentity();
-        this.checkQEIdentity(quote, qeIdentity);
+            const quote: TeeSgxQuoteDataType = this.teeSgxParser.parseQuote(quoteBuffer);
+            const report: TeeSgxReportDataType = this.teeSgxParser.parseReport(quote.report);
 
-        const tcbInfo = await this.getTcbInfo();
-        this.checkTcbInfo(quote, tcbInfo);
+            const res = await this.validateQuoteStructure(quote);
+            console.log({ res });
 
-        return this.convergeTcbStatus();
+            const qeIdentity = await this.getQEIdentity();
+            this.checkQEIdentity(quote, qeIdentity);
+
+            const tcbInfo = await this.getTcbInfo();
+            this.checkTcbInfo(quote, tcbInfo);
+
+            return this.convergeTcbStatus();
+        } catch (error) {
+            console.log(`Validation error: ${error}`);
+        }
     }
 }

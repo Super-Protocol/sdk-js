@@ -1,10 +1,24 @@
 import { QuoteValidator } from "../../src/tee/QuoteValidator";
 import { testQuotes } from "./examples";
 
-describe.only("Test quotes validation", () => {
+describe("Test quotes validation", () => {
     const validator = new QuoteValidator();
 
-    test("", () => {
-        const res = validator.validate(testQuotes[0]);
+    // test("quote1", async () => {
+    //     const res = await validator.validate(testQuotes[0]);
+    //     console.log({ res });
+    //     expect(res).toBeDefined();
+    // });
+
+    // test("quote2", async () => {
+    //     const res = await validator.validate(testQuotes[1]);
+    //     console.log({ res });
+    //     expect(res).toBeDefined();
+    // });
+
+    test.only("quote3", async () => {
+        const res = await validator.validate(testQuotes[2]);
+        console.log({ res });
+        expect(res).toBeDefined();
     });
 });

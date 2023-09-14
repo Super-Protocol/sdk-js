@@ -1,15 +1,18 @@
 import axios from "axios";
-import { asn1, md, pki, util } from "node-forge";
 import crypto from "crypto";
 import elliptic from "elliptic";
-import { Certificate, PublicKey } from "@fidm/x509";
+import { util, asn1 } from "node-forge";
+import { Certificate } from "@fidm/x509";
 import { TeeSgxParserV3, TeeSgxQuoteDataType, TeeSgxReportDataType } from "@super-protocol/tee-lib";
 
 const BASE_SGX_URL = "https://api.trustedservices.intel.com/sgx/certification/v3";
 const cRLDistributionPointsOid = "2.5.29.31";
+const SGX_OID = "1.2.840.113741.1.13.1";
+const FMSPC_OID = `${SGX_OID}.4`;
 
 export class QuoteValidator {
     private readonly teeSgxParser: TeeSgxParserV3;
+    private intelSgxRootCertificate = "";
 
     constructor() {
         this.teeSgxParser = new TeeSgxParserV3();
@@ -20,6 +23,37 @@ export class QuoteValidator {
             .split("-----BEGIN CERTIFICATE-----")
             .filter((cert) => cert)
             .map((cert) => `-----BEGIN CERTIFICATE-----` + cert);
+    }
+
+    private findSequenceByOID(hexValue: string, targetOID: string) {
+        const buffer = util.hexToBytes(hexValue);
+        const asn1Data = asn1.fromDer(buffer);
+
+        return this.searchForSequence(asn1Data, targetOID);
+    }
+
+    private searchForSequence(asn1Data: asn1.Asn1, targetOID: string): asn1.Asn1 | null {
+        if (asn1Data.type === asn1.Type.SEQUENCE) {
+            for (const child of asn1Data.value as asn1.Asn1[]) {
+                if (child.type === asn1.Type.OID) {
+                    const oid = asn1.derToOid(child.value as string);
+                    if (oid === targetOID) {
+                        return asn1Data;
+                    }
+                }
+            }
+        }
+
+        if (Array.isArray(asn1Data.value)) {
+            for (const child of asn1Data.value) {
+                const result = this.searchForSequence(child, targetOID);
+                if (result) {
+                    return result;
+                }
+            }
+        }
+
+        return null;
     }
 
     private async verifyQeReportSignature(quote: TeeSgxQuoteDataType): Promise<boolean> {
@@ -47,6 +81,7 @@ export class QuoteValidator {
         const platformCrl = platformCrlResult.data;
         const platformChain = decodeURIComponent(platformCrlResult.headers["sgx-pck-crl-issuer-chain"]);
         const [, fetchedRootCert] = this.splitChain(platformChain);
+        this.intelSgxRootCertificate = fetchedRootCert;
 
         // root
         const crlExtension = rootCert.extensions.find((item) => item.oid === cRLDistributionPointsOid);
@@ -82,23 +117,25 @@ export class QuoteValidator {
         return result;
     }
 
-    private verifyQeReportData(quote: TeeSgxQuoteDataType): boolean {
-        const qeAuthData = Buffer.from(quote.qeAuthenticationData);
-        const attestationKey = Buffer.from(quote.ecdsaAttestationKey);
-        const qeReportData = Buffer.from(quote.qeReport.subarray(0, 32));
+    private verifyQeReportData(quote: TeeSgxQuoteDataType, report: TeeSgxReportDataType): boolean {
+        const qeAuthData = quote.qeAuthenticationData;
+        const attestationKey = quote.ecdsaAttestationKey;
+        const qeReportDataHash = report.dataHash;
         const hash = crypto.createHash("sha256");
-        const hashResult = hash.update(qeAuthData).update(attestationKey).digest();
-        const result = Buffer.compare(qeReportData, hashResult);
+        const hashResult = hash.update(Buffer.concat([attestationKey, qeAuthData])).digest();
+        const result = Buffer.compare(qeReportDataHash, hashResult);
 
         return result === 0;
     }
 
     private verifyEnclaveReportSignature(quote: TeeSgxQuoteDataType) {
         const key = Buffer.from(quote.ecdsaAttestationKey);
+        const headerBuffer = Buffer.from(quote.rawHeader);
+        const reportBuffer = Buffer.from(quote.report);
         const expected = quote.isvEnclaveReportSignature;
 
         const hash = crypto.createHash("sha256");
-        hash.update(Buffer.from(quote.rawHeader)).update(Buffer.from(quote.report));
+        hash.update(Buffer.concat([headerBuffer, reportBuffer]));
         const ec = new elliptic.ec("p256");
         const result = ec.verify(
             hash.digest(),
@@ -112,12 +149,12 @@ export class QuoteValidator {
         return result;
     }
 
-    private async validateQuoteStructure(quote: TeeSgxQuoteDataType): Promise<boolean> {
+    private async validateQuoteStructure(quote: TeeSgxQuoteDataType, report: TeeSgxReportDataType): Promise<boolean> {
         if (!(await this.verifyQeReportSignature(quote))) {
             console.log("Wrong QE report signature");
             // throw new Error("Wrong QE report signature");
         }
-        if (!this.verifyQeReportData(quote)) {
+        if (!this.verifyQeReportData(quote, report)) {
             console.log("Wrong QE report data");
             // throw new Error("Wrong QE report data");
         }
@@ -129,23 +166,34 @@ export class QuoteValidator {
         return true;
     }
 
-    private getFmspc() {
-        /*
-            FMSPC хранится в PCK сертификате квоты. Для извлечения необходимо прочитать расширение с OID 1.2.840.113741.1.13.1 
-            и прочитать из него поле с OID 1.2.840.113741.1.13.1.4 
-        */
+    private getFmspc(quote: TeeSgxQuoteDataType) {
+        const certificatePems: string[] = this.splitChain(quote.qeCertificationData.toString());
+        const pckCert = Certificate.fromPEM(Buffer.from(certificatePems[0]));
+        const sgxExtension = pckCert.extensions.find((item) => item.oid === SGX_OID);
+
+        const parsedSgx = this.findSequenceByOID(sgxExtension!.value.toString("hex"), FMSPC_OID);
+        if (!parsedSgx) {
+            throw new Error("FMSPC not found in PCK certificate");
+        }
+        const fmspcRaw = (parsedSgx.value as asn1.Asn1[]).filter(
+            (asnElement) => asnElement.type === asn1.Type.OCTETSTRING,
+        );
+        const fmspc = util.bytesToHex(fmspcRaw[0].value as string);
+
+        return fmspc;
     }
 
-    private async getTcbInfo(): Promise<string> {
-        const fmspc = this.getFmspc();
-        // fetch https://api.trustedservices.intel.com/sgx/certification/v4/tcb?fmspc={}
-        /*
-            в теле ответа будет находится json с tcbInfo и signature, а в заголовках (headers) ответа 
-            в поле “TCB-Info-Issuer-Chain“ (или “SGX-TCB-Info-Issuer-Chain” для версий API 2 и 3) находится цепочка сертификатов,
-            сигнатура подписи находится в теле ответа. 
-            Стоит отметить что версии API 2  и 3 доступны до 31 октября 2025 года.
-        */
-        return "TcbInfo";
+    private async getTcbInfo(quote: TeeSgxQuoteDataType): Promise<string> {
+        const fmspc = this.getFmspc(quote);
+        const tcbData = await axios.get(`${BASE_SGX_URL}/tcb?fmspc=${fmspc}`);
+        const tcbInfoHeader = quote.header.version > 3 ? "tcb-info-issuer-chain" : "sgx-tcb-info-issuer-chain";
+        const tcbInfoChain = this.splitChain(decodeURIComponent(tcbData.headers[tcbInfoHeader])); // [tcb, root]
+
+        if (tcbInfoChain[1] !== this.intelSgxRootCertificate) {
+            throw new Error("Wrong root certificate in TCB chain");
+        }
+
+        return JSON.stringify(tcbData.data);
     }
 
     private async getQEIdentity(): Promise<string> {
@@ -177,15 +225,17 @@ export class QuoteValidator {
         try {
             const quoteBuffer = Buffer.from(quoteString, "base64");
             const quote: TeeSgxQuoteDataType = this.teeSgxParser.parseQuote(quoteBuffer);
-            const report: TeeSgxReportDataType = this.teeSgxParser.parseReport(quote.report);
+            const report: TeeSgxReportDataType = this.teeSgxParser.parseReport(quote.qeReport);
 
-            const res = await this.validateQuoteStructure(quote);
-            console.log({ res });
+            const result = await this.validateQuoteStructure(quote, report);
+            console.log({ result });
+            console.log("Quote structure validated successfully");
+
+            const tcbInfo = await this.getTcbInfo(quote);
 
             const qeIdentity = await this.getQEIdentity();
             this.checkQEIdentity(quote, qeIdentity);
 
-            const tcbInfo = await this.getTcbInfo();
             this.checkTcbInfo(quote, tcbInfo);
 
             return this.convergeTcbStatus();

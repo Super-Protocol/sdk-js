@@ -16,7 +16,7 @@ describe("Test quotes validation", () => {
     //     expect(res).toBeDefined();
     // });
 
-    test.only("quote3", async () => {
+    test("quote3", async () => {
         const res = await validator.validate(testQuotes[2]);
         console.log({ res });
         expect(res).toBeDefined();

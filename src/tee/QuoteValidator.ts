@@ -1,6 +1,6 @@
 import axios from "axios";
-import crypto from "crypto";
-import elliptic from "elliptic";
+import { createHash } from "crypto";
+import { ec } from "elliptic";
 import { util, asn1 } from "node-forge";
 import { Certificate, Extension } from "@fidm/x509";
 import { TeeSgxParser } from "./QuoteParser";
@@ -90,16 +90,16 @@ export class QuoteValidator {
 
     private async verifyQeReportSignature(quote: TeeSgxQuoteDataType, pckPublicKey: Buffer): Promise<boolean> {
         const signature = quote.qeReportSignature;
-        const hash = crypto.createHash("sha256");
+        const hash = createHash("sha256");
         hash.update(Buffer.from(quote.qeReport));
-        const ec = new elliptic.ec("p256");
-        const result = ec.verify(
+        const ellipticEc = new ec("p256");
+        const result = ellipticEc.verify(
             hash.digest(),
             {
                 r: signature.subarray(0, 32),
                 s: signature.subarray(32),
             },
-            ec.keyFromPublic(pckPublicKey, "hex"),
+            ellipticEc.keyFromPublic(pckPublicKey, "hex"),
         );
 
         return result;
@@ -109,7 +109,7 @@ export class QuoteValidator {
         const qeAuthData = quote.qeAuthenticationData;
         const attestationKey = quote.ecdsaAttestationKey;
         const qeReportDataHash = report.dataHash;
-        const hash = crypto.createHash("sha256");
+        const hash = createHash("sha256");
         const hashResult = hash.update(Buffer.concat([attestationKey, qeAuthData])).digest();
         const result = Buffer.compare(qeReportDataHash, hashResult);
 
@@ -122,10 +122,10 @@ export class QuoteValidator {
         const reportBuffer = Buffer.from(quote.report);
         const expected = quote.isvEnclaveReportSignature;
 
-        const hash = crypto.createHash("sha256");
+        const hash = createHash("sha256");
         hash.update(Buffer.concat([headerBuffer, reportBuffer]));
-        const ec = new elliptic.ec("p256");
-        const result = ec.verify(
+        const ellipticEc = new ec("p256");
+        const result = ellipticEc.verify(
             hash.digest(),
             {
                 r: expected.subarray(0, 32),

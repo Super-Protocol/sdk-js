@@ -1146,15 +1146,15 @@
   resolved "https://registry.npmjs.org/@super-protocol/dto-js/-/dto-js-0.0.28.tgz#05d03c3acce383b34ceb7ca73cf79a806d988ffd"
   integrity sha512-A8kvis6jbaDISgMI3Ct0zW5RjgR/MULdc5XpFCw4ukPuZa0AUQ+EuRAF4YzUNGoFvDFMRG0tAgUPBhgDN2rkxA==
 
-"@super-protocol/tee-lib@^0.2.6":
-  version "0.2.5"
-  resolved "https://registry.npmjs.org/@super-protocol/tee-lib/-/tee-lib-0.2.5.tgz#6b540c673218803ffa91a7199f50ede5815edfbb"
-  integrity sha512-xUdvCip+h4KqXTh+aP2bvwSnXZ22KMlqG+f8/1HvIU6wgCij5cW1JN3uoZGOC4wqFg87I3cgq7L1P3nwDXoVFg==
-
 "@super-protocol/eslint-config-typescript@^1.0.1":
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@super-protocol/eslint-config-typescript/-/eslint-config-typescript-1.0.1.tgz#ccec8938b78da6502029b87b11cacb30a48c09cf"
   integrity sha512-JE6E6h/N6wEGQaV8dUc21/1MDwtraOoLPyRw+MN+FDNloz8sge6lxuabvfEl4YWgmTyF0rPSh8cBNZxJBklnyQ==
+
+"@super-protocol/tee-lib@^0.2.5":
+  version "0.2.5"
+  resolved "https://registry.npmjs.org/@super-protocol/tee-lib/-/tee-lib-0.2.5.tgz#6b540c673218803ffa91a7199f50ede5815edfbb"
+  integrity sha512-xUdvCip+h4KqXTh+aP2bvwSnXZ22KMlqG+f8/1HvIU6wgCij5cW1JN3uoZGOC4wqFg87I3cgq7L1P3nwDXoVFg==
   dependencies:
     "@msgpack/msgpack" "^2.7.1"
     "@super-protocol/addons-tee" "^0.8.7"

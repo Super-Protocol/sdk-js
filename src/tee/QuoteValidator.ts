@@ -3,9 +3,11 @@ import crypto from "crypto";
 import elliptic from "elliptic";
 import { util, asn1 } from "node-forge";
 import { Certificate, Extension } from "@fidm/x509";
-import { TeeSgxParserV3, TeeSgxQuoteDataType, TeeSgxReportDataType } from "@super-protocol/tee-lib";
+import { TeeSgxParser } from "./QuoteParser";
+import { TeeSgxQuoteDataType, TeeSgxReportDataType } from "./types";
 import rootLogger from "../logger";
 import { IQEIdentity, ITCBInfo } from "./interface";
+import { TeeQuoteValidatorError } from "./errors";
 
 const BASE_SGX_URL = "https://api.trustedservices.intel.com/sgx/certification/v";
 const SGX_OID = "1.2.840.113741.1.13.1";
@@ -13,12 +15,12 @@ const FMSPC_OID = `${SGX_OID}.4`;
 const PCEID_OID = `${SGX_OID}.3`;
 
 export class QuoteValidator {
-    private readonly teeSgxParser: TeeSgxParserV3;
+    private readonly teeSgxParser: TeeSgxParser;
     private sgxUrlVersioned = "";
     private logger: typeof rootLogger;
 
     constructor() {
-        this.teeSgxParser = new TeeSgxParserV3();
+        this.teeSgxParser = new TeeSgxParser();
         this.logger = rootLogger.child({ className: QuoteValidator.name });
     }
 
@@ -74,13 +76,13 @@ export class QuoteValidator {
         const certType = quote.qeCertificationDataType;
 
         if (certType !== 5) {
-            throw new Error(`Unsupported certification data type: ${certType}`);
+            throw new TeeQuoteValidatorError(`Unsupported certification data type: ${certType}`);
         }
         if (pckCert.validTo.valueOf() < Date.now()) {
-            throw new Error("PCK certificate expired");
+            throw new TeeQuoteValidatorError("PCK certificate expired");
         }
         if (rootCert !== certificatePems[2]) {
-            throw new Error("Invalid SGX root certificate in quote's certificate chain");
+            throw new TeeQuoteValidatorError("Invalid SGX root certificate in quote's certificate chain");
         }
 
         return pckCert;
@@ -141,20 +143,20 @@ export class QuoteValidator {
         pckPublicKey: Buffer,
     ): Promise<void> {
         if (!(await this.verifyQeReportSignature(quote, pckPublicKey))) {
-            throw new Error("Wrong QE report signature");
+            throw new TeeQuoteValidatorError("Wrong QE report signature");
         }
         if (!this.verifyQeReportData(quote, report)) {
-            throw new Error("Wrong QE report data");
+            throw new TeeQuoteValidatorError("Wrong QE report data");
         }
         if (!this.verifyEnclaveReportSignature(quote)) {
-            throw new Error("Wrong enclave report signature");
+            throw new TeeQuoteValidatorError("Wrong enclave report signature");
         }
     }
 
     private getSgxExtensionData(pckCert: Certificate): Extension {
         const sgxExtensionData = pckCert.extensions.find((item) => item.oid === SGX_OID);
         if (!sgxExtensionData) {
-            throw new Error("SGX data not found in PCK certificate");
+            throw new TeeQuoteValidatorError("SGX data not found in PCK certificate");
         }
 
         return sgxExtensionData;
@@ -163,7 +165,7 @@ export class QuoteValidator {
     private getFmspc(sgxExtensionData: Extension): string {
         const fmspcRawData = this.findSequenceByOID(sgxExtensionData.value.toString("hex"), FMSPC_OID);
         if (!fmspcRawData) {
-            throw new Error("FMSPC not found in PCK certificate");
+            throw new TeeQuoteValidatorError("FMSPC not found in PCK certificate");
         }
         const fmspcRaw = (fmspcRawData.value as asn1.Asn1[]).filter(
             (asnElement) => asnElement.type === asn1.Type.OCTETSTRING,
@@ -176,7 +178,7 @@ export class QuoteValidator {
     private getPceId(sgxExtensionData: Extension): string {
         const pceIdData = this.findSequenceByOID(sgxExtensionData.value.toString("hex"), PCEID_OID);
         if (!pceIdData) {
-            throw new Error("PCEID not found in PCK certificate");
+            throw new TeeQuoteValidatorError("PCEID not found in PCK certificate");
         }
         const pceIdRaw = (pceIdData.value as asn1.Asn1[]).filter(
             (asnElement) => asnElement.type === asn1.Type.OCTETSTRING,
@@ -192,10 +194,8 @@ export class QuoteValidator {
         const tcbInfoChain = this.splitChain(decodeURIComponent(tcbData.headers[tcbInfoHeader])); // [tcb, root]
 
         if (tcbInfoChain[1] !== rootCert) {
-            throw new Error("Wrong root certificate in TCB chain");
+            throw new TeeQuoteValidatorError("Wrong root certificate in TCB chain");
         }
-
-        // howto: проверить целостность tcbInfo
 
         return tcbData.data;
     }
@@ -206,10 +206,8 @@ export class QuoteValidator {
         const qeIdentityChain = this.splitChain(decodeURIComponent(qeIdentityData.headers[qeIdentityHeader])); // [qeIdentity, root]
 
         if (qeIdentityChain[1] !== rootCert) {
-            throw new Error("Wrong root certificate in QE Identity chain");
+            throw new TeeQuoteValidatorError("Wrong root certificate in QE Identity chain");
         }
-
-        // howto: проверить целостность enclaveIdentity
 
         return qeIdentityData.data;
     }
@@ -217,7 +215,7 @@ export class QuoteValidator {
     private checkQEIdentity(report: TeeSgxReportDataType, qeIdentity: IQEIdentity): void {
         const mrSigner = report.mrSigner.toString("hex");
         if (mrSigner.toUpperCase() !== qeIdentity.enclaveIdentity.mrsigner) {
-            throw new Error("Wrong MR signer in QE report");
+            throw new TeeQuoteValidatorError("Wrong MR signer in QE report");
         }
         // TODO
         this.logger.warn(
@@ -235,10 +233,10 @@ export class QuoteValidator {
 
     private checkTcbInfo(fmspc: string, pceId: string, tcbInfo: ITCBInfo): void {
         if (fmspc !== tcbInfo.tcbInfo.fmspc) {
-            throw new Error("Wrong FMSPC in PCK certificate");
+            throw new TeeQuoteValidatorError("Wrong FMSPC in PCK certificate");
         }
         if (pceId !== tcbInfo.tcbInfo.pceId) {
-            throw new Error("Wrong PCEID in PCK certificate");
+            throw new TeeQuoteValidatorError("Wrong PCEID in PCK certificate");
         }
         // TODO
         this.logger.warn(
@@ -248,9 +246,8 @@ export class QuoteValidator {
         );
     }
 
-    public async validate(quoteString: string): Promise<boolean> {
+    public async validate(quoteBuffer: Buffer): Promise<boolean> {
         try {
-            const quoteBuffer = Buffer.from(quoteString, "base64");
             const quote: TeeSgxQuoteDataType = this.teeSgxParser.parseQuote(quoteBuffer);
             const report: TeeSgxReportDataType = this.teeSgxParser.parseReport(quote.qeReport);
             this.sgxUrlVersioned = `${BASE_SGX_URL}${quote.header.version}`;

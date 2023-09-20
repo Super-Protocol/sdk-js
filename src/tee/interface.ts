@@ -1,3 +1,27 @@
+import {
+    TeeDataType,
+    BinaryType,
+    TLBlockUnserializeResultType,
+    TLBlockSerializeResultType,
+    TLBlockType,
+} from "./types";
+
+/**
+ * Serializes and Unserializes TLB
+ */
+export interface TLBlockSerializer {
+    unserializeTlb(blob: BinaryType): TLBlockUnserializeResultType | Promise<TLBlockUnserializeResultType>;
+
+    serializeTlb(
+        tlb: TLBlockType,
+        tlbMetadata: TeeDataType,
+    ): TLBlockSerializeResultType | Promise<TLBlockSerializeResultType>;
+
+    serializeMetadata(tlbMetadata: TeeDataType): BinaryType | Promise<BinaryType>;
+
+    serializeAnyData(anyData: any): BinaryType;
+}
+
 interface IISVSVNStatus {
     tcb: {
         isvsvn: number;

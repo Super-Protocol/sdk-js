@@ -1,23 +1,24 @@
 import { QuoteValidator } from "../../src/tee/QuoteValidator";
 import { testQuotes } from "./examples";
 
-describe("Test quotes validation", () => {
+describe("Test quotes validatator", () => {
     const validator = new QuoteValidator();
 
-    // test("quote1", async () => {
-    //     const res = await validator.validate(testQuotes[0]);
-    //     console.log({ res });
-    //     expect(res).toBeDefined();
-    // });
+    test("test quote", async () => {
+        const quoteBuffer = Buffer.from(testQuotes.testQuote, "base64");
+        const res = await validator.validate(quoteBuffer);
+        expect(res).toEqual(true);
+    });
 
-    // test("quote2", async () => {
-    //     const res = await validator.validate(testQuotes[1]);
-    //     console.log({ res });
-    //     expect(res).toBeDefined();
-    // });
+    test.skip("provisioner quote", async () => {
+        const quoteBuffer = Buffer.from(testQuotes.provisionerQuote, "base64");
+        const res = await validator.validate(quoteBuffer);
+        expect(res).toEqual(true);
+    });
 
-    test("quote3", async () => {
-        const res = await validator.validate(testQuotes[2]);
-        expect(res).toBeDefined();
+    test.skip("tunnel quote", async () => {
+        const quoteBuffer = Buffer.from(testQuotes.tunnelQuote, "base64");
+        const res = await validator.validate(quoteBuffer);
+        expect(res).toEqual(true);
     });
 });

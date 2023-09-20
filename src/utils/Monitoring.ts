@@ -1,8 +1,8 @@
-import rootLogger from "../logger";
+import rootLogger from '../logger';
 
 export class Monitoring {
     private static instance: Monitoring;
-    private logger = rootLogger.child({ className: "Monitoring" });
+    private logger = rootLogger.child({ className: 'Monitoring' });
     private contractMethodCalls = new Map<string, number>();
     private interval?: NodeJS.Timer;
 
@@ -28,14 +28,17 @@ export class Monitoring {
                     calledTimes: value,
                 }),
             );
-            const totalCalls = Array.from(this.contractMethodCalls.values()).reduce((acc, curr) => acc + curr, 0);
+            const totalCalls = Array.from(this.contractMethodCalls.values()).reduce(
+                (acc, curr) => acc + curr,
+                0,
+            );
             const timeSpend = Math.floor((Date.now() - startTs) / (60 * 1000));
             this.logger.debug(
                 {
-                    timeSpend: timeSpend + " min",
+                    timeSpend: timeSpend + ' min',
                     totalCalls,
                 },
-                "Contract methods calls",
+                'Contract methods calls',
             );
         }, +checkInterval);
     }

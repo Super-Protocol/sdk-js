@@ -1,17 +1,17 @@
-import rootLogger from "../logger";
-import { checkIfActionAccountInitialized, objectToTuple } from "../utils";
-import { OfferInfo, OfferInfoStructure, OfferType } from "../types/Offer";
-import { BytesLike, formatBytes32String, parseBytes32String } from "ethers/lib/utils";
-import { BlockInfo, ContractEvent, TransactionOptions } from "../types/Web3";
-import { OfferCreatedEvent, ValueSlotAddedEvent } from "../types/Events";
-import Superpro from "./Superpro";
-import TxManager from "../utils/TxManager";
-import BlockchainConnector from "../connectors/BlockchainConnector";
-import BlockchainEventsListener from "../connectors/BlockchainEventsListener";
-import { StaticModel } from "./BaseStaticModel";
+import rootLogger from '../logger';
+import { checkIfActionAccountInitialized, objectToTuple } from '../utils';
+import { OfferInfo, OfferInfoStructure, OfferType } from '../types/Offer';
+import { BytesLike, formatBytes32String, parseBytes32String } from 'ethers/lib/utils';
+import { BlockInfo, ContractEvent, TransactionOptions } from '../types/Web3';
+import { OfferCreatedEvent, ValueSlotAddedEvent } from '../types/Events';
+import Superpro from './Superpro';
+import TxManager from '../utils/TxManager';
+import BlockchainConnector from '../connectors/BlockchainConnector';
+import BlockchainEventsListener from '../connectors/BlockchainEventsListener';
+import { StaticModel } from './BaseStaticModel';
 
 class Offers extends StaticModel {
-    private static readonly logger = rootLogger.child({ className: "Offers" });
+    private static readonly logger = rootLogger.child({ className: 'Offers' });
 
     public static offers?: string[];
 
@@ -58,7 +58,7 @@ class Offers extends StaticModel {
     public static async create(
         providerAuthorityAccount: string,
         offerInfo: OfferInfo,
-        externalId = "default",
+        externalId = 'default',
         enabled = true,
         transactionOptions?: TransactionOptions,
     ): Promise<void> {
@@ -74,20 +74,23 @@ class Offers extends StaticModel {
         );
     }
 
-    public static async getByExternalId(creator: string, externalId: string): Promise<OfferCreatedEvent> {
+    public static async getByExternalId(
+        creator: string,
+        externalId: string,
+    ): Promise<OfferCreatedEvent> {
         const contract = BlockchainConnector.getInstance().getContract();
         const filter = {
             creator,
             externalId: formatBytes32String(externalId),
         };
-        const foundIds = await contract.getPastEvents("OfferCreated", { filter });
+        const foundIds = await contract.getPastEvents('OfferCreated', { filter });
         const response: OfferCreatedEvent =
             foundIds.length > 0
                 ? (foundIds[0].returnValues as OfferCreatedEvent)
                 : {
                       creator,
                       externalId,
-                      offerId: "-1",
+                      offerId: '-1',
                   };
 
         return response;
@@ -100,9 +103,11 @@ class Offers extends StaticModel {
     ): Promise<ValueSlotAddedEvent | null> {
         filter.externalId = formatBytes32String(filter.externalId);
 
-        const foundEvents = await this.getPastEvents("ValueSlotAdded", filter, fromBlock, toBlock);
+        const foundEvents = await this.getPastEvents('ValueSlotAdded', filter, fromBlock, toBlock);
 
-        const response = foundEvents.length ? (foundEvents[0].returnValues as ValueSlotAddedEvent) : null;
+        const response = foundEvents.length
+            ? (foundEvents[0].returnValues as ValueSlotAddedEvent)
+            : null;
 
         return response;
     }
@@ -115,11 +120,11 @@ class Offers extends StaticModel {
      */
     public static onSlotAdded(callback: onSlotAddedCallback, creator?: string): () => void {
         const contract = BlockchainEventsListener.getInstance().getContract();
-        const logger = this.logger.child({ method: "onValueSlotAdded" });
+        const logger = this.logger.child({ method: 'onValueSlotAdded' });
 
         const subscription = contract.events
             .ValueSlotAdded()
-            .on("data", async (event: ContractEvent) => {
+            .on('data', async (event: ContractEvent) => {
                 if (creator && event.returnValues.creator != creator) {
                     return;
                 }
@@ -134,7 +139,7 @@ class Offers extends StaticModel {
                     },
                 );
             })
-            .on("error", (error: Error, receipt: string) => {
+            .on('error', (error: Error, receipt: string) => {
                 if (receipt) return;
                 logger.warn(error);
             });
@@ -149,11 +154,11 @@ class Offers extends StaticModel {
      */
     public static onSlotUpdated(callback: onSlotUpdatedCallback): () => void {
         const contract = BlockchainEventsListener.getInstance().getContract();
-        const logger = this.logger.child({ method: "onValueSlotUpdated" });
+        const logger = this.logger.child({ method: 'onValueSlotUpdated' });
 
         const subscription = contract.events
             .ValueSlotUpdated()
-            .on("data", async (event: ContractEvent) => {
+            .on('data', async (event: ContractEvent) => {
                 callback(
                     <string>event.returnValues.offerId,
                     <string>event.returnValues.slotId,
@@ -163,7 +168,7 @@ class Offers extends StaticModel {
                     },
                 );
             })
-            .on("error", (error: Error, receipt: string) => {
+            .on('error', (error: Error, receipt: string) => {
                 if (receipt) return;
                 logger.warn(error);
             });
@@ -178,11 +183,11 @@ class Offers extends StaticModel {
      */
     public static onSlotDeleted(callback: onSlotDeletedCallback): () => void {
         const contract = BlockchainEventsListener.getInstance().getContract();
-        const logger = this.logger.child({ method: "onValueSlotDeleted" });
+        const logger = this.logger.child({ method: 'onValueSlotDeleted' });
 
         const subscription = contract.events
             .ValueSlotDeleted()
-            .on("data", async (event: ContractEvent) => {
+            .on('data', async (event: ContractEvent) => {
                 callback(
                     <string>event.returnValues.offerId,
                     <string>event.returnValues.slotId,
@@ -192,7 +197,7 @@ class Offers extends StaticModel {
                     },
                 );
             })
-            .on("error", (error: Error, receipt: string) => {
+            .on('error', (error: Error, receipt: string) => {
                 if (receipt) return;
                 logger.warn(error);
             });
@@ -207,11 +212,11 @@ class Offers extends StaticModel {
      */
     public static onCreated(callback: onOfferCreatedCallback): () => void {
         const contract = BlockchainEventsListener.getInstance().getContract();
-        const logger = this.logger.child({ method: "onOfferCreated" });
+        const logger = this.logger.child({ method: 'onOfferCreated' });
 
         const subscription = contract.events
             .OfferCreated()
-            .on("data", async (event: ContractEvent) => {
+            .on('data', async (event: ContractEvent) => {
                 callback(
                     <string>event.returnValues.offerId,
                     <string>event.returnValues.creator,
@@ -222,7 +227,7 @@ class Offers extends StaticModel {
                     },
                 );
             })
-            .on("error", (error: Error, receipt: string) => {
+            .on('error', (error: Error, receipt: string) => {
                 if (receipt) return; // Used to avoid logging of transaction rejected
                 logger.warn(error);
             });
@@ -232,11 +237,11 @@ class Offers extends StaticModel {
 
     public static onEnabled(callback: onOfferEnabledCallback): () => void {
         const contract = BlockchainEventsListener.getInstance().getContract();
-        const logger = this.logger.child({ method: "onOfferEnabled" });
+        const logger = this.logger.child({ method: 'onOfferEnabled' });
 
         const subscription = contract.events
             .OfferEnabled()
-            .on("data", async (event: ContractEvent) => {
+            .on('data', async (event: ContractEvent) => {
                 callback(
                     <string>event.returnValues.providerAuth,
                     <string>event.returnValues.offerId,
@@ -247,7 +252,7 @@ class Offers extends StaticModel {
                     },
                 );
             })
-            .on("error", (error: Error, receipt: string) => {
+            .on('error', (error: Error, receipt: string) => {
                 if (receipt) return; // Used to avoid logging of transaction rejected
                 logger.warn(error);
             });
@@ -257,11 +262,11 @@ class Offers extends StaticModel {
 
     public static onDisabled(callback: onOfferDisbledCallback): () => void {
         const contract = BlockchainEventsListener.getInstance().getContract();
-        const logger = this.logger.child({ method: "onOfferDisabled" });
+        const logger = this.logger.child({ method: 'onOfferDisabled' });
 
         const subscription = contract.events
             .OfferDisabled()
-            .on("data", async (event: ContractEvent) => {
+            .on('data', async (event: ContractEvent) => {
                 callback(
                     <string>event.returnValues.providerAuth,
                     <string>event.returnValues.offerId,
@@ -272,7 +277,7 @@ class Offers extends StaticModel {
                     },
                 );
             })
-            .on("error", (error: Error, receipt: string) => {
+            .on('error', (error: Error, receipt: string) => {
                 if (receipt) return; // Used to avoid logging of transaction rejected
                 logger.warn(error);
             });
@@ -282,7 +287,12 @@ class Offers extends StaticModel {
 }
 
 // address -> offerId
-export type onOfferCreatedCallback = (id: string, creator: string, externalId: string, block?: BlockInfo) => void;
+export type onOfferCreatedCallback = (
+    id: string,
+    creator: string,
+    externalId: string,
+    block?: BlockInfo,
+) => void;
 export type onOfferEnabledCallback = (
     providerAuth: string,
     id: string,

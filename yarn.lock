@@ -1146,10 +1146,15 @@
   resolved "https://registry.npmjs.org/@super-protocol/dto-js/-/dto-js-0.0.28.tgz#05d03c3acce383b34ceb7ca73cf79a806d988ffd"
   integrity sha512-A8kvis6jbaDISgMI3Ct0zW5RjgR/MULdc5XpFCw4ukPuZa0AUQ+EuRAF4YzUNGoFvDFMRG0tAgUPBhgDN2rkxA==
 
-"@super-protocol/tee-lib@^0.2.5":
+"@super-protocol/tee-lib@^0.2.6":
   version "0.2.5"
   resolved "https://registry.npmjs.org/@super-protocol/tee-lib/-/tee-lib-0.2.5.tgz#6b540c673218803ffa91a7199f50ede5815edfbb"
   integrity sha512-xUdvCip+h4KqXTh+aP2bvwSnXZ22KMlqG+f8/1HvIU6wgCij5cW1JN3uoZGOC4wqFg87I3cgq7L1P3nwDXoVFg==
+
+"@super-protocol/eslint-config-typescript@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@super-protocol/eslint-config-typescript/-/eslint-config-typescript-1.0.1.tgz#ccec8938b78da6502029b87b11cacb30a48c09cf"
+  integrity sha512-JE6E6h/N6wEGQaV8dUc21/1MDwtraOoLPyRw+MN+FDNloz8sge6lxuabvfEl4YWgmTyF0rPSh8cBNZxJBklnyQ==
   dependencies:
     "@msgpack/msgpack" "^2.7.1"
     "@super-protocol/addons-tee" "^0.8.7"
@@ -2018,6 +2023,11 @@ body-parser@^1.16.0:
     raw-body "2.5.2"
     type-is "~1.6.18"
     unpipe "1.0.0"
+
+bottleneck@^2.19.5:
+  version "2.19.5"
+  resolved "https://registry.yarnpkg.com/bottleneck/-/bottleneck-2.19.5.tgz#5df0b90f59fd47656ebe63c78a98419205cadd91"
+  integrity sha512-VHiNCbI1lKdl44tGrhNfU3lup0Tj/ZBMJB5/2ZbNXRCPuRCO7ed2mgcK4r17y+KB2EfuYuRaVlwNbAeaWGSpbw==
 
 brace-expansion@^1.1.7:
   version "1.1.11"
@@ -3125,6 +3135,18 @@ eslint-plugin-tsdoc@^0.2.14:
   dependencies:
     "@microsoft/tsdoc" "0.14.2"
     "@microsoft/tsdoc-config" "0.16.2"
+
+eslint-plugin-unused-imports@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-unused-imports/-/eslint-plugin-unused-imports-2.0.0.tgz#d8db8c4d0cfa0637a8b51ce3fd7d1b6bc3f08520"
+  integrity sha512-3APeS/tQlTrFa167ThtP0Zm0vctjr4M44HMpeg1P4bK6wItarumq0Ma82xorMKdFsWpphQBlRPzw/pxiVELX1A==
+  dependencies:
+    eslint-rule-composer "^0.3.0"
+
+eslint-rule-composer@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/eslint-rule-composer/-/eslint-rule-composer-0.3.0.tgz#79320c927b0c5c0d3d3d2b76c8b4a488f25bbaf9"
+  integrity sha512-bt+Sh8CtDmn2OajxvNO+BX7Wn4CIWMpTRm3MaiKPCQcnnlm0CS2mhui6QaoeQugs+3Kj2ESKEEGJUdVafwhiCg==
 
 eslint-scope@^5.1.1:
   version "5.1.1"

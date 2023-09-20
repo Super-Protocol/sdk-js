@@ -1,12 +1,17 @@
-import { Contract } from "web3-eth-contract";
-import { AbiItem } from "web3-utils";
-import appJSON from "../contracts/app.json";
-import { checkIfActionAccountInitialized, tupleToObject, packDevicId, unpackDeviceId } from "../utils";
-import { TransactionOptions } from "../types/Web3";
-import Superpro from "../staticModels/Superpro";
-import TxManager from "../utils/TxManager";
-import BlockchainConnector from "../connectors/BlockchainConnector";
-import { TcbData, TcbStatus, TcbPublicData, TcbStructure, TcbVerifiedStatus } from "../types/Consensus";
+import { Contract } from 'web3-eth-contract';
+import { AbiItem } from 'web3-utils';
+import appJSON from '../contracts/app.json';
+import {
+    checkIfActionAccountInitialized,
+    tupleToObject,
+    packDevicId,
+    unpackDeviceId,
+} from '../utils';
+import { TransactionOptions } from '../types/Web3';
+import Superpro from '../staticModels/Superpro';
+import TxManager from '../utils/TxManager';
+import BlockchainConnector from '../connectors/BlockchainConnector';
+import { TcbData, TcbPublicData, TcbStructure, TcbVerifiedStatus } from '../types/Consensus';
 
 class TCB {
     public tcbId: string;
@@ -19,17 +24,31 @@ class TCB {
 
     private checkInitTcb(transactionOptions?: TransactionOptions) {
         if (transactionOptions?.web3) {
-            return new transactionOptions.web3.eth.Contract(<AbiItem[]>appJSON.abi, Superpro.address);
+            return new transactionOptions.web3.eth.Contract(
+                <AbiItem[]>appJSON.abi,
+                Superpro.address,
+            );
         }
 
         return this.contract;
     }
 
-    private async applyTcbMarks(marks: TcbVerifiedStatus[], transactionOptions?: TransactionOptions): Promise<void> {
-        await TxManager.execute(this.contract.methods.applyTcbMarks, [marks, this.tcbId], transactionOptions);
+    private async applyTcbMarks(
+        marks: TcbVerifiedStatus[],
+        transactionOptions?: TransactionOptions,
+    ): Promise<void> {
+        await TxManager.execute(
+            this.contract.methods.applyTcbMarks,
+            [marks, this.tcbId],
+            transactionOptions,
+        );
     }
 
-    private async setTcbData(pb: TcbPublicData, quote: string, transactionOptions?: TransactionOptions) {
+    private async setTcbData(
+        pb: TcbPublicData,
+        quote: string,
+        transactionOptions?: TransactionOptions,
+    ) {
         checkIfActionAccountInitialized(transactionOptions);
 
         const fromattedDeviceId = packDevicId(pb.deviceID);
@@ -57,7 +76,11 @@ class TCB {
 
         await this.setTcbData(pb, quote, transactionOptions);
         await this.applyTcbMarks(marks, transactionOptions);
-        await TxManager.execute(this.contract.methods.addTcbToSupply, [this.tcbId], transactionOptions);
+        await TxManager.execute(
+            this.contract.methods.addTcbToSupply,
+            [this.tcbId],
+            transactionOptions,
+        );
     }
 
     /**
@@ -65,7 +88,11 @@ class TCB {
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
     public async assignSuspiciousBlocksToCheck(transactionOptions?: TransactionOptions) {
-        await TxManager.execute(this.contract.methods.assignSuspiciousBlocksToCheck, [this.tcbId], transactionOptions);
+        await TxManager.execute(
+            this.contract.methods.assignSuspiciousBlocksToCheck,
+            [this.tcbId],
+            transactionOptions,
+        );
     }
 
     /**
@@ -73,7 +100,11 @@ class TCB {
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
     public async assignLastBlocksToCheck(transactionOptions?: TransactionOptions) {
-        await TxManager.execute(this.contract.methods.assignLastBlocksToCheck, [this.tcbId], transactionOptions);
+        await TxManager.execute(
+            this.contract.methods.assignLastBlocksToCheck,
+            [this.tcbId],
+            transactionOptions,
+        );
     }
 
     /**
@@ -107,7 +138,7 @@ class TCB {
     public async get(): Promise<TcbData> {
         const tcb = await this.contract.methods.getTcbById(this.tcbId).call();
 
-        let tcbObject: TcbData = tupleToObject(tcb, TcbStructure);
+        const tcbObject: TcbData = tupleToObject(tcb, TcbStructure);
         tcbObject.publicData.deviceID = unpackDeviceId(tcbObject.publicData.deviceID);
 
         return tcbObject;
@@ -116,7 +147,10 @@ class TCB {
     /**
      * Function for fetching the given marks for recruited TCBs from the Tables of Consensus
      */
-    public async getCheckingBlocksMarks(): Promise<{ blocksIds: string[]; marks: TcbVerifiedStatus[] }> {
+    public async getCheckingBlocksMarks(): Promise<{
+        blocksIds: string[];
+        marks: TcbVerifiedStatus[];
+    }> {
         const tcb = await this.contract.methods.getTcbById(this.tcbId).call();
 
         return {

@@ -1,11 +1,17 @@
-import { AESEncryption, AESEncryptionWithMac, Cipher, CryptoAlgorithm, Encryption } from "@super-protocol/dto-js";
-import { ReadStream, WriteStream } from "fs";
+import {
+    AESEncryption,
+    AESEncryptionWithMac,
+    Cipher,
+    CryptoAlgorithm,
+    Encryption,
+} from '@super-protocol/dto-js';
+import { ReadStream, WriteStream } from 'fs';
 
-import NativeCrypto from "./NativeCrypto";
+import NativeCrypto from './NativeCrypto';
 
 class AES {
     public static async encrypt(content: string, encryption: Encryption): Promise<AESEncryption> {
-        if (!encryption.key) throw Error("Encryption key is not provided");
+        if (!encryption.key) throw Error('Encryption key is not provided');
         encryption.cipher = encryption.cipher || Cipher.AES_256_GCM;
 
         const keyBuffer = Buffer.from(encryption.key, encryption.encoding);
@@ -15,7 +21,7 @@ class AES {
         return {
             algo: CryptoAlgorithm.AES,
             encoding: encryption.encoding,
-            cipher: encryption.cipher as AESEncryptionWithMac["cipher"],
+            cipher: encryption.cipher as AESEncryptionWithMac['cipher'],
             ciphertext: encrypted.ciphertext,
             iv: encrypted.iv!,
             mac: encrypted.mac!,
@@ -35,17 +41,22 @@ class AES {
         outputStream: WriteStream,
         encryption: Encryption,
     ): Promise<AESEncryption> {
-        if (!encryption.key) throw Error("Encryption key is not provided");
+        if (!encryption.key) throw Error('Encryption key is not provided');
         encryption.cipher = encryption.cipher || Cipher.AES_256_GCM;
 
         const keyBuffer = Buffer.from(encryption.key, encryption.encoding);
 
-        const encrypted = await NativeCrypto.encryptStream(keyBuffer, inputStream, outputStream, encryption.cipher);
+        const encrypted = await NativeCrypto.encryptStream(
+            keyBuffer,
+            inputStream,
+            outputStream,
+            encryption.cipher,
+        );
 
         return {
             algo: encryption.algo,
             encoding: encryption.encoding,
-            cipher: encryption.cipher as AESEncryptionWithMac["cipher"],
+            cipher: encryption.cipher as AESEncryptionWithMac['cipher'],
             ciphertext: encrypted.ciphertext,
             iv: encrypted.iv!,
             mac: encrypted.mac!,
@@ -53,7 +64,7 @@ class AES {
     }
 
     public static async decrypt(encryption: AESEncryption): Promise<string> {
-        if (!encryption.key) throw Error("Decryption key is not provided");
+        if (!encryption.key) throw Error('Decryption key is not provided');
 
         const key = Buffer.from(encryption.key, encryption.encoding);
         const params: any = {
@@ -64,7 +75,13 @@ class AES {
             params.mac = Buffer.from((encryption as AESEncryptionWithMac).mac, encryption.encoding);
         }
 
-        return await NativeCrypto.decrypt(key, encryption.ciphertext!, encryption.cipher, params, encryption.encoding);
+        return await NativeCrypto.decrypt(
+            key,
+            encryption.ciphertext!,
+            encryption.cipher,
+            params,
+            encryption.encoding,
+        );
     }
 
     /**
@@ -78,7 +95,7 @@ class AES {
         outputStream: WriteStream,
         encryption: AESEncryption,
     ): Promise<void> {
-        if (!encryption.key) throw Error("Decryption key is not provided");
+        if (!encryption.key) throw Error('Decryption key is not provided');
 
         const key = Buffer.from(encryption.key, encryption.encoding);
         const params: any = {

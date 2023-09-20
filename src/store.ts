@@ -1,5 +1,11 @@
-import Web3 from "web3";
-import { defaultGasLimitMultiplier, defaultGasPriceMultiplier, defaultGasLimit } from "./constants";
+import Web3 from 'web3';
+import {
+    defaultGasLimitMultiplier,
+    defaultGasPriceMultiplier,
+    defaultGasLimit,
+    txIntervalMs,
+    txConcurrency,
+} from './constants';
 
 export type Store = {
     web3Wss?: Web3;
@@ -9,6 +15,8 @@ export type Store = {
     gasLimitMultiplier: number;
     gasPriceMultiplier: number;
     gasPrice?: string;
+    txConcurrency: number;
+    txIntervalMs: number;
     keys: Record<string, string>;
 };
 
@@ -20,6 +28,8 @@ const store: Store = {
     gasLimitMultiplier: defaultGasLimitMultiplier,
     gasPriceMultiplier: defaultGasPriceMultiplier,
     gasPrice: undefined,
+    txConcurrency: txConcurrency,
+    txIntervalMs: txIntervalMs,
     keys: {},
 };
 

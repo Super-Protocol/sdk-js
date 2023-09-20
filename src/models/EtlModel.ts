@@ -1,11 +1,11 @@
-import * as protobuf from "protobufjs";
-import { EtlModel as IEtlModel, EtlModelMetadata } from "@super-protocol/dto-js";
-import { EtlModelType } from "@super-protocol/dto-js/build/enum/EtlModel.enum";
-import { EtlModelSubtype } from "../types/EtlModel";
-import rootLogger from "../logger";
-import { ModelPackager } from "../staticModels/ModelPackager";
-import { ResourceContentType } from "@super-protocol/dto-js/build/enum/ResourceContentType.enum";
-import { getResourceLoader } from "../utils/resourceLoaders";
+import * as protobuf from 'protobufjs';
+import { EtlModel as IEtlModel, EtlModelMetadata } from '@super-protocol/dto-js';
+import { EtlModelType } from '@super-protocol/dto-js/build/enum/EtlModel.enum';
+import { EtlModelSubtype } from '../types/EtlModel';
+import rootLogger from '../logger';
+import { ModelPackager } from '../staticModels/ModelPackager';
+import { ResourceContentType } from '@super-protocol/dto-js/build/enum/ResourceContentType.enum';
+import { getResourceLoader } from '../utils/resourceLoaders';
 
 export class EtlModel {
     public static logger = rootLogger.child({ name: EtlModel.name });
@@ -24,7 +24,7 @@ export class EtlModel {
 
             return new EtlModel(etlModel);
         } catch (error) {
-            EtlModel.logger.error("Unable to unpack EtlModel");
+            EtlModel.logger.error('Unable to unpack EtlModel');
             throw error;
         }
     }
@@ -41,7 +41,7 @@ export class EtlModel {
     public async downloadMetadata(): Promise<Record<string, unknown>> {
         const { metadata } = this.etlModel;
         if (!metadata?.resource) {
-            throw new Error("Resource is not present int he EtlModel");
+            throw new Error('Resource is not present int he EtlModel');
         }
 
         const ResourceLoader = getResourceLoader(metadata.resource.type);
@@ -49,7 +49,7 @@ export class EtlModel {
         try {
             const bytes = await new ResourceLoader().download(metadata.resource);
             if (bytes.byteLength === 0) {
-                throw new Error("Resource is empty");
+                throw new Error('Resource is empty');
             }
 
             const stringified = bytes.toString();
@@ -61,10 +61,14 @@ export class EtlModel {
                     return this.parseProtobufResource(stringified);
 
                 default:
-                    throw new Error(`Resource content type ${metadata.resourceContentType} is not supported`);
+                    throw new Error(
+                        `Resource content type ${metadata.resourceContentType} is not supported`,
+                    );
             }
         } catch (error) {
-            throw new Error(`Error during download and parsing resource: ${(error as Error).message}`);
+            throw new Error(
+                `Error during download and parsing resource: ${(error as Error).message}`,
+            );
         }
     }
 
@@ -96,7 +100,7 @@ export class EtlModel {
         try {
             return JSON.parse(data);
         } catch (error) {
-            throw new Error("JSON data in incorrect");
+            throw new Error('JSON data in incorrect');
         }
     }
 
@@ -104,7 +108,7 @@ export class EtlModel {
         try {
             return protobuf.parse(data).root.toJSON().nested as Record<string, unknown>;
         } catch (error) {
-            throw new Error("Protobuf message is incorrect");
+            throw new Error('Protobuf message is incorrect');
         }
     }
 }

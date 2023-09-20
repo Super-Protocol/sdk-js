@@ -1,4 +1,4 @@
-import Web3 from "web3";
+import Web3 from 'web3';
 
 // Event what used as payload for Web3 events
 export type ContractEvent = {
@@ -17,6 +17,8 @@ export type EventData = {
     name: string;
     data: any;
 };
+
+export type TransactionOptionsRequired = Required<TransactionOptions>;
 
 export type TransactionOptions = {
     from?: string;

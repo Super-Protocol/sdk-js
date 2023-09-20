@@ -1,9 +1,9 @@
-import store from "./store";
-import { TransactionOptions } from "./types/Web3";
-import { isArray } from "lodash";
-import Web3 from "web3";
-import { Monitoring } from "./utils/Monitoring";
-import { SlotInfo } from "./types/SlotInfo";
+import store from './store';
+import { TransactionOptions } from './types/Web3';
+import { isArray } from 'lodash';
+import Web3 from 'web3';
+import { Monitoring } from './utils/Monitoring';
+import { SlotInfo } from './types/SlotInfo';
 
 /**
  * Function for checking if provider action account initialized (required for set methods)
@@ -19,7 +19,9 @@ export const checkIfActionAccountInitialized = (transactionOptions?: Transaction
 /**
  * Function for checking if current configuration supposed to use external transaction manager like MetaMask and etc.
  */
-export const checkForUsingExternalTxManager = (transactionOptions?: TransactionOptions): boolean => {
+export const checkForUsingExternalTxManager = (
+    transactionOptions?: TransactionOptions,
+): boolean => {
     // TODO: Agree on more proper way of signaling, that we use an external transaction manager, than just passing a web3 instance.
     return !!transactionOptions?.web3;
 };
@@ -35,7 +37,9 @@ export const getGasPrice = async (web3: Web3): Promise<string> => {
  * Merge transaction options from arguments and from store
  * Used in all set methods
  */
-export const createTransactionOptions = async (options?: TransactionOptions): Promise<TransactionOptions> => {
+export const createTransactionOptions = async (
+    options?: TransactionOptions,
+): Promise<TransactionOptions> => {
     if (!options) options = {};
     if (!options.from) options.from = store.actionAccount;
     if (!options.gas) options.gas = store.gasLimit;
@@ -50,7 +54,7 @@ export const createTransactionOptions = async (options?: TransactionOptions): Pr
             }
         } else {
             throw Error(
-                "web3 is undefined, define it in transaction options or initialize BlockchainConnector with web3 instance.",
+                'web3 is undefined, define it in transaction options or initialize BlockchainConnector with web3 instance.',
             );
         }
     }
@@ -61,7 +65,7 @@ export const createTransactionOptions = async (options?: TransactionOptions): Pr
 
 export const isNodeJS = () => {
     // @ts-ignore
-    return typeof window === "undefined";
+    return typeof window === 'undefined';
 };
 
 type FormatFunctions = {
@@ -81,13 +85,13 @@ export const tupleToObject = <T>(data: unknown[], format: Format): T => {
     const processItem = (dataItem: unknown, formatItem: FormatItem) => {
         if ((formatItem as FormatFunctions)?.$obj) {
             return (formatItem as FormatFunctions).$obj!(dataItem);
-        } else if (typeof formatItem === "function") {
-            if (formatItem.name === "Number") {
+        } else if (typeof formatItem === 'function') {
+            if (formatItem.name === 'Number') {
                 const value = (formatItem as Function)(dataItem);
                 return value < Number.MAX_SAFE_INTEGER ? value : Number.MAX_SAFE_INTEGER;
             }
             return (formatItem as Function)(dataItem);
-        } else if (typeof formatItem === "object" && typeof dataItem === "object") {
+        } else if (typeof formatItem === 'object' && typeof dataItem === 'object') {
             return tupleToObject(dataItem as unknown[], formatItem as Format);
         } else {
             return dataItem;
@@ -123,7 +127,7 @@ export const objectToTuple = (data: unknown, format: Format): unknown[] => {
     const processItem = (dataItem: unknown, formatItem: FormatItem) => {
         if ((formatItem as FormatFunctions)?.$tuple) {
             return (formatItem as FormatFunctions).$tuple!(dataItem);
-        } else if (typeof formatItem === "object" && typeof dataItem === "object") {
+        } else if (typeof formatItem === 'object' && typeof dataItem === 'object') {
             return objectToTuple(dataItem, formatItem as Format);
         } else {
             return dataItem;
@@ -163,19 +167,19 @@ const hexRegex = /^[0-9a-fA-F]+$/;
 
 export function packDevicId(hexedDeviceId: string): string {
     if (hexedDeviceId.length !== 64) {
-        throw new Error("DeviceId must be equal 64 hex symbols");
+        throw new Error('DeviceId must be equal 64 hex symbols');
     }
 
     if (!hexRegex.test(hexedDeviceId)) {
-        throw new Error("DeviceId must be a hexedecimal");
+        throw new Error('DeviceId must be a hexedecimal');
     }
 
-    return "0x" + hexedDeviceId;
+    return '0x' + hexedDeviceId;
 }
 
 export function unpackDeviceId(bytes32: string): string {
     if (bytes32.length !== 66) {
-        throw new Error("DeviceId bytes must be equal 66 symbols");
+        throw new Error('DeviceId bytes must be equal 66 symbols');
     }
 
     // removes '0x'

@@ -1,28 +1,28 @@
-import { BaseConnector, Config } from "./BaseConnector";
-import Web3 from "web3";
-import { BlockTransactionObject } from "web3-eth/types";
-import { errors } from "web3-core-helpers";
+import { BaseConnector, Config } from './BaseConnector';
+import Web3 from 'web3';
+import { BlockTransactionObject } from 'web3-eth/types';
+import { errors } from 'web3-core-helpers';
 import {
     BLOCK_SIZE_TO_FETCH_TRANSACTION,
     POLYGON_MATIC_EVENT_PATH,
     defaultBlockchainUrl,
     defaultGasPrice,
-} from "../constants";
-import { checkIfActionAccountInitialized, incrementMethodCall } from "../utils";
-import { Transaction, TransactionOptions, EventData, BlockInfo } from "../types/Web3";
-import BlockchainTransaction from "../types/blockchainConnector/StorageAccess";
-import TxManager from "../utils/TxManager";
-import appJSON from "../contracts/app.json";
-import { TransactionReceipt } from "web3-core";
-import { Wallet } from "ethers";
-import { AbiItem } from "web3-utils";
-const Jsonrpc = require("web3-core-requestmanager/src/jsonrpc");
+} from '../constants';
+import { checkIfActionAccountInitialized, incrementMethodCall } from '../utils';
+import { Transaction, TransactionOptions, EventData, BlockInfo } from '../types/Web3';
+import BlockchainTransaction from '../types/blockchainConnector/StorageAccess';
+import TxManager from '../utils/TxManager';
+import appJSON from '../contracts/app.json';
+import { TransactionReceipt } from 'web3-core';
+import { Wallet } from 'ethers';
+import { AbiItem } from 'web3-utils';
+const Jsonrpc = require('web3-core-requestmanager/src/jsonrpc');
 
 // TODO: remove this dependencies
-import store from "../store";
-import Superpro from "../staticModels/Superpro";
-import SuperproToken from "../staticModels/SuperproToken";
-import { Monitoring } from "../utils/Monitoring";
+import store from '../store';
+import Superpro from '../staticModels/Superpro';
+import SuperproToken from '../staticModels/SuperproToken';
+import { Monitoring } from '../utils/Monitoring';
 
 class BlockchainConnector extends BaseConnector {
     private defaultActionAccount?: string;
@@ -47,7 +47,10 @@ class BlockchainConnector extends BaseConnector {
         this.checkIfInitialized();
 
         if (transactionOptions?.web3) {
-            return new transactionOptions.web3.eth.Contract(<AbiItem[]>appJSON.abi, Superpro.address);
+            return new transactionOptions.web3.eth.Contract(
+                <AbiItem[]>appJSON.abi,
+                Superpro.address,
+            );
         }
 
         return super.getContract();
@@ -58,7 +61,7 @@ class BlockchainConnector extends BaseConnector {
      * Needs to run this function before using blockchain connector
      */
     public async initialize(config: Config): Promise<void> {
-        this.logger.trace(config, "Initializing");
+        this.logger.trace(config, 'Initializing');
 
         const url = config?.blockchainUrl || defaultBlockchainUrl;
         this.provider = new Web3.providers.HttpProvider(url);
@@ -68,6 +71,8 @@ class BlockchainConnector extends BaseConnector {
         if (config?.gasLimit) store.gasLimit = config.gasLimit;
         if (config?.gasLimitMultiplier) store.gasLimitMultiplier = config.gasLimitMultiplier;
         if (config?.gasPriceMultiplier) store.gasPriceMultiplier = config.gasPriceMultiplier;
+        if (config?.txConcurrency) store.txConcurrency = config.txConcurrency;
+        if (config?.txIntervalMs) store.txIntervalMs = config.txIntervalMs;
 
         Superpro.address = config.contractAddress;
         this.contract = new store.web3Https!.eth.Contract(<AbiItem[]>appJSON.abi, Superpro.address);
@@ -77,14 +82,17 @@ class BlockchainConnector extends BaseConnector {
         Monitoring.getInstance().initializeLogging();
         this.initialized = true;
 
-        this.logger.trace("Initialized");
+        this.logger.trace('Initialized');
     }
 
     /**
      * Function for connecting provider action account
      * Needs to run this function before using any set methods in blockchain connector
      */
-    public async initializeActionAccount(actionAccountKey: string, manageNonce = true): Promise<string> {
+    public async initializeActionAccount(
+        actionAccountKey: string,
+        manageNonce = true,
+    ): Promise<string> {
         this.checkIfInitialized();
 
         const actionAccount = store.web3Https!.eth.accounts.wallet.add(actionAccountKey).address;
@@ -109,7 +117,7 @@ class BlockchainConnector extends BaseConnector {
 
     public async getTimestamp(): Promise<number | string> {
         this.checkIfInitialized();
-        const block = await store.web3Https?.eth.getBlock("latest");
+        const block = await store.web3Https?.eth.getBlock('latest');
 
         return block!.timestamp;
     }
@@ -122,7 +130,7 @@ class BlockchainConnector extends BaseConnector {
     @incrementMethodCall()
     public async getTransactionEvents(txHash: string): Promise<EventData[]> {
         this.checkIfInitialized();
-        const parseReceiptEvents = require("web3-parse-receipt-events");
+        const parseReceiptEvents = require('web3-parse-receipt-events');
         const receipt = await store.web3Https!.eth.getTransactionReceipt(txHash);
         const tokenEvents = parseReceiptEvents(appJSON.abi, SuperproToken.addressHttps, receipt);
         parseReceiptEvents(appJSON.abi, Superpro.address, receipt); // don't remove
@@ -220,13 +228,13 @@ class BlockchainConnector extends BaseConnector {
 
     private async executeBatchAsync(batch: any) {
         return new Promise((resolve, reject) => {
-            var requests = batch.requests;
+            const requests = batch.requests;
 
             batch.requestManager.sendBatch(requests, (error: Error, results: any) => {
                 if (error) return reject(error);
                 results = results || [];
 
-                var response = requests
+                const response = requests
                     .map((request: any, index: number) => {
                         return results[index] || {};
                     })
@@ -239,7 +247,9 @@ class BlockchainConnector extends BaseConnector {
                             return errors.InvalidResponse(result);
                         }
 
-                        return requests[index].format ? requests[index].format(result.result) : result.result;
+                        return requests[index].format
+                            ? requests[index].format(result.result)
+                            : result.result;
                     });
 
                 resolve(response);
@@ -280,7 +290,9 @@ class BlockchainConnector extends BaseConnector {
 
         const transactionsByAddress: { [key: string]: Transaction[] } = {};
 
-        const validAddresses = addresses.filter((address) => store.web3Https?.utils.isAddress(address));
+        const validAddresses = addresses.filter((address) =>
+            store.web3Https?.utils.isAddress(address),
+        );
         if (!validAddresses.length) {
             return {
                 transactionsByAddress,
@@ -306,7 +318,8 @@ class BlockchainConnector extends BaseConnector {
                 block.transactions.forEach((transaction) => {
                     let address: string | null = null;
                     if (validAddresses.includes(transaction.from)) address = transaction.from;
-                    else if (transaction.to && validAddresses.includes(transaction.to)) address = transaction.to;
+                    else if (transaction.to && validAddresses.includes(transaction.to))
+                        address = transaction.to;
 
                     if (address) {
                         transactionsByAddress[address].push({

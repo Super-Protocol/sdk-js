@@ -1,6 +1,6 @@
-import { Buffer as Blob } from "buffer/";
-import { TeeQuoteParserError } from "./errors";
-import { BinaryType, TeeSgxQuoteDataType, TeeSgxReportDataType } from "./types";
+import { Buffer as Blob } from 'buffer/';
+import { TeeQuoteParserError } from './errors';
+import { BinaryType, TeeSgxQuoteDataType, TeeSgxReportDataType } from './types';
 
 export class TeeSgxParser {
     static readonly quoteHeaderSize = 48;
@@ -43,7 +43,7 @@ export class TeeSgxParser {
         } = TeeSgxParser;
 
         if (data.length < quoteHeaderSize + reportSize) {
-            throw new TeeQuoteParserError("data has invalid length");
+            throw new TeeQuoteParserError('data has invalid length');
         }
         const quoteRemainder = { data: Blob.from(data) };
         const quoteHeader = this.getDataAndAdvance(quoteRemainder, quoteHeaderSize);
@@ -54,7 +54,9 @@ export class TeeSgxParser {
         const attestationKeyType = quoteHeader.readUInt16LE(2);
 
         if (attestationKeyType > 3) {
-            throw new TeeQuoteParserError("quote header has invalid or unsupported attestation key type");
+            throw new TeeQuoteParserError(
+                'quote header has invalid or unsupported attestation key type',
+            );
         }
 
         const userData = quoteHeader.slice(userDataOffset, userDataOffset + userDataSize);
@@ -75,11 +77,19 @@ export class TeeSgxParser {
             rawQuoteSignatureDataRemainder,
             ecdsaP256SignatureSize,
         );
-        const ecdsaAttestationKey = this.getDataAndAdvance(rawQuoteSignatureDataRemainder, ecdsaP256PublicKeySize);
+        const ecdsaAttestationKey = this.getDataAndAdvance(
+            rawQuoteSignatureDataRemainder,
+            ecdsaP256PublicKeySize,
+        );
         const qeReport = this.getDataAndAdvance(rawQuoteSignatureDataRemainder, reportSize);
-        const qeReportSignature = this.getDataAndAdvance(rawQuoteSignatureDataRemainder, ecdsaP256SignatureSize);
+        const qeReportSignature = this.getDataAndAdvance(
+            rawQuoteSignatureDataRemainder,
+            ecdsaP256SignatureSize,
+        );
         const qeAuthenticationDataSize = rawQuoteSignatureDataRemainder.data.readUInt16LE(0);
-        rawQuoteSignatureDataRemainder.data = Blob.from(rawQuoteSignatureDataRemainder.data.subarray(2));
+        rawQuoteSignatureDataRemainder.data = Blob.from(
+            rawQuoteSignatureDataRemainder.data.subarray(2),
+        );
 
         if (rawQuoteSignatureDataRemainder.data.length < qeAuthenticationDataSize) {
             throw new TeeQuoteParserError(
@@ -87,12 +97,17 @@ export class TeeSgxParser {
             );
         }
 
-        const qeAuthenticationData = this.getDataAndAdvance(rawQuoteSignatureDataRemainder, qeAuthenticationDataSize);
+        const qeAuthenticationData = this.getDataAndAdvance(
+            rawQuoteSignatureDataRemainder,
+            qeAuthenticationDataSize,
+        );
 
         const qeCertificationDataType = rawQuoteSignatureDataRemainder.data.readUInt16LE(0);
 
         if (qeCertificationDataType < 1 || qeCertificationDataType > 7) {
-            throw new TeeQuoteParserError(`certificationDataType has invalid value: ${qeCertificationDataType}`);
+            throw new TeeQuoteParserError(
+                `certificationDataType has invalid value: ${qeCertificationDataType}`,
+            );
         }
 
         const certificationDataSize = rawQuoteSignatureDataRemainder.data.readUInt32LE(2);
@@ -136,15 +151,24 @@ export class TeeSgxParser {
         } = TeeSgxParser;
 
         if (data.length < reportSize) {
-            throw new TeeQuoteParserError("data has invalid length");
+            throw new TeeQuoteParserError('data has invalid length');
         }
 
         const report = Blob.from(data);
-        const cpuSvn = report.slice(0, cpuSvnSize).toString("hex");
-        const mrEnclave = report.slice(reportMrEnclaveOffset, reportMrEnclaveOffset + reportMrEnclaveSize);
-        const mrSigner = report.slice(reportMrSignerOffset, reportMrSignerOffset + reportMrSignerSize);
+        const cpuSvn = report.slice(0, cpuSvnSize).toString('hex');
+        const mrEnclave = report.slice(
+            reportMrEnclaveOffset,
+            reportMrEnclaveOffset + reportMrEnclaveSize,
+        );
+        const mrSigner = report.slice(
+            reportMrSignerOffset,
+            reportMrSignerOffset + reportMrSignerSize,
+        );
         const userData = report.slice(reportDataOffset, reportDataOffset + reportUserDataSize);
-        const dataHash = report.slice(reportDataOffset, reportDataOffset + reportUserDataSHA256Size);
+        const dataHash = report.slice(
+            reportDataOffset,
+            reportDataOffset + reportUserDataSHA256Size,
+        );
 
         return {
             cpuSvn,

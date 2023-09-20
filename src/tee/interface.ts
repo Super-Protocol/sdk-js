@@ -4,13 +4,15 @@ import {
     TLBlockUnserializeResultType,
     TLBlockSerializeResultType,
     TLBlockType,
-} from "./types";
+} from './types';
 
 /**
  * Serializes and Unserializes TLB
  */
 export interface TLBlockSerializer {
-    unserializeTlb(blob: BinaryType): TLBlockUnserializeResultType | Promise<TLBlockUnserializeResultType>;
+    unserializeTlb(
+        blob: BinaryType,
+    ): TLBlockUnserializeResultType | Promise<TLBlockUnserializeResultType>;
 
     serializeTlb(
         tlb: TLBlockType,
@@ -19,6 +21,7 @@ export interface TLBlockSerializer {
 
     serializeMetadata(tlbMetadata: TeeDataType): BinaryType | Promise<BinaryType>;
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     serializeAnyData(anyData: any): BinaryType;
 }
 

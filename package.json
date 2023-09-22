@@ -30,8 +30,8 @@
     "dto:generate": "cd ./dto/src && protoc --plugin=../../node_modules/.bin/protoc-gen-ts_proto --ts_proto_opt=esModuleInterop=true --ts_proto_opt=unrecognizedEnum=false --ts_proto_out=../../src/proto ./*"
   },
   "devDependencies": {
-    "@types/elliptic": "^6.4.14",
     "@super-protocol/eslint-config-typescript": "^1.0.1",
+    "@types/elliptic": "^6.4.14",
     "@types/jest": "^27.0.3",
     "@types/lodash": "^4.14.176",
     "@types/lru-cache": "^7.10.10",
@@ -71,7 +71,6 @@
     "p-queue": "6.6.2",
     "pino": "^7.2.0",
     "protobufjs": "^6.11.2",
-    "uplink-nodejs": "^1.2.6",
     "web3": "^1.7.1",
     "web3-parse-receipt-events": "^1.0.2"
   },

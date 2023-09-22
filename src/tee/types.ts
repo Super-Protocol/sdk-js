@@ -60,8 +60,8 @@ export type TeeSgxReportDataType = {
     cpuSvn: string;
     mrEnclave: BinaryType;
     mrSigner: BinaryType;
-    isvProdId: BinaryType;
-    isvSvn: BinaryType;
+    isvProdId: number;
+    isvSvn: number;
     userData: BinaryType;
     dataHash: BinaryType; //first 32-bytes of userData, deprecated, use <userData> field.
 };

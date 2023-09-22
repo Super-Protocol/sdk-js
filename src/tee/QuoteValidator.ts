@@ -230,18 +230,17 @@ export class QuoteValidator {
         if (mrSigner.toUpperCase() !== qeIdentity.enclaveIdentity.mrsigner) {
             throw new TeeQuoteValidatorError('Wrong MR signer in QE report');
         }
-        // TODO
-        this.logger.warn(
-            `Parsing quote's field QEReport.ISVProdID not supported.
-            Should be equal ${qeIdentity.enclaveIdentity.isvprodid}`,
+        if (report.isvProdId !== qeIdentity.enclaveIdentity.isvprodid) {
+            throw new TeeQuoteValidatorError('Wrong ISV PROD ID in QE report');
+        }
+        const tcbLevel = qeIdentity.enclaveIdentity.tcbLevels.find(
+            (tcbLevel) => tcbLevel.tcb.isvsvn <= report.isvSvn,
         );
-        // TODO
-        this.logger.warn(
-            `Parsing quote's field QEReport.ISVSVN not supported.
-            Should get status from TCBLevel.tcbStatus of ${qeIdentity.enclaveIdentity.tcbLevels}
-            with max TCBLevel.tcb.isvsvn <= QEReport.ISVSVN.
-            Throw if status is not UpToDate`,
-        );
+        if (tcbLevel?.tcbStatus !== 'UpToDate') {
+            throw new TeeQuoteValidatorError(
+                `QE identity TCB status is not UpToDate. Status: ${tcbLevel?.tcbStatus}`,
+            );
+        }
     }
 
     private checkTcbInfo(fmspc: string, pceId: string, tcbInfo: ITCBInfo, pceSvn: number): void {
@@ -251,12 +250,10 @@ export class QuoteValidator {
         if (pceId !== tcbInfo.tcbInfo.pceId) {
             throw new TeeQuoteValidatorError('Wrong PCEID in PCK certificate');
         }
-        // TODO
-        this.logger.warn(
-            `Validation of header.PCESVN not supported.
-            header.PCESVN ${pceSvn} must be >= any of tcbInfo.tcbLevels[].tcb.pcesvn.
-            Get tcbInfo.tcbLevels[].tcbStatus from max tcbInfo.tcbLevels[].tcb.pcesvn`,
+        const tcbLevel = tcbInfo.tcbInfo.tcbLevels.find(
+            (tcbLevel) => tcbLevel.tcb.pcesvn <= pceSvn,
         );
+        this.logger.info(`TCB status is ${tcbLevel?.tcbStatus}`);
     }
 
     public async validate(quoteBuffer: Buffer): Promise<boolean> {

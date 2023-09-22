@@ -174,11 +174,12 @@ export class TeeSgxParser {
             reportMrSignerOffset,
             reportMrSignerOffset + reportMrSignerSize,
         );
-        const isvProdId = report.slice(
-            reportIsvProdIdOffset,
-            reportIsvProdIdOffset + reportIsvProdIdSize,
-        );
-        const isvSvn = report.slice(reportIsvSvnOffset, reportIsvSvnOffset + reportIsvSvnSize);
+        const isvProdId = report
+            .slice(reportIsvProdIdOffset, reportIsvProdIdOffset + reportIsvProdIdSize)
+            .readUInt16LE(0);
+        const isvSvn = report
+            .slice(reportIsvSvnOffset, reportIsvSvnOffset + reportIsvSvnSize)
+            .readUInt16LE(0);
         const userData = report.slice(reportDataOffset, reportDataOffset + reportUserDataSize);
         const dataHash = report.slice(
             reportDataOffset,

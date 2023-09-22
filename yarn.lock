@@ -1151,10 +1151,10 @@
   resolved "https://registry.yarnpkg.com/@super-protocol/eslint-config-typescript/-/eslint-config-typescript-1.0.1.tgz#ccec8938b78da6502029b87b11cacb30a48c09cf"
   integrity sha512-JE6E6h/N6wEGQaV8dUc21/1MDwtraOoLPyRw+MN+FDNloz8sge6lxuabvfEl4YWgmTyF0rPSh8cBNZxJBklnyQ==
 
-"@super-protocol/tee-lib@^0.2.5":
-  version "0.2.5"
-  resolved "https://registry.npmjs.org/@super-protocol/tee-lib/-/tee-lib-0.2.5.tgz#6b540c673218803ffa91a7199f50ede5815edfbb"
-  integrity sha512-xUdvCip+h4KqXTh+aP2bvwSnXZ22KMlqG+f8/1HvIU6wgCij5cW1JN3uoZGOC4wqFg87I3cgq7L1P3nwDXoVFg==
+"@super-protocol/tee-lib@^0.2.6":
+  version "0.2.6"
+  resolved "https://registry.npmjs.org/@super-protocol/tee-lib/-/tee-lib-0.2.6.tgz#2a73ca1064c7c62ecb4a954b7b3308c27a558aeb"
+  integrity sha512-ofTj5+I5ArGDM9t/nICX961dFACeAS8aeVYtQ06/J/dPmt1gRu2wjY7uMX74j7Z4jejmlUc8Y7tj/aiQGQaA3A==
   dependencies:
     "@msgpack/msgpack" "^2.7.1"
     "@super-protocol/addons-tee" "^0.8.7"

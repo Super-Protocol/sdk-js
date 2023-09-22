@@ -8,17 +8,17 @@ describe('Test quotes validatator', () => {
         const quoteBuffer = Buffer.from(testQuotes.testQuote, 'base64');
         const res = await validator.validate(quoteBuffer);
         expect(res).toEqual(true);
-    });
+    }, 10000);
 
-    test.skip('provisioner quote', async () => {
+    test('provisioner quote', async () => {
         const quoteBuffer = Buffer.from(testQuotes.provisionerQuote, 'base64');
         const res = await validator.validate(quoteBuffer);
         expect(res).toEqual(true);
-    });
+    }, 10000);
 
-    test.skip('tunnel quote', async () => {
+    test('tunnel quote', async () => {
         const quoteBuffer = Buffer.from(testQuotes.tunnelQuote, 'base64');
         const res = await validator.validate(quoteBuffer);
         expect(res).toEqual(true);
-    });
+    }, 10000);
 });

@@ -9,14 +9,13 @@ import rootLogger from '../logger';
 import { IQEIdentity, ITCBInfo } from './interface';
 import { TeeQuoteValidatorError } from './errors';
 
-const BASE_SGX_URL = 'https://api.trustedservices.intel.com/sgx/certification/v';
+const BASE_SGX_URL = 'https://api.trustedservices.intel.com/sgx/certification/v4';
 const SGX_OID = '1.2.840.113741.1.13.1';
 const FMSPC_OID = `${SGX_OID}.4`;
 const PCEID_OID = `${SGX_OID}.3`;
 
 export class QuoteValidator {
     private readonly teeSgxParser: TeeSgxParser;
-    private sgxUrlVersioned = '';
     private logger: typeof rootLogger;
 
     constructor() {
@@ -25,10 +24,13 @@ export class QuoteValidator {
     }
 
     private splitChain(chain: string): string[] {
+        const begin = '-----BEGIN CERTIFICATE-----';
+        const end = '-----END CERTIFICATE-----';
+
         return chain
-            .split('-----BEGIN CERTIFICATE-----')
-            .filter((cert) => cert)
-            .map((cert) => `-----BEGIN CERTIFICATE-----` + cert);
+            .split(begin)
+            .filter(Boolean)
+            .map((cert) => begin.concat(cert.slice(0, cert.indexOf(end)), end));
     }
 
     private findSequenceByOID(hexValue: string, targetOID: string): asn1.Asn1 | null {
@@ -64,7 +66,7 @@ export class QuoteValidator {
 
     private async fetchSgxRootCertificate(): Promise<string> {
         const platformCrlResult = await axios.get(
-            `${this.sgxUrlVersioned}/pckcrl?ca=platform&encoding=pem`,
+            `${BASE_SGX_URL}/pckcrl?ca=platform&encoding=pem`,
         );
         const platformChain = decodeURIComponent(
             platformCrlResult.headers['sgx-pck-crl-issuer-chain'],
@@ -197,27 +199,27 @@ export class QuoteValidator {
         return pceId;
     }
 
-    private async getTcbInfo(version: number, fmspc: string, rootCert: string): Promise<ITCBInfo> {
-        const tcbData = await axios.get(`${this.sgxUrlVersioned}/tcb?fmspc=${fmspc}`);
-        const tcbInfoHeader = version > 3 ? 'tcb-info-issuer-chain' : 'sgx-tcb-info-issuer-chain';
+    private async getTcbInfo(fmspc: string, rootCert: string): Promise<ITCBInfo> {
+        const tcbData = await axios.get(`${BASE_SGX_URL}/tcb?fmspc=${fmspc}`);
+        const tcbInfoHeader = 'tcb-info-issuer-chain';
         const tcbInfoChain = this.splitChain(decodeURIComponent(tcbData.headers[tcbInfoHeader])); // [tcb, root]
 
         if (tcbInfoChain[1] !== rootCert) {
-            throw new TeeQuoteValidatorError('Wrong root certificate in TCB chain');
+            throw new TeeQuoteValidatorError('Invalid SGX root certificate in TCB chain');
         }
 
         return tcbData.data;
     }
 
     private async getQEIdentity(rootCert: string): Promise<IQEIdentity> {
-        const qeIdentityData = await axios.get(`${this.sgxUrlVersioned}/qe/identity`);
+        const qeIdentityData = await axios.get(`${BASE_SGX_URL}/qe/identity`);
         const qeIdentityHeader = 'sgx-enclave-identity-issuer-chain';
         const qeIdentityChain = this.splitChain(
             decodeURIComponent(qeIdentityData.headers[qeIdentityHeader]),
         ); // [qeIdentity, root]
 
         if (qeIdentityChain[1] !== rootCert) {
-            throw new TeeQuoteValidatorError('Wrong root certificate in QE Identity chain');
+            throw new TeeQuoteValidatorError('Invalid SGX root certificate in QE Identity chain');
         }
 
         return qeIdentityData.data;
@@ -242,7 +244,7 @@ export class QuoteValidator {
         );
     }
 
-    private checkTcbInfo(fmspc: string, pceId: string, tcbInfo: ITCBInfo): void {
+    private checkTcbInfo(fmspc: string, pceId: string, tcbInfo: ITCBInfo, pceSvn: number): void {
         if (fmspc !== tcbInfo.tcbInfo.fmspc) {
             throw new TeeQuoteValidatorError('Wrong FMSPC in PCK certificate');
         }
@@ -251,8 +253,8 @@ export class QuoteValidator {
         }
         // TODO
         this.logger.warn(
-            `Parsing quote's field header.PCESVN not supported.
-            header.PCESVN must be >= any of tcbInfo.tcbLevels[].tcb.pcesvn.
+            `Validation of header.PCESVN not supported.
+            header.PCESVN ${pceSvn} must be >= any of tcbInfo.tcbLevels[].tcb.pcesvn.
             Get tcbInfo.tcbLevels[].tcbStatus from max tcbInfo.tcbLevels[].tcb.pcesvn`,
         );
     }
@@ -261,7 +263,6 @@ export class QuoteValidator {
         try {
             const quote: TeeSgxQuoteDataType = this.teeSgxParser.parseQuote(quoteBuffer);
             const report: TeeSgxReportDataType = this.teeSgxParser.parseReport(quote.qeReport);
-            this.sgxUrlVersioned = `${BASE_SGX_URL}${quote.header.version}`;
 
             const rootCert = await this.fetchSgxRootCertificate();
             const pckCert = this.getAndCheckPckCertificate(quote, rootCert);
@@ -272,11 +273,11 @@ export class QuoteValidator {
             const sgxExtensionData = this.getSgxExtensionData(pckCert);
             const fmspc = this.getFmspc(sgxExtensionData);
             const pceId = this.getPceId(sgxExtensionData);
-            const tcbInfo = await this.getTcbInfo(quote.header.version, fmspc, rootCert);
+            const tcbInfo = await this.getTcbInfo(fmspc, rootCert);
             const qeIdentity = await this.getQEIdentity(rootCert);
 
             this.checkQEIdentity(report, qeIdentity);
-            this.checkTcbInfo(fmspc, pceId, tcbInfo);
+            this.checkTcbInfo(fmspc, pceId, tcbInfo, quote.header.pceSvn);
             this.logger.info('Quote valid');
 
             return true;

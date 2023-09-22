@@ -43,6 +43,7 @@ export type TeeSgxQuoteDataType = {
     header: {
         version: number;
         attestationKeyType: number;
+        pceSvn: number;
         userData: BinaryType;
     };
     report: BinaryType;
@@ -59,6 +60,8 @@ export type TeeSgxReportDataType = {
     cpuSvn: string;
     mrEnclave: BinaryType;
     mrSigner: BinaryType;
+    isvProdId: BinaryType;
+    isvSvn: BinaryType;
     userData: BinaryType;
     dataHash: BinaryType; //first 32-bytes of userData, deprecated, use <userData> field.
 };

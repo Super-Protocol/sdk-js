@@ -4,6 +4,7 @@ import { BinaryType, TeeSgxQuoteDataType, TeeSgxReportDataType } from './types';
 
 export class TeeSgxParser {
     static readonly quoteHeaderSize = 48;
+    static readonly pceSvnOffset = 10;
     static readonly reportSize = 384;
     static readonly userDataOffset = 28;
     static readonly userDataSize = 20;
@@ -13,13 +14,14 @@ export class TeeSgxParser {
     static readonly reportMrSignerOffset =
         TeeSgxParser.reportMrEnclaveOffset + TeeSgxParser.reportMrEnclaveSize + /* reserved */ 32;
     static readonly reportMrSignerSize = 32;
+    static readonly reportIsvProdIdOffset =
+        TeeSgxParser.reportMrSignerOffset + TeeSgxParser.reportMrSignerSize + /* reserved */ 96;
+    static readonly reportIsvProdIdSize = 2;
+    static readonly reportIsvSvnOffset =
+        TeeSgxParser.reportIsvProdIdOffset + TeeSgxParser.reportIsvProdIdSize;
+    static readonly reportIsvSvnSize = 2;
     static readonly reportDataOffset =
-        TeeSgxParser.reportMrSignerOffset +
-        TeeSgxParser.reportMrSignerSize +
-        /* reserved */ 96 +
-        /* ISVProdID */ 2 +
-        /* ISVSVN */ 2 +
-        /* reserved */ 60;
+        TeeSgxParser.reportIsvSvnOffset + TeeSgxParser.reportIsvSvnSize + /* reserved */ 60;
     static readonly reportUserDataSize = 64;
     static readonly reportUserDataSHA256Size = 32; /* 64 in report, but we need 32 only for sha256 hash */
     static readonly ecdsaP256SignatureSize = 64;
@@ -35,6 +37,7 @@ export class TeeSgxParser {
     parseQuote(data: BinaryType): TeeSgxQuoteDataType {
         const {
             quoteHeaderSize,
+            pceSvnOffset,
             reportSize,
             userDataOffset,
             userDataSize,
@@ -58,6 +61,8 @@ export class TeeSgxParser {
                 'quote header has invalid or unsupported attestation key type',
             );
         }
+
+        const pceSvn = quoteHeader.readUInt16LE(pceSvnOffset);
 
         const userData = quoteHeader.slice(userDataOffset, userDataOffset + userDataSize);
 
@@ -124,6 +129,7 @@ export class TeeSgxParser {
             header: {
                 version,
                 attestationKeyType,
+                pceSvn,
                 userData,
             },
             report,
@@ -145,6 +151,10 @@ export class TeeSgxParser {
             reportMrEnclaveSize,
             reportMrSignerOffset,
             reportMrSignerSize,
+            reportIsvProdIdOffset,
+            reportIsvProdIdSize,
+            reportIsvSvnOffset,
+            reportIsvSvnSize,
             reportDataOffset,
             reportUserDataSize,
             reportUserDataSHA256Size,
@@ -164,6 +174,11 @@ export class TeeSgxParser {
             reportMrSignerOffset,
             reportMrSignerOffset + reportMrSignerSize,
         );
+        const isvProdId = report.slice(
+            reportIsvProdIdOffset,
+            reportIsvProdIdOffset + reportIsvProdIdSize,
+        );
+        const isvSvn = report.slice(reportIsvSvnOffset, reportIsvSvnOffset + reportIsvSvnSize);
         const userData = report.slice(reportDataOffset, reportDataOffset + reportUserDataSize);
         const dataHash = report.slice(
             reportDataOffset,
@@ -174,6 +189,8 @@ export class TeeSgxParser {
             cpuSvn,
             mrEnclave,
             mrSigner,
+            isvProdId,
+            isvSvn,
             userData,
             dataHash,
         };

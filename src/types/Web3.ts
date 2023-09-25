@@ -8,8 +8,8 @@ export type ContractEvent = {
 };
 
 export type BlockInfo = {
-    index: number;
-    hash: string;
+    index: bigint;
+    hash: string | undefined;
 };
 
 export type EventData = {
@@ -20,8 +20,8 @@ export type EventData = {
 
 export type TransactionOptions = {
     from?: string;
-    gas?: number;
-    gasPrice?: string;
+    gas?: bigint;
+    gasPrice?: bigint;
     gasPriceMultiplier?: number;
     web3?: Web3;
 };

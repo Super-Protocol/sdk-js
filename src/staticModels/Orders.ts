@@ -1,4 +1,4 @@
-import { PastEventOptions } from "web3-eth-contract";
+import { PastEventOptions } from "web3";
 import { formatBytes32String, parseBytes32String } from "ethers/lib/utils";
 import rootLogger from "../logger";
 import { checkIfActionAccountInitialized, incrementMethodCall, objectToTuple } from "../utils";

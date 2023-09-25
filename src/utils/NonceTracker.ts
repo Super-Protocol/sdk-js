@@ -4,7 +4,7 @@ import { Logger } from "pino";
 
 class NonceTracker {
     private logger: Logger;
-    private txCount?: number;
+    private txCount?: bigint;
     private transactionsOnHold: (() => void)[] | undefined;
     private countOfPendingTransactions = 0;
 
@@ -15,20 +15,22 @@ class NonceTracker {
 
     public async initAccount(): Promise<void> {
         this.txCount = await this.web3.eth.getTransactionCount(this.address);
-        this.logger.trace(`Initialized ${this.address} account with nonce: ${this.txCount}`);
+        this.logger.trace(`Initialized ${this.address} account with nonce: ${this.txCount?.toString()}`);
     }
 
-    public getNonce(): number {
+    public getNonce(): bigint {
         if (this.txCount === undefined) throw Error(`NonceTracker for address ${this.address} is not initialized`);
 
         this.logger.trace(`Get nonce: ${this.txCount}`);
+
         return this.txCount;
     }
 
-    public consumeNonce(): number {
+    public consumeNonce(): bigint {
         if (this.txCount === undefined) throw Error(`NonceTracker for address ${this.address} is not initialized`);
 
-        this.logger.trace(`Consume nonce: ${this.txCount + 1}`);
+        this.logger.trace(`Consume nonce: ${this.txCount + BigInt(1)}`);
+
         return this.txCount++;
     }
 

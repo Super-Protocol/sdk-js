@@ -1,7 +1,7 @@
 import { BaseConnector, Config } from "./BaseConnector";
-import Web3 from "web3";
+import Web3, { TransactionReceipt, AbiFragment, errors } from "web3";
+import { Contract } from "web3-eth-contract";
 import { BlockTransactionObject } from "web3-eth/types";
-import { errors } from "web3-core-helpers";
 import {
     BLOCK_SIZE_TO_FETCH_TRANSACTION,
     POLYGON_MATIC_EVENT_PATH,
@@ -13,9 +13,7 @@ import { Transaction, TransactionOptions, EventData, BlockInfo } from "../types/
 import BlockchainTransaction from "../types/blockchainConnector/StorageAccess";
 import TxManager from "../utils/TxManager";
 import appJSON from "../contracts/app.json";
-import { TransactionReceipt } from "web3-core";
 import { Wallet } from "ethers";
-import { AbiItem } from "web3-utils";
 const Jsonrpc = require("web3-core-requestmanager/src/jsonrpc");
 
 // TODO: remove this dependencies
@@ -42,16 +40,6 @@ class BlockchainConnector extends BaseConnector {
         return BlockchainConnector.instance;
     }
 
-    // TODO: remove this
-    public getContract(transactionOptions?: TransactionOptions) {
-        this.checkIfInitialized();
-
-        if (transactionOptions?.web3) {
-            return new transactionOptions.web3.eth.Contract(<AbiItem[]>appJSON.abi, Superpro.address);
-        }
-
-        return super.getContract();
-    }
     /**
      * Function for connecting to blockchain
      * Used to setting up settings for blockchain connector
@@ -62,7 +50,7 @@ class BlockchainConnector extends BaseConnector {
 
         const url = config?.blockchainUrl || defaultBlockchainUrl;
         this.provider = new Web3.providers.HttpProvider(url);
-        store.web3Https = new Web3(this.provider);
+        store.web3Https = new Web3(url);
 
         store.gasPrice = config?.gasPrice ?? defaultGasPrice;
         if (config?.gasLimit) store.gasLimit = config.gasLimit;
@@ -70,7 +58,8 @@ class BlockchainConnector extends BaseConnector {
         if (config?.gasPriceMultiplier) store.gasPriceMultiplier = config.gasPriceMultiplier;
 
         Superpro.address = config.contractAddress;
-        this.contract = new store.web3Https!.eth.Contract(<AbiItem[]>appJSON.abi, Superpro.address);
+        const abi = [appJSON.abi] as const;
+        this.contract = new Contract(abi, Superpro.address);
 
         TxManager.init(store.web3Https);
         SuperproToken.addressHttps = await Superpro.getTokenAddress(this.contract);
@@ -102,12 +91,13 @@ class BlockchainConnector extends BaseConnector {
      * Returns balance of blockchain platform tokens in wei
      */
     @incrementMethodCall()
-    public async getBalance(address: string): Promise<string> {
+    public async getBalance(address: string): Promise<bigint> {
         this.checkIfInitialized();
+
         return store.web3Https!.eth.getBalance(address);
     }
 
-    public async getTimestamp(): Promise<number | string> {
+    public async getTimestamp(): Promise<bigint> {
         this.checkIfInitialized();
         const block = await store.web3Https?.eth.getBlock("latest");
 
@@ -205,7 +195,7 @@ class BlockchainConnector extends BaseConnector {
      * @param address - wallet address
      * @returns {Promise<number>} - Transactions count
      */
-    public async getTransactionCount(address: string, status?: string): Promise<number> {
+    public async getTransactionCount(address: string, status?: string): Promise<bigint> {
         this.checkIfInitialized();
         if (status) {
             return store.web3Https!.eth.getTransactionCount(address, status);
@@ -220,23 +210,23 @@ class BlockchainConnector extends BaseConnector {
 
     private async executeBatchAsync(batch: any) {
         return new Promise((resolve, reject) => {
-            var requests = batch.requests;
+            const requests = batch.requests;
 
             batch.requestManager.sendBatch(requests, (error: Error, results: any) => {
                 if (error) return reject(error);
                 results = results || [];
 
-                var response = requests
+                const response = requests
                     .map((request: any, index: number) => {
                         return results[index] || {};
                     })
                     .map((result: any, index: number) => {
                         if (result && result.error) {
-                            return errors.ErrorResponse(result);
+                            return new errors.ResponseError(error);
                         }
 
                         if (!Jsonrpc.isValidResponse(result)) {
-                            return errors.InvalidResponse(result);
+                            return new errors.InvalidResponseError(result);
                         }
 
                         return requests[index].format ? requests[index].format(result.result) : result.result;

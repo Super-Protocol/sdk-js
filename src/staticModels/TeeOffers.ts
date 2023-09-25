@@ -2,7 +2,7 @@ import rootLogger from "../logger";
 import { checkIfActionAccountInitialized, objectToTuple } from "../utils";
 import { BytesLike, formatBytes32String, parseBytes32String } from "ethers/lib/utils";
 import { packDevicId } from "../utils";
-import { BlockInfo, ContractEvent, TransactionOptions } from "../types/Web3";
+import { BlockInfo, TransactionOptions } from "../types/Web3";
 import { TeeOfferInfo, TeeOfferInfoStructure } from "../types/TeeOfferInfo";
 import { OfferType } from "../types/Offer";
 import { OfferCreatedEvent, OptionAddedEvent, TeeSlotAddedEvent } from "../types/Events";
@@ -13,6 +13,7 @@ import TxManager from "../utils/TxManager";
 import BlockchainEventsListener from "../connectors/BlockchainEventsListener";
 import { HardwareInfo } from "../types/HardwareInfo";
 import { StaticModel } from "./BaseStaticModel";
+import { EventLog } from "web3-eth-contract";
 
 class TeeOffers extends StaticModel {
     private static cpuDenominator?: number;
@@ -51,7 +52,7 @@ class TeeOffers extends StaticModel {
     public static async getAll(): Promise<string[]> {
         const contract = BlockchainConnector.getInstance().getContract();
 
-        const count = await contract.methods.getOffersTotalCount().call();
+        const count = +(await contract.methods.getOffersTotalCount().call());
         this.teeOffers = this.teeOffers || [];
         const teeOfffersSet = new Set(this.teeOffers);
 
@@ -93,14 +94,24 @@ class TeeOffers extends StaticModel {
         );
     }
 
-    public static async getByExternalId(creator: string, externalId: string): Promise<OfferCreatedEvent> {
+    public static async getByExternalId(
+        creator: string,
+        externalId: string,
+        fromBlock?: number | string,
+        toBlock?: number | string,
+    ): Promise<OfferCreatedEvent> {
         const contract = BlockchainConnector.getInstance().getContract();
 
         const filter = {
             creator,
             externalId: formatBytes32String(externalId),
         };
-        const foundIds = await contract.getPastEvents("TeeOfferCreated", { filter });
+        const options: PastEventOptions = { filter };
+
+        if (fromBlock) options.fromBlock = fromBlock;
+        if (toBlock) options.toBlock = toBlock;
+
+        const foundIds = await contract.getPastEvents("TeeOfferCreated", options);
         const notFound = {
             creator,
             externalId,
@@ -170,21 +181,23 @@ class TeeOffers extends StaticModel {
     ): Promise<TeeSlotAddedEvent | null> {
         filter.externalId = formatBytes32String(filter.externalId);
 
-        const foundEvents = await this.getPastEvents("TeeSlotAdded", filter, fromBlock, toBlock);
+        const foundEvents: EventLog[] = await this.getPastEvents("TeeSlotAdded", filter, fromBlock, toBlock);
 
         const response = foundEvents.length ? (foundEvents[0].returnValues as TeeSlotAddedEvent) : null;
 
         return response;
     }
 
-    public static async getOptionByExternalId(
-        filter: { creator: string; teeOfferId: string; externalId: string },
-        fromBlock?: number | string,
-        toBlock?: number | string,
-    ): Promise<OptionAddedEvent | null> {
+    public static async getOptionByExternalId(filter: {
+        creator: string;
+        teeOfferId: string;
+        externalId: string;
+        fromBlock?: number | string;
+        toBlock?: number | string;
+    }): Promise<OptionAddedEvent | null> {
         filter.externalId = formatBytes32String(filter.externalId);
 
-        const foundEvents = await this.getPastEvents("OptionAdded", filter, fromBlock, toBlock);
+        const foundEvents: EventLog[] = await this.getPastEvents("OptionAdded", filter, fromBlock, toBlock);
 
         const response = foundEvents.length ? (foundEvents[0].returnValues as OptionAddedEvent) : null;
 
@@ -201,27 +214,25 @@ class TeeOffers extends StaticModel {
         const contract = BlockchainEventsListener.getInstance().getContract();
         const logger = this.logger.child({ method: "onTeeSlotAdded" });
 
-        const subscription = contract.events
-            .TeeSlotAdded()
-            .on("data", async (event: ContractEvent) => {
-                if (creator && event.returnValues.creator != creator) {
-                    return;
-                }
-                callback(
-                    <string>event.returnValues.creator,
-                    <string>event.returnValues.offerId,
-                    <string>event.returnValues.slotId,
-                    parseBytes32String(<BytesLike>event.returnValues.externalId),
-                    <BlockInfo>{
-                        index: <number>event.blockNumber,
-                        hash: <string>event.blockHash,
-                    },
-                );
-            })
-            .on("error", (error: Error, receipt: string) => {
-                if (receipt) return;
-                logger.warn(error);
-            });
+        const subscription = contract.events.TeeSlotAdded();
+        subscription.on("data", async (event: EventLog) => {
+            if (creator && event.returnValues.creator != creator) {
+                return;
+            }
+            callback(
+                <string>event.returnValues.creator,
+                <bigint>event.returnValues.offerId,
+                <bigint>event.returnValues.slotId,
+                parseBytes32String(<BytesLike>event.returnValues.externalId),
+                <BlockInfo>{
+                    index: <bigint>event.blockNumber,
+                    hash: <string>event.blockHash,
+                },
+            );
+        });
+        subscription.on("error", (error: Error) => {
+            logger.warn(error);
+        });
 
         return () => subscription.unsubscribe();
     }
@@ -235,22 +246,20 @@ class TeeOffers extends StaticModel {
         const contract = BlockchainEventsListener.getInstance().getContract();
         const logger = this.logger.child({ method: "onTeeSlotUpdated" });
 
-        const subscription = contract.events
-            .TeeSlotUpdated()
-            .on("data", async (event: ContractEvent) => {
-                callback(
-                    <string>event.returnValues.offerId,
-                    <string>event.returnValues.slotId,
-                    <BlockInfo>{
-                        index: <number>event.blockNumber,
-                        hash: <string>event.blockHash,
-                    },
-                );
-            })
-            .on("error", (error: Error, receipt: string) => {
-                if (receipt) return;
-                logger.warn(error);
-            });
+        const subscription = contract.events.TeeSlotUpdated();
+        subscription.on("data", async (event: EventLog) => {
+            callback(
+                <bigint>event.returnValues.offerId,
+                <bigint>event.returnValues.slotId,
+                <BlockInfo>{
+                    index: <bigint>event.blockNumber,
+                    hash: <string>event.blockHash,
+                },
+            );
+        });
+        subscription.on("error", (error: Error) => {
+            logger.warn(error);
+        });
 
         return () => subscription.unsubscribe();
     }
@@ -264,22 +273,20 @@ class TeeOffers extends StaticModel {
         const contract = BlockchainEventsListener.getInstance().getContract();
         const logger = this.logger.child({ method: "onTeeSlotDeleted" });
 
-        const subscription = contract.events
-            .TeeSlotDeleted()
-            .on("data", async (event: ContractEvent) => {
-                callback(
-                    <string>event.returnValues.offerId,
-                    <string>event.returnValues.slotId,
-                    <BlockInfo>{
-                        index: <number>event.blockNumber,
-                        hash: <string>event.blockHash,
-                    },
-                );
-            })
-            .on("error", (error: Error, receipt: string) => {
-                if (receipt) return;
-                logger.warn(error);
-            });
+        const subscription = contract.events.TeeSlotDeleted();
+        subscription.on("data", async (event: EventLog) => {
+            callback(
+                <bigint>event.returnValues.offerId,
+                <bigint>event.returnValues.slotId,
+                <BlockInfo>{
+                    index: <bigint>event.blockNumber,
+                    hash: <string>event.blockHash,
+                },
+            );
+        });
+        subscription.on("error", (error: Error) => {
+            logger.warn(error);
+        });
 
         return () => subscription.unsubscribe();
     }
@@ -294,27 +301,25 @@ class TeeOffers extends StaticModel {
         const contract = BlockchainEventsListener.getInstance().getContract();
         const logger = this.logger.child({ method: "onTeeOptionAddedCallback" });
 
-        const subscription = contract.events
-            .OptionAdded()
-            .on("data", async (event: ContractEvent) => {
-                if (creator && event.returnValues.creator != creator) {
-                    return;
-                }
-                callback(
-                    <string>event.returnValues.creator,
-                    <string>event.returnValues.teeOfferId,
-                    <string>event.returnValues.optionId,
-                    parseBytes32String(<BytesLike>event.returnValues.externalId),
-                    <BlockInfo>{
-                        index: <number>event.blockNumber,
-                        hash: <string>event.blockHash,
-                    },
-                );
-            })
-            .on("error", (error: Error, receipt: string) => {
-                if (receipt) return;
-                logger.warn(error);
-            });
+        const subscription = contract.events.OptionAdded();
+        subscription.on("data", async (event: EventLog) => {
+            if (creator && event.returnValues.creator != creator) {
+                return;
+            }
+            callback(
+                <string>event.returnValues.creator,
+                <bigint>event.returnValues.teeOfferId,
+                <bigint>event.returnValues.optionId,
+                parseBytes32String(<BytesLike>event.returnValues.externalId),
+                <BlockInfo>{
+                    index: <bigint>event.blockNumber,
+                    hash: <string>event.blockHash,
+                },
+            );
+        });
+        subscription.on("error", (error: Error) => {
+            logger.warn(error);
+        });
 
         return () => subscription.unsubscribe();
     }
@@ -329,25 +334,23 @@ class TeeOffers extends StaticModel {
         const contract = BlockchainEventsListener.getInstance().getContract();
         const logger = this.logger.child({ method: "onTeeOptionUpdatedCallback" });
 
-        const subscription = contract.events
-            .OptionUpdated()
-            .on("data", async (event: ContractEvent) => {
-                if (teeOfferId && event.returnValues.teeOfferId != teeOfferId) {
-                    return;
-                }
-                callback(
-                    <string>event.returnValues.teeOfferId,
-                    <string>event.returnValues.optionId,
-                    <BlockInfo>{
-                        index: <number>event.blockNumber,
-                        hash: <string>event.blockHash,
-                    },
-                );
-            })
-            .on("error", (error: Error, receipt: string) => {
-                if (receipt) return;
-                logger.warn(error);
-            });
+        const subscription = contract.events.OptionUpdated();
+        subscription.on("data", async (event: EventLog) => {
+            if (teeOfferId && event.returnValues.teeOfferId != teeOfferId) {
+                return;
+            }
+            callback(
+                <bigint>event.returnValues.teeOfferId,
+                <bigint>event.returnValues.optionId,
+                <BlockInfo>{
+                    index: <bigint>event.blockNumber,
+                    hash: <string>event.blockHash,
+                },
+            );
+        });
+        subscription.on("error", (error: Error) => {
+            logger.warn(error);
+        });
 
         return () => subscription.unsubscribe();
     }
@@ -362,25 +365,23 @@ class TeeOffers extends StaticModel {
         const contract = BlockchainEventsListener.getInstance().getContract();
         const logger = this.logger.child({ method: "onTeeOptionDeletedCallback" });
 
-        const subscription = contract.events
-            .OptionDeleted()
-            .on("data", async (event: ContractEvent) => {
-                if (teeOfferId && event.returnValues.teeOfferId != teeOfferId) {
-                    return;
-                }
-                callback(
-                    <string>event.returnValues.teeOfferId,
-                    <string>event.returnValues.optionId,
-                    <BlockInfo>{
-                        index: <number>event.blockNumber,
-                        hash: <string>event.blockHash,
-                    },
-                );
-            })
-            .on("error", (error: Error, receipt: string) => {
-                if (receipt) return;
-                logger.warn(error);
-            });
+        const subscription = contract.events.OptionDeleted();
+        subscription.on("data", async (event: EventLog) => {
+            if (teeOfferId && event.returnValues.teeOfferId != teeOfferId) {
+                return;
+            }
+            callback(
+                <bigint>event.returnValues.teeOfferId,
+                <bigint>event.returnValues.optionId,
+                <BlockInfo>{
+                    index: <bigint>event.blockNumber,
+                    hash: <string>event.blockHash,
+                },
+            );
+        });
+        subscription.on("error", (error: Error) => {
+            logger.warn(error);
+        });
 
         return () => subscription.unsubscribe();
     }
@@ -394,23 +395,21 @@ class TeeOffers extends StaticModel {
         const contract = BlockchainEventsListener.getInstance().getContract();
         const logger = this.logger.child({ method: "onTeeOfferCreated" });
 
-        const subscription = contract.events
-            .TeeOfferCreated()
-            .on("data", async (event: ContractEvent) => {
-                callback(
-                    <string>event.returnValues.offerId,
-                    <string>event.returnValues.creator,
-                    parseBytes32String(<BytesLike>event.returnValues.externalId),
-                    <BlockInfo>{
-                        index: <number>event.blockNumber,
-                        hash: <string>event.blockHash,
-                    },
-                );
-            })
-            .on("error", (error: Error, receipt: string) => {
-                if (receipt) return; // Used to avoid logging of transaction rejected
-                logger.warn(error);
-            });
+        const subscription = contract.events.TeeOfferCreated();
+        subscription.on("data", async (event: EventLog) => {
+            callback(
+                <bigint>event.returnValues.offerId,
+                <string>event.returnValues.creator,
+                parseBytes32String(<BytesLike>event.returnValues.externalId),
+                <BlockInfo>{
+                    index: <bigint>event.blockNumber,
+                    hash: <string>event.blockHash,
+                },
+            );
+        });
+        subscription.on("error", (error) => {
+            logger.warn(error);
+        });
 
         return () => subscription.unsubscribe();
     }
@@ -419,57 +418,55 @@ class TeeOffers extends StaticModel {
         const contract = BlockchainEventsListener.getInstance().getContract();
         const logger = this.logger.child({ method: "onTeeOfferViolationRateChanged" });
 
-        const subscription = contract.events
-            .TeeOfferViolationRateChanged()
-            .on("data", async (event: ContractEvent) => {
-                callback(
-                    <string>event.returnValues.offerId,
-                    <string>event.returnValues.providerAuth,
-                    <number>event.returnValues.violationRate,
-                    <BlockInfo>{
-                        index: <number>event.blockNumber,
-                        hash: <string>event.blockHash,
-                    },
-                );
-            })
-            .on("error", (error: Error, receipt: string) => {
-                if (receipt) return; // Used to avoid logging of transaction rejected
-                logger.warn(error);
-            });
+        const subscription = contract.events.TeeOfferViolationRateChanged();
+        subscription.on("data", async (event: EventLog) => {
+            callback(
+                <bigint>event.returnValues.offerId,
+                <string>event.returnValues.providerAuth,
+                <bigint>event.returnValues.violationRate,
+                <BlockInfo>{
+                    index: <bigint>event.blockNumber,
+                    hash: <string>event.blockHash,
+                },
+            );
+        });
+        subscription.on("error", (error: Error) => {
+            logger.warn(error);
+        });
 
         return () => subscription.unsubscribe();
     }
 }
 
 export type onTeeOfferCreatedCallback = (
-    offerId: string,
+    offerId: bigint,
     creator: string,
     externalId: string,
     block?: BlockInfo,
 ) => void;
 export type onTeeViolationRateChangedCallback = (
-    offerId: string,
+    offerId: bigint,
     providerAuth: string,
-    violationRate: number,
+    violationRate: bigint,
     block?: BlockInfo,
 ) => void;
 export type onTeeOptionAddedCallback = (
     creator: string,
-    teeOfferId: string,
-    optionId: string,
+    teeOfferId: bigint,
+    optionId: bigint,
     externalId: string,
     block?: BlockInfo,
 ) => void;
-export type onTeeOptionUpdatedCallback = (teeOfferId: string, optionId: string, block?: BlockInfo) => void;
-export type onTeeOptionDeletedCallback = (teeOfferId: string, optionId: string, block?: BlockInfo) => void;
+export type onTeeOptionUpdatedCallback = (teeOfferId: bigint, optionId: bigint, block?: BlockInfo) => void;
+export type onTeeOptionDeletedCallback = (teeOfferId: bigint, optionId: bigint, block?: BlockInfo) => void;
 export type onTeeSlotAddedCallback = (
     creator: string,
-    offerId: string,
-    slotId: string,
+    offerId: bigint,
+    slotId: bigint,
     externalId: string,
     block?: BlockInfo,
 ) => void;
-export type onTeeSlotUpdatedCallback = (offerId: string, slotId: string, block?: BlockInfo) => void;
-export type onTeeSlotDeletedCallback = (offerId: string, slotId: string, block?: BlockInfo) => void;
+export type onTeeSlotUpdatedCallback = (offerId: bigint, slotId: bigint, block?: BlockInfo) => void;
+export type onTeeSlotDeletedCallback = (offerId: bigint, slotId: bigint, block?: BlockInfo) => void;
 
 export default TeeOffers;

@@ -1,6 +1,6 @@
-import { Contract } from "web3-eth-contract";
+import { AbiFragment, ContractAbi } from "web3";
+
 import rootLogger from "../logger";
-import { AbiItem } from "web3-utils";
 import appJSON from "../contracts/app.json";
 import {
     checkIfActionAccountInitialized,
@@ -27,7 +27,7 @@ import { tryWithInterval } from "../utils/helpers";
 import { BLOCKCHAIN_CALL_RETRY_INTERVAL, BLOCKCHAIN_CALL_RETRY_ATTEMPTS } from "../constants";
 
 class Offer {
-    private static contract: Contract;
+    private static contract: Contract<ContractAbi>;
     private logger: typeof rootLogger;
 
     public offerInfo?: OfferInfo;
@@ -56,7 +56,9 @@ class Offer {
      */
     private checkInitOffer(transactionOptions: TransactionOptions) {
         if (transactionOptions?.web3) {
-            return new transactionOptions.web3.eth.Contract(<AbiItem[]>appJSON.abi, Superpro.address);
+            const abi = [appJSON.abi] as const;
+
+            return new transactionOptions.web3.eth.Contract(abi, Superpro.address);
         }
     }
 

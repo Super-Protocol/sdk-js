@@ -1,6 +1,6 @@
 import { ParamName } from "../types/Superpro";
 import BlockchainConnector from "../connectors/BlockchainConnector";
-import { Contract } from "web3-eth-contract";
+import { Contract, ContractAbi, AbiFragment } from "web3";
 
 class Superpro {
     public static address: string;
@@ -12,7 +12,7 @@ class Superpro {
         return this.address;
     }
 
-    public static async getTokenAddress(contractInstance?: Contract): Promise<string> {
+    public static async getTokenAddress(contractInstance?: Contract<ContractAbi>): Promise<string> {
         const contract = contractInstance || BlockchainConnector.getInstance().getContract();
 
         return await contract.methods.getToken().call();

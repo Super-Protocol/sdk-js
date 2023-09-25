@@ -1,12 +1,11 @@
 import rootLogger from "../logger";
-import { HttpProviderBase, WebsocketProviderBase } from "web3-core-helpers";
-import { Contract } from "web3-eth-contract";
+import { HttpProvider, WebSocketProvider, ContractAbi, Contract } from "web3";
 
 export type Config = {
     contractAddress: string;
     blockchainUrl?: string;
-    gasPrice?: string;
-    gasLimit?: number;
+    gasPrice?: bigint;
+    gasLimit?: bigint;
     gasLimitMultiplier?: number;
     gasPriceMultiplier?: number;
     reconnect?: {
@@ -18,10 +17,10 @@ export type Config = {
 };
 
 export class BaseConnector {
-    protected initialized: boolean = false;
+    protected initialized = false;
     protected logger = rootLogger.child({ className: this.constructor["name"] });
-    protected contract?: Contract;
-    protected provider?: WebsocketProviderBase | HttpProviderBase;
+    protected contract?: Contract<ContractAbi>;
+    protected provider?: WebSocketProvider | HttpProvider;
 
     public isInitialized(): boolean {
         return this.initialized;
@@ -38,7 +37,7 @@ export class BaseConnector {
      *
      * @returns initialized contract
      */
-    public getContract(): Contract {
+    public getContract(): Contract<ContractAbi> {
         this.checkIfInitialized();
 
         return this.contract!;

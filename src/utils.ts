@@ -27,7 +27,7 @@ export const checkForUsingExternalTxManager = (transactionOptions?: TransactionO
 /**
  * Updates gas price determined by the last few blocks median
  */
-export const getGasPrice = async (web3: Web3): Promise<string> => {
+export const getGasPrice = async (web3: Web3): Promise<bigint> => {
     return web3.eth.getGasPrice();
 };
 

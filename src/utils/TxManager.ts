@@ -1,4 +1,4 @@
-import { TransactionReceipt } from "web3-core";
+import { TransactionReceipt } from "web3";
 import { ContractSendMethod } from "web3-eth-contract";
 import NonceTracker from "./NonceTracker";
 import rootLogger from "../logger";

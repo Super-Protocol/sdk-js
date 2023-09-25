@@ -1,4 +1,4 @@
-import { Transaction } from "../Web3";
+import { Transaction } from '../Web3';
 
 type BlockchainTransaction = {
     transactionsByAddress: { [p: string]: Transaction[] };

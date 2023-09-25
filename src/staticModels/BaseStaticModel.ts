@@ -1,11 +1,20 @@
-import { Filter } from "web3-types";
-import { EventLog } from "web3-eth-contract";
-import BlockchainConnector from "../connectors/BlockchainConnector";
+import { Filter } from 'web3-types';
+import { EventLog, PastEventOptions } from 'web3-eth-contract';
+import BlockchainConnector from '../connectors/BlockchainConnector';
 
 export abstract class StaticModel {
-    static getPastEvents(eventName: string, filter: Filter): Promise<string | EventLog>[] {
+    static getPastEvents(
+        eventName: string,
+        filter: Filter,
+        fromBlock?: number | string,
+        toBlock?: number | string,
+    ): Promise<string | EventLog>[] {
         const contract = BlockchainConnector.getInstance().getContract();
+        const options: PastEventOptions = { filter };
 
-        return contract.getPastEvents(eventName, filter);
+        if (fromBlock) options.fromBlock = fromBlock;
+        if (toBlock) options.toBlock = toBlock;
+
+        return contract.getPastEvents(eventName, options);
     }
 }

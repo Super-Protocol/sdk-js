@@ -1,14 +1,14 @@
 export enum OfferType {
-    TeeOffer = "0",
-    Storage = "1",
-    Solution = "2",
-    Data = "3",
+    TeeOffer = '0',
+    Storage = '1',
+    Solution = '2',
+    Data = '3',
 }
 
 export enum OfferGroup {
-    Input = "0",
-    Processing = "1",
-    Output = "2",
+    Input = '0',
+    Processing = '1',
+    Output = '2',
 }
 
 // Order of keys and type conversion functions for this object in blockchain contract

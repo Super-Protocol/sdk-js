@@ -1,5 +1,5 @@
-import { SlotInfo, SlotInfoStructure } from "./SlotInfo";
-import { SlotUsage, SlotUsageStructure } from "./SlotUsage";
+import { SlotInfo, SlotInfoStructure } from './SlotInfo';
+import { SlotUsage, SlotUsageStructure } from './SlotUsage';
 
 // Order of keys and type conversion functions for this object in blockchain contract
 export const TeeOfferSlotStructure = {

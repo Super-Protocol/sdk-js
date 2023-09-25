@@ -1,33 +1,33 @@
-import { AccessResultStruct as Access } from "@super-protocol/uplink-nodejs/access";
-import { ProjectResultStruct as Project } from "@super-protocol/uplink-nodejs/project";
-import { Buffer } from "buffer";
-import IStorageProvider, { DownloadConfig } from "./IStorageProvider";
-import Offer from "../../models/Offer";
-import { isNodeJS } from "../../utils";
-import StorageObject from "../../types/storage/StorageObject";
-import stream from "stream";
-import logger from "../../logger";
-import { BigNumber } from "ethers";
+import { AccessResultStruct as Access } from '@super-protocol/uplink-nodejs/access';
+import { ProjectResultStruct as Project } from '@super-protocol/uplink-nodejs/project';
+import { Buffer } from 'buffer';
+import IStorageProvider, { DownloadConfig } from './IStorageProvider';
+import { isNodeJS } from '../../utils';
+import StorageObject from '../../types/storage/StorageObject';
+import stream from 'stream';
+import logger from '../../logger';
 
 export default class StorJStorageProvider implements IStorageProvider {
     static DOWNLOAD_BUFFER_SIZE = 4194304; // 4mb
 
-    private logger = logger.child({ className: "StorJStorageProvider" });
+    private logger = logger.child({ className: 'StorJStorageProvider' });
     private bucket: string;
     private prefix: string;
     private accessToken: string;
     private _access?: Access;
     private _project?: Project;
     private _storj?: any;
-    private maximumConcurrent?: number
+    private maximumConcurrent?: number;
 
     constructor(credentials: any, maximumConcurrent?: number) {
         if (!isNodeJS()) {
-            throw Error("StorageProvider: StorJ is supported only in the node.js execution environment");
+            throw Error(
+                'StorageProvider: StorJ is supported only in the node.js execution environment',
+            );
         }
 
-        this.bucket = "";
-        this.prefix = "";
+        this.bucket = '';
+        this.prefix = '';
 
         if (credentials.bucket) {
             this.bucket = credentials.bucket;
@@ -68,7 +68,7 @@ export default class StorJStorageProvider implements IStorageProvider {
             try {
                 await uploader.abort();
             } catch (abortingError) {
-                logger.error({ err: abortingError }, "Failed to abort file uploading");
+                logger.error({ err: abortingError }, 'Failed to abort file uploading');
             }
 
             throw uploadingError;
@@ -85,7 +85,11 @@ export default class StorJStorageProvider implements IStorageProvider {
         const length = config.length || (await this.getObjectSize(remotePath));
         const options = new storj.DownloadOptions(config.offset || 0, length);
 
-        const downloader = await project.downloadObject(this.bucket, this.prefix + remotePath, options);
+        const downloader = await project.downloadObject(
+            this.bucket,
+            this.prefix + remotePath,
+            options,
+        );
 
         const loader = async function* () {
             const readBuffer = Buffer.alloc(StorJStorageProvider.DOWNLOAD_BUFFER_SIZE);
@@ -104,7 +108,7 @@ export default class StorJStorageProvider implements IStorageProvider {
             }
         };
 
-        return stream.Readable.from(loader()).on("close", async () => {
+        return stream.Readable.from(loader()).on('close', async () => {
             await downloader.close();
         });
     }
@@ -119,7 +123,7 @@ export default class StorJStorageProvider implements IStorageProvider {
         const project = await this.lazyProject();
         const objects = await project.listObjects(this.bucket, {
             recursive: true,
-            cursor: "",
+            cursor: '',
             prefix: this.prefix + remotePath,
             system: true,
             custom: true,
@@ -155,7 +159,7 @@ export default class StorJStorageProvider implements IStorageProvider {
 
     private async lazyStorj(): Promise<any> {
         if (!this._storj) {
-            this._storj = await require("@super-protocol/uplink-nodejs");
+            this._storj = await require('@super-protocol/uplink-nodejs');
         }
 
         return this._storj;

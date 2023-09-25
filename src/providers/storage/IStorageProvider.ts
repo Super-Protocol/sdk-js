@@ -1,6 +1,5 @@
-import Offer from "../../models/Offer";
-import StorageObject from "../../types/storage/StorageObject";
-import stream from "stream";
+import StorageObject from '../../types/storage/StorageObject';
+import stream from 'stream';
 
 export type DownloadConfig = {
     offset?: number;
@@ -21,5 +20,5 @@ export default interface IStorageProvider {
     deleteObject(remotePath: string): Promise<void>;
     listObjects(remotePath: string): Promise<StorageObject[]>;
     getObjectSize(remotePath: string): Promise<number>;
-    getLastModified(remotePath: string): Promise<Date>;
+    getLastModified(remotePath: string): Promise<Date | null>;
 }

@@ -1,16 +1,16 @@
-import rootLogger from "../logger";
-import TCB from "../models/TCB";
-import { checkIfActionAccountInitialized, tupleToObject } from "../utils";
-import { EpochInfo } from "../types/Consensus";
-import { TransactionOptions, ContractEvent, BlockInfo } from "../types/Web3";
-import Superpro from "./Superpro";
-import BlockchainConnector from "../connectors/BlockchainConnector";
-import BlockchainEventsListener from "../connectors/BlockchainEventsListener";
-import TxManager from "../utils/TxManager";
-import { ConsensusConstants, ConsensusConstantsStructure } from "../types/Consensus";
+import rootLogger from '../logger';
+import TCB from '../models/TCB';
+import { checkIfActionAccountInitialized, tupleToObject } from '../utils';
+import { EpochInfo } from '../types/Consensus';
+import { TransactionOptions, ContractEvent, BlockInfo } from '../types/Web3';
+import Superpro from './Superpro';
+import BlockchainConnector from '../connectors/BlockchainConnector';
+import BlockchainEventsListener from '../connectors/BlockchainEventsListener';
+import TxManager from '../utils/TxManager';
+import { ConsensusConstants, ConsensusConstantsStructure } from '../types/Consensus';
 
 class Consensus {
-    private static readonly logger = rootLogger.child({ className: "Consensus" });
+    private static readonly logger = rootLogger.child({ className: 'Consensus' });
     private static tcbIds?: string[];
 
     public static get address(): string {
@@ -59,6 +59,37 @@ class Consensus {
         return contract.methods.getSuspiciousBlockTable().call();
     }
 
+    public static async unlockProfitByTcbList(
+        tcbIds: string[],
+        transactionOptions?: TransactionOptions,
+    ): Promise<void> {
+        const contract = BlockchainConnector.getInstance().getContract(transactionOptions);
+        checkIfActionAccountInitialized(transactionOptions);
+
+        let executedCount;
+        try {
+            executedCount = +(await TxManager.dryRun(
+                contract.methods.unlockTcbRewardByList,
+                [tcbIds],
+                transactionOptions,
+            ));
+        } catch (e) {
+            executedCount = 0;
+        }
+
+        if (executedCount === tcbIds.length) {
+            await TxManager.execute(
+                contract.methods.unlockTcbRewardByList,
+                [tcbIds],
+                transactionOptions,
+            );
+        } else {
+            for (const tcbId of tcbIds) {
+                await new TCB(tcbId).unlockRewards();
+            }
+        }
+    }
+
     public static async getSuspiciousBlockTableSize(): Promise<string[]> {
         const contract = BlockchainConnector.getInstance().getContract();
 
@@ -86,11 +117,11 @@ class Consensus {
 
     public static onTcbBanned(callback: onTcbBannedCallback): () => void {
         const contract = BlockchainEventsListener.getInstance().getContract();
-        const logger = this.logger.child({ method: "onTcbBanned" });
+        const logger = this.logger.child({ method: 'onTcbBanned' });
 
         const subscription = contract.events
             .TcbBanned()
-            .on("data", async (event: ContractEvent) => {
+            .on('data', async (event: ContractEvent) => {
                 callback(
                     <string>event.returnValues.tcbId,
                     <string>event.returnValues.provider,
@@ -100,7 +131,7 @@ class Consensus {
                     },
                 );
             })
-            .on("error", (error: Error, receipt: string) => {
+            .on('error', (error: Error, receipt: string) => {
                 if (receipt) return; // Used to avoid logging of transaction rejected
                 logger.warn(error);
             });
@@ -110,11 +141,11 @@ class Consensus {
 
     public static onTcbCompleted(callback: onTcbCompletedCallback): () => void {
         const contract = BlockchainEventsListener.getInstance().getContract();
-        const logger = this.logger.child({ method: "onTcbCompleted" });
+        const logger = this.logger.child({ method: 'onTcbCompleted' });
 
         const subscription = contract.events
             .TcbCompleted()
-            .on("data", async (event: ContractEvent) => {
+            .on('data', async (event: ContractEvent) => {
                 callback(
                     <string>event.returnValues.tcbId,
                     <string>event.returnValues.provider,
@@ -124,7 +155,7 @@ class Consensus {
                     },
                 );
             })
-            .on("error", (error: Error, receipt: string) => {
+            .on('error', (error: Error, receipt: string) => {
                 if (receipt) return; // Used to avoid logging of transaction rejected
                 logger.warn(error);
             });
@@ -134,11 +165,11 @@ class Consensus {
 
     public static onTcbInitialized(callback: onTcbInitializedCallback): () => void {
         const contract = BlockchainEventsListener.getInstance().getContract();
-        const logger = this.logger.child({ method: "onTcbInitialized" });
+        const logger = this.logger.child({ method: 'onTcbInitialized' });
 
         const subscription = contract.events
             .TcbInitialized()
-            .on("data", async (event: ContractEvent) => {
+            .on('data', async (event: ContractEvent) => {
                 callback(
                     <string>event.returnValues.tcbId,
                     <string>event.returnValues.provider,
@@ -148,7 +179,7 @@ class Consensus {
                     },
                 );
             })
-            .on("error", (error: Error, receipt: string) => {
+            .on('error', (error: Error, receipt: string) => {
                 if (receipt) return; // Used to avoid logging of transaction rejected
                 logger.warn(error);
             });
@@ -158,11 +189,11 @@ class Consensus {
 
     public static onTcbBenchmarkChanged(callback: onTcbBenchmarkChangedCallback): () => void {
         const contract = BlockchainEventsListener.getInstance().getContract();
-        const logger = this.logger.child({ method: "onTcbBenchmarkChanged" });
+        const logger = this.logger.child({ method: 'onTcbBenchmarkChanged' });
 
         const subscription = contract.events
             .TcbBenchmarkChanged()
-            .on("data", async (event: ContractEvent) => {
+            .on('data', async (event: ContractEvent) => {
                 callback(
                     <string>event.returnValues.tcbId,
                     <string>event.returnValues.provider,
@@ -172,7 +203,7 @@ class Consensus {
                     },
                 );
             })
-            .on("error", (error: Error, receipt: string) => {
+            .on('error', (error: Error, receipt: string) => {
                 if (receipt) return; // Used to avoid logging of transaction rejected
                 logger.warn(error);
             });
@@ -182,11 +213,11 @@ class Consensus {
 
     public static onRewardsClaimed(callback: onRewardsClaimedCallback): () => void {
         const contract = BlockchainEventsListener.getInstance().getContract();
-        const logger = this.logger.child({ method: "onRewardsClaimed" });
+        const logger = this.logger.child({ method: 'onRewardsClaimed' });
 
         const subscription = contract.events
             .RewardsClaimed()
-            .on("data", async (event: ContractEvent) => {
+            .on('data', async (event: ContractEvent) => {
                 callback(
                     <string>event.returnValues.tcbId,
                     <string>event.returnValues.amount,
@@ -197,7 +228,31 @@ class Consensus {
                     },
                 );
             })
-            .on("error", (error: Error, receipt: string) => {
+            .on('error', (error: Error, receipt: string) => {
+                if (receipt) return; // Used to avoid logging of transaction rejected
+                logger.warn(error);
+            });
+
+        return () => subscription.unsubscribe();
+    }
+
+    public static onTcbRewardUnlocked(callback: onTcbRewardUnlockedCallback): () => void {
+        const contract = BlockchainEventsListener.getInstance().getContract();
+        const logger = this.logger.child({ method: 'onTcbRewardUnlocked' });
+
+        const subscription = contract.events
+            .TcbRewardUnlocked()
+            .on('data', async (event: ContractEvent) => {
+                callback(
+                    <string>event.returnValues.tcbId,
+                    <string>event.returnValues.rewards,
+                    <BlockInfo>{
+                        index: <number>event.blockNumber,
+                        hash: <string>event.blockHash,
+                    },
+                );
+            })
+            .on('error', (error: Error, receipt: string) => {
                 if (receipt) return; // Used to avoid logging of transaction rejected
                 logger.warn(error);
             });
@@ -206,8 +261,22 @@ class Consensus {
     }
 }
 
-export type onRewardsClaimedCallback = (tcbId: string, amount: string, claimer: string, block?: BlockInfo) => void;
-export type onTcbBenchmarkChangedCallback = (tcbId: string, provider: string, block?: BlockInfo) => void;
+export type onRewardsClaimedCallback = (
+    tcbId: string,
+    amount: string,
+    claimer: string,
+    block?: BlockInfo,
+) => void;
+export type onTcbRewardUnlockedCallback = (
+    tcbId: string,
+    rewards: string,
+    block?: BlockInfo,
+) => void;
+export type onTcbBenchmarkChangedCallback = (
+    tcbId: string,
+    provider: string,
+    block?: BlockInfo,
+) => void;
 export type onTcbInitializedCallback = (tcbId: string, provider: string, block?: BlockInfo) => void;
 export type onTcbCompletedCallback = (tcbId: string, provider: string, block?: BlockInfo) => void;
 export type onTcbBannedCallback = (tcbId: string, provider: string, block?: BlockInfo) => void;

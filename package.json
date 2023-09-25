@@ -1,6 +1,6 @@
 {
   "name": "@super-protocol/sdk-js",
-  "version": "0.15.0",
+  "version": "0.15.3-beta.5",
   "main": "build/index.js",
   "license": "MIT",
   "files": [
@@ -11,7 +11,6 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk node_modules/.bin/jest -i",
-    "prettier": "prettier --write ./src/**/* ./test/**/*",
     "lint": "eslint --ext .ts src",
     "lint:fix": "eslint --ext .ts src --fix",
     "build": "rm -rf ./build && tsc -p ./tsconfig.build.json",
@@ -31,6 +30,7 @@
     "dto:generate": "cd ./dto/src && protoc --plugin=../../node_modules/.bin/protoc-gen-ts_proto --ts_proto_opt=esModuleInterop=true --ts_proto_opt=unrecognizedEnum=false --ts_proto_out=../../src/proto ./*"
   },
   "devDependencies": {
+    "@super-protocol/eslint-config-typescript": "^1.0.1",
     "@types/jest": "^27.0.3",
     "@types/lodash": "^4.14.176",
     "@types/lru-cache": "^7.10.10",
@@ -42,6 +42,7 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-tsdoc": "^0.2.14",
+    "eslint-plugin-unused-imports": "^2.0.0",
     "jest": "^27.3.1",
     "pandoc-bin": "^0.2.0",
     "prettier": "^2.4.1",
@@ -57,6 +58,7 @@
     "@super-protocol/tee-lib": "^0.1.2",
     "@super-protocol/uplink-nodejs": "1.2.16",
     "aws-sdk": "^2.1418.0",
+    "bottleneck": "^2.19.5",
     "ethers": "^5.5.3",
     "hybrid-crypto-js": "^0.2.4",
     "lodash": "^4.17.21",

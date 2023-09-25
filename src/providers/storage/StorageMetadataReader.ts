@@ -1,7 +1,7 @@
-import StorageObject from "../../types/storage/StorageObject";
-import logger, { Logger } from "../../logger";
-import { CacheRecord } from "./types";
-import StorageKeyValueAdapter from "./StorageKeyValueAdapter";
+import StorageObject from '../../types/storage/StorageObject';
+import logger, { Logger } from '../../logger';
+import { CacheRecord } from './types';
+import StorageKeyValueAdapter from './StorageKeyValueAdapter';
 
 export interface InstancesUpdates {
     updated: Map<string, StorageObject>;
@@ -11,26 +11,34 @@ export interface InstancesUpdates {
 export interface StorageMetadataReaderConfig<V extends object> {
     storageKeyValueAdapter: StorageKeyValueAdapter<V>;
     objectDeletedFlag: string;
+    showLogs?: boolean;
 }
 
 export default class StorageMetadataReader<K extends string, V extends object> {
-    private readonly logger: Logger;
+    private readonly logger?: Logger | null;
     private readonly storageKeyValueAdapter: StorageKeyValueAdapter<V>;
     private readonly objectDeletedFlag: string;
 
     constructor(config: StorageMetadataReaderConfig<V>) {
-        this.logger = logger.child({ class: StorageMetadataReader.name });
-        this.storageKeyValueAdapter = config.storageKeyValueAdapter;
-        this.objectDeletedFlag = config.objectDeletedFlag;
+        const { showLogs = true, objectDeletedFlag, storageKeyValueAdapter } = config;
+        this.logger = showLogs ? logger.child({ class: StorageMetadataReader.name }) : null;
+        this.storageKeyValueAdapter = storageKeyValueAdapter;
+        this.objectDeletedFlag = objectDeletedFlag;
     }
 
     private async listInstances(key: K): Promise<Map<string, StorageObject>> {
         return this.storageKeyValueAdapter
             .listFiles(`${key}/`)
-            .then((objects) => new Map(objects.map((obj) => [obj.name.split("/")?.pop() || obj.name, obj])));
+            .then(
+                (objects) =>
+                    new Map(objects.map((obj) => [obj.name.split('/')?.pop() || obj.name, obj])),
+            );
     }
 
-    async fetchInstancesUpdates(key: K, currentInstances: Map<string, CacheRecord<V>>): Promise<InstancesUpdates> {
+    async fetchInstancesUpdates(
+        key: K,
+        currentInstances: Map<string, CacheRecord<V>>,
+    ): Promise<InstancesUpdates> {
         const result: InstancesUpdates = {
             updated: new Map(),
             deleted: new Set(),
@@ -58,17 +66,17 @@ export default class StorageMetadataReader<K extends string, V extends object> {
                 }
             });
 
-            this.logger.trace(
+            this.logger?.trace(
                 {
                     updated: result.updated.size,
                     deleted: result.deleted.size,
                 },
-                "Check result",
+                'Check result',
             );
 
             return result;
         } catch (error) {
-            this.logger.error({ error }, "Error fetching remote copy");
+            this.logger?.error({ error }, 'Error fetching remote copy');
 
             return result;
         }

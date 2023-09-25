@@ -1,2 +1,2 @@
-export * from "./GzipCompressor";
-export * from "./UncompressedCompressor";
+export * from './GzipCompressor';
+export * from './UncompressedCompressor';

@@ -1,6 +1,6 @@
 export enum PriceType {
-    PerHour = "0",
-    Fixed = "1",
+    PerHour = '0',
+    Fixed = '1',
 }
 
 // Order of keys and type conversion functions for this object in blockchain contract

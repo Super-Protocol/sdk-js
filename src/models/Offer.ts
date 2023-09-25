@@ -1,7 +1,7 @@
-import { AbiFragment, ContractAbi } from "web3";
+import { AbiFragment, ContractAbi } from 'web3';
 
-import rootLogger from "../logger";
-import appJSON from "../contracts/app.json";
+import rootLogger from '../logger';
+import appJSON from '../contracts/app.json';
 import {
     checkIfActionAccountInitialized,
     tupleToObject,
@@ -10,21 +10,21 @@ import {
     tupleToObjectsArray,
     unpackSlotInfo,
     packSlotInfo,
-} from "../utils";
-import { OfferInfo, OfferInfoStructure, OfferType } from "../types/Offer";
-import { TransactionOptions } from "../types/Web3";
-import { Origins, OriginsStructure } from "../types/Origins";
-import BlockchainConnector from "../connectors/BlockchainConnector";
-import Superpro from "../staticModels/Superpro";
-import TxManager from "../utils/TxManager";
-import { ValueOfferSlot, ValueOfferSlotStructure } from "../types/ValueOfferSlot";
-import { SlotInfo, SlotInfoStructure } from "../types/SlotInfo";
-import { OptionInfo, OptionInfoStructure } from "../types/OptionInfo";
-import { SlotUsage, SlotUsageStructure } from "../types/SlotUsage";
-import { formatBytes32String } from "ethers/lib/utils";
-import TeeOffers from "../staticModels/TeeOffers";
-import { tryWithInterval } from "../utils/helpers";
-import { BLOCKCHAIN_CALL_RETRY_INTERVAL, BLOCKCHAIN_CALL_RETRY_ATTEMPTS } from "../constants";
+} from '../utils';
+import { OfferInfo, OfferInfoStructure, OfferType } from '../types/Offer';
+import { TransactionOptions } from '../types/Web3';
+import { Origins, OriginsStructure } from '../types/Origins';
+import BlockchainConnector from '../connectors/BlockchainConnector';
+import Superpro from '../staticModels/Superpro';
+import TxManager from '../utils/TxManager';
+import { ValueOfferSlot, ValueOfferSlotStructure } from '../types/ValueOfferSlot';
+import { SlotInfo, SlotInfoStructure } from '../types/SlotInfo';
+import { OptionInfo, OptionInfoStructure } from '../types/OptionInfo';
+import { SlotUsage, SlotUsageStructure } from '../types/SlotUsage';
+import { formatBytes32String } from 'ethers/lib/utils';
+import TeeOffers from '../staticModels/TeeOffers';
+import { tryWithInterval } from '../utils/helpers';
+import { BLOCKCHAIN_CALL_RETRY_INTERVAL, BLOCKCHAIN_CALL_RETRY_ATTEMPTS } from '../constants';
 
 class Offer {
     private static contract: Contract<ContractAbi>;
@@ -46,7 +46,7 @@ class Offer {
             Offer.contract = BlockchainConnector.getInstance().getContract();
         }
         this.logger = rootLogger.child({
-            className: "Offer",
+            className: 'Offer',
             offerId: this.id,
         });
     }
@@ -54,7 +54,7 @@ class Offer {
     /**
      * Checks if contract has been initialized, if not - initialize contract
      */
-    private checkInitOffer(transactionOptions: TransactionOptions) {
+    private checkInitOffer(transactionOptions: TransactionOptions): ContractAbi | void {
         if (transactionOptions?.web3) {
             const abi = [appJSON.abi] as const;
 
@@ -79,7 +79,11 @@ class Offer {
         transactionOptions ?? this.checkInitOffer(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
-        await TxManager.execute(Offer.contract.methods.setOfferName, [this.id, name], transactionOptions);
+        await TxManager.execute(
+            Offer.contract.methods.setOfferName,
+            [this.id, name],
+            transactionOptions,
+        );
         if (this.offerInfo) this.offerInfo.name = name;
     }
 
@@ -88,11 +92,18 @@ class Offer {
      * @param description - new description
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
-    public async setDescription(description: string, transactionOptions?: TransactionOptions): Promise<void> {
+    public async setDescription(
+        description: string,
+        transactionOptions?: TransactionOptions,
+    ): Promise<void> {
         transactionOptions ?? this.checkInitOffer(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
-        await TxManager.execute(Offer.contract.methods.setOfferDescription, [this.id, description], transactionOptions);
+        await TxManager.execute(
+            Offer.contract.methods.setOfferDescription,
+            [this.id, description],
+            transactionOptions,
+        );
         if (this.offerInfo) this.offerInfo.description = description;
     }
 
@@ -101,12 +112,19 @@ class Offer {
      * @param newInfo - new offer info
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
-    public async setInfo(newInfo: OfferInfo, transactionOptions?: TransactionOptions): Promise<void> {
+    public async setInfo(
+        newInfo: OfferInfo,
+        transactionOptions?: TransactionOptions,
+    ): Promise<void> {
         transactionOptions ?? this.checkInitOffer(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
         const newInfoTuple = objectToTuple(newInfo, OfferInfoStructure);
-        await TxManager.execute(Offer.contract.methods.setValueOfferInfo, [this.id, newInfoTuple], transactionOptions);
+        await TxManager.execute(
+            Offer.contract.methods.setValueOfferInfo,
+            [this.id, newInfoTuple],
+            transactionOptions,
+        );
         if (this.offerInfo) this.offerInfo = newInfo;
     }
 
@@ -150,7 +168,9 @@ class Offer {
      */
     @incrementMethodCall()
     public async getProviderAuthority(): Promise<string> {
-        this.providerAuthority = await Offer.contract.methods.getOfferProviderAuthority(this.id).call();
+        this.providerAuthority = await Offer.contract.methods
+            .getOfferProviderAuthority(this.id)
+            .call();
 
         return this.providerAuthority!;
     }
@@ -177,7 +197,9 @@ class Offer {
      */
     @incrementMethodCall()
     public async getMinDeposit(slotId: string): Promise<string> {
-        this.minDeposit = await Offer.contract.methods.getOfferMinDeposit(this.id, slotId, "0", [], []).call();
+        this.minDeposit = await Offer.contract.methods
+            .getOfferMinDeposit(this.id, slotId, '0', [], [])
+            .call();
 
         return this.minDeposit!;
     }
@@ -251,7 +273,7 @@ class Offer {
 
         let slots = await Offer.contract.methods.getValueOfferSlots(this.id, begin, end).call();
         slots = tupleToObjectsArray(slots, ValueOfferSlotStructure);
-        for (let slot of slots) {
+        for (const slot of slots) {
             slot.info = unpackSlotInfo(slot.info, await TeeOffers.getDenominator());
         }
 
@@ -270,7 +292,7 @@ class Offer {
         slotInfo: SlotInfo,
         optionInfo: OptionInfo,
         slotUsage: SlotUsage,
-        externalId = "default",
+        externalId = 'default',
         transactionOptions?: TransactionOptions,
     ): Promise<void> {
         const contract = BlockchainConnector.getInstance().getContract(transactionOptions);
@@ -323,11 +345,18 @@ class Offer {
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
     @incrementMethodCall()
-    public async deleteSlot(slotId: string, transactionOptions?: TransactionOptions): Promise<void> {
+    public async deleteSlot(
+        slotId: string,
+        transactionOptions?: TransactionOptions,
+    ): Promise<void> {
         const contract = BlockchainConnector.getInstance().getContract(transactionOptions);
         checkIfActionAccountInitialized(transactionOptions);
 
-        await TxManager.execute(contract.methods.deleteValueOfferSlot, [this.id, slotId], transactionOptions);
+        await TxManager.execute(
+            contract.methods.deleteValueOfferSlot,
+            [this.id, slotId],
+            transactionOptions,
+        );
     }
 
     /**
@@ -358,7 +387,9 @@ class Offer {
      */
     @incrementMethodCall()
     public async isRestrictionsPermitThatOffer(offerId: string) {
-        return await Offer.contract.methods.isOfferRestrictionsPermitOtherOffer(this.id, offerId).call();
+        return await Offer.contract.methods
+            .isOfferRestrictionsPermitOtherOffer(this.id, offerId)
+            .call();
     }
 
     /**

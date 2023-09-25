@@ -1,6 +1,6 @@
-import { ParamName } from "../types/Superpro";
-import BlockchainConnector from "../connectors/BlockchainConnector";
-import { Contract, ContractAbi, AbiFragment } from "web3";
+import { ParamName } from '../types/Superpro';
+import BlockchainConnector from '../connectors/BlockchainConnector';
+import { Contract, ContractAbi, AbiFragment } from 'web3';
 
 class Superpro {
     public static address: string;
@@ -8,7 +8,7 @@ class Superpro {
     /**
      * Fetching address of contract by name
      */
-    public static async getContractAddress(): Promise<string> {
+    public static getContractAddress(): string {
         return this.address;
     }
 

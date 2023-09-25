@@ -1,8 +1,8 @@
-import { LRUCache } from "lru-cache";
-import Queue from "p-queue";
-import logger, { Logger } from "../../logger";
-import { CacheRecord, Performance } from "./types";
-import StorageKeyValueAdapter from "./StorageKeyValueAdapter";
+import { LRUCache } from 'lru-cache';
+import Queue from 'p-queue';
+import logger, { Logger } from '../../logger';
+import { CacheRecord, Performance } from './types';
+import StorageKeyValueAdapter from './StorageKeyValueAdapter';
 
 export interface StorageContentWriterConfig<V extends object> {
     interval: number;
@@ -12,11 +12,12 @@ export interface StorageContentWriterConfig<V extends object> {
     writeContentConcurrency?: number;
     cacheExpirationTs?: number;
     performance?: Performance;
+    showLogs?: boolean;
 }
 
 export enum ContentWriterType {
-    NEEDS_UPLOAD = "NEEDS_UPLOAD",
-    NEEDS_DELETE = "NEEDS_DELETE",
+    NEEDS_UPLOAD = 'NEEDS_UPLOAD',
+    NEEDS_DELETE = 'NEEDS_DELETE',
 }
 
 const DEFAULT_WRITE_CONTENT_CONCURRENCY = 16;
@@ -32,16 +33,15 @@ export default class StorageContentWriter<K extends string, V extends object> {
     private timeout: ReturnType<typeof setTimeout> | null = null;
     private readonly INTERVAL: number;
     private readonly storageKeyValueAdapter: StorageKeyValueAdapter<V>;
-    private readonly logger: Logger;
-    private readonly storageWrites: Map<K, StorageWriteRecord> = new Map();
+    private readonly logger?: Logger | null;
     private readonly instanceId: string;
     private readonly cacheExpirationTs: number;
     private readonly objectDeletedFlag: string;
     private readonly queueWriteContent: Queue;
     private readonly performance?: Performance;
+    public readonly storageWrites: Map<K, StorageWriteRecord> = new Map();
 
     constructor(config: StorageContentWriterConfig<V>) {
-        this.logger = logger.child({ class: StorageContentWriter.name });
         const {
             writeContentConcurrency,
             interval,
@@ -50,7 +50,9 @@ export default class StorageContentWriter<K extends string, V extends object> {
             objectDeletedFlag,
             cacheExpirationTs,
             performance,
+            showLogs = true,
         } = config || {};
+        this.logger = showLogs ? logger.child({ class: StorageContentWriter.name }) : null;
         this.performance = performance;
         this.INTERVAL = interval;
         this.cacheExpirationTs = cacheExpirationTs || DEFAULT_CACHE_EXPIRATION_TS;
@@ -65,12 +67,20 @@ export default class StorageContentWriter<K extends string, V extends object> {
 
     private async actualizeCacheDelete(key: K, encryptionKey: string): Promise<void> {
         const objects = await this.storageKeyValueAdapter.listFiles(key);
-        const objectsToDelete = objects.filter((object) => !object.name.endsWith(this.objectDeletedFlag));
+        const objectsToDelete = objects.filter(
+            (object) => !object.name.endsWith(this.objectDeletedFlag),
+        );
 
-        await Promise.all(objectsToDelete.map((object) => this.storageKeyValueAdapter.delete(object.name)));
+        await Promise.all(
+            objectsToDelete.map((object) => this.storageKeyValueAdapter.delete(object.name)),
+        );
 
         if (objectsToDelete.length === objects.length) {
-            await this.storageKeyValueAdapter.set(`${key}/${this.objectDeletedFlag}`, null, encryptionKey);
+            await this.storageKeyValueAdapter.set(
+                `${key}/${this.objectDeletedFlag}`,
+                null,
+                encryptionKey,
+            );
         }
     }
 
@@ -82,67 +92,76 @@ export default class StorageContentWriter<K extends string, V extends object> {
         const instances = cache.get(key);
         const instance = instances?.get(this.instanceId);
         if (!instances || !instance) {
-            logger.error(
+            this.logger?.error(
                 {
                     key,
                     instancesSize: instances?.size,
                     value: instance,
                 },
-                "Attempted to upload non-existing value",
+                'Attempted to upload non-existing value',
             );
 
             return;
         }
         if (instance.value) {
             const startUpload: number | undefined = this.performance?.now();
-            await this.storageKeyValueAdapter.set(`${key}/${this.instanceId}`, instance.value, encryptionKey);
+            await this.storageKeyValueAdapter.set(
+                `${key}/${this.instanceId}`,
+                instance.value,
+                encryptionKey,
+            );
             if (this.performance && startUpload !== undefined) {
                 const finishUpload = this.performance.now();
-                logger.info(`Uploading took ${(finishUpload - startUpload).toFixed(1)} ms`);
+                this.logger?.info(`Uploading took ${(finishUpload - startUpload).toFixed(1)} ms`);
             }
         }
         await this.deleteOutdatedInstances(key, instances);
     }
 
     private async actualizeCache(cache: LRUCache<K, Map<string, CacheRecord<V>>>): Promise<void> {
-        const logger = this.logger.child({ method: this.actualizeCache.name });
+        const logger = this.logger?.child({ method: this.actualizeCache.name });
 
         if (this.storageWrites.size) {
-            Array.from(this.storageWrites.entries()).forEach(([key, { type, index, encryptionKey }]) => {
-                this.queueWriteContent.add(async () => {
-                    try {
-                        switch (type) {
-                            case ContentWriterType.NEEDS_DELETE:
-                                await this.actualizeCacheDelete(key, encryptionKey);
-                                break;
-                            case ContentWriterType.NEEDS_UPLOAD:
-                                await this.actualizeCacheUpload(key, encryptionKey, cache);
-                                break;
-                            default:
-                                break;
+            Array.from(this.storageWrites.entries()).forEach(
+                ([key, { type, index, encryptionKey }]) => {
+                    this.queueWriteContent.add(async () => {
+                        try {
+                            switch (type) {
+                                case ContentWriterType.NEEDS_DELETE:
+                                    await this.actualizeCacheDelete(key, encryptionKey);
+                                    break;
+                                case ContentWriterType.NEEDS_UPLOAD:
+                                    await this.actualizeCacheUpload(key, encryptionKey, cache);
+                                    break;
+                                default:
+                                    break;
+                            }
+                            // delete only if the current index is up to date
+                            if (index === this.storageWrites.get(key)?.index) {
+                                this.storageWrites.delete(key);
+                            }
+                        } catch (err) {
+                            logger?.error(
+                                {
+                                    err,
+                                    size: this.storageWrites.size,
+                                },
+                                `Error storage writing ${key}`,
+                            );
                         }
-                        // delete only if the current index is up to date
-                        if (index === this.storageWrites.get(key)?.index) {
-                            this.storageWrites.delete(key);
-                        }
-                    } catch (err) {
-                        logger.error(
-                            {
-                                err,
-                                size: this.storageWrites.size,
-                            },
-                            `Error storage writing ${key}`,
-                        );
-                    }
-                });
-            });
+                    });
+                },
+            );
 
             await this.queueWriteContent.onIdle();
-            logger.info({ size: this.storageWrites.size }, "Success storage writing");
+            logger?.info({ size: this.storageWrites.size }, 'Success storage writing');
         }
     }
 
-    private async deleteOutdatedInstances(key: string, instances: Map<string, CacheRecord<V>>): Promise<void> {
+    private async deleteOutdatedInstances(
+        key: string,
+        instances: Map<string, CacheRecord<V>>,
+    ): Promise<void> {
         const expiredTs = Date.now() - this.cacheExpirationTs;
 
         const instancesToDelete: [string, CacheRecord<V>][] = [];
@@ -180,7 +199,9 @@ export default class StorageContentWriter<K extends string, V extends object> {
                     .then(() => {
                         instances.delete(instanceId);
                     })
-                    .catch((err) => this.logger.error({ err }, "Error deleting outdated instance")),
+                    .catch((err) =>
+                        this.logger?.error({ err }, 'Error deleting outdated instance'),
+                    ),
             ),
         );
     }

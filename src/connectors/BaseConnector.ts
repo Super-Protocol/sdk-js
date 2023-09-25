@@ -1,5 +1,5 @@
-import rootLogger from "../logger";
-import { HttpProvider, WebSocketProvider, ContractAbi, Contract } from "web3";
+import rootLogger from '../logger';
+import { HttpProvider, WebSocketProvider, ContractAbi, Contract } from 'web3';
 
 export type Config = {
     contractAddress: string;
@@ -8,6 +8,8 @@ export type Config = {
     gasLimit?: bigint;
     gasLimitMultiplier?: number;
     gasPriceMultiplier?: number;
+    txConcurrency?: number;
+    txIntervalMs?: number;
     reconnect?: {
         auto?: boolean;
         delay?: number;
@@ -18,7 +20,7 @@ export type Config = {
 
 export class BaseConnector {
     protected initialized = false;
-    protected logger = rootLogger.child({ className: this.constructor["name"] });
+    protected logger = rootLogger.child({ className: this.constructor['name'] });
     protected contract?: Contract<ContractAbi>;
     protected provider?: WebSocketProvider | HttpProvider;
 
@@ -29,7 +31,7 @@ export class BaseConnector {
     public checkIfInitialized() {
         if (!this.initialized)
             throw new Error(
-                `${this.constructor["name"]} is not initialized, needs to run '${this.constructor["name"]}.initialize(CONFIG)' first`,
+                `${this.constructor['name']} is not initialized, needs to run '${this.constructor['name']}.initialize(CONFIG)' first`,
             );
     }
 
@@ -52,9 +54,9 @@ export class BaseConnector {
 
     public shutdown() {
         if (this.initialized) {
-            this.provider?.disconnect(0, "");
+            this.provider?.disconnect(0, '');
             this.initialized = false;
-            this.logger.trace(`${this.constructor["name"]} was shutdown`);
+            this.logger.trace(`${this.constructor['name']} was shutdown`);
         }
     }
 }

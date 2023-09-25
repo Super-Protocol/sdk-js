@@ -1,6 +1,6 @@
-import Web3 from "web3";
-import rootLogger from "../logger";
-import { Logger } from "pino";
+import Web3 from 'web3';
+import rootLogger from '../logger';
+import { Logger } from 'pino';
 
 class NonceTracker {
     private logger: Logger;
@@ -9,8 +9,8 @@ class NonceTracker {
     private countOfPendingTransactions = 0;
 
     constructor(private web3: Web3, private address: string) {
-        this.logger = rootLogger.child({ className: "NonceTracker", address });
-        this.logger.trace("Created NonceTracker");
+        this.logger = rootLogger.child({ className: 'NonceTracker', address });
+        this.logger.trace('Created NonceTracker');
     }
 
     public async initAccount(): Promise<void> {
@@ -18,16 +18,18 @@ class NonceTracker {
         this.logger.trace(`Initialized ${this.address} account with nonce: ${this.txCount?.toString()}`);
     }
 
-    public getNonce(): bigint {
-        if (this.txCount === undefined) throw Error(`NonceTracker for address ${this.address} is not initialized`);
+    public getNonce(): number {
+        if (this.txCount === undefined)
+            throw Error(`NonceTracker for address ${this.address} is not initialized`);
 
         this.logger.trace(`Get nonce: ${this.txCount}`);
 
         return this.txCount;
     }
 
-    public consumeNonce(): bigint {
-        if (this.txCount === undefined) throw Error(`NonceTracker for address ${this.address} is not initialized`);
+    public consumeNonce(): number {
+        if (this.txCount === undefined)
+            throw Error(`NonceTracker for address ${this.address} is not initialized`);
 
         this.logger.trace(`Consume nonce: ${this.txCount + BigInt(1)}`);
 

@@ -1,18 +1,23 @@
-import { PastEventOptions } from "web3";
-import { formatBytes32String, parseBytes32String } from "ethers/lib/utils";
-import rootLogger from "../logger";
-import { checkIfActionAccountInitialized, incrementMethodCall, objectToTuple } from "../utils";
-import { OrderInfo, OrderInfoStructure, OrderInfoStructureArray, OrderStatus } from "../types/Order";
-import { BlockInfo, ContractEvent, TransactionOptions } from "../types/Web3";
-import { OrderCreatedEvent } from "../types/Events";
-import Superpro from "./Superpro";
-import TxManager from "../utils/TxManager";
-import BlockchainConnector from "../connectors/BlockchainConnector";
-import BlockchainEventsListener from "../connectors/BlockchainEventsListener";
-import Order from "../models/Order";
+import { PastEventOptions } from 'web3';
+import { formatBytes32String, parseBytes32String } from 'ethers/lib/utils';
+import rootLogger from '../logger';
+import { checkIfActionAccountInitialized, incrementMethodCall, objectToTuple } from '../utils';
+import {
+    OrderInfo,
+    OrderInfoStructure,
+    OrderInfoStructureArray,
+    OrderStatus,
+} from '../types/Order';
+import { BlockInfo, ContractEvent, TransactionOptions } from '../types/Web3';
+import { OrderCreatedEvent } from '../types/Events';
+import Superpro from './Superpro';
+import TxManager from '../utils/TxManager';
+import BlockchainConnector from '../connectors/BlockchainConnector';
+import BlockchainEventsListener from '../connectors/BlockchainEventsListener';
+import Order from '../models/Order';
 
 class Orders {
-    private static readonly logger = rootLogger.child({ className: "Orders" });
+    private static readonly logger = rootLogger.child({ className: 'Orders' });
 
     public static orders?: string[];
 
@@ -57,7 +62,7 @@ class Orders {
     @incrementMethodCall()
     public static async createOrder(
         orderInfo: OrderInfo,
-        deposit = "0",
+        deposit = '0',
         suspended = false,
         transactionOptions?: TransactionOptions,
         checkTxBeforeSend = false,
@@ -87,8 +92,8 @@ class Orders {
 
     @incrementMethodCall()
     public static async getByExternalId(
-        consumer = "",
-        externalId = "",
+        consumer = '',
+        externalId = '',
         fromBlock?: number | string,
         toBlock?: number | string,
     ): Promise<OrderCreatedEvent> {
@@ -103,12 +108,12 @@ class Orders {
         if (fromBlock) options.fromBlock = fromBlock;
         if (toBlock) options.toBlock = toBlock;
 
-        const foundIds = await contract.getPastEvents("OrderCreated", options);
+        const foundIds = await contract.getPastEvents('OrderCreated', options);
         const notFound = {
             ...filter,
-            offerId: "-1",
-            parentOrderId: "-1",
-            orderId: "-1",
+            offerId: '-1',
+            parentOrderId: '-1',
+            orderId: '-1',
         };
 
         const response: OrderCreatedEvent =
@@ -131,7 +136,7 @@ class Orders {
     public static async createWorkflow(
         parentOrderInfo: OrderInfo,
         subOrdersInfo: OrderInfo[],
-        workflowDeposit = "0",
+        workflowDeposit = '0',
         transactionOptions?: TransactionOptions,
         checkTxBeforeSend = false,
     ): Promise<void> {
@@ -170,11 +175,18 @@ class Orders {
      * @param parentOrderId - Parent order id
      * @returns {Promise<void>} - Does not return id of created order!
      */
-    public static async cancelWorkflow(perentOrderId: string, transactionOptions?: TransactionOptions): Promise<void> {
+    public static async cancelWorkflow(
+        perentOrderId: string,
+        transactionOptions?: TransactionOptions,
+    ): Promise<void> {
         const contract = BlockchainConnector.getInstance().getContract(transactionOptions);
         checkIfActionAccountInitialized(transactionOptions);
 
-        await TxManager.execute(contract.methods.cancelWorkflow, [perentOrderId], transactionOptions);
+        await TxManager.execute(
+            contract.methods.cancelWorkflow,
+            [perentOrderId],
+            transactionOptions,
+        );
     }
 
     /**
@@ -189,7 +201,11 @@ class Orders {
         const contract = BlockchainConnector.getInstance().getContract(transactionOptions);
         checkIfActionAccountInitialized(transactionOptions);
 
-        await TxManager.execute(contract.methods.withdrawWorkflowChange, [parentOrderId], transactionOptions);
+        await TxManager.execute(
+            contract.methods.withdrawWorkflowChange,
+            [parentOrderId],
+            transactionOptions,
+        );
     }
 
     /**
@@ -198,11 +214,50 @@ class Orders {
      * @param amount - amount of tokens to refilling
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
-    public static async refillOrderDeposit(orderId: string, amount: string, transactionOptions?: TransactionOptions) {
+    public static async refillOrderDeposit(
+        orderId: string,
+        amount: string,
+        transactionOptions?: TransactionOptions,
+    ) {
         const contract = BlockchainConnector.getInstance().getContract(transactionOptions);
         checkIfActionAccountInitialized(transactionOptions);
 
-        await TxManager.execute(contract.methods.refillOrder, [orderId, amount], transactionOptions);
+        await TxManager.execute(
+            contract.methods.refillOrder,
+            [orderId, amount],
+            transactionOptions,
+        );
+    }
+
+    public static async unlockProfitByOrderList(
+        orderIds: string[],
+        transactionOptions?: TransactionOptions,
+    ): Promise<void> {
+        const contract = BlockchainConnector.getInstance().getContract(transactionOptions);
+        checkIfActionAccountInitialized(transactionOptions);
+
+        let executedCount;
+        try {
+            executedCount = +(await TxManager.dryRun(
+                contract.methods.unlockProfitByList,
+                [orderIds],
+                transactionOptions,
+            ));
+        } catch (e) {
+            executedCount = 0;
+        }
+
+        if (executedCount === orderIds.length) {
+            await TxManager.execute(
+                contract.methods.unlockProfitByList,
+                [orderIds],
+                transactionOptions,
+            );
+        } else {
+            for (const orderId of orderIds) {
+                await new Order(orderId).unlockProfit();
+            }
+        }
     }
 
     /**
@@ -212,11 +267,11 @@ class Orders {
      */
     public static onCreated(callback: onOrderCreatedCallback): () => void {
         const contract = BlockchainEventsListener.getInstance().getContract();
-        const logger = this.logger.child({ method: "onOrderCreated" });
+        const logger = this.logger.child({ method: 'onOrderCreated' });
 
         const subscription = contract.events
             .OrderCreated()
-            .on("data", async (event: ContractEvent) => {
+            .on('data', async (event: ContractEvent) => {
                 //consumer: string, externalId: string, offerId: string, orderId: string
                 callback(
                     <string>event.returnValues.consumer,
@@ -230,7 +285,7 @@ class Orders {
                     },
                 );
             })
-            .on("error", (error: Error, receipt: string) => {
+            .on('error', (error: Error, receipt: string) => {
                 if (receipt) return; // Used to avoid logging of transaction rejected
                 logger.warn(error);
             });
@@ -246,11 +301,11 @@ class Orders {
      */
     public static onStarted(callback: onOrderStartedCallback, orderId?: string): () => void {
         const contract = BlockchainEventsListener.getInstance().getContract();
-        const logger = this.logger.child({ method: "onOrderStarted" });
+        const logger = this.logger.child({ method: 'onOrderStarted' });
 
         const subscription = contract.events
             .OrderStarted()
-            .on("data", async (event: ContractEvent) => {
+            .on('data', async (event: ContractEvent) => {
                 if (orderId && event.returnValues.orderId != orderId) {
                     return;
                 }
@@ -263,7 +318,7 @@ class Orders {
                     },
                 );
             })
-            .on("error", (error: Error, receipt: string) => {
+            .on('error', (error: Error, receipt: string) => {
                 if (receipt) return; // Used to avoid logging of transaction rejected
                 logger.warn(error);
             });
@@ -277,13 +332,16 @@ class Orders {
      * @param orderId - order id
      * @returns unsubscribe - unsubscribe function from event
      */
-    public static onStatusUpdated(callback: onOrdersStatusUpdatedCallback, orderId?: string): () => void {
+    public static onStatusUpdated(
+        callback: onOrdersStatusUpdatedCallback,
+        orderId?: string,
+    ): () => void {
         const contract = BlockchainEventsListener.getInstance().getContract();
-        const logger = this.logger.child({ method: "onOrdersStatusUpdated" });
+        const logger = this.logger.child({ method: 'onOrdersStatusUpdated' });
 
         const subscription = contract.events
             .OrderStatusUpdated()
-            .on("data", async (event: ContractEvent) => {
+            .on('data', async (event: ContractEvent) => {
                 if (orderId && event.returnValues.orderId != orderId) {
                     return;
                 }
@@ -296,7 +354,7 @@ class Orders {
                     },
                 );
             })
-            .on("error", (error: Error, receipt: string) => {
+            .on('error', (error: Error, receipt: string) => {
                 if (receipt) return; // Used to avoid logging of transaction rejected
                 logger.warn(error);
             });
@@ -317,11 +375,11 @@ class Orders {
         orderId?: string,
     ): () => void {
         const contract = BlockchainEventsListener.getInstance().getContract();
-        const logger = this.logger.child({ method: "onOrderDepositRefilled" });
+        const logger = this.logger.child({ method: 'onOrderDepositRefilled' });
 
         const subscription = contract.events
             .OrderDepositRefilled()
-            .on("data", async (event: ContractEvent) => {
+            .on('data', async (event: ContractEvent) => {
                 if (orderId && event.returnValues.orderId != orderId) {
                     return;
                 }
@@ -338,7 +396,7 @@ class Orders {
                     },
                 );
             })
-            .on("error", (error: Error, receipt: string) => {
+            .on('error', (error: Error, receipt: string) => {
                 if (receipt) return; // Used to avoid logging of transaction rejected
                 logger.warn(error);
             });
@@ -352,13 +410,16 @@ class Orders {
      * @param orderId - order id
      * @returns unsubscribe - unsubscribe function from event
      */
-    public static onChangedWithdrawn(callback: onOrderChangedWithdrawnCallback, orderId?: string): () => void {
+    public static onChangedWithdrawn(
+        callback: onOrderChangedWithdrawnCallback,
+        orderId?: string,
+    ): () => void {
         const contract = BlockchainEventsListener.getInstance().getContract();
-        const logger = this.logger.child({ method: "onOrderChangedWithdrawn" });
+        const logger = this.logger.child({ method: 'onOrderChangedWithdrawn' });
 
         const subscription = contract.events
             .OrderChangedWithdrawn()
-            .on("data", async (event: ContractEvent) => {
+            .on('data', async (event: ContractEvent) => {
                 if (orderId && event.returnValues.orderId != orderId) {
                     return;
                 }
@@ -372,7 +433,7 @@ class Orders {
                     },
                 );
             })
-            .on("error", (error: Error, receipt: string) => {
+            .on('error', (error: Error, receipt: string) => {
                 if (receipt) return; // Used to avoid logging of transaction rejected
                 logger.warn(error);
             });
@@ -393,11 +454,11 @@ class Orders {
         tokenReceiver?: string,
     ): () => void {
         const contract = BlockchainEventsListener.getInstance().getContract();
-        const logger = this.logger.child({ method: "onOrderProfitWithdrawn" });
+        const logger = this.logger.child({ method: 'onOrderProfitWithdrawn' });
 
         const subscription = contract.events
             .OrderProfitWithdrawn()
-            .on("data", async (event: ContractEvent) => {
+            .on('data', async (event: ContractEvent) => {
                 if (orderId && event.returnValues.orderId != orderId) {
                     return;
                 }
@@ -414,7 +475,7 @@ class Orders {
                     },
                 );
             })
-            .on("error", (error: Error, receipt: string) => {
+            .on('error', (error: Error, receipt: string) => {
                 if (receipt) return; // Used to avoid logging of transaction rejected
                 logger.warn(error);
             });
@@ -435,11 +496,11 @@ class Orders {
         orderId?: string,
     ): () => void {
         const contract = BlockchainEventsListener.getInstance().getContract();
-        const logger = this.logger.child({ method: "onOrderAwaitingPaymentChanged" });
+        const logger = this.logger.child({ method: 'onOrderAwaitingPaymentChanged' });
 
         const subscription = contract.events
             .OrderAwaitingPaymentChanged()
-            .on("data", async (event: ContractEvent) => {
+            .on('data', async (event: ContractEvent) => {
                 if (orderId && event.returnValues.orderId != orderId) {
                     return;
                 }
@@ -456,7 +517,7 @@ class Orders {
                     },
                 );
             })
-            .on("error", (error: Error, receipt: string) => {
+            .on('error', (error: Error, receipt: string) => {
                 if (receipt) return; // Used to avoid logging of transaction rejected
                 logger.warn(error);
             });
@@ -477,11 +538,11 @@ class Orders {
         orderId?: string,
     ): () => void {
         const contract = BlockchainEventsListener.getInstance().getContract();
-        const logger = this.logger.child({ method: "onOrderEncryptedResultUpdated" });
+        const logger = this.logger.child({ method: 'onOrderEncryptedResultUpdated' });
 
         const subscription = contract.events
             .OrderEncryptedResultUpdated()
-            .on("data", async (event: ContractEvent) => {
+            .on('data', async (event: ContractEvent) => {
                 if (orderId && event.returnValues.orderId != orderId) {
                     return;
                 }
@@ -498,7 +559,7 @@ class Orders {
                     },
                 );
             })
-            .on("error", (error: Error, receipt: string) => {
+            .on('error', (error: Error, receipt: string) => {
                 if (receipt) return; // Used to avoid logging of transaction rejected
                 logger.warn(error);
             });
@@ -519,11 +580,11 @@ class Orders {
         orderId?: string,
     ): () => void {
         const contract = BlockchainEventsListener.getInstance().getContract();
-        const logger = this.logger.child({ method: "onOrderOptionsDepositSpentChanged" });
+        const logger = this.logger.child({ method: 'onOrderOptionsDepositSpentChanged' });
 
         const subscription = contract.events
             .OrderOptionsDepositSpentChanged()
-            .on("data", async (event: ContractEvent) => {
+            .on('data', async (event: ContractEvent) => {
                 if (orderId && event.returnValues.orderId != orderId) {
                     return;
                 }
@@ -540,7 +601,7 @@ class Orders {
                     },
                 );
             })
-            .on("error", (error: Error, receipt: string) => {
+            .on('error', (error: Error, receipt: string) => {
                 if (receipt) return; // Used to avoid logging of transaction rejected
                 logger.warn(error);
             });
@@ -561,11 +622,11 @@ class Orders {
         orderId?: string,
     ): () => void {
         const contract = BlockchainEventsListener.getInstance().getContract();
-        const logger = this.logger.child({ method: "onOrderProfitUnlocked" });
+        const logger = this.logger.child({ method: 'onOrderProfitUnlocked' });
 
         const subscription = contract.events
             .OrderProfitUnlocked()
-            .on("data", async (event: ContractEvent) => {
+            .on('data', async (event: ContractEvent) => {
                 if (orderId && event.returnValues.orderId != orderId) {
                     return;
                 }
@@ -582,7 +643,7 @@ class Orders {
                     },
                 );
             })
-            .on("error", (error: Error, receipt: string) => {
+            .on('error', (error: Error, receipt: string) => {
                 if (receipt) return; // Used to avoid logging of transaction rejected
                 logger.warn(error);
             });
@@ -592,7 +653,11 @@ class Orders {
 }
 
 export type onOrderStartedCallback = (orderId: string, consumer: string, block?: BlockInfo) => void;
-export type onOrdersStatusUpdatedCallback = (orderId: string, status: OrderStatus, block?: BlockInfo) => void;
+export type onOrdersStatusUpdatedCallback = (
+    orderId: string,
+    status: OrderStatus,
+    block?: BlockInfo,
+) => void;
 export type onOrderCreatedCallback = (
     consumer: string,
     externalId: string,

@@ -138,11 +138,15 @@ class TxManager {
         transactionOptions: TransactionOptionsRequired,
         transactionCall?: MethodReturnType,
     ): Promise<TransactionReceipt> {
-        const { web3 } = transactionOptions;
+        const { from, gas, gasPrice, gasPriceMultiplier, web3 } =
+            transactionOptions;
 
         txData = {
-            ...transactionOptions,
             ...txData,
+            from,
+            gas,
+            gasPrice,
+            gasPriceMultiplier,
         };
 
         if (transactionCall) {

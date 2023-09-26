@@ -57,6 +57,7 @@
     "typescript": "^4.4.4"
   },
   "dependencies": {
+    "@fidm/x509": "^1.2.1",
     "@super-protocol/dto-js": "0.0.28",
     "@super-protocol/tee-lib": "^0.2.6",
     "@super-protocol/uplink-nodejs": "1.2.16",

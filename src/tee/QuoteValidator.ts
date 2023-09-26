@@ -380,6 +380,7 @@ export class QuoteValidator {
                 qeIdentityStatus,
                 tcbStatus,
             );
+            this.logger.info(`Quote validation status is ${quoteValidationStatus}`);
 
             return {
                 quoteValidationStatus,

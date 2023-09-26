@@ -6,13 +6,22 @@ import { Certificate, Extension } from '@fidm/x509';
 import { TeeSgxParser } from './QuoteParser';
 import { TeeSgxQuoteDataType, TeeSgxReportDataType } from './types';
 import rootLogger from '../logger';
-import { IQEIdentity, ITCBInfo } from './interface';
+import { IQEIdentity, ITcbData } from './interface';
 import { TeeQuoteValidatorError } from './errors';
+import { QEIdentityStatuses, TCBStatuses, QuoteValidationStatuses } from './statuses';
 
 const BASE_SGX_URL = 'https://api.trustedservices.intel.com/sgx/certification/v4';
 const SGX_OID = '1.2.840.113741.1.13.1';
 const FMSPC_OID = `${SGX_OID}.4`;
 const PCEID_OID = `${SGX_OID}.3`;
+const TCB_OID = `${SGX_OID}.2`;
+const PCESVN_OID = `${TCB_OID}.17`;
+
+interface ValidationResult {
+    quoteValidationStatus: QuoteValidationStatuses;
+    description: string;
+    error?: unknown;
+}
 
 export class QuoteValidator {
     private readonly teeSgxParser: TeeSgxParser;
@@ -170,36 +179,31 @@ export class QuoteValidator {
         return sgxExtensionData;
     }
 
-    private getFmspc(sgxExtensionData: Extension): string {
-        const fmspcRawData = this.findSequenceByOID(
-            sgxExtensionData.value.toString('hex'),
-            FMSPC_OID,
-        );
-        if (!fmspcRawData) {
-            throw new TeeQuoteValidatorError('FMSPC not found in PCK certificate');
+    private getDataFromExtension(
+        sgxExtensionData: Extension,
+        targetOid: string,
+        targetType: asn1.Type,
+    ): string {
+        const rawData = this.findSequenceByOID(sgxExtensionData.value.toString('hex'), targetOid);
+        if (!rawData) {
+            throw new TeeQuoteValidatorError(
+                `OID ${targetOid} not found in PCK certificate's SGX data`,
+            );
         }
-        const fmspcRaw = (fmspcRawData.value as asn1.Asn1[]).filter(
-            (asnElement) => asnElement.type === asn1.Type.OCTETSTRING,
+        const data = (rawData.value as asn1.Asn1[]).filter(
+            (asnElement) => asnElement.type === targetType,
         );
-        const fmspc = util.bytesToHex(fmspcRaw[0].value as string);
+        if (!data.length) {
+            throw new TeeQuoteValidatorError(
+                `Data on OID ${targetOid} of type ${targetType} not found`,
+            );
+        }
+        const result = util.bytesToHex(data[0].value as string);
 
-        return fmspc;
+        return targetType === asn1.Type.OCTETSTRING ? result : parseInt(result, 16).toString();
     }
 
-    private getPceId(sgxExtensionData: Extension): string {
-        const pceIdData = this.findSequenceByOID(sgxExtensionData.value.toString('hex'), PCEID_OID);
-        if (!pceIdData) {
-            throw new TeeQuoteValidatorError('PCEID not found in PCK certificate');
-        }
-        const pceIdRaw = (pceIdData.value as asn1.Asn1[]).filter(
-            (asnElement) => asnElement.type === asn1.Type.OCTETSTRING,
-        );
-        const pceId = util.bytesToHex(pceIdRaw[0].value as string);
-
-        return pceId;
-    }
-
-    private async getTcbInfo(fmspc: string, rootCert: string): Promise<ITCBInfo> {
+    private async getTcbInfo(fmspc: string, rootCert: string): Promise<ITcbData> {
         const tcbData = await axios.get(`${BASE_SGX_URL}/tcb?fmspc=${fmspc}`);
         const tcbInfoHeader = 'tcb-info-issuer-chain';
         const tcbInfoChain = this.splitChain(decodeURIComponent(tcbData.headers[tcbInfoHeader])); // [tcb, root]
@@ -225,7 +229,10 @@ export class QuoteValidator {
         return qeIdentityData.data;
     }
 
-    private checkQEIdentity(report: TeeSgxReportDataType, qeIdentity: IQEIdentity): void {
+    private getQEIdentityStatus(
+        report: TeeSgxReportDataType,
+        qeIdentity: IQEIdentity,
+    ): QEIdentityStatuses {
         const mrSigner = report.mrSigner.toString('hex');
         if (mrSigner.toUpperCase() !== qeIdentity.enclaveIdentity.mrsigner) {
             throw new TeeQuoteValidatorError('Wrong MR signer in QE report');
@@ -236,27 +243,111 @@ export class QuoteValidator {
         const tcbLevel = qeIdentity.enclaveIdentity.tcbLevels.find(
             (tcbLevel) => tcbLevel.tcb.isvsvn <= report.isvSvn,
         );
-        if (tcbLevel?.tcbStatus !== 'UpToDate') {
-            throw new TeeQuoteValidatorError(
-                `QE identity TCB status is not UpToDate. Status: ${tcbLevel?.tcbStatus}`,
-            );
+
+        this.logger.info(`QE identity status is ${tcbLevel?.tcbStatus}`);
+        switch (tcbLevel?.tcbStatus) {
+            case QEIdentityStatuses.UpToDate:
+                return QEIdentityStatuses.UpToDate;
+            case QEIdentityStatuses.OutOfDate:
+                return QEIdentityStatuses.OutOfDate;
+            case QEIdentityStatuses.Revoked:
+                return QEIdentityStatuses.Revoked;
+
+            default:
+                throw new TeeQuoteValidatorError('Unknown QE identity status');
         }
     }
 
-    private checkTcbInfo(fmspc: string, pceId: string, tcbInfo: ITCBInfo, pceSvn: number): void {
-        if (fmspc !== tcbInfo.tcbInfo.fmspc) {
+    private getTcbStatus(
+        fmspc: string,
+        pceId: string,
+        tcbData: ITcbData,
+        sgxExtensionData: Extension,
+    ): TCBStatuses {
+        if (fmspc !== tcbData.tcbInfo.fmspc) {
             throw new TeeQuoteValidatorError('Wrong FMSPC in PCK certificate');
         }
-        if (pceId !== tcbInfo.tcbInfo.pceId) {
+        if (pceId !== tcbData.tcbInfo.pceId) {
             throw new TeeQuoteValidatorError('Wrong PCEID in PCK certificate');
         }
-        const tcbLevel = tcbInfo.tcbInfo.tcbLevels.find(
-            (tcbLevel) => tcbLevel.tcb.pcesvn <= pceSvn,
+
+        const pceSvn = this.getDataFromExtension(sgxExtensionData, PCESVN_OID, asn1.Type.INTEGER);
+        const sgxComponents = [...Array(16).keys()].map((i) =>
+            this.getDataFromExtension(sgxExtensionData, `${TCB_OID}.${i + 1}`, asn1.Type.INTEGER),
         );
+        const tcbLevel = tcbData.tcbInfo.tcbLevels.find(
+            (tcbLevel) =>
+                tcbLevel.tcb.pcesvn <= Number(pceSvn) &&
+                tcbLevel.tcb.sgxtcbcomponents.every(
+                    (el, index) => el.svn <= Number(sgxComponents[index]),
+                ),
+        );
+
         this.logger.info(`TCB status is ${tcbLevel?.tcbStatus}`);
+        switch (tcbLevel?.tcbStatus) {
+            case TCBStatuses.UpToDate:
+                return TCBStatuses.UpToDate;
+            case TCBStatuses.OutOfDate:
+                return TCBStatuses.OutOfDate;
+            case TCBStatuses.Revoked:
+                return TCBStatuses.Revoked;
+            case TCBStatuses.ConfigurationAndSWHardeningNeeded:
+                return TCBStatuses.ConfigurationAndSWHardeningNeeded;
+            case TCBStatuses.ConfigurationNeeded:
+                return TCBStatuses.ConfigurationNeeded;
+            case TCBStatuses.OutOfDateConfigurationNeeded:
+                return TCBStatuses.OutOfDateConfigurationNeeded;
+            case TCBStatuses.SWHardeningNeeded:
+                return TCBStatuses.SWHardeningNeeded;
+
+            default:
+                throw new TeeQuoteValidatorError('Unknown TBC status');
+        }
     }
 
-    public async validate(quoteBuffer: Buffer): Promise<boolean> {
+    private getQuoteValidationStatus(
+        qeIdentityStatus: QEIdentityStatuses,
+        tcbStatus: TCBStatuses,
+    ): QuoteValidationStatuses {
+        if (qeIdentityStatus === QEIdentityStatuses.OutOfDate) {
+            if (tcbStatus === TCBStatuses.UpToDate || tcbStatus === TCBStatuses.SWHardeningNeeded) {
+                return QuoteValidationStatuses.NeedSecurityPatch;
+            }
+            if (
+                tcbStatus === TCBStatuses.OutOfDateConfigurationNeeded ||
+                tcbStatus === TCBStatuses.ConfigurationAndSWHardeningNeeded
+            ) {
+                return QuoteValidationStatuses.NeedSoftwareUpdate;
+            }
+        }
+        if (qeIdentityStatus === QEIdentityStatuses.Revoked) {
+            return QuoteValidationStatuses.NeedSecurityPatch;
+        }
+        if (tcbStatus === TCBStatuses.OutOfDate || tcbStatus === TCBStatuses.Revoked) {
+            return QuoteValidationStatuses.NeedSecurityPatch;
+        }
+        return QuoteValidationStatuses.NeedSoftwareUpdate;
+    }
+
+    private getQuoteValidationStatusDescription(status: QuoteValidationStatuses): string {
+        switch (status) {
+            case QuoteValidationStatuses.UpToDate:
+                return `The SGX platform firmware and SW are at the latest security patching level 
+                    but there are platform hardware configurations may expose the enclave to vulnerabilities.`;
+            case QuoteValidationStatuses.NeedSecurityPatch:
+                return `The SGX platform firmware and SW are not at the latest security patching level. 
+                The platform needs to be patched with firmware and/or software patches.`;
+            case QuoteValidationStatuses.NeedSoftwareUpdate:
+                return `The SGX platform firmware and SW are at the latest security patching level but there are 
+                    certain vulnerabilities that can only be mitigated with software mitigations implemented by the enclave.`;
+            case QuoteValidationStatuses.Error:
+                return 'Quote verification failed.';
+            default:
+                return 'Unknown status';
+        }
+    }
+
+    public async validate(quoteBuffer: Buffer): Promise<ValidationResult> {
         try {
             const quote: TeeSgxQuoteDataType = this.teeSgxParser.parseQuote(quoteBuffer);
             const report: TeeSgxReportDataType = this.teeSgxParser.parseReport(quote.qeReport);
@@ -268,20 +359,42 @@ export class QuoteValidator {
             this.logger.info('Quote structure validated successfully');
 
             const sgxExtensionData = this.getSgxExtensionData(pckCert);
-            const fmspc = this.getFmspc(sgxExtensionData);
-            const pceId = this.getPceId(sgxExtensionData);
-            const tcbInfo = await this.getTcbInfo(fmspc, rootCert);
+            const fmspc = this.getDataFromExtension(
+                sgxExtensionData,
+                FMSPC_OID,
+                asn1.Type.OCTETSTRING,
+            );
+            const pceId = this.getDataFromExtension(
+                sgxExtensionData,
+                PCEID_OID,
+                asn1.Type.OCTETSTRING,
+            );
+
+            const tcbData = await this.getTcbInfo(fmspc, rootCert);
             const qeIdentity = await this.getQEIdentity(rootCert);
 
-            this.checkQEIdentity(report, qeIdentity);
-            this.checkTcbInfo(fmspc, pceId, tcbInfo, quote.header.pceSvn);
-            this.logger.info('Quote valid');
+            const qeIdentityStatus = this.getQEIdentityStatus(report, qeIdentity);
+            const tcbStatus = this.getTcbStatus(fmspc, pceId, tcbData, sgxExtensionData);
 
-            return true;
+            const quoteValidationStatus = this.getQuoteValidationStatus(
+                qeIdentityStatus,
+                tcbStatus,
+            );
+
+            return {
+                quoteValidationStatus,
+                description: this.getQuoteValidationStatusDescription(quoteValidationStatus),
+            };
         } catch (error) {
             this.logger.error(`Validation error: ${error}`);
 
-            return false;
+            return {
+                quoteValidationStatus: QuoteValidationStatuses.Error,
+                description: this.getQuoteValidationStatusDescription(
+                    QuoteValidationStatuses.Error,
+                ),
+                error,
+            };
         }
     }
 }

@@ -51,33 +51,26 @@ export interface IQEIdentity {
     };
 }
 
+interface sgxTcbComponent {
+    svn: number;
+    category: string;
+    type: string;
+}
+
 interface ITCBSVNStatus {
     tcb: {
-        sgxtcbcomp01svn: number;
-        sgxtcbcomp02svn: number;
-        sgxtcbcomp03svn: number;
-        sgxtcbcomp04svn: number;
-        sgxtcbcomp05svn: number;
-        sgxtcbcomp06svn: number;
-        sgxtcbcomp07svn: number;
-        sgxtcbcomp08svn: number;
-        sgxtcbcomp09svn: number;
-        sgxtcbcomp10svn: number;
-        sgxtcbcomp11svn: number;
-        sgxtcbcomp12svn: number;
-        sgxtcbcomp13svn: number;
-        sgxtcbcomp14svn: number;
-        sgxtcbcomp15svn: number;
-        sgxtcbcomp16svn: number;
+        sgxtcbcomponents: [sgxTcbComponent];
         pcesvn: number;
     };
     tcbDate: string;
     tcbStatus: string;
+    advisoryIDs: [string];
 }
 
-export interface ITCBInfo {
+export interface ITcbData {
     signature: string;
     tcbInfo: {
+        id: string;
         version: number;
         issueDate: string;
         nextUpdate: string;

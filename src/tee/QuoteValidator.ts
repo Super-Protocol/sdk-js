@@ -320,10 +320,10 @@ export class QuoteValidator {
                 return QuoteValidationStatuses.NeedSoftwareUpdate;
             }
         }
-        if (qeIdentityStatus === QEIdentityStatuses.Revoked) {
-            return QuoteValidationStatuses.NeedSecurityPatch;
+        if (qeIdentityStatus === QEIdentityStatuses.Revoked || tcbStatus === TCBStatuses.Revoked) {
+            throw new TeeQuoteValidatorError('QE identity or TCB revoked');
         }
-        if (tcbStatus === TCBStatuses.OutOfDate || tcbStatus === TCBStatuses.Revoked) {
+        if (tcbStatus === TCBStatuses.OutOfDate) {
             return QuoteValidationStatuses.NeedSecurityPatch;
         }
         return QuoteValidationStatuses.NeedSoftwareUpdate;
@@ -336,7 +336,7 @@ export class QuoteValidator {
                     but there are platform hardware configurations may expose the enclave to vulnerabilities.`;
             case QuoteValidationStatuses.NeedSecurityPatch:
                 return `The SGX platform firmware and SW are not at the latest security patching level. 
-                The platform needs to be patched with firmware and/or software patches.`;
+                    The platform needs to be patched with firmware and/or software patches.`;
             case QuoteValidationStatuses.NeedSoftwareUpdate:
                 return `The SGX platform firmware and SW are at the latest security patching level but there are 
                     certain vulnerabilities that can only be mitigated with software mitigations implemented by the enclave.`;

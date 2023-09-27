@@ -8,7 +8,7 @@ export type ContractEvent = {
 };
 
 export type BlockInfo = {
-    index: bigint;
+    index: number;
     hash: string | undefined;
 };
 
@@ -22,8 +22,8 @@ export type TransactionOptionsRequired = Required<TransactionOptions>;
 
 export type TransactionOptions = {
     from?: string;
-    gas?: bigint;
-    gasPrice?: bigint;
+    gas?: bigint | number;
+    gasPrice?: bigint | number;
     gasPriceMultiplier?: number;
     web3?: Web3;
 };

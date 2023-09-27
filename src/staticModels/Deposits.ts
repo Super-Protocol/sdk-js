@@ -1,11 +1,12 @@
 import rootLogger from '../logger';
 import { checkIfActionAccountInitialized, incrementMethodCall, tupleToObject } from '../utils';
-import { BlockInfo, ContractEvent, TransactionOptions } from '../types/Web3';
+import { BlockInfo, TransactionOptions } from '../types/Web3';
 import Superpro from './Superpro';
 import TxManager from '../utils/TxManager';
 import BlockchainConnector from '../connectors/BlockchainConnector';
 import BlockchainEventsListener from '../connectors/BlockchainEventsListener';
 import { DepositInfo, DepositInfoStructure } from '../types/DepositInfo';
+import { EventLog } from 'web3-eth-contract';
 
 class Deposits {
     private static readonly logger = rootLogger.child({ className: 'Deposits' });
@@ -48,7 +49,7 @@ class Deposits {
         amount: string,
         transactionOptions?: TransactionOptions,
     ): Promise<void> {
-        const contract = BlockchainConnector.getInstance().getContract(transactionOptions);
+        const contract = BlockchainConnector.getInstance().getContract();
         checkIfActionAccountInitialized(transactionOptions);
 
         await TxManager.execute(contract.methods.replenish, [amount], transactionOptions);
@@ -67,7 +68,7 @@ class Deposits {
         amount: string,
         transactionOptions?: TransactionOptions,
     ): Promise<void> {
-        const contract = BlockchainConnector.getInstance().getContract(transactionOptions);
+        const contract = BlockchainConnector.getInstance().getContract();
         checkIfActionAccountInitialized(transactionOptions);
 
         await TxManager.execute(
@@ -88,7 +89,7 @@ class Deposits {
         amount: string,
         transactionOptions?: TransactionOptions,
     ): Promise<void> {
-        const contract = BlockchainConnector.getInstance().getContract(transactionOptions);
+        const contract = BlockchainConnector.getInstance().getContract();
         checkIfActionAccountInitialized(transactionOptions);
 
         await TxManager.execute(contract.methods.withdraw, [amount], transactionOptions);
@@ -107,26 +108,24 @@ class Deposits {
         const contract = BlockchainEventsListener.getInstance().getContract();
         const logger = this.logger.child({ method: 'onDepositReplenished' });
 
-        const subscription = contract.events
-            .DepositReplenished()
-            .on('data', async (event: ContractEvent) => {
-                if (owner && event.returnValues.owner != owner) {
-                    return;
-                }
-                callback(
-                    <string>event.returnValues.owner,
-                    <string>event.returnValues.amount,
-                    <string>event.returnValues.totalLocked,
-                    <BlockInfo>{
-                        index: <number>event.blockNumber,
-                        hash: <string>event.blockHash,
-                    },
-                );
-            })
-            .on('error', (error: Error, receipt: string) => {
-                if (receipt) return;
-                logger.warn(error);
-            });
+        const subscription = contract.events.DepositReplenished();
+        subscription.on('data', (event: EventLog): void => {
+            if (owner && event.returnValues.owner != owner) {
+                return;
+            }
+            callback(
+                <string>event.returnValues.owner,
+                <string>event.returnValues.amount,
+                <string>event.returnValues.totalLocked,
+                <BlockInfo>{
+                    index: <number>event.blockNumber,
+                    hash: <string>event.blockHash,
+                },
+            );
+        });
+        subscription.on('error', (error: Error) => {
+            logger.warn(error);
+        });
 
         return () => subscription.unsubscribe();
     }
@@ -144,26 +143,24 @@ class Deposits {
         const contract = BlockchainEventsListener.getInstance().getContract();
         const logger = this.logger.child({ method: 'onDepositWithdrawn' });
 
-        const subscription = contract.events
-            .DepositWithdrawn()
-            .on('data', async (event: ContractEvent) => {
-                if (owner && event.returnValues.owner != owner) {
-                    return;
-                }
-                callback(
-                    <string>event.returnValues.owner,
-                    <string>event.returnValues.amount,
-                    <string>event.returnValues.totalLocked,
-                    <BlockInfo>{
-                        index: <number>event.blockNumber,
-                        hash: <string>event.blockHash,
-                    },
-                );
-            })
-            .on('error', (error: Error, receipt: string) => {
-                if (receipt) return;
-                logger.warn(error);
-            });
+        const subscription = contract.events.DepositWithdrawn();
+        subscription.on('data', (event: EventLog): void => {
+            if (owner && event.returnValues.owner != owner) {
+                return;
+            }
+            callback(
+                <string>event.returnValues.owner,
+                <string>event.returnValues.amount,
+                <string>event.returnValues.totalLocked,
+                <BlockInfo>{
+                    index: <number>event.blockNumber,
+                    hash: <string>event.blockHash,
+                },
+            );
+        });
+        subscription.on('error', (error: Error) => {
+            logger.warn(error);
+        });
 
         return () => subscription.unsubscribe();
     }
@@ -181,26 +178,24 @@ class Deposits {
         const contract = BlockchainEventsListener.getInstance().getContract();
         const logger = this.logger.child({ method: 'onDepositPartLocked' });
 
-        const subscription = contract.events
-            .DepositPartLocked()
-            .on('data', async (event: ContractEvent) => {
-                if (owner && event.returnValues.owner != owner) {
-                    return;
-                }
-                callback(
-                    <string>event.returnValues.owner,
-                    <string>event.returnValues.amount,
-                    <string>event.returnValues.totalLocked,
-                    <BlockInfo>{
-                        index: <number>event.blockNumber,
-                        hash: <string>event.blockHash,
-                    },
-                );
-            })
-            .on('error', (error: Error, receipt: string) => {
-                if (receipt) return;
-                logger.warn(error);
-            });
+        const subscription = contract.events.DepositPartLocked();
+        subscription.on('data', (event: EventLog): void => {
+            if (owner && event.returnValues.owner != owner) {
+                return;
+            }
+            callback(
+                <string>event.returnValues.owner,
+                <string>event.returnValues.amount,
+                <string>event.returnValues.totalLocked,
+                <BlockInfo>{
+                    index: <number>event.blockNumber,
+                    hash: <string>event.blockHash,
+                },
+            );
+        });
+        subscription.on('error', (error: Error) => {
+            logger.warn(error);
+        });
 
         return () => subscription.unsubscribe();
     }
@@ -218,26 +213,24 @@ class Deposits {
         const contract = BlockchainEventsListener.getInstance().getContract();
         const logger = this.logger.child({ method: 'onDepositPartUnlocked' });
 
-        const subscription = contract.events
-            .DepositPartUnlocked()
-            .on('data', async (event: ContractEvent) => {
-                if (owner && event.returnValues.owner != owner) {
-                    return;
-                }
-                callback(
-                    <string>event.returnValues.owner,
-                    <string>event.returnValues.amount,
-                    <string>event.returnValues.totalLocked,
-                    <BlockInfo>{
-                        index: <number>event.blockNumber,
-                        hash: <string>event.blockHash,
-                    },
-                );
-            })
-            .on('error', (error: Error, receipt: string) => {
-                if (receipt) return;
-                logger.warn(error);
-            });
+        const subscription = contract.events.DepositPartUnlocked();
+        subscription.on('data', (event: EventLog): void => {
+            if (owner && event.returnValues.owner != owner) {
+                return;
+            }
+            callback(
+                <string>event.returnValues.owner,
+                <string>event.returnValues.amount,
+                <string>event.returnValues.totalLocked,
+                <BlockInfo>{
+                    index: <number>event.blockNumber,
+                    hash: <string>event.blockHash,
+                },
+            );
+        });
+        subscription.on('error', (error: Error) => {
+            logger.warn(error);
+        });
 
         return () => subscription.unsubscribe();
     }

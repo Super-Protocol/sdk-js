@@ -1,6 +1,5 @@
-import rootLogger from '../logger';
-import { Contract, ContractAbi, AbiFragment } from 'web3';
-import appJSON from '../contracts/app.json';
+import { Contract, AbiFragment } from 'web3';
+import { abi } from '../contracts/abi';
 import { checkIfActionAccountInitialized, tupleToObject, objectToTuple } from '../utils';
 import { ProviderInfo, ProviderInfoStructure } from '../types/Provider';
 import { Origins, OriginsStructure } from '../types/Origins';
@@ -11,14 +10,13 @@ import TxManager from '../utils/TxManager';
 import Consensus from '../staticModels/Consensus';
 
 class Provider {
-    private static contract: Contract<ContractAbi>;
-    private logger: typeof rootLogger;
+    private static contract: Contract<typeof abi>;
 
     public providerInfo?: ProviderInfo;
     public violationRate?: number;
     public authority?: string;
-    public valueOffers?: string[];
-    public teeOffers?: string[];
+    public valueOffers?: bigint[];
+    public teeOffers?: bigint[];
     public origins?: Origins;
     public providerId: string;
 
@@ -27,19 +25,13 @@ class Provider {
         if (!Provider.contract) {
             Provider.contract = BlockchainConnector.getInstance().getContract();
         }
-
-        this.logger = rootLogger.child({
-            className: 'Provider',
-            providerId: this.providerId.toString(),
-        });
     }
 
-    private checkInitProvider(transactionOptions: TransactionOptions) {
+    private checkInitProvider(
+        transactionOptions: TransactionOptions,
+    ): void | Contract<AbiFragment[]> {
         if (transactionOptions?.web3) {
-            return new transactionOptions.web3.eth.Contract(
-                <AbiFragment[]>appJSON.abi,
-                Superpro.address,
-            );
+            return new transactionOptions.web3.eth.Contract(abi, Superpro.address);
         }
     }
 
@@ -51,7 +43,11 @@ class Provider {
         checkIfActionAccountInitialized(transactionOptions);
 
         const providerInfoParams = objectToTuple(providerInfo, ProviderInfoStructure);
-        await TxManager.execute(Provider.contract.methods.modifyProvider, [providerInfoParams], transactionOptions);
+        await TxManager.execute(
+            Provider.contract.methods.modifyProvider,
+            [providerInfoParams],
+            transactionOptions,
+        );
     }
 
     /**
@@ -61,59 +57,55 @@ class Provider {
         const providerInfoParams = await Provider.contract.methods
             .getProviderInfo(this.providerId)
             .call();
-        this.providerInfo = tupleToObject(providerInfoParams, ProviderInfoStructure);
 
-        return this.providerInfo;
+        return (this.providerInfo = providerInfoParams);
     }
 
     /**
      * Function for fetching provider authority address from blockchain
      */
-    public async getAuthority(): Promise<string> {
+    public getAuthority(): string {
         return this.providerId.toString();
     }
 
     /**
      * Function for fetching all value offers for this provider
      */
-    public async getValueOffers(): Promise<string[]> {
+    public async getValueOffers(): Promise<bigint[]> {
         this.valueOffers = await Provider.contract.methods
             .getProviderValueOffers(this.providerId)
             .call();
 
-        return this.valueOffers!;
+        return this.valueOffers;
     }
 
     /**
      * Function for fetching all TEE offers for this provider
      */
-    public async getTeeOffers(): Promise<string[]> {
+    public async getTeeOffers(): Promise<bigint[]> {
         this.teeOffers = await Provider.contract.methods
             .getProviderTeeOffers(this.providerId)
             .call();
 
-        return this.teeOffers!;
+        return this.teeOffers;
     }
 
     /**
      * Function for fetching violationRate for this provider
      */
     public async getViolationRate(): Promise<number> {
-        this.violationRate = +(await Provider.contract.methods
-            .getProviderViolationRate(this.providerId)
-            .call());
+        this.violationRate = Number(
+            await Provider.contract.methods.getProviderViolationRate(this.providerId).call(),
+        );
 
-        return this.violationRate!;
+        return this.violationRate;
     }
 
     /**
      * Fetch new Origins (createdDate, createdBy, modifiedDate and modifiedBy)
      */
     public async getOrigins(): Promise<Origins> {
-        let origins = await Provider.contract.methods.getProviderOrigins(this.providerId).call();
-
-        // Converts blockchain array into object
-        origins = tupleToObject(origins, OriginsStructure);
+        const origins: Origins = await Provider.contract.methods.getProviderOrigins(this.providerId).call();
 
         // Convert blockchain time seconds to js time milliseconds
         origins.createdDate = +origins.createdDate * 1000;
@@ -129,11 +121,11 @@ class Provider {
         return violationRate >= CONSENSUS_MAX_PENALTIES;
     }
 
-    public async getOrdersLockedProfitList(): Promise<string[]> {
+    public async getOrdersLockedProfitList(): Promise<bigint[]> {
         return await Provider.contract.methods.getOrdersLockedProfitList(this.providerId).call();
     }
 
-    public async getTcbLockedProfitList(): Promise<string[]> {
+    public async getTcbLockedProfitList(): Promise<bigint[]> {
         return await Provider.contract.methods.getTcbLockedProfitList(this.providerId).call();
     }
 }

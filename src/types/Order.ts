@@ -20,8 +20,8 @@ export const OrderArgsStructure = {
     outputOffer: String,
 };
 export type OrderArgs = {
-    inputOffers: string[];
-    outputOffer: string;
+    inputOffers: bigint[];
+    outputOffer: bigint;
 };
 
 export const OrderSlotsStructure = {
@@ -47,14 +47,14 @@ export const OrderInfoStructure = {
 export const OrderInfoStructureArray = [OrderInfoStructure];
 
 export type OrderSlots = {
-    slotId: string;
-    slotCount: string;
-    optionsIds: string[];
-    optionsCount: string[];
+    slotId: bigint;
+    slotCount: number;
+    optionsIds: bigint[];
+    optionsCount: number[];
 };
 
 export type OrderInfo = {
-    offerId: string;
+    offerId: bigint;
     resultPublicKey: string;
     encryptedRequirements: string;
     encryptedArgs: string;
@@ -77,7 +77,7 @@ export const OrderResultStructure = {
 
 export type OrderResult = {
     encryptedResult: string;
-    orderPrice: string;
+    orderPrice: bigint;
 };
 
 export type SubOrderParams = {

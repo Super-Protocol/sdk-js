@@ -34,13 +34,13 @@ export const UtilityDataStructure = {
     rewardClaimed: Boolean,
 };
 export type TcbUtilityData = {
-    checkingBlocks: [string];
+    checkingBlocks: [bigint];
     checkingBlockMarks: [TcbVerifiedStatus];
     lastBlocksTakenAmount: number;
     suspiciousBlocksTakenAmount: number;
     negative: number;
     positive: number;
-    previousTcb: string;
+    previousTcb: bigint;
     lastBlocksTaken: boolean;
     suspiciousBlocksTaken: boolean;
     assignedToEpoch: boolean;
@@ -86,9 +86,9 @@ export type TcbData = {
 };
 
 export type EpochInfo = {
-    reward: number;
-    benchmark: number;
-    penaltyBenchmark: number;
+    reward: bigint;
+    benchmark: bigint;
+    penaltyBenchmark: bigint;
 };
 
 export type ConsensusConstants = {

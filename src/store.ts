@@ -14,7 +14,7 @@ export type Store = {
     gasLimit: bigint | number;
     gasLimitMultiplier: number;
     gasPriceMultiplier: number;
-    gasPrice?: string;
+    gasPrice?: bigint | number;
     txConcurrency: number;
     txIntervalMs: number;
     keys: Record<string, string>;

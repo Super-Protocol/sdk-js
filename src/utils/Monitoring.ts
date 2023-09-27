@@ -4,7 +4,7 @@ export class Monitoring {
     private static instance: Monitoring;
     private logger = rootLogger.child({ className: 'Monitoring' });
     private contractMethodCalls = new Map<string, number>();
-    private interval?: NodeJS.Timer;
+    private interval?: NodeJS.Timeout;
 
     private constructor() {}
 
@@ -16,7 +16,7 @@ export class Monitoring {
         return Monitoring.instance;
     }
 
-    initializeLogging() {
+    initializeLogging(): void {
         const checkInterval = process.env.PRINT_CONTRACT_CALLS_INTERVAL || 300000;
 
         this.shutdownLogging();
@@ -43,11 +43,14 @@ export class Monitoring {
         }, +checkInterval);
     }
 
-    shutdownLogging() {
-        clearInterval(this.interval);
+    shutdownLogging(): void {
+        if (this.interval) {
+            clearInterval(this.interval);
+            this.interval = undefined;
+        }
     }
 
-    incrementCall(methodName: string) {
+    incrementCall(methodName: string): void {
         const prevValue = this.contractMethodCalls.get(methodName) || 0;
         this.contractMethodCalls.set(methodName, prevValue + 1);
     }

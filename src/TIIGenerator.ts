@@ -27,7 +27,7 @@ import { TLBlockSerializerV1, TLBlockUnserializeResultType } from '@super-protoc
 
 class TIIGenerator {
     public static async generateByOffer(
-        offerId: string,
+        offerId: bigint | number,
         solutionHashes: Hash[],
         linkageString: string | undefined,
         resource: Resource,
@@ -90,14 +90,14 @@ class TIIGenerator {
     }
 
     public static async generate(
-        orderId: string,
+        orderId: bigint,
         resource: Resource,
         args: any,
         encryption: Encryption,
     ): Promise<string> {
         const order: Order = new Order(orderId);
 
-        const parentOrderId: string = await order.getParentOrder();
+        const parentOrderId: bigint = await order.getParentOrder();
         const parentOrder: Order = new Order(parentOrderId);
         const parentOrderInfo: OrderInfo = await parentOrder.getOrderInfo();
 
@@ -116,13 +116,13 @@ class TIIGenerator {
     }
 
     public static async getSolutionHashesAndLinkage(
-        inputOffers: string[],
+        inputOffers: bigint[],
     ): Promise<{ hashes: Hash[]; linkage?: string }> {
         const solutionHashes: Hash[] = [];
         let solutionLinkage: string | undefined;
         let anyLinkage: string | undefined;
         await Promise.all(
-            inputOffers.map(async (offerId: string): Promise<void> => {
+            inputOffers.map(async (offerId: bigint): Promise<void> => {
                 const offer: Offer = new Offer(offerId);
                 const offerInfo: OfferInfo = await offer.getInfo();
 
@@ -132,8 +132,8 @@ class TIIGenerator {
 
                 const restrictions = _.intersection(
                     offerInfo.restrictions.offers,
-                    inputOffers,
-                ).filter((restrictedOfferId) => restrictedOfferId !== offer.id);
+                    inputOffers.toString(),
+                ).filter((restrictedOfferId) => restrictedOfferId !== offer.id.toString());
                 if (restrictions.length) {
                     solutionLinkage = offerInfo.linkage;
                 } else {

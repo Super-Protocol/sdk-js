@@ -1,7 +1,5 @@
 import { BaseConnector, Config } from './BaseConnector';
-import Web3, { TransactionReceipt, AbiFragment, errors } from 'web3';
-import { BlockTransactionObject } from 'web3-eth/types';
-import { Contract } from 'web3-eth-contract';
+import Web3, { Block, Contract, TransactionReceipt, errors } from 'web3';
 import {
     BLOCK_SIZE_TO_FETCH_TRANSACTION,
     POLYGON_MATIC_EVENT_PATH,
@@ -12,7 +10,7 @@ import { checkIfActionAccountInitialized, incrementMethodCall } from '../utils';
 import { Transaction, TransactionOptions, EventData, BlockInfo } from '../types/Web3';
 import BlockchainTransaction from '../types/blockchainConnector/StorageAccess';
 import TxManager from '../utils/TxManager';
-import appJSON from '../contracts/app.json';
+import { abi } from '../contracts/abi';
 import { Wallet } from 'ethers';
 const Jsonrpc = require('web3-core-requestmanager/src/jsonrpc');
 
@@ -49,8 +47,8 @@ class BlockchainConnector extends BaseConnector {
         this.logger.trace(config, 'Initializing');
 
         const url = config?.blockchainUrl || defaultBlockchainUrl;
-        this.provider = new Web3.providers.HttpProvider(url);
-        store.web3Https = new Web3(url);
+        store.web3Https = new Web3();
+        store.web3Https.setProvider(url);
 
         store.gasPrice = config?.gasPrice ?? defaultGasPrice;
         if (config?.gasLimit) store.gasLimit = config.gasLimit;
@@ -60,8 +58,7 @@ class BlockchainConnector extends BaseConnector {
         if (config?.txIntervalMs) store.txIntervalMs = config.txIntervalMs;
 
         Superpro.address = config.contractAddress;
-        const abi = [appJSON.abi] as const;
-        this.contract = new Contract(abi, Superpro.address);
+        this.contract = new Contract<typeof abi>(abi, Superpro.address, store.web3Https);
 
         TxManager.init(store.web3Https);
         SuperproToken.addressHttps = await Superpro.getTokenAddress(this.contract);
@@ -81,7 +78,9 @@ class BlockchainConnector extends BaseConnector {
     ): Promise<string> {
         this.checkIfInitialized();
 
-        const actionAccount = store.web3Https!.eth.accounts.wallet.add(actionAccountKey).address;
+        store.web3Https!.eth.accounts.wallet.add(actionAccountKey);
+        const actionAccount =
+            store.web3Https!.eth.accounts.privateKeyToAccount(actionAccountKey).address;
         if (!store.actionAccount) store.actionAccount = actionAccount;
         if (!store.keys[actionAccount]) store.keys[actionAccount] = actionAccountKey;
         if (!this.defaultActionAccount) this.defaultActionAccount = actionAccount;
@@ -99,7 +98,7 @@ class BlockchainConnector extends BaseConnector {
     public async getBalance(address: string): Promise<bigint> {
         this.checkIfInitialized();
 
-        return store.web3Https!.eth.getBalance(address);
+        return await store.web3Https!.eth.getBalance(address);
     }
 
     public async getTimestamp(): Promise<bigint> {
@@ -119,8 +118,8 @@ class BlockchainConnector extends BaseConnector {
         this.checkIfInitialized();
         const parseReceiptEvents = require('web3-parse-receipt-events');
         const receipt = await store.web3Https!.eth.getTransactionReceipt(txHash);
-        const tokenEvents = parseReceiptEvents(appJSON.abi, SuperproToken.addressHttps, receipt);
-        parseReceiptEvents(appJSON.abi, Superpro.address, receipt); // don't remove
+        const tokenEvents = parseReceiptEvents(abi, SuperproToken.addressHttps, receipt);
+        parseReceiptEvents(abi, Superpro.address, receipt); // don't remove
         const events = Object.values(tokenEvents.events || {});
 
         const eventData: EventData[] = [];
@@ -155,7 +154,7 @@ class BlockchainConnector extends BaseConnector {
     public async getLastBlockInfo(): Promise<BlockInfo> {
         this.checkIfInitialized();
 
-        const index = await store.web3Https!.eth.getBlockNumber();
+        const index = +(await store.web3Https!.eth.getBlockNumber()).toString();
         const hash = (await store.web3Https!.eth.getBlock(index)).hash;
 
         return {
@@ -172,7 +171,7 @@ class BlockchainConnector extends BaseConnector {
     public async getTransactionReceipt(txHash: string): Promise<TransactionReceipt> {
         this.checkIfInitialized();
 
-        return store.web3Https!.eth.getTransactionReceipt(txHash);
+        return await store.web3Https!.eth.getTransactionReceipt(txHash);
     }
 
     /**
@@ -192,7 +191,7 @@ class BlockchainConnector extends BaseConnector {
             value: amount,
         };
 
-        return TxManager.publishTransaction(transaction, transactionOptions);
+        return await TxManager.publishTransaction(transaction, transactionOptions);
     }
 
     /**
@@ -203,9 +202,9 @@ class BlockchainConnector extends BaseConnector {
     public async getTransactionCount(address: string, status?: string): Promise<bigint> {
         this.checkIfInitialized();
         if (status) {
-            return store.web3Https!.eth.getTransactionCount(address, status);
+            return await store.web3Https!.eth.getTransactionCount(address, status);
         } else {
-            return store.web3Https!.eth.getTransactionCount(address);
+            return await store.web3Https!.eth.getTransactionCount(address);
         }
     }
 
@@ -213,8 +212,8 @@ class BlockchainConnector extends BaseConnector {
         return new Wallet(pk).address;
     }
 
-    private async executeBatchAsync(batch: any) {
-        return new Promise((resolve, reject) => {
+    private async executeBatchAsync(batch: any): Promise<any> {
+        return await new Promise((resolve, reject) => {
             const requests = batch.requests;
 
             batch.requestManager.sendBatch(requests, (error: Error, results: any) => {
@@ -264,7 +263,7 @@ class BlockchainConnector extends BaseConnector {
     ): Promise<BlockchainTransaction> {
         this.checkIfInitialized();
 
-        const blockchainLastBlock = await store.web3Https!.eth.getBlockNumber();
+        const blockchainLastBlock = +(await store.web3Https!.eth.getBlockNumber()).toString();
         if (lastBlock) {
             lastBlock = Math.min(lastBlock, blockchainLastBlock);
         } else {
@@ -289,20 +288,21 @@ class BlockchainConnector extends BaseConnector {
 
         validAddresses.forEach((address) => (transactionsByAddress[address] = []));
 
+        // FIXME:
         while (startBlock <= lastBlock) {
             const batch = new store.web3Https!.eth.BatchRequest();
-            const getBlock: any = store.web3Https!.eth.getBlock;
+            const getBlock: any = await store.web3Https!.eth.getBlock;
             const batchLastBlock = Math.min(startBlock + batchSize - 1, lastBlock);
 
             for (let blockNumber = startBlock; blockNumber <= batchLastBlock; blockNumber++) {
-                batch.add(getBlock.request(blockNumber, true));
+                void batch.add(getBlock.request(blockNumber, true));
             }
-            const blocks = (await this.executeBatchAsync(batch)) as BlockTransactionObject[];
+            const blocks = (await this.executeBatchAsync(batch)) as Block[];
 
-            blocks.forEach((block: BlockTransactionObject) => {
+            blocks.forEach((block: Block) => {
                 if (!block?.transactions) return;
 
-                block.transactions.forEach((transaction) => {
+                block.transactions.forEach((transaction: any) => {
                     let address: string | null = null;
                     if (validAddresses.includes(transaction.from)) address = transaction.from;
                     else if (transaction.to && validAddresses.includes(transaction.to))
@@ -311,7 +311,7 @@ class BlockchainConnector extends BaseConnector {
                     if (address) {
                         transactionsByAddress[address].push({
                             ...transaction,
-                            timestamp: +block.timestamp * 1000,
+                            timestamp: Number(block.timestamp) * 1000,
                             input: transaction.input,
                         });
                     }
@@ -327,7 +327,7 @@ class BlockchainConnector extends BaseConnector {
         };
     }
 
-    public shutdown() {
+    public shutdown(): void {
         super.shutdown();
         store.web3Https = undefined;
         Monitoring.getInstance().shutdownLogging();

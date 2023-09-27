@@ -2,15 +2,15 @@ import rootLogger from '../logger';
 import { checkIfActionAccountInitialized, objectToTuple } from '../utils';
 import { OfferInfo, OfferInfoStructure, OfferType } from '../types/Offer';
 import { BytesLike, formatBytes32String, parseBytes32String } from 'ethers/lib/utils';
-import { BlockInfo, ContractEvent, TransactionOptions } from '../types/Web3';
+import { BlockInfo, TransactionOptions } from '../types/Web3';
 import { OfferCreatedEvent, ValueSlotAddedEvent } from '../types/Events';
 import Superpro from './Superpro';
 import TxManager from '../utils/TxManager';
 import BlockchainConnector from '../connectors/BlockchainConnector';
 import BlockchainEventsListener from '../connectors/BlockchainEventsListener';
-import { StaticModel } from './BaseStaticModel';
+import { EventLog } from 'web3-eth-contract';
 
-class Offers extends StaticModel {
+class Offers {
     private static readonly logger = rootLogger.child({ className: 'Offers' });
 
     public static offers?: string[];
@@ -25,7 +25,7 @@ class Offers extends StaticModel {
     public static async getAll(): Promise<string[]> {
         const contract = BlockchainConnector.getInstance().getContract();
 
-        const count = await contract.methods.getOffersTotalCount().call();
+        const count = Number(await contract.methods.getOffersTotalCount().call());
         this.offers = this.offers || [];
         const offersSet = new Set(this.offers);
 
@@ -62,7 +62,7 @@ class Offers extends StaticModel {
         enabled = true,
         transactionOptions?: TransactionOptions,
     ): Promise<void> {
-        const contract = BlockchainConnector.getInstance().getContract(transactionOptions);
+        const contract = BlockchainConnector.getInstance().getContract();
         checkIfActionAccountInitialized(transactionOptions);
 
         const offerInfoParams = objectToTuple(offerInfo, OfferInfoStructure);
@@ -77,16 +77,26 @@ class Offers extends StaticModel {
     public static async getByExternalId(
         creator: string,
         externalId: string,
+        fromBlock?: number | string,
+        toBlock?: number | string,
     ): Promise<OfferCreatedEvent> {
         const contract = BlockchainConnector.getInstance().getContract();
         const filter = {
             creator,
             externalId: formatBytes32String(externalId),
         };
-        const foundIds = await contract.getPastEvents('OfferCreated', { filter });
+        const options: any = { filter };
+
+        if (fromBlock) options.fromBlock = fromBlock;
+        if (toBlock) options.toBlock = toBlock;
+
+        const foundIds: (string | EventLog)[] = await contract.getPastEvents(
+            'OfferCreated',
+            options,
+        );
         const response: OfferCreatedEvent =
             foundIds.length > 0
-                ? (foundIds[0].returnValues as OfferCreatedEvent)
+                ? ((foundIds[0] as EventLog).returnValues as OfferCreatedEvent)
                 : {
                       creator,
                       externalId,
@@ -96,17 +106,20 @@ class Offers extends StaticModel {
         return response;
     }
 
-    public static async getSlotByExternalId(
-        filter: { creator: string; offerId: string; externalId: string },
-        fromBlock?: number | string,
-        toBlock?: number | string,
-    ): Promise<ValueSlotAddedEvent | null> {
+    public static async getSlotByExternalId(filter: {
+        creator: string;
+        offerId: string;
+        externalId: string;
+        fromBlock?: number | string;
+        toBlock?: number | string;
+    }): Promise<ValueSlotAddedEvent | null> {
+        const contract = BlockchainConnector.getInstance().getContract();
         filter.externalId = formatBytes32String(filter.externalId);
 
-        const foundEvents = await this.getPastEvents('ValueSlotAdded', filter, fromBlock, toBlock);
+        const foundEvents = await contract.getPastEvents('ValueSlotAdded', filter);
 
         const response = foundEvents.length
-            ? (foundEvents[0].returnValues as ValueSlotAddedEvent)
+            ? ((foundEvents[0] as EventLog).returnValues as ValueSlotAddedEvent)
             : null;
 
         return response;
@@ -122,27 +135,25 @@ class Offers extends StaticModel {
         const contract = BlockchainEventsListener.getInstance().getContract();
         const logger = this.logger.child({ method: 'onValueSlotAdded' });
 
-        const subscription = contract.events
-            .ValueSlotAdded()
-            .on('data', async (event: ContractEvent) => {
-                if (creator && event.returnValues.creator != creator) {
-                    return;
-                }
-                callback(
-                    <string>event.returnValues.creator,
-                    <string>event.returnValues.offerId,
-                    <string>event.returnValues.slotId,
-                    parseBytes32String(<BytesLike>event.returnValues.externalId),
-                    <BlockInfo>{
-                        index: <number>event.blockNumber,
-                        hash: <string>event.blockHash,
-                    },
-                );
-            })
-            .on('error', (error: Error, receipt: string) => {
-                if (receipt) return;
-                logger.warn(error);
-            });
+        const subscription = contract.events.ValueSlotAdded();
+        subscription.on('data', (event: EventLog): void => {
+            if (creator && event.returnValues.creator != creator) {
+                return;
+            }
+            callback(
+                <string>event.returnValues.creator,
+                <string>event.returnValues.offerId,
+                <string>event.returnValues.slotId,
+                parseBytes32String(<BytesLike>event.returnValues.externalId),
+                <BlockInfo>{
+                    index: <number>event.blockNumber,
+                    hash: <string>event.blockHash,
+                },
+            );
+        });
+        subscription.on('error', (error: Error) => {
+            logger.warn(error);
+        });
 
         return () => subscription.unsubscribe();
     }
@@ -156,22 +167,20 @@ class Offers extends StaticModel {
         const contract = BlockchainEventsListener.getInstance().getContract();
         const logger = this.logger.child({ method: 'onValueSlotUpdated' });
 
-        const subscription = contract.events
-            .ValueSlotUpdated()
-            .on('data', async (event: ContractEvent) => {
-                callback(
-                    <string>event.returnValues.offerId,
-                    <string>event.returnValues.slotId,
-                    <BlockInfo>{
-                        index: <number>event.blockNumber,
-                        hash: <string>event.blockHash,
-                    },
-                );
-            })
-            .on('error', (error: Error, receipt: string) => {
-                if (receipt) return;
-                logger.warn(error);
-            });
+        const subscription = contract.events.ValueSlotUpdated();
+        subscription.on('data', (event: EventLog): void => {
+            callback(
+                <string>event.returnValues.offerId,
+                <string>event.returnValues.slotId,
+                <BlockInfo>{
+                    index: <number>event.blockNumber,
+                    hash: <string>event.blockHash,
+                },
+            );
+        });
+        subscription.on('error', (error: Error): void => {
+            logger.warn(error);
+        });
 
         return () => subscription.unsubscribe();
     }
@@ -185,22 +194,20 @@ class Offers extends StaticModel {
         const contract = BlockchainEventsListener.getInstance().getContract();
         const logger = this.logger.child({ method: 'onValueSlotDeleted' });
 
-        const subscription = contract.events
-            .ValueSlotDeleted()
-            .on('data', async (event: ContractEvent) => {
-                callback(
-                    <string>event.returnValues.offerId,
-                    <string>event.returnValues.slotId,
-                    <BlockInfo>{
-                        index: <number>event.blockNumber,
-                        hash: <string>event.blockHash,
-                    },
-                );
-            })
-            .on('error', (error: Error, receipt: string) => {
-                if (receipt) return;
-                logger.warn(error);
-            });
+        const subscription = contract.events.ValueSlotDeleted();
+        subscription.on('data', (event: EventLog): void => {
+            callback(
+                <string>event.returnValues.offerId,
+                <string>event.returnValues.slotId,
+                <BlockInfo>{
+                    index: <number>event.blockNumber,
+                    hash: <string>event.blockHash,
+                },
+            );
+        });
+        subscription.on('error', (error: Error) => {
+            logger.warn(error);
+        });
 
         return () => subscription.unsubscribe();
     }
@@ -214,23 +221,21 @@ class Offers extends StaticModel {
         const contract = BlockchainEventsListener.getInstance().getContract();
         const logger = this.logger.child({ method: 'onOfferCreated' });
 
-        const subscription = contract.events
-            .OfferCreated()
-            .on('data', async (event: ContractEvent) => {
-                callback(
-                    <string>event.returnValues.offerId,
-                    <string>event.returnValues.creator,
-                    parseBytes32String(<BytesLike>event.returnValues.externalId),
-                    <BlockInfo>{
-                        index: <number>event.blockNumber,
-                        hash: <string>event.blockHash,
-                    },
-                );
-            })
-            .on('error', (error: Error, receipt: string) => {
-                if (receipt) return; // Used to avoid logging of transaction rejected
-                logger.warn(error);
-            });
+        const subscription = contract.events.OfferCreated();
+        subscription.on('data', (event: EventLog): void => {
+            callback(
+                <string>event.returnValues.offerId,
+                <string>event.returnValues.creator,
+                parseBytes32String(<BytesLike>event.returnValues.externalId),
+                <BlockInfo>{
+                    index: <number>event.blockNumber,
+                    hash: <string>event.blockHash,
+                },
+            );
+        });
+        subscription.on('error', (error: Error) => {
+            logger.warn(error);
+        });
 
         return () => subscription.unsubscribe();
     }
@@ -239,23 +244,21 @@ class Offers extends StaticModel {
         const contract = BlockchainEventsListener.getInstance().getContract();
         const logger = this.logger.child({ method: 'onOfferEnabled' });
 
-        const subscription = contract.events
-            .OfferEnabled()
-            .on('data', async (event: ContractEvent) => {
-                callback(
-                    <string>event.returnValues.providerAuth,
-                    <string>event.returnValues.offerId,
-                    <OfferType>event.returnValues.offerType,
-                    <BlockInfo>{
-                        index: <number>event.blockNumber,
-                        hash: <string>event.blockHash,
-                    },
-                );
-            })
-            .on('error', (error: Error, receipt: string) => {
-                if (receipt) return; // Used to avoid logging of transaction rejected
-                logger.warn(error);
-            });
+        const subscription = contract.events.OfferEnabled();
+        subscription.on('data', (event: EventLog): void => {
+            callback(
+                <string>event.returnValues.providerAuth,
+                <string>event.returnValues.offerId,
+                <OfferType>event.returnValues.offerType,
+                <BlockInfo>{
+                    index: <number>event.blockNumber,
+                    hash: <string>event.blockHash,
+                },
+            );
+        });
+        subscription.on('error', (error: Error) => {
+            logger.warn(error);
+        });
 
         return () => subscription.unsubscribe();
     }
@@ -264,23 +267,21 @@ class Offers extends StaticModel {
         const contract = BlockchainEventsListener.getInstance().getContract();
         const logger = this.logger.child({ method: 'onOfferDisabled' });
 
-        const subscription = contract.events
-            .OfferDisabled()
-            .on('data', async (event: ContractEvent) => {
-                callback(
-                    <string>event.returnValues.providerAuth,
-                    <string>event.returnValues.offerId,
-                    <OfferType>event.returnValues.offerType,
-                    <BlockInfo>{
-                        index: <number>event.blockNumber,
-                        hash: <string>event.blockHash,
-                    },
-                );
-            })
-            .on('error', (error: Error, receipt: string) => {
-                if (receipt) return; // Used to avoid logging of transaction rejected
-                logger.warn(error);
-            });
+        const subscription = contract.events.OfferDisabled();
+        subscription.on('data', (event: EventLog): void => {
+            callback(
+                <string>event.returnValues.providerAuth,
+                <string>event.returnValues.offerId,
+                <OfferType>event.returnValues.offerType,
+                <BlockInfo>{
+                    index: <number>event.blockNumber,
+                    hash: <string>event.blockHash,
+                },
+            );
+        });
+        subscription.on('error', (error: Error): void => {
+            logger.warn(error);
+        });
 
         return () => subscription.unsubscribe();
     }

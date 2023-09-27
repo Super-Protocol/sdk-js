@@ -1,5 +1,4 @@
 import { TransactionReceipt } from 'web3';
-import { ContractSendMethod } from 'web3-eth-contract';
 import NonceTracker from './NonceTracker';
 import rootLogger from '../logger';
 import store from '../store';
@@ -14,6 +13,7 @@ import { defaultGasLimit } from '../constants';
 import lodash from 'lodash';
 import Web3 from 'web3';
 import Bottleneck from 'bottleneck';
+import { NonPayableMethodObject } from 'web3-eth-contract';
 
 interface EvmError extends Error {
     data: {
@@ -39,22 +39,16 @@ export class Web3TransactionRevertedByEvmError extends Web3TransactionError {
 
 type ArgumentsType = any | any[];
 
-type MethodReturnType = ContractSendMethod & {
-    _parent: {
-        _address: string;
-    };
-};
-
 class TxManager {
     private static web3: Web3;
     private static logger = rootLogger.child({ className: 'TxManager' });
     private static nonceTrackers: { [address: string]: NonceTracker } = {};
     private static queues: { [address: string]: Bottleneck } = {};
-    public static init(web3: Web3) {
+    public static init(web3: Web3): void {
         this.web3 = web3;
     }
 
-    private static checkIfInitialized() {
+    private static checkIfInitialized(): void {
         if (!this.web3) {
             throw Error('TxManager should be initialized before using.');
         }
@@ -67,7 +61,7 @@ class TxManager {
     }
 
     public static async execute(
-        method: (...args: ArgumentsType) => MethodReturnType,
+        method: (...args: ArgumentsType) => any,
         args: ArgumentsType,
         transactionOptions?: TransactionOptions,
         to: string = Superpro.address,
@@ -84,7 +78,7 @@ class TxManager {
     public static async publishTransaction(
         txData: Record<string, any>,
         transactionOptions?: TransactionOptions,
-        transactionCall?: MethodReturnType,
+        transactionCall?: NonPayableMethodObject,
     ): Promise<any> {
         this.checkIfInitialized();
         checkIfActionAccountInitialized(transactionOptions);
@@ -104,17 +98,18 @@ class TxManager {
             });
         }
 
-        return this.queues[options.from].schedule(async () =>
-            TxManager._publishTransaction(
-                txData,
-                options as TransactionOptionsRequired,
-                transactionCall,
-            ),
+        return this.queues[options.from].schedule(
+            (): Promise<TransactionReceipt> =>
+                TxManager._publishTransaction(
+                    txData,
+                    options as TransactionOptions,
+                    transactionCall,
+                ),
         );
     }
 
     public static async dryRun(
-        method: (...args: ArgumentsType) => MethodReturnType,
+        method: (...args: ArgumentsType) => any,
         args: ArgumentsType,
         transactionOptions?: TransactionOptions,
     ): Promise<any> {
@@ -135,11 +130,10 @@ class TxManager {
 
     private static async _publishTransaction(
         txData: Record<string, any>,
-        transactionOptions: TransactionOptionsRequired,
-        transactionCall?: MethodReturnType,
+        transactionOptions: TransactionOptions,
+        transactionCall?: NonPayableMethodObject,
     ): Promise<TransactionReceipt> {
-        const { from, gas, gasPrice, gasPriceMultiplier, web3 } =
-            transactionOptions;
+        const { from, gas, gasPrice, gasPriceMultiplier, web3 } = transactionOptions;
 
         txData = {
             ...txData,
@@ -182,17 +176,17 @@ class TxManager {
         // TODO: Consider a better way to organize different strategies for publishing transactions.
         if (
             !checkForUsingExternalTxManager(transactionOptions) &&
-            this.nonceTrackers[transactionOptions.from]
+            this.nonceTrackers[transactionOptions.from!]
         ) {
-            nonceTracker = this.nonceTrackers[transactionOptions.from];
+            nonceTracker = this.nonceTrackers[transactionOptions.from!];
             await nonceTracker.onTransactionStartPublishing();
             txData.nonce = nonceTracker.consumeNonce();
         }
-        const signingKey = store.keys[transactionOptions.from];
+        const signingKey = store.keys[transactionOptions.from!];
         try {
             let transactionResultData;
             if (signingKey) {
-                const signed = await web3.eth.accounts.signTransaction(txData, signingKey);
+                const signed = await web3!.eth.accounts.signTransaction(txData, signingKey);
                 if (!signed.rawTransaction) {
                     throw new Error('Failed to sign transaction');
                 }
@@ -205,7 +199,9 @@ class TxManager {
                     'Publishing signed transaction',
                 );
 
-                transactionResultData = await web3.eth.sendSignedTransaction(signed.rawTransaction);
+                transactionResultData = await web3!.eth.sendSignedTransaction(
+                    signed.rawTransaction,
+                );
 
                 TxManager.logger.debug(
                     {
@@ -223,7 +219,7 @@ class TxManager {
                     'Publishing unsigned transaction',
                 );
 
-                transactionResultData = await web3.eth.sendTransaction(txData);
+                transactionResultData = await web3!.eth.sendTransaction(txData);
             }
 
             if (nonceTracker) nonceTracker.onTransactionPublished();

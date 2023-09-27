@@ -7,19 +7,19 @@ class Marks {
         return Superpro.address;
     }
 
-    static async getProviderMarks(providerAddress: string) {
+    static async getProviderMarks(providerId: string): Promise<bigint> {
         const contract = BlockchainConnector.getInstance().getContract();
 
-        await contract.methods.getProviderMarks(providerAddress).call();
+        return await contract.methods.getProviderMarks(providerId).call();
     }
 
-    static async getOrderMark(orderId: string) {
+    static async getOrderMark(orderId: bigint | number | string): Promise<bigint> {
         const contract = BlockchainConnector.getInstance().getContract();
 
-        await contract.methods.getOrderMark(orderId).call();
+        return await contract.methods.getOrderMark(orderId).call();
     }
 
-    static async setOrderMark(orderId: string, mark: Mark) {
+    static async setOrderMark(orderId: bigint | number | string, mark: Mark): Promise<void> {
         const contract = BlockchainConnector.getInstance().getContract();
 
         await contract.methods.setOrderMark(orderId, mark).call();

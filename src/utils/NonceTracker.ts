@@ -15,10 +15,12 @@ class NonceTracker {
 
     public async initAccount(): Promise<void> {
         this.txCount = await this.web3.eth.getTransactionCount(this.address);
-        this.logger.trace(`Initialized ${this.address} account with nonce: ${this.txCount?.toString()}`);
+        this.logger.trace(
+            `Initialized ${this.address} account with nonce: ${this.txCount?.toString()}`,
+        );
     }
 
-    public getNonce(): number {
+    public getNonce(): bigint {
         if (this.txCount === undefined)
             throw Error(`NonceTracker for address ${this.address} is not initialized`);
 
@@ -27,7 +29,7 @@ class NonceTracker {
         return this.txCount;
     }
 
-    public consumeNonce(): number {
+    public consumeNonce(): bigint {
         if (this.txCount === undefined)
             throw Error(`NonceTracker for address ${this.address} is not initialized`);
 
@@ -36,34 +38,34 @@ class NonceTracker {
         return this.txCount++;
     }
 
-    public async onTransactionStartPublishing() {
+    public async onTransactionStartPublishing(): Promise<void> {
         if (this.transactionsOnHold) {
             await this.waitForPendingTransactions();
         }
         this.countOfPendingTransactions++;
     }
 
-    public onTransactionPublished() {
+    public onTransactionPublished(): void {
         this.countOfPendingTransactions--;
 
         if (this.countOfPendingTransactions === 0) {
-            this.sendHoldTransactions();
+            void this.sendHoldTransactions(); // FIXME: void?
         }
     }
 
-    public async onTransactionError() {
+    public async onTransactionError(): Promise<void> {
         this.countOfPendingTransactions--;
         if (!this.transactionsOnHold) this.transactionsOnHold = [];
 
         if (this.countOfPendingTransactions === 0) {
-            this.sendHoldTransactions();
+            await this.sendHoldTransactions();
         } else {
             await this.waitForPendingTransactions();
         }
     }
 
-    private async waitForPendingTransactions() {
-        return new Promise<void>((resolve) => {
+    private async waitForPendingTransactions(): Promise<void> {
+        return await new Promise<void>((resolve) => {
             if (!this.transactionsOnHold) return resolve();
             this.transactionsOnHold.push(() => {
                 resolve();
@@ -71,7 +73,7 @@ class NonceTracker {
         });
     }
 
-    private async sendHoldTransactions() {
+    private async sendHoldTransactions(): Promise<void> {
         if (!this.transactionsOnHold) return;
 
         await this.initAccount();

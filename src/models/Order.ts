@@ -2,18 +2,16 @@ import {
     OrderInfo,
     OrderInfoStructure,
     OrderResult,
-    OrderResultStructure,
     ExtendedOrderInfo,
     OrderStatus,
     SubOrderParams,
     OrderUsage,
-    OrderUsageStructure,
 } from '../types/Order';
-import { Contract } from 'web3-eth-contract';
+import { Contract } from 'web3';
+import { EventLog } from 'web3-eth-contract';
 import rootLogger from '../logger';
-import { ContractEvent, TransactionOptions } from '../types/Web3';
-import { AbiItem } from 'web3-utils';
-import appJSON from '../contracts/app.json';
+import { TransactionOptions } from '../types/Web3';
+import { abi } from '../contracts/abi';
 import store from '../store';
 import {
     checkIfActionAccountInitialized,
@@ -33,20 +31,20 @@ import { tryWithInterval } from '../utils/helpers';
 import { BLOCKCHAIN_CALL_RETRY_INTERVAL, BLOCKCHAIN_CALL_RETRY_ATTEMPTS } from '../constants';
 
 class Order {
-    private static contract: Contract;
+    private static contract: Contract<typeof abi>;
     private logger: typeof rootLogger;
 
     public selectedUsage?: OrderUsage;
     public orderInfo?: OrderInfo;
     public orderResult?: OrderResult;
-    public subOrders?: string[];
-    public parentOrder?: string;
+    public subOrders?: bigint[];
+    public parentOrder?: bigint;
     public consumer?: string;
     public origins?: Origins;
     public startDate?: number;
-    public id: string;
+    public id: bigint;
 
-    constructor(orderId: string) {
+    constructor(orderId: bigint) {
         this.id = orderId;
         if (!Order.contract) {
             Order.contract = BlockchainConnector.getInstance().getContract();
@@ -58,13 +56,12 @@ class Order {
     /**
      * Checks if contract has been initialized, if not - initialize contract
      */
-    private checkInitOrder(transactionOptions: TransactionOptions) {
+    private checkInitOrder(transactionOptions: TransactionOptions): Contract<typeof abi> {
         if (transactionOptions?.web3) {
-            return new transactionOptions.web3.eth.Contract(
-                <AbiItem[]>appJSON.abi,
-                Superpro.address,
-            );
+            return new transactionOptions.web3.eth.Contract(abi, Superpro.address);
         }
+
+        return Order.contract;
     }
 
     /**
@@ -84,16 +81,16 @@ class Order {
     /**
      * Function for fetching avaliable for unlock order profit.
      */
-    public async isOrderProfitAvailable(): Promise<string> {
+    public async isOrderProfitAvailable(): Promise<bigint> {
         const [, profit] = await Order.contract.methods.isOrderProfitAvailable(this.id).call();
 
-        return profit;
+        return BigInt(profit);
     }
 
     /**
      * Function for fetching order price
      */
-    public async calculateCurrentPrice(): Promise<string> {
+    public async calculateCurrentPrice(): Promise<bigint> {
         return await Order.contract.methods.calculateOrderCurrentPrice(this.id).call();
     }
 
@@ -105,9 +102,9 @@ class Order {
         if (!(await this.checkIfOrderExistsWithInterval())) {
             throw Error(`Order ${this.id} does not exist`);
         }
-        const orderInfoParams = await Order.contract.methods.getOrder(this.id).call();
+        const [, orderInfoParams] = await Order.contract.methods.getOrder(this.id).call();
 
-        return (this.orderInfo = tupleToObject(orderInfoParams[1], OrderInfoStructure));
+        return (this.orderInfo = orderInfoParams as OrderInfo);
     }
 
     private async checkIfOrderExistsWithInterval(): Promise<boolean> {
@@ -127,8 +124,8 @@ class Order {
 
     @incrementMethodCall()
     public async getConsumer(): Promise<string> {
-        const orderInfoParams = await Order.contract.methods.getOrder(this.id).call();
-        this.consumer = orderInfoParams[0];
+        const [orderInfoParams] = await Order.contract.methods.getOrder(this.id).call();
+        this.consumer = orderInfoParams;
 
         return this.consumer!;
     }
@@ -138,40 +135,37 @@ class Order {
      */
     @incrementMethodCall()
     public async getOrderResult(): Promise<OrderResult> {
-        const orderInfoParams = await Order.contract.methods.getOrder(this.id).call();
+        const [, , orderResults] = await Order.contract.methods.getOrder(this.id).call();
 
-        return (this.orderResult = tupleToObject(
-            [orderInfoParams[2][0], orderInfoParams[2][1]],
-            OrderResultStructure,
-        ));
+        return (this.orderResult = orderResults as OrderResult);
     }
 
     /**
      * Function for fetching sub orders from blockchain
      */
     @incrementMethodCall()
-    public async getSubOrders(): Promise<string[]> {
+    public async getSubOrders(): Promise<bigint[]> {
         this.subOrders = await Order.contract.methods.getOrderSubOrders(this.id).call();
 
-        return this.subOrders!;
+        return this.subOrders;
     }
 
     /**
      * Function for fetching parent order from blockchain
      */
     @incrementMethodCall()
-    public async getParentOrder(): Promise<string> {
+    public async getParentOrder(): Promise<bigint> {
         this.parentOrder = await Order.contract.methods.getOrderParentOrder(this.id).call();
 
-        return this.parentOrder!;
+        return this.parentOrder;
     }
 
     /**
      * Function for fetching order options deposit spent from blockchain
      */
     @incrementMethodCall()
-    public async getOptionsDepositSpent(): Promise<string> {
-        return Order.contract.methods.getOptionsDepositSpent(this.id).call();
+    public async getOptionsDepositSpent(): Promise<bigint> {
+        return await Order.contract.methods.getOptionsDepositSpent(this.id).call();
     }
 
     /**
@@ -179,10 +173,7 @@ class Order {
      */
     @incrementMethodCall()
     public async getSelectedUsage(): Promise<OrderUsage> {
-        this.selectedUsage = tupleToObject(
-            await Order.contract.methods.getOrderSelectedUsage(this.id).call(),
-            OrderUsageStructure,
-        );
+        this.selectedUsage = await Order.contract.methods.getOrderSelectedUsage(this.id).call();
         this.selectedUsage.optionsCount = this.selectedUsage.optionsCount.map((item) => +item);
         this.selectedUsage.slotInfo = unpackSlotInfo(
             this.selectedUsage.slotInfo,
@@ -196,32 +187,32 @@ class Order {
      * Function for fetching hold deposits sum of the order and its suborders
      */
     @incrementMethodCall()
-    public async calculateTotalOrderDeposit(): Promise<string> {
-        return Order.contract.methods.calculateTotalOrderDeposit(this.id).call();
+    public async calculateTotalOrderDeposit(): Promise<bigint> {
+        return await Order.contract.methods.calculateTotalOrderDeposit(this.id).call();
     }
 
     /**
      * Function for fetching reserve for output order
      */
     @incrementMethodCall()
-    public async calculateOrderOutputReserve(): Promise<string> {
-        return Order.contract.methods.calculateOrderOutputReserve(this.id).call();
+    public async calculateOrderOutputReserve(): Promise<bigint> {
+        return await Order.contract.methods.calculateOrderOutputReserve(this.id).call();
     }
 
     /**
      * Function for fetching spent deposits sum of the order and its suborders
      */
     @incrementMethodCall()
-    public async calculateTotalDepositSpent(): Promise<string> {
-        return Order.contract.methods.calculateTotalDepositSpent(this.id).call();
+    public async calculateTotalDepositSpent(): Promise<bigint> {
+        return await Order.contract.methods.calculateTotalDepositSpent(this.id).call();
     }
 
     /**
      * Function for fetching unspent deposits sum of the order and its suborders
      */
     @incrementMethodCall()
-    public async calculateTotalDepositUnspent(): Promise<string> {
-        return Order.contract.methods.calculateTotalDepositUnspent(this.id).call();
+    public async calculateTotalDepositUnspent(): Promise<bigint> {
+        return await Order.contract.methods.calculateTotalDepositUnspent(this.id).call();
     }
 
     /**
@@ -229,14 +220,11 @@ class Order {
      */
     @incrementMethodCall()
     public async getOrigins(): Promise<Origins> {
-        let origins = await Order.contract.methods.getOrderOrigins(this.id).call();
-
-        // Converts blockchain array into object
-        origins = tupleToObject(origins, OriginsStructure);
+        const origins: Origins = await Order.contract.methods.getOrderOrigins(this.id).call();
 
         // Convert blockchain time seconds to js time milliseconds
-        origins.createdDate = +origins.createdDate * 1000;
-        origins.modifiedDate = +origins.modifiedDate * 1000;
+        origins.createdDate = origins.createdDate * 1000;
+        origins.modifiedDate = origins.modifiedDate * 1000;
 
         return (this.origins = origins);
     }
@@ -246,15 +234,15 @@ class Order {
      */
     @incrementMethodCall()
     public async getAwaitingPayment(): Promise<boolean> {
-        return Order.contract.methods.getAwaitingPayment(this.id).call();
+        return await Order.contract.methods.getAwaitingPayment(this.id).call();
     }
 
     /**
      * Function for fetching deposit of order from blockchain
      */
     @incrementMethodCall()
-    public async getDeposit(): Promise<string> {
-        return Order.contract.methods.getOrderDeposit(this.id).call();
+    public async getDeposit(): Promise<bigint> {
+        return await Order.contract.methods.getOrderDeposit(this.id).call();
     }
 
     /**
@@ -262,7 +250,7 @@ class Order {
      */
     @incrementMethodCall()
     public async getStartDate(): Promise<number> {
-        return <number>Order.contract.methods.getStartDate(this.id).call();
+        return Number(await Order.contract.methods.getStartDate(this.id).call());
     }
 
     /**
@@ -323,7 +311,10 @@ class Order {
      * Function for updating status of contract
      */
     @incrementMethodCall()
-    public async updateStatus(status: OrderStatus, transactionOptions?: TransactionOptions) {
+    public async updateStatus(
+        status: OrderStatus,
+        transactionOptions?: TransactionOptions,
+    ): Promise<void> {
         transactionOptions ?? this.checkInitOrder(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
@@ -342,7 +333,7 @@ class Order {
      * Function for updating status of contract
      */
     @incrementMethodCall()
-    public async cancelOrder(transactionOptions?: TransactionOptions) {
+    public async cancelOrder(transactionOptions?: TransactionOptions): Promise<void> {
         transactionOptions ?? this.checkInitOrder(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
@@ -353,7 +344,7 @@ class Order {
      * Starts suspended order
      */
     @incrementMethodCall()
-    public async start(transactionOptions?: TransactionOptions) {
+    public async start(transactionOptions?: TransactionOptions): Promise<void> {
         transactionOptions ?? this.checkInitOrder(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
@@ -364,7 +355,10 @@ class Order {
      * Updates order result
      */
     @incrementMethodCall()
-    public async updateOrderResult(encryptedResult = '', transactionOptions?: TransactionOptions) {
+    public async updateOrderResult(
+        encryptedResult = '',
+        transactionOptions?: TransactionOptions,
+    ): Promise<void> {
         transactionOptions ?? this.checkInitOrder(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
@@ -383,7 +377,7 @@ class Order {
         status: OrderStatus,
         encryptedResult = '',
         transactionOptions?: TransactionOptions,
-    ) {
+    ): Promise<void> {
         transactionOptions ?? this.checkInitOrder(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
@@ -398,7 +392,7 @@ class Order {
      * Unlocks profit
      */
     @incrementMethodCall()
-    public async unlockProfit(transactionOptions?: TransactionOptions) {
+    public async unlockProfit(transactionOptions?: TransactionOptions): Promise<void> {
         transactionOptions ?? this.checkInitOrder(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
@@ -469,30 +463,31 @@ class Order {
                     ...subOrderInfo,
                     externalId: formatBytes32String(subOrderInfo.externalId),
                 };
-                const tupleSubOrder = objectToTuple(preparedInfo, OrderInfoStructure);
                 const params: SubOrderParams = {
                     blockParentOrder: subOrderInfo.blocking,
                     deposit: subOrderInfo.deposit,
                 };
 
-                const request = Order.contract.methods
-                    .createSubOrder(this.id, tupleSubOrder, params)
-                    .send.request(
-                        {
-                            from: transactionOptions.from,
-                            gasPrice: store.gasPrice,
-                            gas: store.gasLimit,
-                        },
-                        (err: any, data: any) => {
-                            if (data) res(data);
-                            if (err) rej(err);
-                        },
-                    );
-                batch.add(request);
+                const request = (Order.contract.methods.createSubOrder as any)(
+                    this.id,
+                    preparedInfo,
+                    params,
+                ).send.request(
+                    {
+                        from: transactionOptions.from,
+                        gasPrice: store.gasPrice,
+                        gas: store.gasLimit,
+                    },
+                    (err: any, data: any) => {
+                        if (data) res(data);
+                        if (err) rej(err);
+                    },
+                );
+                void batch.add(request);
             });
         });
 
-        batch.execute();
+        void batch.execute();
         const txs = await Promise.all(promises);
 
         return txs.reduce((a: any, b: any) => a.concat(b), []) as string[];
@@ -508,19 +503,17 @@ class Order {
 
         // TODO: add ability to use this event without https provider initialization
         const contractWss = BlockchainEventsListener.getInstance().getContract();
-        const subscription = contractWss.events
-            .OrderStatusUpdated()
-            .on('data', async (event: ContractEvent) => {
-                if (event.returnValues.orderId != this.id) {
-                    return;
-                }
-                if (this.orderInfo) this.orderInfo.status = <OrderStatus>event.returnValues.status;
-                callback(<OrderStatus>event.returnValues.status);
-            })
-            .on('error', (error: Error, receipt: string) => {
-                if (receipt) return; // Used to avoid logging of transaction rejected
-                logger.warn(error);
-            });
+        const subscription = contractWss.events.OrderStatusUpdated();
+        subscription.on('data', (event: EventLog): void => {
+            if (event.returnValues.orderId != this.id) {
+                return;
+            }
+            if (this.orderInfo) this.orderInfo.status = <OrderStatus>event.returnValues.status;
+            callback(<OrderStatus>event.returnValues.status);
+        });
+        subscription.on('error', (error: Error) => {
+            logger.warn(error);
+        });
 
         return () => subscription.unsubscribe();
     }

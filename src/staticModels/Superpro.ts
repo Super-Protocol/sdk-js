@@ -1,6 +1,6 @@
 import { ParamName } from '../types/Superpro';
 import BlockchainConnector from '../connectors/BlockchainConnector';
-import { Contract, ContractAbi, AbiFragment } from 'web3';
+import { Contract, ContractAbi } from 'web3';
 
 class Superpro {
     public static address: string;

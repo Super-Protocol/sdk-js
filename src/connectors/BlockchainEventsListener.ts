@@ -24,7 +24,7 @@ class BlockchainEventsListener extends BaseConnector {
     }
 
     public getProvider(): WebSocketProvider {
-        return <WebSocketProvider>this.provider;
+        return <WebSocketProvider>this.provider?.currentProvider;
     }
 
     /**
@@ -35,7 +35,7 @@ class BlockchainEventsListener extends BaseConnector {
         this.logger.trace(config, 'Initializing');
 
         if (this.provider) {
-            (this.provider as WebSocketProvider).reset();
+            (this.provider?.currentProvider as WebSocketProvider).reset();
         }
 
         const reconnectOptions = Object.assign(
@@ -48,14 +48,15 @@ class BlockchainEventsListener extends BaseConnector {
             config.reconnect,
         );
 
-        this.provider = new WebSocketProvider(
+        const provider = new WebSocketProvider(
             config.blockchainUrl!,
             {
                 // TODO
             },
             reconnectOptions,
         );
-        store.web3Wss = new Web3(this.provider);
+        store.web3Wss = new Web3();
+        store.web3Wss.setProvider(provider);
 
         this.contract = new store.web3Wss!.eth.Contract(
             <AbiParameter[]>appJSON.abi,

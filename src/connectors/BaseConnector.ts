@@ -1,5 +1,6 @@
+import abi from '../contracts/abi';
 import rootLogger from '../logger';
-import { HttpProvider, WebSocketProvider, ContractAbi, Contract } from 'web3';
+import { Web3, ContractAbi, Contract } from 'web3';
 
 export type Config = {
     contractAddress: string;
@@ -22,13 +23,13 @@ export class BaseConnector {
     protected initialized = false;
     protected logger = rootLogger.child({ className: this.constructor['name'] });
     protected contract?: Contract<ContractAbi>;
-    protected provider?: WebSocketProvider | HttpProvider;
+    protected provider?: Web3;
 
     public isInitialized(): boolean {
         return this.initialized;
     }
 
-    public checkIfInitialized() {
+    public checkIfInitialized(): void {
         if (!this.initialized)
             throw new Error(
                 `${this.constructor['name']} is not initialized, needs to run '${this.constructor['name']}.initialize(CONFIG)' first`,
@@ -39,7 +40,7 @@ export class BaseConnector {
      *
      * @returns initialized contract
      */
-    public getContract(): Contract<ContractAbi> {
+    public getContract(): Contract<typeof abi> {
         this.checkIfInitialized();
 
         return this.contract!;
@@ -50,11 +51,11 @@ export class BaseConnector {
      * Used to setting up settings for blockchain connector
      * Needs to run this function before using blockchain connector
      */
-    public async initialize(config: Config): Promise<void> {}
+    public async initialize(_config: Config): Promise<void> {}
 
-    public shutdown() {
+    public shutdown(): void {
         if (this.initialized) {
-            this.provider?.disconnect(0, '');
+            this.provider?.currentProvider?.disconnect(0, '');
             this.initialized = false;
             this.logger.trace(`${this.constructor['name']} was shutdown`);
         }

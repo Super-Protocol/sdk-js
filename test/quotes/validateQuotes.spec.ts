@@ -3,7 +3,7 @@ import { QuoteValidationStatuses } from '../../src/tee/statuses';
 import { testQuotes } from './examples';
 
 // TODO: mock network queries and cover all possible states
-describe.skip('Quote validatator', () => {
+xdescribe('Quote validatator', () => {
     const validator = new QuoteValidator();
 
     test('test quote', async () => {

@@ -74,18 +74,26 @@ export class QuoteValidator {
     }
 
     private async fetchSgxRootCertificate(): Promise<string> {
+        // TODO: use cache for http requests
         const platformCrlResult = await axios.get(
             `${BASE_SGX_URL}/pckcrl?ca=platform&encoding=pem`,
         );
+        // TODO: parse CRL and check is certificates in chain not revoked
         const platformChain = decodeURIComponent(
             platformCrlResult.headers['sgx-pck-crl-issuer-chain'],
         );
-        const [, fetchedRootCert] = this.splitChain(platformChain);
+        // TODO: check validTo of certificates in platformChain
+        const [, fetchedRootCertPem] = this.splitChain(platformChain);
+        // TODO: check is rootCert self-signed
+        // TODO: compare rootCert with etalon by hardcoded fingerprint
 
-        return fetchedRootCert;
+        return fetchedRootCertPem;
     }
 
-    private getAndCheckPckCertificate(quote: TeeSgxQuoteDataType, rootCert: string): Certificate {
+    private getAndCheckPckCertificate(
+        quote: TeeSgxQuoteDataType,
+        rootCertPem: string,
+    ): Certificate {
         const certificatePems: string[] = this.splitChain(quote.qeCertificationData.toString()); // [pck, platform, root]
         const pckCert = Certificate.fromPEM(Buffer.from(certificatePems[0]));
         const certType = quote.qeCertificationDataType;
@@ -96,7 +104,7 @@ export class QuoteValidator {
         if (pckCert.validTo.valueOf() < Date.now()) {
             throw new TeeQuoteValidatorError('PCK certificate expired');
         }
-        if (rootCert !== certificatePems[2]) {
+        if (rootCertPem !== certificatePems[2]) {
             throw new TeeQuoteValidatorError(
                 "Invalid SGX root certificate in quote's certificate chain",
             );
@@ -203,27 +211,29 @@ export class QuoteValidator {
         return targetType === asn1.Type.OCTETSTRING ? result : parseInt(result, 16).toString();
     }
 
-    private async getTcbInfo(fmspc: string, rootCert: string): Promise<ITcbData> {
+    private async getTcbInfo(fmspc: string, rootCertPem: string): Promise<ITcbData> {
         const tcbData = await axios.get(`${BASE_SGX_URL}/tcb?fmspc=${fmspc}`);
         const tcbInfoHeader = 'tcb-info-issuer-chain';
         const tcbInfoChain = this.splitChain(decodeURIComponent(tcbData.headers[tcbInfoHeader])); // [tcb, root]
 
-        if (tcbInfoChain[1] !== rootCert) {
+        if (tcbInfoChain[1] !== rootCertPem) {
             throw new TeeQuoteValidatorError('Invalid SGX root certificate in TCB chain');
+            // TODO: verify tcbData.data.tcbInfo by tcbData.signature
         }
 
         return tcbData.data;
     }
 
-    private async getQEIdentity(rootCert: string): Promise<IQEIdentity> {
+    private async getQEIdentity(rootCertPem: string): Promise<IQEIdentity> {
         const qeIdentityData = await axios.get(`${BASE_SGX_URL}/qe/identity`);
         const qeIdentityHeader = 'sgx-enclave-identity-issuer-chain';
         const qeIdentityChain = this.splitChain(
             decodeURIComponent(qeIdentityData.headers[qeIdentityHeader]),
         ); // [qeIdentity, root]
 
-        if (qeIdentityChain[1] !== rootCert) {
+        if (qeIdentityChain[1] !== rootCertPem) {
             throw new TeeQuoteValidatorError('Invalid SGX root certificate in QE Identity chain');
+            // TODO: verify qeIdentityData.data.enclaveIdentity by qeIdentityData.signature
         }
 
         return qeIdentityData.data;
@@ -244,18 +254,12 @@ export class QuoteValidator {
             (tcbLevel) => tcbLevel.tcb.isvsvn <= report.isvSvn,
         );
 
-        this.logger.info(`QE identity status is ${tcbLevel?.tcbStatus}`);
-        switch (tcbLevel?.tcbStatus) {
-            case QEIdentityStatuses.UpToDate:
-                return QEIdentityStatuses.UpToDate;
-            case QEIdentityStatuses.OutOfDate:
-                return QEIdentityStatuses.OutOfDate;
-            case QEIdentityStatuses.Revoked:
-                return QEIdentityStatuses.Revoked;
-
-            default:
-                throw new TeeQuoteValidatorError('Unknown QE identity status');
+        const status = tcbLevel?.tcbStatus as QEIdentityStatuses;
+        if (status) {
+            this.logger.info(`QE identity status is ${tcbLevel?.tcbStatus}`);
+            return status;
         }
+        return QEIdentityStatuses.OutOfDate;
     }
 
     private getTcbStatus(
@@ -288,7 +292,7 @@ export class QuoteValidator {
             this.logger.info(`TCB status is ${tcbLevel?.tcbStatus}`);
             return status;
         }
-        throw new TeeQuoteValidatorError('Unknown TBC status');
+        return TCBStatuses.OutOfDate;
     }
 
     private getQuoteValidationStatus(
@@ -334,10 +338,8 @@ export class QuoteValidator {
             case QuoteValidationStatuses.SoftwareUpdateNeeded:
                 return `The SGX platform firmware and SW are at the latest security patching level but there are 
                     certain vulnerabilities that can only be mitigated with software mitigations implemented by the enclave.`;
-            case QuoteValidationStatuses.Error:
-                return 'Quote verification failed.';
             default:
-                return 'Unknown status';
+                return 'Quote verification failed.';
         }
     }
 
@@ -346,8 +348,8 @@ export class QuoteValidator {
             const quote: TeeSgxQuoteDataType = this.teeSgxParser.parseQuote(quoteBuffer);
             const report: TeeSgxReportDataType = this.teeSgxParser.parseReport(quote.qeReport);
 
-            const rootCert = await this.fetchSgxRootCertificate();
-            const pckCert = this.getAndCheckPckCertificate(quote, rootCert);
+            const rootCertPem = await this.fetchSgxRootCertificate();
+            const pckCert = this.getAndCheckPckCertificate(quote, rootCertPem);
 
             await this.validateQuoteStructure(quote, report, pckCert.publicKey.keyRaw);
             this.logger.info('Quote structure validated successfully');
@@ -364,8 +366,8 @@ export class QuoteValidator {
                 asn1.Type.OCTETSTRING,
             );
 
-            const tcbData = await this.getTcbInfo(fmspc, rootCert);
-            const qeIdentity = await this.getQEIdentity(rootCert);
+            const tcbData = await this.getTcbInfo(fmspc, rootCertPem);
+            const qeIdentity = await this.getQEIdentity(rootCertPem);
 
             const qeIdentityStatus = this.getQEIdentityStatus(report, qeIdentity);
             const tcbStatus = this.getTcbStatus(fmspc, pceId, tcbData, sgxExtensionData);

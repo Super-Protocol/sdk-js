@@ -283,26 +283,12 @@ export class QuoteValidator {
                 ),
         );
 
-        this.logger.info(`TCB status is ${tcbLevel?.tcbStatus}`);
-        switch (tcbLevel?.tcbStatus) {
-            case TCBStatuses.UpToDate:
-                return TCBStatuses.UpToDate;
-            case TCBStatuses.OutOfDate:
-                return TCBStatuses.OutOfDate;
-            case TCBStatuses.Revoked:
-                return TCBStatuses.Revoked;
-            case TCBStatuses.ConfigurationAndSWHardeningNeeded:
-                return TCBStatuses.ConfigurationAndSWHardeningNeeded;
-            case TCBStatuses.ConfigurationNeeded:
-                return TCBStatuses.ConfigurationNeeded;
-            case TCBStatuses.OutOfDateConfigurationNeeded:
-                return TCBStatuses.OutOfDateConfigurationNeeded;
-            case TCBStatuses.SWHardeningNeeded:
-                return TCBStatuses.SWHardeningNeeded;
-
-            default:
-                throw new TeeQuoteValidatorError('Unknown TBC status');
+        const status = tcbLevel?.tcbStatus as TCBStatuses;
+        if (status) {
+            this.logger.info(`TCB status is ${tcbLevel?.tcbStatus}`);
+            return status;
         }
+        throw new TeeQuoteValidatorError('Unknown TBC status');
     }
 
     private getQuoteValidationStatus(
@@ -311,33 +297,41 @@ export class QuoteValidator {
     ): QuoteValidationStatuses {
         if (qeIdentityStatus === QEIdentityStatuses.OutOfDate) {
             if (tcbStatus === TCBStatuses.UpToDate || tcbStatus === TCBStatuses.SWHardeningNeeded) {
-                return QuoteValidationStatuses.NeedSecurityPatch;
+                return QuoteValidationStatuses.SecurityPatchNeeded;
             }
             if (
                 tcbStatus === TCBStatuses.OutOfDateConfigurationNeeded ||
                 tcbStatus === TCBStatuses.ConfigurationAndSWHardeningNeeded
             ) {
-                return QuoteValidationStatuses.NeedSoftwareUpdate;
+                return QuoteValidationStatuses.SoftwareUpdateNeeded;
             }
         }
         if (qeIdentityStatus === QEIdentityStatuses.Revoked || tcbStatus === TCBStatuses.Revoked) {
             throw new TeeQuoteValidatorError('QE identity or TCB revoked');
         }
-        if (tcbStatus === TCBStatuses.OutOfDate) {
-            return QuoteValidationStatuses.NeedSecurityPatch;
+        if (tcbStatus === TCBStatuses.UpToDate) {
+            return QuoteValidationStatuses.UpToDate;
         }
-        return QuoteValidationStatuses.NeedSoftwareUpdate;
+        if (tcbStatus === TCBStatuses.OutOfDate) {
+            return QuoteValidationStatuses.SecurityPatchNeeded;
+        }
+        if (tcbStatus === TCBStatuses.ConfigurationNeeded) {
+            return QuoteValidationStatuses.ConfigurationNeeded;
+        }
+        return QuoteValidationStatuses.SoftwareUpdateNeeded;
     }
 
     private getQuoteValidationStatusDescription(status: QuoteValidationStatuses): string {
         switch (status) {
             case QuoteValidationStatuses.UpToDate:
+                return 'The Quote verification passed and is at the latest TCB level.';
+            case QuoteValidationStatuses.ConfigurationNeeded:
                 return `The SGX platform firmware and SW are at the latest security patching level 
                     but there are platform hardware configurations may expose the enclave to vulnerabilities.`;
-            case QuoteValidationStatuses.NeedSecurityPatch:
+            case QuoteValidationStatuses.SecurityPatchNeeded:
                 return `The SGX platform firmware and SW are not at the latest security patching level. 
                     The platform needs to be patched with firmware and/or software patches.`;
-            case QuoteValidationStatuses.NeedSoftwareUpdate:
+            case QuoteValidationStatuses.SoftwareUpdateNeeded:
                 return `The SGX platform firmware and SW are at the latest security patching level but there are 
                     certain vulnerabilities that can only be mitigated with software mitigations implemented by the enclave.`;
             case QuoteValidationStatuses.Error:

@@ -59,7 +59,7 @@
   "dependencies": {
     "@fidm/x509": "^1.2.1",
     "@super-protocol/dto-js": "0.0.28",
-    "@super-protocol/tee-lib": "^0.2.6",
+    "@super-protocol/tee-lib": "^0.1.2",
     "@super-protocol/uplink-nodejs": "1.2.16",
     "aws-sdk": "^2.1418.0",
     "bottleneck": "^2.19.5",

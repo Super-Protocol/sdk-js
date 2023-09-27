@@ -79,5 +79,10 @@
   "repository": "git://github.com/Super-Protocol/sdk-js.git",
   "resolutions": {
     "wrap-ansi": "7.0.0"
+  },
+  "jest": {
+    "moduleNameMapper": {
+      "axios": "axios/dist/node/axios.cjs"
+    }
   }
 }

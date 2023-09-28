@@ -1,6 +1,6 @@
 import rootLogger from '../logger';
-import { checkIfActionAccountInitialized, objectToTuple } from '../utils';
-import { OfferInfo, OfferInfoStructure, OfferType } from '../types/Offer';
+import { checkIfActionAccountInitialized } from '../utils';
+import { OfferInfo, OfferType } from '../types/Offer';
 import { BytesLike, formatBytes32String, parseBytes32String } from 'ethers/lib/utils';
 import { BlockInfo, TransactionOptions } from '../types/Web3';
 import { OfferCreatedEvent, ValueSlotAddedEvent } from '../types/Events';
@@ -65,11 +65,10 @@ class Offers {
         const contract = BlockchainConnector.getInstance().getContract();
         checkIfActionAccountInitialized(transactionOptions);
 
-        const offerInfoParams = objectToTuple(offerInfo, OfferInfoStructure);
         const formattedExternalId = formatBytes32String(externalId);
         await TxManager.execute(
             contract.methods.createValueOffer,
-            [providerAuthorityAccount, offerInfoParams, formattedExternalId, enabled],
+            [providerAuthorityAccount, offerInfo, formattedExternalId, enabled],
             transactionOptions,
         );
     }
@@ -142,8 +141,8 @@ class Offers {
             }
             callback(
                 <string>event.returnValues.creator,
-                <string>event.returnValues.offerId,
-                <string>event.returnValues.slotId,
+                <bigint>event.returnValues.offerId,
+                <bigint>event.returnValues.slotId,
                 parseBytes32String(<BytesLike>event.returnValues.externalId),
                 <BlockInfo>{
                     index: <number>event.blockNumber,
@@ -170,8 +169,8 @@ class Offers {
         const subscription = contract.events.ValueSlotUpdated();
         subscription.on('data', (event: EventLog): void => {
             callback(
-                <string>event.returnValues.offerId,
-                <string>event.returnValues.slotId,
+                <bigint>event.returnValues.offerId,
+                <bigint>event.returnValues.slotId,
                 <BlockInfo>{
                     index: <number>event.blockNumber,
                     hash: <string>event.blockHash,
@@ -197,8 +196,8 @@ class Offers {
         const subscription = contract.events.ValueSlotDeleted();
         subscription.on('data', (event: EventLog): void => {
             callback(
-                <string>event.returnValues.offerId,
-                <string>event.returnValues.slotId,
+                <bigint>event.returnValues.offerId,
+                <bigint>event.returnValues.slotId,
                 <BlockInfo>{
                     index: <number>event.blockNumber,
                     hash: <string>event.blockHash,
@@ -224,7 +223,7 @@ class Offers {
         const subscription = contract.events.OfferCreated();
         subscription.on('data', (event: EventLog): void => {
             callback(
-                <string>event.returnValues.offerId,
+                <bigint>event.returnValues.offerId,
                 <string>event.returnValues.creator,
                 parseBytes32String(<BytesLike>event.returnValues.externalId),
                 <BlockInfo>{
@@ -248,7 +247,7 @@ class Offers {
         subscription.on('data', (event: EventLog): void => {
             callback(
                 <string>event.returnValues.providerAuth,
-                <string>event.returnValues.offerId,
+                <bigint>event.returnValues.offerId,
                 <OfferType>event.returnValues.offerType,
                 <BlockInfo>{
                     index: <number>event.blockNumber,
@@ -271,7 +270,7 @@ class Offers {
         subscription.on('data', (event: EventLog): void => {
             callback(
                 <string>event.returnValues.providerAuth,
-                <string>event.returnValues.offerId,
+                <bigint>event.returnValues.offerId,
                 <OfferType>event.returnValues.offerType,
                 <BlockInfo>{
                     index: <number>event.blockNumber,
@@ -289,31 +288,31 @@ class Offers {
 
 // address -> offerId
 export type onOfferCreatedCallback = (
-    id: string,
+    id: bigint,
     creator: string,
     externalId: string,
     block?: BlockInfo,
 ) => void;
 export type onOfferEnabledCallback = (
     providerAuth: string,
-    id: string,
+    id: bigint,
     offerType: OfferType,
     block?: BlockInfo,
 ) => void;
 export type onOfferDisbledCallback = (
     providerAuth: string,
-    id: string,
+    id: bigint,
     offerType: OfferType,
     block?: BlockInfo,
 ) => void;
 export type onSlotAddedCallback = (
     creator: string,
-    offerId: string,
-    slotId: string,
+    offerId: bigint,
+    slotId: bigint,
     externalId: string,
     block?: BlockInfo,
 ) => void;
-export type onSlotUpdatedCallback = (offerId: string, slotId: string, block?: BlockInfo) => void;
-export type onSlotDeletedCallback = (offerId: string, slotId: string, block?: BlockInfo) => void;
+export type onSlotUpdatedCallback = (offerId: bigint, slotId: bigint, block?: BlockInfo) => void;
+export type onSlotDeletedCallback = (offerId: bigint, slotId: bigint, block?: BlockInfo) => void;
 
 export default Offers;

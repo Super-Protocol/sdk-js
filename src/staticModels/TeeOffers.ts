@@ -1,9 +1,9 @@
 import rootLogger from '../logger';
-import { checkIfActionAccountInitialized, objectToTuple } from '../utils';
+import { checkIfActionAccountInitialized } from '../utils';
 import { BytesLike, formatBytes32String, parseBytes32String } from 'ethers/lib/utils';
 import { packDevicId } from '../utils';
 import { BlockInfo, TransactionOptions } from '../types/Web3';
-import { TeeOfferInfo, TeeOfferInfoStructure } from '../types/TeeOfferInfo';
+import { TeeOfferInfo } from '../types/TeeOfferInfo';
 import { OfferType } from '../types/Offer';
 import { OfferCreatedEvent, OptionAddedEvent, TeeSlotAddedEvent } from '../types/Events';
 import { TeeOfferOption } from '../types/TeeOfferOption';
@@ -84,11 +84,10 @@ class TeeOffers {
 
         // Converts offer info to array of arrays (used in blockchain)
         teeOfferInfo.hardwareInfo = await TeeOffers.packHardwareInfo(teeOfferInfo.hardwareInfo);
-        const teeOfferInfoParams = objectToTuple(teeOfferInfo, TeeOfferInfoStructure);
         const formattedExternalId = formatBytes32String(externalId);
         await TxManager.execute(
             contract.methods.createTeeOffer,
-            [providerAuthorityAccount, teeOfferInfoParams, formattedExternalId, enabled],
+            [providerAuthorityAccount, teeOfferInfo, formattedExternalId, enabled],
             transactionOptions,
         );
     }

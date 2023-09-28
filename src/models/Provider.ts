@@ -1,8 +1,8 @@
 import { Contract, AbiFragment } from 'web3';
 import { abi } from '../contracts/abi';
-import { checkIfActionAccountInitialized, tupleToObject, objectToTuple } from '../utils';
-import { ProviderInfo, ProviderInfoStructure } from '../types/Provider';
-import { Origins, OriginsStructure } from '../types/Origins';
+import { checkIfActionAccountInitialized } from '../utils';
+import { ProviderInfo } from '../types/Provider';
+import { Origins } from '../types/Origins';
 import Superpro from '../staticModels/Superpro';
 import { TransactionOptions } from '../types/Web3';
 import BlockchainConnector from '../connectors/BlockchainConnector';
@@ -42,10 +42,9 @@ class Provider {
         transactionOptions ?? this.checkInitProvider(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
-        const providerInfoParams = objectToTuple(providerInfo, ProviderInfoStructure);
         await TxManager.execute(
             Provider.contract.methods.modifyProvider,
-            [providerInfoParams],
+            [providerInfo],
             transactionOptions,
         );
     }
@@ -105,7 +104,9 @@ class Provider {
      * Fetch new Origins (createdDate, createdBy, modifiedDate and modifiedBy)
      */
     public async getOrigins(): Promise<Origins> {
-        const origins: Origins = await Provider.contract.methods.getProviderOrigins(this.providerId).call();
+        const origins: Origins = await Provider.contract.methods
+            .getProviderOrigins(this.providerId)
+            .call();
 
         // Convert blockchain time seconds to js time milliseconds
         origins.createdDate = +origins.createdDate * 1000;

@@ -1,6 +1,6 @@
 export const defaultBlockchainUrl = 'http://127.0.0.1:8545';
-export const defaultGasLimit = 7000000;
-export const defaultGasPrice = 3000000000;
+export const defaultGasLimit = BigInt(7000000);
+export const defaultGasPrice = BigInt(3000000000);
 export const defaultGasPriceMultiplier = 1;
 export const defaultGasLimitMultiplier = 1.2;
 export const txConcurrency = 30;

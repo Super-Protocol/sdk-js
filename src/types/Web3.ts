@@ -1,12 +1,5 @@
 import Web3 from 'web3';
 
-// Event what used as payload for Web3 events
-export type ContractEvent = {
-    blockHash: string;
-    blockNumber: number;
-    returnValues: { [key: string]: unknown };
-};
-
 export type BlockInfo = {
     index: number;
     hash: string | undefined;
@@ -22,8 +15,8 @@ export type TransactionOptionsRequired = Required<TransactionOptions>;
 
 export type TransactionOptions = {
     from?: string;
-    gas?: bigint | number;
-    gasPrice?: bigint | number;
+    gas?: bigint;
+    gasPrice?: bigint;
     gasPriceMultiplier?: number;
     web3?: Web3;
 };

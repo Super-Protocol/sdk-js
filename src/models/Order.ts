@@ -1,6 +1,5 @@
 import {
     OrderInfo,
-    OrderInfoStructure,
     OrderResult,
     ExtendedOrderInfo,
     OrderStatus,
@@ -13,14 +12,8 @@ import rootLogger from '../logger';
 import { TransactionOptions } from '../types/Web3';
 import { abi } from '../contracts/abi';
 import store from '../store';
-import {
-    checkIfActionAccountInitialized,
-    incrementMethodCall,
-    objectToTuple,
-    tupleToObject,
-    unpackSlotInfo,
-} from '../utils';
-import { Origins, OriginsStructure } from '../types/Origins';
+import { checkIfActionAccountInitialized, incrementMethodCall, unpackSlotInfo } from '../utils';
+import { Origins } from '../types/Origins';
 import { formatBytes32String } from 'ethers/lib/utils';
 import BlockchainConnector from '../connectors/BlockchainConnector';
 import Superpro from '../staticModels/Superpro';
@@ -421,7 +414,6 @@ class Order {
             ...subOrderInfo,
             externalId: formatBytes32String(subOrderInfo.externalId),
         };
-        const tupleSubOrder = objectToTuple(preparedInfo, OrderInfoStructure);
         const params: SubOrderParams = {
             blockParentOrder,
             deposit,
@@ -430,14 +422,14 @@ class Order {
         if (checkTxBeforeSend) {
             await TxManager.dryRun(
                 Order.contract.methods.createSubOrder,
-                [this.id, tupleSubOrder, params],
+                [this.id, preparedInfo, params],
                 transactionOptions,
             );
         }
 
         await TxManager.execute(
             Order.contract.methods.createSubOrder,
-            [this.id, tupleSubOrder, params],
+            [this.id, preparedInfo, params],
             transactionOptions,
         );
     }

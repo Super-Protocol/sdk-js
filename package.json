@@ -68,6 +68,7 @@
     "pino": "^7.2.0",
     "protobufjs": "^6.11.2",
     "web3": "4.0.3",
+    "web3-core-requestmanager": "^1.10.0",
     "web3-eth-contract": "^4.0.4",
     "web3-parse-receipt-events": "^1.0.2",
     "web3-types": "^1.1.0"

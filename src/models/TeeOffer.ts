@@ -1,28 +1,24 @@
-import rootLogger from '../logger';
 import { abi } from '../contracts/abi';
 import {
     checkIfActionAccountInitialized,
-    tupleToObject,
-    objectToTuple,
     incrementMethodCall,
-    tupleToObjectsArray,
     unpackSlotInfo,
     packSlotInfo,
 } from '../utils';
-import { TeeOfferInfo, TeeOfferInfoStructure } from '../types/TeeOfferInfo';
+import { TeeOfferInfo } from '../types/TeeOfferInfo';
 import { TransactionOptions } from '../types/Web3';
 import { OfferType } from '../types/Offer';
-import { Origins, OriginsStructure } from '../types/Origins';
+import { Origins } from '../types/Origins';
 import Superpro from '../staticModels/Superpro';
 import BlockchainConnector from '../connectors/BlockchainConnector';
 import TxManager from '../utils/TxManager';
-import { HardwareInfo, HardwareInfoStructure } from '../types/HardwareInfo';
-import { TeeOfferOption, TeeOfferOptionStructure } from '../types/TeeOfferOption';
-import { TeeOfferSlot, TeeOfferSlotStructure } from '../types/TeeOfferSlot';
-import { OptionInfo, OptionInfoStructure } from '../types/OptionInfo';
-import { SlotUsage, SlotUsageStructure } from '../types/SlotUsage';
+import { HardwareInfo } from '../types/HardwareInfo';
+import { TeeOfferOption } from '../types/TeeOfferOption';
+import { TeeOfferSlot } from '../types/TeeOfferSlot';
+import { OptionInfo } from '../types/OptionInfo';
+import { SlotUsage } from '../types/SlotUsage';
 import { formatBytes32String } from 'ethers/lib/utils';
-import { SlotInfo, SlotInfoStructure } from '../types/SlotInfo';
+import { SlotInfo } from '../types/SlotInfo';
 import TeeOffers from '../staticModels/TeeOffers';
 import TCB from '../models/TCB';
 import { TeeConfirmationBlock, GetTcbRequest } from '@super-protocol/dto-js';
@@ -30,9 +26,8 @@ import { Contract } from 'web3';
 
 class TeeOffer {
     private static contract: Contract<typeof abi>;
-    private logger: typeof rootLogger;
 
-    public id: bigint | number;
+    public id: bigint;
 
     public violationRate?: number;
     public totalLocked?: number;
@@ -51,13 +46,11 @@ class TeeOffer {
     public cpuDenominator?: bigint;
     public minDeposit?: bigint;
 
-    constructor(offerId: bigint | number) {
+    constructor(offerId: bigint) {
         this.id = offerId;
         if (!TeeOffer.contract) {
             TeeOffer.contract = BlockchainConnector.getInstance().getContract();
         }
-
-        this.logger = rootLogger.child({ className: 'TeeOffer' });
     }
 
     /**
@@ -157,11 +150,11 @@ class TeeOffer {
             return [];
         }
 
-        const teeOfferOption = await TeeOffer.contract.methods
+        const teeOfferOption: TeeOfferOption[] = await TeeOffer.contract.methods
             .getTeeOfferOptions(this.id, begin, end)
             .call();
 
-        return tupleToObjectsArray(teeOfferOption, TeeOfferOptionStructure);
+        return teeOfferOption;
     }
 
     /**
@@ -189,12 +182,10 @@ class TeeOffer {
         const contract = BlockchainConnector.getInstance().getContract();
         checkIfActionAccountInitialized(transactionOptions);
 
-        const newInfoTuple = objectToTuple(info, OptionInfoStructure);
-        const newUsageTuple = objectToTuple(usage, SlotUsageStructure);
         const formattedExternalId = formatBytes32String(externalId);
         await TxManager.execute(
             contract.methods.addOption,
-            [this.id, formattedExternalId, newInfoTuple, newUsageTuple],
+            [this.id, formattedExternalId, info, usage],
             transactionOptions,
         );
     }
@@ -216,11 +207,9 @@ class TeeOffer {
         const contract = BlockchainConnector.getInstance().getContract();
         checkIfActionAccountInitialized(transactionOptions);
 
-        const newInfoTuple = objectToTuple(newInfo, OptionInfoStructure);
-        const newUsageTuple = objectToTuple(newUsage, SlotUsageStructure);
         await TxManager.execute(
             contract.methods.updateOption,
-            [this.id, optionId, newInfoTuple, newUsageTuple],
+            [this.id, optionId, newInfo, newUsage],
             transactionOptions,
         );
     }
@@ -365,12 +354,10 @@ class TeeOffer {
         checkIfActionAccountInitialized(transactionOptions);
 
         info = packSlotInfo(info, await TeeOffers.getDenominator());
-        const infoTuple = objectToTuple(info, SlotInfoStructure);
-        const usageTuple = objectToTuple(usage, SlotUsageStructure);
         const formattedExternalId = formatBytes32String(externalId);
         await TxManager.execute(
             contract.methods.addTeeOfferSlot,
-            [this.id, formattedExternalId, infoTuple, usageTuple],
+            [this.id, formattedExternalId, info, usage],
             transactionOptions,
         );
     }
@@ -393,11 +380,9 @@ class TeeOffer {
         checkIfActionAccountInitialized(transactionOptions);
 
         newInfo = packSlotInfo(newInfo, await TeeOffers.getDenominator());
-        const newInfoTuple = objectToTuple(newInfo, SlotInfoStructure);
-        const newUsageTuple = objectToTuple(newUsage, SlotUsageStructure);
         await TxManager.execute(
             contract.methods.updateTeeOfferSlot,
-            [this.id, slotId, newInfoTuple, newUsageTuple],
+            [this.id, slotId, newInfo, newUsage],
             transactionOptions,
         );
     }
@@ -554,10 +539,9 @@ class TeeOffer {
         transactionOptions ?? this.checkInitTeeOffer(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
-        const newInfoTuple = objectToTuple(newInfo, TeeOfferInfoStructure);
         await TxManager.execute(
             TeeOffer.contract.methods.setTeeOfferInfo,
-            [this.id, newInfoTuple],
+            [this.id, newInfo],
             transactionOptions,
         );
         if (this.offerInfo) this.offerInfo = newInfo;
@@ -576,11 +560,10 @@ class TeeOffer {
         checkIfActionAccountInitialized(transactionOptions);
 
         newHardwareInfo = await TeeOffers.packHardwareInfo(newHardwareInfo);
-        const newHardwareInfoTuple = objectToTuple(newHardwareInfo, TeeOfferInfoStructure);
 
         await TxManager.execute(
             TeeOffer.contract.methods.setTeeOfferHardwareInfo,
-            [this.id, newHardwareInfoTuple],
+            [this.id, newHardwareInfo],
             transactionOptions,
         );
     }

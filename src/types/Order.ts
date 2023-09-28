@@ -1,7 +1,6 @@
-import { parseBytes32String } from 'ethers/lib/utils';
-import { SlotUsage, SlotUsageStructure } from './SlotUsage';
-import { SlotInfo, SlotInfoStructure } from './SlotInfo';
-import { OptionInfo, OptionInfoStructure } from './OptionInfo';
+import { SlotUsage } from './SlotUsage';
+import { SlotInfo } from './SlotInfo';
+import { OptionInfo } from './OptionInfo';
 
 export enum OrderStatus {
     New = '0',
@@ -14,37 +13,10 @@ export enum OrderStatus {
     Suspended = '7',
 }
 
-// Order of keys and type conversion functions for this object in blockchain contract
-export const OrderArgsStructure = {
-    inputOffers: [String],
-    outputOffer: String,
-};
 export type OrderArgs = {
     inputOffers: bigint[];
     outputOffer: bigint;
 };
-
-export const OrderSlotsStructure = {
-    slotId: String,
-    slotCount: String,
-    optionsIds: [String],
-    optionsCount: [String],
-};
-
-// Order of keys and type conversion functions for this object in blockchain contract
-export const OrderInfoStructure = {
-    offerId: String,
-    resultPublicKey: String,
-    encryptedRequirements: String,
-    encryptedArgs: String,
-    status: OrderStatus,
-    args: OrderArgsStructure,
-    slots: OrderSlotsStructure,
-    externalId: parseBytes32String,
-};
-
-// Array of order info structures
-export const OrderInfoStructureArray = [OrderInfoStructure];
 
 export type OrderSlots = {
     slotId: bigint;
@@ -69,12 +41,6 @@ export type ExtendedOrderInfo = OrderInfo & {
     deposit: string;
 };
 
-// Order of keys and type conversion functions for this object in blockchain contract
-export const OrderResultStructure = {
-    encryptedResult: String,
-    orderPrice: String,
-};
-
 export type OrderResult = {
     encryptedResult: string;
     orderPrice: bigint;
@@ -91,12 +57,4 @@ export type OrderUsage = {
     optionInfo: OptionInfo[];
     optionUsage: SlotUsage[];
     optionsCount: number[];
-};
-
-export const OrderUsageStructure = {
-    slotInfo: SlotInfoStructure,
-    slotUsage: SlotUsageStructure,
-    optionInfo: [OptionInfoStructure],
-    optionUsage: [SlotUsageStructure],
-    optionsCount: [Number],
 };

@@ -1,13 +1,13 @@
 import rootLogger from '../logger';
 import TCB from '../models/TCB';
-import { checkIfActionAccountInitialized, tupleToObject } from '../utils';
+import { checkIfActionAccountInitialized } from '../utils';
 import { EpochInfo } from '../types/Consensus';
 import { TransactionOptions, BlockInfo } from '../types/Web3';
 import Superpro from './Superpro';
 import BlockchainConnector from '../connectors/BlockchainConnector';
 import BlockchainEventsListener from '../connectors/BlockchainEventsListener';
 import TxManager from '../utils/TxManager';
-import { ConsensusConstants, ConsensusConstantsStructure } from '../types/Consensus';
+import { ConsensusConstants } from '../types/Consensus';
 import { EventLog } from 'web3-eth-contract';
 
 class Consensus {
@@ -111,9 +111,9 @@ class Consensus {
 
     public static async getConstants(): Promise<ConsensusConstants> {
         const contract = BlockchainConnector.getInstance().getContract();
-        const response = await contract.methods.getConsensusConstants().call();
+        const response: ConsensusConstants = await contract.methods.getConsensusConstants().call();
 
-        return tupleToObject(response as unknown[], ConsensusConstantsStructure);
+        return response;
     }
 
     public static onTcbBanned(callback: onTcbBannedCallback): () => void {

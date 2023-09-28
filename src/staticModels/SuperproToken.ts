@@ -76,7 +76,7 @@ class SuperproToken {
      */
     public static async transfer(
         to: string,
-        amount: string,
+        amount: bigint,
         transactionOptions?: TransactionOptions,
         checkTxBeforeSend = false,
     ): Promise<Transaction> {
@@ -105,7 +105,7 @@ class SuperproToken {
      */
     public static async approve(
         address: string,
-        amount: string,
+        amount: bigint,
         transactionOptions?: TransactionOptions,
         checkTxBeforeSend = false,
     ): Promise<void> {
@@ -143,7 +143,7 @@ class SuperproToken {
             callback(
                 <string>event.returnValues.owner,
                 <string>event.returnValues.spender,
-                <string>event.returnValues.value,
+                <bigint>event.returnValues.value,
                 {
                     index: <number>event.blockNumber,
                     hash: <string>event.blockHash,
@@ -176,7 +176,7 @@ class SuperproToken {
             callback(
                 <string>event.returnValues.from,
                 <string>event.returnValues.to,
-                <string>event.returnValues.value,
+                <bigint>event.returnValues.value,
                 {
                     index: <number>event.blockNumber,
                     hash: <string>event.blockHash,
@@ -194,13 +194,13 @@ class SuperproToken {
 export type onTokenApproveCallback = (
     owner: string,
     spender: string,
-    value: string,
+    value: bigint,
     block?: BlockInfo,
 ) => void;
 export type onTokenTransferCallback = (
     from: string,
     to: string,
-    value: string,
+    value: bigint,
     block?: BlockInfo,
 ) => void;
 

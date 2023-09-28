@@ -1,6 +1,5 @@
 import store from './store';
 import { TransactionOptions } from './types/Web3';
-import { isArray } from 'lodash';
 import Web3 from 'web3';
 import { Monitoring } from './utils/Monitoring';
 import { SlotInfo } from './types/SlotInfo';
@@ -30,7 +29,7 @@ export const checkForUsingExternalTxManager = (
  * Updates gas price determined by the last few blocks median
  */
 export const getGasPrice = async (web3: Web3): Promise<bigint> => {
-    return web3.eth.getGasPrice();
+    return await web3.eth.getGasPrice();
 };
 
 /**
@@ -80,75 +79,6 @@ type Format =
     | {
           [key: string]: FormatItem;
       };
-
-export const tupleToObject = <T>(data: unknown[], format: Format): T => {
-    const processItem = (dataItem: unknown, formatItem: FormatItem) => {
-        if ((formatItem as FormatFunctions)?.$obj) {
-            return (formatItem as FormatFunctions).$obj!(dataItem);
-        } else if (typeof formatItem === 'function') {
-            if (formatItem.name === 'Number') {
-                const value = (formatItem as Function)(dataItem);
-                return value < Number.MAX_SAFE_INTEGER ? value : Number.MAX_SAFE_INTEGER;
-            }
-            return (formatItem as Function)(dataItem);
-        } else if (typeof formatItem === 'object' && typeof dataItem === 'object') {
-            return tupleToObject(dataItem as unknown[], formatItem as Format);
-        } else {
-            return dataItem;
-        }
-    };
-
-    if (isArray(format)) {
-        const result = data.map((dataItem, index) => {
-            const formatItem = index < format.length ? format[index] : format[format.length - 1];
-
-            return processItem(dataItem, formatItem);
-        });
-
-        return result as unknown as T;
-    } else {
-        const result: { [key: string]: unknown } = {};
-
-        Object.keys(format).forEach((key, index) => {
-            const formatItem = format[key];
-            const dataItem = data[index];
-            result[key] = processItem(dataItem, formatItem);
-        });
-
-        return result as unknown as T;
-    }
-};
-
-export const tupleToObjectsArray = <T>(data: unknown[], format: Format): T[] => {
-    return data.map((item) => tupleToObject(item as unknown[], format));
-};
-
-export const objectToTuple = (data: unknown, format: Format): unknown[] => {
-    const processItem = (dataItem: unknown, formatItem: FormatItem) => {
-        if ((formatItem as FormatFunctions)?.$tuple) {
-            return (formatItem as FormatFunctions).$tuple!(dataItem);
-        } else if (typeof formatItem === 'object' && typeof dataItem === 'object') {
-            return objectToTuple(dataItem, formatItem as Format);
-        } else {
-            return dataItem;
-        }
-    };
-
-    if (isArray(format)) {
-        return (data as unknown[]).map((dataItem, index) => {
-            const formatItem = index < format.length ? format[index] : format[format.length - 1];
-
-            return processItem(dataItem, formatItem);
-        });
-    } else {
-        return Object.keys(format).map((key) => {
-            const dataItem = (data as { [key: string]: unknown })[key];
-            const formatItem = format[key];
-
-            return processItem(dataItem, formatItem);
-        });
-    }
-};
 
 export function incrementMethodCall() {
     return function (_target: any, propertyName: string, propertyDescriptor: PropertyDescriptor) {

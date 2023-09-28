@@ -1,6 +1,6 @@
 import rootLogger from '../logger';
-import { checkIfActionAccountInitialized, objectToTuple } from '../utils';
-import { ProviderInfo, ProviderInfoStructure } from '../types/Provider';
+import { checkIfActionAccountInitialized } from '../utils';
+import { ProviderInfo } from '../types/Provider';
 import { BigNumber } from 'ethers';
 import { BlockInfo, TransactionOptions } from '../types/Web3';
 import { EventLog } from 'web3-eth-contract';
@@ -20,7 +20,7 @@ class ProviderRegistry {
         const contract = BlockchainConnector.getInstance().getContract();
         this.providers = await contract.methods.getProvidersAuths().call();
 
-        return this.providers!;
+        return this.providers;
     }
 
     /**
@@ -46,7 +46,7 @@ class ProviderRegistry {
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
     public static async refillSecurityDepositFor(
-        amount: string,
+        amount: bigint,
         recipient: string,
         transactionOptions?: TransactionOptions,
     ): Promise<void> {
@@ -72,10 +72,9 @@ class ProviderRegistry {
         const contract = BlockchainConnector.getInstance().getContract();
         checkIfActionAccountInitialized(transactionOptions);
 
-        const providerInfoParams = objectToTuple(providerInfo, ProviderInfoStructure);
         await TxManager.execute(
             contract.methods.registerProvider,
-            [providerInfoParams],
+            [providerInfo],
             transactionOptions,
         );
     }
@@ -87,7 +86,7 @@ class ProviderRegistry {
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
     public static async refillSecurityDeposit(
-        amount: string,
+        amount: bigint,
         transactionOptions?: TransactionOptions,
     ): Promise<void> {
         const contract = BlockchainConnector.getInstance().getContract();
@@ -187,7 +186,7 @@ class ProviderRegistry {
         subscription.on('data', (event: EventLog): void => {
             callback(
                 <string>event.returnValues.auth,
-                <BigNumber>event.returnValues.newViolationRate,
+                <bigint>event.returnValues.newViolationRate,
                 <BlockInfo>{
                     index: <number>event.blockNumber,
                     hash: <string>event.blockHash,
@@ -216,7 +215,7 @@ class ProviderRegistry {
         subscription.on('data', (event: EventLog): void => {
             callback(
                 <string>event.returnValues.auth,
-                <string>event.returnValues.amount,
+                <bigint>event.returnValues.amount,
                 <BlockInfo>{
                     index: <number>event.blockNumber,
                     hash: <string>event.blockHash,
@@ -245,7 +244,7 @@ class ProviderRegistry {
         subscription.on('data', (event: EventLog): void => {
             callback(
                 <string>event.returnValues.auth,
-                <string>event.returnValues.amount,
+                <bigint>event.returnValues.amount,
                 <BlockInfo>{
                     index: <number>event.blockNumber,
                     hash: <string>event.blockHash,
@@ -265,17 +264,17 @@ export type onProviderRegisteredCallback = (address: string, block?: BlockInfo) 
 export type onProviderModifiedCallback = (address: string, block?: BlockInfo) => void;
 export type onProviderSecurityDepoRefilledCallback = (
     address: string,
-    amount: string,
+    amount: bigint,
     block?: BlockInfo,
 ) => void;
 export type onProviderSecurityDepoUnlockedCallback = (
     address: string,
-    amount: string,
+    amount: bigint,
     block?: BlockInfo,
 ) => void;
 export type onProviderViolationRateIncrementedCallback = (
     address: string,
-    newViolationRate: BigNumber,
+    newViolationRate: bigint,
     block?: BlockInfo,
 ) => void;
 

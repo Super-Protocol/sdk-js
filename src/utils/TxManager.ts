@@ -152,7 +152,7 @@ class TxManager {
                 estimatedGas = defaultGasLimit;
             }
             txData.gas = estimatedGas;
-            txData.gas = Math.ceil(txData.gas * store.gasLimitMultiplier);
+            // txData.gas = (txData.gas as bigint) * BigInt(store.gasLimitMultiplier); FIXME:
             // defaultGasLimit is max gas limit
             txData.gas = txData.gas < defaultGasLimit ? txData.gas : defaultGasLimit;
 
@@ -169,7 +169,7 @@ class TxManager {
                 txData.gas = transactionOptions.gas;
             }
 
-            txData.gasPrice = Math.ceil(txData.gasPrice * store.gasPriceMultiplier);
+            // txData.gasPrice = (txData.gasPrice as bigint) * BigInt(store.gasPriceMultiplier); FIXME:
         }
 
         let nonceTracker;

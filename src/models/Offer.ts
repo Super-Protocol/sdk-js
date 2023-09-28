@@ -1,24 +1,22 @@
 import { Contract, ContractAbi } from 'web3';
 import { abi } from '../contracts/abi';
 import rootLogger from '../logger';
-import appJSON from '../contracts/app.json';
 import {
     checkIfActionAccountInitialized,
-    objectToTuple,
     incrementMethodCall,
     unpackSlotInfo,
     packSlotInfo,
 } from '../utils';
-import { OfferInfo, OfferInfoStructure, OfferType } from '../types/Offer';
+import { OfferInfo, OfferType } from '../types/Offer';
 import { TransactionOptions } from '../types/Web3';
 import { Origins } from '../types/Origins';
 import BlockchainConnector from '../connectors/BlockchainConnector';
 import Superpro from '../staticModels/Superpro';
 import TxManager from '../utils/TxManager';
 import { ValueOfferSlot } from '../types/ValueOfferSlot';
-import { SlotInfo, SlotInfoStructure } from '../types/SlotInfo';
-import { OptionInfo, OptionInfoStructure } from '../types/OptionInfo';
-import { SlotUsage, SlotUsageStructure } from '../types/SlotUsage';
+import { SlotInfo } from '../types/SlotInfo';
+import { OptionInfo } from '../types/OptionInfo';
+import { SlotUsage } from '../types/SlotUsage';
 import { formatBytes32String } from 'ethers/lib/utils';
 import TeeOffers from '../staticModels/TeeOffers';
 import { tryWithInterval } from '../utils/helpers';
@@ -52,12 +50,12 @@ class Offer {
     /**
      * Checks if contract has been initialized, if not - initialize contract
      */
-    private checkInitOffer(transactionOptions: TransactionOptions): Contract<ContractAbi> | void {
+    private checkInitOffer(transactionOptions: TransactionOptions): Contract<typeof abi> {
         if (transactionOptions?.web3) {
-            const [abi] = [appJSON.abi] as const;
-
             return new transactionOptions.web3.eth.Contract(abi, Superpro.address);
         }
+
+        return Offer.contract;
     }
 
     /**
@@ -117,10 +115,9 @@ class Offer {
         transactionOptions ?? this.checkInitOffer(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
-        const newInfoTuple = objectToTuple(newInfo, OfferInfoStructure);
         await TxManager.execute(
             Offer.contract.methods.setValueOfferInfo,
-            [this.id, newInfoTuple],
+            [this.id, newInfo],
             transactionOptions,
         );
         if (this.offerInfo) this.offerInfo = newInfo;
@@ -298,13 +295,10 @@ class Offer {
         checkIfActionAccountInitialized(transactionOptions);
 
         slotInfo = packSlotInfo(slotInfo, await TeeOffers.getDenominator());
-        const slotInfoTuple = objectToTuple(slotInfo, SlotInfoStructure);
-        const optionInfoTuple = objectToTuple(optionInfo, OptionInfoStructure);
-        const slotUsageTuple = objectToTuple(slotUsage, SlotUsageStructure);
         const formattedExternalId = formatBytes32String(externalId);
         await TxManager.execute(
             contract.methods.addValueOfferSlot,
-            [this.id, formattedExternalId, slotInfoTuple, optionInfoTuple, slotUsageTuple],
+            [this.id, formattedExternalId, slotInfo, optionInfo, slotUsage],
             transactionOptions,
         );
     }
@@ -328,12 +322,9 @@ class Offer {
         checkIfActionAccountInitialized(transactionOptions);
 
         newSlotInfo = packSlotInfo(newSlotInfo, await TeeOffers.getDenominator());
-        const newSlotInfoTuple = objectToTuple(newSlotInfo, SlotInfoStructure);
-        const newOptionInfoTuple = objectToTuple(newOptionInfo, OptionInfoStructure);
-        const newSlotUsageTuple = objectToTuple(newUsage, SlotUsageStructure);
         await TxManager.execute(
             contract.methods.updateValueOfferSlot,
-            [this.id, slotId, newSlotInfoTuple, newOptionInfoTuple, newSlotUsageTuple],
+            [this.id, slotId, newSlotInfo, newOptionInfo, newUsage],
             transactionOptions,
         );
     }

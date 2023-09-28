@@ -1,6 +1,6 @@
 import { BaseConnector, Config } from './BaseConnector';
-import Web3, { WebSocketProvider, AbiParameter } from 'web3';
-import appJSON from '../contracts/app.json';
+import Web3, { WebSocketProvider } from 'web3';
+import { abi } from '../contracts/abi';
 
 // TODO: remove this dependencies
 import store from '../store';
@@ -58,10 +58,7 @@ class BlockchainEventsListener extends BaseConnector {
         store.web3Wss = new Web3();
         store.web3Wss.setProvider(provider);
 
-        this.contract = new store.web3Wss!.eth.Contract(
-            <AbiParameter[]>appJSON.abi,
-            config.contractAddress,
-        );
+        this.contract = new store.web3Wss!.eth.Contract(abi, config.contractAddress);
         Superpro.address = config.contractAddress;
         SuperproToken.addressWss = await Superpro.getTokenAddress(this.contract);
 

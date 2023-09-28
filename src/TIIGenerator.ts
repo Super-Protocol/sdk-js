@@ -27,7 +27,7 @@ import { TLBlockSerializerV1, TLBlockUnserializeResultType } from '@super-protoc
 
 class TIIGenerator {
     public static async generateByOffer(
-        offerId: bigint | number,
+        offerId: bigint,
         solutionHashes: Hash[],
         linkageString: string | undefined,
         resource: Resource,
@@ -132,8 +132,8 @@ class TIIGenerator {
 
                 const restrictions = _.intersection(
                     offerInfo.restrictions.offers,
-                    inputOffers.toString(),
-                ).filter((restrictedOfferId) => restrictedOfferId !== offer.id.toString());
+                    inputOffers,
+                ).filter((restrictedOfferId) => restrictedOfferId !== offer.id);
                 if (restrictions.length) {
                     solutionLinkage = offerInfo.linkage;
                 } else {

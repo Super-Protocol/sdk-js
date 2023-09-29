@@ -3,6 +3,9 @@ import { createHash } from 'crypto';
 import { ec } from 'elliptic';
 import { util, asn1 } from 'node-forge';
 import { Certificate, Extension } from '@fidm/x509';
+import { formatter } from 'js-encoding-utils';
+import { CertificateRevocationList } from 'pkijs';
+import { fromBER } from 'asn1js';
 import _ from 'lodash';
 import { TeeSgxParser } from './QuoteParser';
 import { TeeSgxQuoteDataType, TeeSgxReportDataType } from './types';
@@ -79,7 +82,6 @@ export class QuoteValidator {
         const platformCrlResult = await axios.get(
             `${BASE_SGX_URL}/pckcrl?ca=platform&encoding=pem`,
         );
-        // TODO: parse CRL and check is certificates in chain not revoked
         const platformChain = decodeURIComponent(
             platformCrlResult.headers['sgx-pck-crl-issuer-chain'],
         );
@@ -96,6 +98,21 @@ export class QuoteValidator {
         }
         if (!_.isEqual(rootCert.issuer, rootCert.subject)) {
             throw new TeeQuoteValidatorError('Root certificate is not self-signed');
+        }
+
+        const crlDer = formatter.pemToBin(platformCrlResult.data);
+        const crlAsn = fromBER(crlDer as Uint8Array);
+        const crl = new CertificateRevocationList({ schema: crlAsn.result });
+        if (!crl || !crl.revokedCertificates) {
+            throw new TeeQuoteValidatorError('Certificate revocation list not found');
+        }
+        const hasRevoked = crl.revokedCertificates.find((revoked) =>
+            [rootCert.serialNumber, platformCert.serialNumber].includes(
+                Buffer.from(revoked.userCertificate.valueBlock.valueHexView).toString('hex'),
+            ),
+        );
+        if (hasRevoked) {
+            throw new TeeQuoteValidatorError('Certificate in revoked list');
         }
 
         return certPems[1];

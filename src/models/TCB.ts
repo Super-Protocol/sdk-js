@@ -1,6 +1,6 @@
-import { Contract, ContractAbi } from 'web3';
+import { Contract } from 'web3';
 import { abi } from '../contracts/abi';
-import { checkIfActionAccountInitialized, packDevicId, unpackDeviceId } from '../utils';
+import { checkIfActionAccountInitialized, packDevicId, unpackDeviceId } from '../utils/helper';
 import { TransactionOptions } from '../types/Web3';
 import Superpro from '../staticModels/Superpro';
 import TxManager from '../utils/TxManager';
@@ -16,7 +16,7 @@ class TCB {
         this.contract = BlockchainConnector.getInstance().getContract();
     }
 
-    private checkInitTcb(transactionOptions?: TransactionOptions): Contract<ContractAbi> {
+    private checkInitTcb(transactionOptions?: TransactionOptions): Contract<typeof abi> {
         if (transactionOptions?.web3) {
             return new transactionOptions.web3.eth.Contract(abi, Superpro.address);
         }
@@ -29,8 +29,7 @@ class TCB {
         transactionOptions?: TransactionOptions,
     ): Promise<void> {
         await TxManager.execute(
-            this.contract.methods.applyTcbMarks,
-            [marks, this.tcbId],
+            this.contract.methods.applyTcbMarks(marks, this.tcbId),
             transactionOptions,
         );
     }
@@ -44,8 +43,13 @@ class TCB {
 
         const fromattedDeviceId = packDevicId(pb.deviceID);
         await TxManager.execute(
-            this.contract.methods.setTcbData,
-            [this.tcbId, pb.benchmark, pb.properties, fromattedDeviceId, quote],
+            this.contract.methods.setTcbData(
+                this.tcbId,
+                pb.benchmark,
+                pb.properties,
+                fromattedDeviceId,
+                quote,
+            ),
             transactionOptions,
         );
     }
@@ -68,8 +72,7 @@ class TCB {
         await this.setTcbData(pb, quote, transactionOptions);
         await this.applyTcbMarks(marks, transactionOptions);
         await TxManager.execute(
-            this.contract.methods.addTcbToSupply,
-            [this.tcbId],
+            this.contract.methods.addTcbToSupply(this.tcbId),
             transactionOptions,
         );
     }
@@ -82,8 +85,7 @@ class TCB {
         transactionOptions?: TransactionOptions,
     ): Promise<void> {
         await TxManager.execute(
-            this.contract.methods.assignSuspiciousBlocksToCheck,
-            [this.tcbId],
+            this.contract.methods.assignSuspiciousBlocksToCheck(this.tcbId),
             transactionOptions,
         );
     }
@@ -94,8 +96,7 @@ class TCB {
      */
     public async assignLastBlocksToCheck(transactionOptions?: TransactionOptions): Promise<void> {
         await TxManager.execute(
-            this.contract.methods.assignLastBlocksToCheck,
-            [this.tcbId],
+            this.contract.methods.assignLastBlocksToCheck(this.tcbId),
             transactionOptions,
         );
     }
@@ -109,7 +110,7 @@ class TCB {
         const contract = this.checkInitTcb(transactionOptions);
         checkIfActionAccountInitialized();
 
-        await TxManager.execute(contract.methods.claimRewards, [this.tcbId], transactionOptions);
+        await TxManager.execute(contract.methods.claimRewards(this.tcbId), transactionOptions);
     }
 
     /**
@@ -122,7 +123,7 @@ class TCB {
         const contract = this.checkInitTcb(transactionOptions);
         checkIfActionAccountInitialized();
 
-        await TxManager.execute(contract.methods.unlockTcbReward, [this.tcbId], transactionOptions);
+        await TxManager.execute(contract.methods.unlockTcbReward(this.tcbId), transactionOptions);
     }
 
     /**

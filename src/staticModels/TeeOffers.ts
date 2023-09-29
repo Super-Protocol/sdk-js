@@ -1,7 +1,6 @@
 import rootLogger from '../logger';
-import { checkIfActionAccountInitialized } from '../utils';
+import { checkIfActionAccountInitialized, packDevicId } from '../utils/helper';
 import { BytesLike, formatBytes32String, parseBytes32String } from 'ethers/lib/utils';
-import { packDevicId } from '../utils';
 import { BlockInfo, TransactionOptions } from '../types/Web3';
 import { TeeOfferInfo } from '../types/TeeOfferInfo';
 import { OfferType } from '../types/Offer';
@@ -86,8 +85,12 @@ class TeeOffers {
         teeOfferInfo.hardwareInfo = await TeeOffers.packHardwareInfo(teeOfferInfo.hardwareInfo);
         const formattedExternalId = formatBytes32String(externalId);
         await TxManager.execute(
-            contract.methods.createTeeOffer,
-            [providerAuthorityAccount, teeOfferInfo, formattedExternalId, enabled],
+            contract.methods.createTeeOffer(
+                providerAuthorityAccount,
+                teeOfferInfo,
+                formattedExternalId,
+                enabled,
+            ),
             transactionOptions,
         );
     }

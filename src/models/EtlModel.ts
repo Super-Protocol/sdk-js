@@ -35,7 +35,7 @@ export class EtlModel {
      * @returns EltModel in binary format
      */
     public async pack(): Promise<Buffer> {
-        return ModelPackager.pack(this.etlModel);
+        return await ModelPackager.pack(this.etlModel);
     }
 
     public async downloadMetadata(): Promise<Record<string, unknown>> {

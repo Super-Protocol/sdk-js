@@ -1,6 +1,6 @@
 import { formatBytes32String, parseBytes32String } from 'ethers/lib/utils';
 import rootLogger from '../logger';
-import { checkIfActionAccountInitialized, incrementMethodCall } from '../utils';
+import { checkIfActionAccountInitialized, incrementMethodCall } from '../utils/helper';
 import { OrderInfo, OrderStatus } from '../types/Order';
 import { BlockInfo, TransactionOptions } from '../types/Web3';
 import { OrderCreatedEvent } from '../types/Events';
@@ -78,8 +78,7 @@ class Orders {
         }
 
         await TxManager.execute(
-            contract.methods.createOrder,
-            [orderInfoArguments, deposit, suspended],
+            contract.methods.createOrder(orderInfoArguments, deposit, suspended),
             transactionOptions,
         );
     }
@@ -158,8 +157,11 @@ class Orders {
         }
 
         await TxManager.execute(
-            contract.methods.createWorkflow,
-            [parentOrderInfoArgs, workflowDeposit, subOrdersInfoArgs],
+            contract.methods.createWorkflow(
+                parentOrderInfoArgs,
+                workflowDeposit,
+                subOrdersInfoArgs,
+            ),
             transactionOptions,
         );
     }
@@ -176,30 +178,7 @@ class Orders {
         const contract = BlockchainConnector.getInstance().getContract();
         checkIfActionAccountInitialized(transactionOptions);
 
-        await TxManager.execute(
-            contract.methods.cancelWorkflow,
-            [perentOrderId],
-            transactionOptions,
-        );
-    }
-
-    /**
-     * Function for withdraw workflow change
-     * @param parentOrderId - Parent order id
-     * @returns {Promise<void>} - Does not return id of created order!
-     */
-    public static async withdrawWorkflowChange(
-        parentOrderId: bigint,
-        transactionOptions?: TransactionOptions,
-    ): Promise<void> {
-        const contract = BlockchainConnector.getInstance().getContract();
-        checkIfActionAccountInitialized(transactionOptions);
-
-        await TxManager.execute(
-            contract.methods.withdrawWorkflowChange,
-            [parentOrderId],
-            transactionOptions,
-        );
+        await TxManager.execute(contract.methods.cancelWorkflow(perentOrderId), transactionOptions);
     }
 
     /**
@@ -216,11 +195,7 @@ class Orders {
         const contract = BlockchainConnector.getInstance().getContract();
         checkIfActionAccountInitialized(transactionOptions);
 
-        await TxManager.execute(
-            contract.methods.refillOrder,
-            [orderId, amount],
-            transactionOptions,
-        );
+        await TxManager.execute(contract.methods.refillOrder(orderId, amount), transactionOptions);
     }
 
     public static async unlockProfitByOrderList(
@@ -243,8 +218,7 @@ class Orders {
 
         if (executedCount === orderIds.length) {
             await TxManager.execute(
-                contract.methods.unlockProfitByList,
-                [orderIds],
+                contract.methods.unlockProfitByList(orderIds),
                 transactionOptions,
             );
         } else {

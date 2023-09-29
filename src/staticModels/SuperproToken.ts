@@ -2,7 +2,7 @@ import { Contract, ContractAbi, Transaction } from 'web3';
 import rootLogger from '../logger';
 import { abi } from '../contracts/abi';
 import store from '../store';
-import { checkIfActionAccountInitialized } from '../utils';
+import { checkIfActionAccountInitialized } from '../utils/helper';
 import { TransactionOptions, BlockInfo } from '../types/Web3';
 import { EventLog } from 'web3-eth-contract';
 import TxManager from '../utils/TxManager';
@@ -35,7 +35,7 @@ class SuperproToken {
     /**
      * Checks if contract has been initialized, if not - initialize contract
      */
-    private static checkInit(transactionOptions?: TransactionOptions): Contract<ContractAbi> {
+    private static checkInit(transactionOptions?: TransactionOptions): Contract<typeof abi> {
         if (transactionOptions?.web3) {
             return new transactionOptions.web3.eth.Contract(abi, SuperproToken.addressHttps);
         }
@@ -88,8 +88,7 @@ class SuperproToken {
         }
 
         const receipt = await TxManager.execute(
-            contract.methods.transfer,
-            [to, amount],
+            contract.methods.transfer(to, amount),
             transactionOptions,
             SuperproToken.addressHttps,
         );
@@ -117,8 +116,7 @@ class SuperproToken {
         }
 
         await TxManager.execute(
-            contract.methods.approve,
-            [address, amount],
+            contract.methods.approve(address, amount),
             transactionOptions,
             SuperproToken.addressHttps,
         );

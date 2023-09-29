@@ -1,5 +1,5 @@
 import { formatBytes32String, parseBytes32String } from "ethers/lib/utils";
-import { tupleToObject } from "../src/utils";
+import { tupleToObject } from "../src/utils/helper";
 
 describe("utils", () => {
     describe("tupleToObject", () => {

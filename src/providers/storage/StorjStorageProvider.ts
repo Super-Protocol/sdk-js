@@ -2,7 +2,7 @@ import { AccessResultStruct as Access } from '@super-protocol/uplink-nodejs/acce
 import { ProjectResultStruct as Project } from '@super-protocol/uplink-nodejs/project';
 import { Buffer } from 'buffer';
 import IStorageProvider, { DownloadConfig } from './IStorageProvider';
-import { isNodeJS } from '../../utils';
+import { isNodeJS } from '../../utils/helper';
 import StorageObject from '../../types/storage/StorageObject';
 import stream from 'stream';
 import logger from '../../logger';

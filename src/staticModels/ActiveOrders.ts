@@ -1,7 +1,7 @@
 import Superpro from './Superpro';
 import { BigNumber } from 'ethers';
 import BlockchainConnector from '../connectors/BlockchainConnector';
-import { incrementMethodCall } from '../utils';
+import { incrementMethodCall } from '../utils/helper';
 
 class ActiveOrders {
     public static get address(): string {

@@ -1,5 +1,5 @@
 import rootLogger from '../logger';
-import { checkIfActionAccountInitialized } from '../utils';
+import { checkIfActionAccountInitialized } from '../utils/helper';
 import { OfferInfo, OfferType } from '../types/Offer';
 import { BytesLike, formatBytes32String, parseBytes32String } from 'ethers/lib/utils';
 import { BlockInfo, TransactionOptions } from '../types/Web3';
@@ -67,8 +67,7 @@ class Offers {
 
         const formattedExternalId = formatBytes32String(externalId);
         await TxManager.execute(
-            contract.methods.createValueOffer,
-            [providerAuthorityAccount, offerInfo, formattedExternalId, enabled],
+            contract.methods.createValueOffer(providerAuthorityAccount, offerInfo, formattedExternalId, enabled),
             transactionOptions,
         );
     }

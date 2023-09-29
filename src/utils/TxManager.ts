@@ -7,7 +7,7 @@ import {
     checkForUsingExternalTxManager,
     checkIfActionAccountInitialized,
     createTransactionOptions,
-} from '../utils';
+} from './helper';
 import Superpro from '../staticModels/Superpro';
 import { defaultGasLimit } from '../constants';
 import lodash from 'lodash';
@@ -61,12 +61,10 @@ class TxManager {
     }
 
     public static async execute(
-        method: (...args: ArgumentsType) => any,
-        args: ArgumentsType,
+        transaction: any, // NonPayableMethodObject
         transactionOptions?: TransactionOptions,
         to: string = Superpro.address,
     ): Promise<TransactionReceipt> {
-        const transaction = method(...args);
         const txData: Record<string, any> = {
             to,
             data: transaction.encodeABI(),

@@ -4,7 +4,7 @@ import {
     incrementMethodCall,
     unpackSlotInfo,
     packSlotInfo,
-} from '../utils';
+} from '../utils/helper';
 import { TeeOfferInfo } from '../types/TeeOfferInfo';
 import { TransactionOptions } from '../types/Web3';
 import { OfferType } from '../types/Offer';
@@ -184,8 +184,7 @@ class TeeOffer {
 
         const formattedExternalId = formatBytes32String(externalId);
         await TxManager.execute(
-            contract.methods.addOption,
-            [this.id, formattedExternalId, info, usage],
+            contract.methods.addOption(this.id, formattedExternalId, info, usage),
             transactionOptions,
         );
     }
@@ -208,8 +207,7 @@ class TeeOffer {
         checkIfActionAccountInitialized(transactionOptions);
 
         await TxManager.execute(
-            contract.methods.updateOption,
-            [this.id, optionId, newInfo, newUsage],
+            contract.methods.updateOption(this.id, optionId, newInfo, newUsage),
             transactionOptions,
         );
     }
@@ -228,8 +226,7 @@ class TeeOffer {
         checkIfActionAccountInitialized(transactionOptions);
 
         await TxManager.execute(
-            contract.methods.deleteOption,
-            [this.id, optionId],
+            contract.methods.deleteOption(this.id, optionId),
             transactionOptions,
         );
     }
@@ -239,7 +236,7 @@ class TeeOffer {
         const contract = BlockchainConnector.getInstance().getContract();
         checkIfActionAccountInitialized();
 
-        await TxManager.execute(contract.methods.initializeTcb, [this.id], transactionOptions);
+        await TxManager.execute(contract.methods.initializeTcb(this.id), transactionOptions);
     }
 
     @incrementMethodCall()
@@ -356,8 +353,7 @@ class TeeOffer {
         info = packSlotInfo(info, await TeeOffers.getDenominator());
         const formattedExternalId = formatBytes32String(externalId);
         await TxManager.execute(
-            contract.methods.addTeeOfferSlot,
-            [this.id, formattedExternalId, info, usage],
+            contract.methods.addTeeOfferSlot(this.id, formattedExternalId, info, usage),
             transactionOptions,
         );
     }
@@ -381,8 +377,7 @@ class TeeOffer {
 
         newInfo = packSlotInfo(newInfo, await TeeOffers.getDenominator());
         await TxManager.execute(
-            contract.methods.updateTeeOfferSlot,
-            [this.id, slotId, newInfo, newUsage],
+            contract.methods.updateTeeOfferSlot(this.id, slotId, newInfo, newUsage),
             transactionOptions,
         );
     }
@@ -401,8 +396,7 @@ class TeeOffer {
         checkIfActionAccountInitialized(transactionOptions);
 
         await TxManager.execute(
-            contract.methods.deleteTeeOfferSlot,
-            [this.id, slotId],
+            contract.methods.deleteTeeOfferSlot(this.id, slotId),
             transactionOptions,
         );
     }
@@ -503,8 +497,7 @@ class TeeOffer {
         checkIfActionAccountInitialized(transactionOptions);
 
         await TxManager.execute(
-            TeeOffer.contract.methods.setTeeOfferTlb,
-            [this.id, tlb],
+            TeeOffer.contract.methods.setTeeOfferTlb(this.id, tlb),
             transactionOptions,
         );
         if (this.offerInfo) this.offerInfo.tlb = tlb;
@@ -520,8 +513,7 @@ class TeeOffer {
         checkIfActionAccountInitialized(transactionOptions);
 
         await TxManager.execute(
-            TeeOffer.contract.methods.setOfferName,
-            [this.id, name],
+            TeeOffer.contract.methods.setOfferName(this.id, name),
             transactionOptions,
         );
         if (this.offerInfo) this.offerInfo.name = name;
@@ -540,8 +532,7 @@ class TeeOffer {
         checkIfActionAccountInitialized(transactionOptions);
 
         await TxManager.execute(
-            TeeOffer.contract.methods.setTeeOfferInfo,
-            [this.id, newInfo],
+            TeeOffer.contract.methods.setTeeOfferInfo(this.id, newInfo),
             transactionOptions,
         );
         if (this.offerInfo) this.offerInfo = newInfo;
@@ -562,8 +553,7 @@ class TeeOffer {
         newHardwareInfo = await TeeOffers.packHardwareInfo(newHardwareInfo);
 
         await TxManager.execute(
-            TeeOffer.contract.methods.setTeeOfferHardwareInfo,
-            [this.id, newHardwareInfo],
+            TeeOffer.contract.methods.setTeeOfferHardwareInfo(this.id, newHardwareInfo),
             transactionOptions,
         );
     }
@@ -581,8 +571,7 @@ class TeeOffer {
         checkIfActionAccountInitialized(transactionOptions);
 
         await TxManager.execute(
-            TeeOffer.contract.methods.setOfferDescription,
-            [this.id, description],
+            TeeOffer.contract.methods.setOfferDescription(this.id, description),
             transactionOptions,
         );
         if (this.offerInfo) this.offerInfo.description = description;
@@ -601,8 +590,7 @@ class TeeOffer {
         checkIfActionAccountInitialized(transactionOptions);
 
         await TxManager.execute(
-            TeeOffer.contract.methods.setOfferPublicKey,
-            [this.id, argsPublicKey],
+            TeeOffer.contract.methods.setOfferPublicKey(this.id, argsPublicKey),
             transactionOptions,
         );
         if (this.offerInfo) {
@@ -619,8 +607,7 @@ class TeeOffer {
         checkIfActionAccountInitialized(transactionOptions);
 
         await TxManager.execute(
-            TeeOffer.contract.methods.disableOffer,
-            [this.id],
+            TeeOffer.contract.methods.disableOffer(this.id),
             transactionOptions,
         );
     }
@@ -634,8 +621,7 @@ class TeeOffer {
         checkIfActionAccountInitialized(transactionOptions);
 
         await TxManager.execute(
-            TeeOffer.contract.methods.enableOffer,
-            [this.id],
+            TeeOffer.contract.methods.enableOffer(this.id),
             transactionOptions,
         );
     }

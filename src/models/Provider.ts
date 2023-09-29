@@ -1,6 +1,6 @@
 import { Contract, AbiFragment } from 'web3';
 import { abi } from '../contracts/abi';
-import { checkIfActionAccountInitialized } from '../utils';
+import { checkIfActionAccountInitialized } from '../utils/helper';
 import { ProviderInfo } from '../types/Provider';
 import { Origins } from '../types/Origins';
 import Superpro from '../staticModels/Superpro';
@@ -43,8 +43,7 @@ class Provider {
         checkIfActionAccountInitialized(transactionOptions);
 
         await TxManager.execute(
-            Provider.contract.methods.modifyProvider,
-            [providerInfo],
+            Provider.contract.methods.modifyProvider(providerInfo),
             transactionOptions,
         );
     }

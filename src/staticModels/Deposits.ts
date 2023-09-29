@@ -1,5 +1,5 @@
 import rootLogger from '../logger';
-import { checkIfActionAccountInitialized, incrementMethodCall } from '../utils';
+import { checkIfActionAccountInitialized, incrementMethodCall } from '../utils/helper';
 import { BlockInfo, TransactionOptions } from '../types/Web3';
 import Superpro from './Superpro';
 import TxManager from '../utils/TxManager';
@@ -49,7 +49,7 @@ class Deposits {
         const contract = BlockchainConnector.getInstance().getContract();
         checkIfActionAccountInitialized(transactionOptions);
 
-        await TxManager.execute(contract.methods.replenish, [amount], transactionOptions);
+        await TxManager.execute(contract.methods.replenish(amount), transactionOptions);
     }
 
     /**
@@ -69,8 +69,7 @@ class Deposits {
         checkIfActionAccountInitialized(transactionOptions);
 
         await TxManager.execute(
-            contract.methods.replenishFor,
-            [beneficiary, amount],
+            contract.methods.replenishFor(beneficiary, amount),
             transactionOptions,
         );
     }
@@ -89,7 +88,7 @@ class Deposits {
         const contract = BlockchainConnector.getInstance().getContract();
         checkIfActionAccountInitialized(transactionOptions);
 
-        await TxManager.execute(contract.methods.withdraw, [amount], transactionOptions);
+        await TxManager.execute(contract.methods.withdraw(amount), transactionOptions);
     }
 
     /**

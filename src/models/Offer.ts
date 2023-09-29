@@ -1,4 +1,4 @@
-import { Contract, ContractAbi } from 'web3';
+import { Contract } from 'web3';
 import { abi } from '../contracts/abi';
 import rootLogger from '../logger';
 import {
@@ -6,7 +6,7 @@ import {
     incrementMethodCall,
     unpackSlotInfo,
     packSlotInfo,
-} from '../utils';
+} from '../utils/helper';
 import { OfferInfo, OfferType } from '../types/Offer';
 import { TransactionOptions } from '../types/Web3';
 import { Origins } from '../types/Origins';
@@ -76,8 +76,7 @@ class Offer {
         checkIfActionAccountInitialized(transactionOptions);
 
         await TxManager.execute(
-            Offer.contract.methods.setOfferName,
-            [this.id, name],
+            Offer.contract.methods.setOfferName(this.id, name),
             transactionOptions,
         );
         if (this.offerInfo) this.offerInfo.name = name;
@@ -96,8 +95,7 @@ class Offer {
         checkIfActionAccountInitialized(transactionOptions);
 
         await TxManager.execute(
-            Offer.contract.methods.setOfferDescription,
-            [this.id, description],
+            Offer.contract.methods.setOfferDescription(this.id, description),
             transactionOptions,
         );
         if (this.offerInfo) this.offerInfo.description = description;
@@ -116,8 +114,7 @@ class Offer {
         checkIfActionAccountInitialized(transactionOptions);
 
         await TxManager.execute(
-            Offer.contract.methods.setValueOfferInfo,
-            [this.id, newInfo],
+            Offer.contract.methods.setValueOfferInfo(this.id, newInfo),
             transactionOptions,
         );
         if (this.offerInfo) this.offerInfo = newInfo;
@@ -296,11 +293,14 @@ class Offer {
 
         slotInfo = packSlotInfo(slotInfo, await TeeOffers.getDenominator());
         const formattedExternalId = formatBytes32String(externalId);
-        await TxManager.execute(
-            contract.methods.addValueOfferSlot,
-            [this.id, formattedExternalId, slotInfo, optionInfo, slotUsage],
-            transactionOptions,
+        const transactionCall = contract.methods.addValueOfferSlot(
+            this.id,
+            formattedExternalId,
+            slotInfo,
+            optionInfo,
+            slotUsage,
         );
+        await TxManager.execute(transactionCall, transactionOptions);
     }
 
     /**
@@ -323,8 +323,13 @@ class Offer {
 
         newSlotInfo = packSlotInfo(newSlotInfo, await TeeOffers.getDenominator());
         await TxManager.execute(
-            contract.methods.updateValueOfferSlot,
-            [this.id, slotId, newSlotInfo, newOptionInfo, newUsage],
+            contract.methods.updateValueOfferSlot(
+                this.id,
+                slotId,
+                newSlotInfo,
+                newOptionInfo,
+                newUsage,
+            ),
             transactionOptions,
         );
     }
@@ -343,8 +348,7 @@ class Offer {
         checkIfActionAccountInitialized(transactionOptions);
 
         await TxManager.execute(
-            contract.methods.deleteValueOfferSlot,
-            [this.id, slotId],
+            contract.methods.deleteValueOfferSlot(this.id, slotId),
             transactionOptions,
         );
     }
@@ -357,7 +361,7 @@ class Offer {
         transactionOptions ?? this.checkInitOffer(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
-        await TxManager.execute(Offer.contract.methods.disableOffer, [this.id], transactionOptions);
+        await TxManager.execute(Offer.contract.methods.disableOffer(this.id), transactionOptions);
     }
 
     /**
@@ -368,7 +372,7 @@ class Offer {
         transactionOptions ?? this.checkInitOffer(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
-        await TxManager.execute(Offer.contract.methods.enableOffer, [this.id], transactionOptions);
+        await TxManager.execute(Offer.contract.methods.enableOffer(this.id), transactionOptions);
     }
 
     /**

@@ -12,7 +12,7 @@ import rootLogger from '../logger';
 import { TransactionOptions } from '../types/Web3';
 import { abi } from '../contracts/abi';
 import store from '../store';
-import { checkIfActionAccountInitialized, incrementMethodCall, unpackSlotInfo } from '../utils';
+import { checkIfActionAccountInitialized, incrementMethodCall, unpackSlotInfo } from '../utils/helper';
 import { Origins } from '../types/Origins';
 import { formatBytes32String } from 'ethers/lib/utils';
 import BlockchainConnector from '../connectors/BlockchainConnector';
@@ -22,6 +22,7 @@ import BlockchainEventsListener from '../connectors/BlockchainEventsListener';
 import TeeOffers from '../staticModels/TeeOffers';
 import { tryWithInterval } from '../utils/helpers';
 import { BLOCKCHAIN_CALL_RETRY_INTERVAL, BLOCKCHAIN_CALL_RETRY_ATTEMPTS } from '../constants';
+import { NonPayableMethodObject } from 'web3-eth-contract';
 
 class Order {
     private static contract: Contract<typeof abi>;
@@ -258,26 +259,7 @@ class Order {
         checkIfActionAccountInitialized(transactionOptions);
 
         await TxManager.execute(
-            Order.contract.methods.setAwaitingPayment,
-            [this.id, value],
-            transactionOptions,
-        );
-    }
-
-    /**
-     * Updates order price
-     */
-    @incrementMethodCall()
-    public async updateOrderPrice(
-        price: string,
-        transactionOptions?: TransactionOptions,
-    ): Promise<void> {
-        transactionOptions ?? this.checkInitOrder(transactionOptions!);
-        checkIfActionAccountInitialized(transactionOptions);
-
-        await TxManager.execute(
-            Order.contract.methods.updateOrderPrice,
-            [this.id, price],
+            Order.contract.methods.setAwaitingPayment(this.id, value),
             transactionOptions,
         );
     }
@@ -294,8 +276,7 @@ class Order {
         checkIfActionAccountInitialized(transactionOptions);
 
         await TxManager.execute(
-            Order.contract.methods.setOptionsDepositSpent,
-            [this.id, value],
+            Order.contract.methods.setOptionsDepositSpent(this.id, value),
             transactionOptions,
         );
     }
@@ -313,8 +294,7 @@ class Order {
 
         if (status === OrderStatus.Processing) {
             await TxManager.execute(
-                Order.contract.methods.processOrder,
-                [this.id],
+                Order.contract.methods.processOrder(this.id),
                 transactionOptions,
             );
         }
@@ -330,7 +310,7 @@ class Order {
         transactionOptions ?? this.checkInitOrder(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
-        await TxManager.execute(Order.contract.methods.cancelOrder, [this.id], transactionOptions);
+        await TxManager.execute(Order.contract.methods.cancelOrder(this.id), transactionOptions);
     }
 
     /**
@@ -341,7 +321,7 @@ class Order {
         transactionOptions ?? this.checkInitOrder(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
-        await TxManager.execute(Order.contract.methods.startOrder, [this.id], transactionOptions);
+        await TxManager.execute(Order.contract.methods.startOrder(this.id), transactionOptions);
     }
 
     /**
@@ -356,8 +336,7 @@ class Order {
         checkIfActionAccountInitialized(transactionOptions);
 
         await TxManager.execute(
-            Order.contract.methods.updateOrderResult,
-            [this.id, encryptedResult],
+            Order.contract.methods.updateOrderResult(this.id, encryptedResult),
             transactionOptions,
         );
     }
@@ -375,8 +354,7 @@ class Order {
         checkIfActionAccountInitialized(transactionOptions);
 
         await TxManager.execute(
-            Order.contract.methods.completeOrder,
-            [this.id, status, encryptedResult],
+            Order.contract.methods.completeOrder(this.id, status, encryptedResult),
             transactionOptions,
         );
     }
@@ -389,7 +367,7 @@ class Order {
         transactionOptions ?? this.checkInitOrder(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
-        await TxManager.execute(Order.contract.methods.unlockProfit, [this.id], transactionOptions);
+        await TxManager.execute(Order.contract.methods.unlockProfit(this.id), transactionOptions);
     }
 
     /**
@@ -428,8 +406,7 @@ class Order {
         }
 
         await TxManager.execute(
-            Order.contract.methods.createSubOrder,
-            [this.id, preparedInfo, params],
+            Order.contract.methods.createSubOrder(this.id, preparedInfo, params),
             transactionOptions,
         );
     }

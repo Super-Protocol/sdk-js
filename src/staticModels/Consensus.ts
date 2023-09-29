@@ -1,6 +1,6 @@
 import rootLogger from '../logger';
 import TCB from '../models/TCB';
-import { checkIfActionAccountInitialized } from '../utils';
+import { checkIfActionAccountInitialized } from '../utils/helper';
 import { EpochInfo } from '../types/Consensus';
 import { TransactionOptions, BlockInfo } from '../types/Web3';
 import Superpro from './Superpro';
@@ -80,8 +80,7 @@ class Consensus {
 
         if (executedCount === tcbIds.length) {
             await TxManager.execute(
-                contract.methods.unlockTcbRewardByList,
-                [tcbIds],
+                contract.methods.unlockTcbRewardByList(tcbIds),
                 transactionOptions,
             );
         } else {

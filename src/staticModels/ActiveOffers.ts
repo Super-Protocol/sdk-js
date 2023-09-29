@@ -1,6 +1,4 @@
-import { TransactionOptions } from '../types/Web3';
 import Superpro from './Superpro';
-import TxManager from '../utils/TxManager';
 import BlockchainConnector from '../connectors/BlockchainConnector';
 
 class ActiveOffers {
@@ -39,24 +37,6 @@ class ActiveOffers {
         end = end ?? BigInt(await contract.methods.getListOfActiveOffersSize().call()) ?? BigInt(0);
 
         return await contract.methods.getListOfActiveOffersRange(begin, end).call();
-    }
-
-    /**
-     * Function updates information about the list of current offers
-     * @param maxProcessedEvents - maximum number of events to process (affects gas cost of operation)
-     * @param transactionOptions - object what contains alternative action account or gas limit (optional)
-     */
-    public static async updateListOfActiveOffers(
-        maxProcessedEvents: number,
-        transactionOptions?: TransactionOptions,
-    ): Promise<void> {
-        const contract = BlockchainConnector.getInstance().getContract();
-
-        await TxManager.execute(
-            contract.methods.updateListOfActiveOffers,
-            [maxProcessedEvents],
-            transactionOptions,
-        );
     }
 }
 

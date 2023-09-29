@@ -1,14 +1,14 @@
-import store from './store';
-import { TransactionOptions } from './types/Web3';
+import store from '../store';
+import { TransactionOptions } from '../types/Web3';
 import Web3 from 'web3';
-import { Monitoring } from './utils/Monitoring';
-import { SlotInfo } from './types/SlotInfo';
+import { Monitoring } from './Monitoring';
+import { SlotInfo } from '../types/SlotInfo';
 
 /**
  * Function for checking if provider action account initialized (required for set methods)
  * Used in all set methods
  */
-export const checkIfActionAccountInitialized = (transactionOptions?: TransactionOptions) => {
+export const checkIfActionAccountInitialized = (transactionOptions?: TransactionOptions): void => {
     if (!store.actionAccount && !transactionOptions?.web3)
         throw new Error(
             "Provider action account is not initialized, needs to run 'BlockchainConnector.getInstance().initializeActionAccount(SECRET_KEY)' first",
@@ -62,29 +62,19 @@ export const createTransactionOptions = async (
     return options;
 };
 
-export const isNodeJS = () => {
-    // @ts-ignore
+export const isNodeJS = (): boolean => {
     return typeof window === 'undefined';
 };
 
-type FormatFunctions = {
-    $obj?: (value: unknown) => unknown;
-    $tuple?: (value: unknown) => unknown;
-};
-
-type FormatItem = Format | Object | ((value: unknown) => unknown) | null | FormatFunctions;
-
-type Format =
-    | FormatItem[]
-    | {
-          [key: string]: FormatItem;
-      };
-
 export function incrementMethodCall() {
-    return function (_target: any, propertyName: string, propertyDescriptor: PropertyDescriptor) {
+    return function (
+        _target: any,
+        propertyName: string,
+        propertyDescriptor: PropertyDescriptor,
+    ): PropertyDescriptor {
         const monitoring = Monitoring.getInstance();
         const method = propertyDescriptor.value;
-        propertyDescriptor.value = async function (...args: any[]): Promise<void> {
+        propertyDescriptor.value = function (...args: any[]): Promise<void> {
             monitoring.incrementCall(propertyName);
 
             return method.apply(this, args);
@@ -93,9 +83,9 @@ export function incrementMethodCall() {
     };
 }
 
-const hexRegex = /^[0-9a-fA-F]+$/;
-
 export function packDevicId(hexedDeviceId: string): string {
+    const hexRegex = /^[0-9a-fA-F]+$/;
+
     if (hexedDeviceId.length !== 64) {
         throw new Error('DeviceId must be equal 64 hex symbols');
     }

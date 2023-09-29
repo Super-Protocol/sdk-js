@@ -1,5 +1,5 @@
 import rootLogger from '../logger';
-import { checkIfActionAccountInitialized } from '../utils';
+import { checkIfActionAccountInitialized } from '../utils/helper';
 import { ProviderInfo } from '../types/Provider';
 import { BigNumber } from 'ethers';
 import { BlockInfo, TransactionOptions } from '../types/Web3';
@@ -54,8 +54,7 @@ class ProviderRegistry {
         checkIfActionAccountInitialized(transactionOptions);
 
         await TxManager.execute(
-            contract.methods.refillProviderSecurityDepoFor,
-            [amount, recipient],
+            contract.methods.refillProviderSecurityDepoFor(recipient, amount),
             transactionOptions,
         );
     }
@@ -73,8 +72,7 @@ class ProviderRegistry {
         checkIfActionAccountInitialized(transactionOptions);
 
         await TxManager.execute(
-            contract.methods.registerProvider,
-            [providerInfo],
+            contract.methods.registerProvider(providerInfo),
             transactionOptions,
         );
     }
@@ -93,8 +91,7 @@ class ProviderRegistry {
         checkIfActionAccountInitialized(transactionOptions);
 
         await TxManager.execute(
-            contract.methods.refillProviderSecurityDepo,
-            [amount],
+            contract.methods.refillProviderSecurityDepo(amount),
             transactionOptions,
         );
     }
@@ -113,8 +110,7 @@ class ProviderRegistry {
         checkIfActionAccountInitialized(transactionOptions);
 
         await TxManager.execute(
-            contract.methods.returnProviderSecurityDepo,
-            [amount],
+            contract.methods.returnProviderSecurityDepo(amount),
             transactionOptions,
         );
     }

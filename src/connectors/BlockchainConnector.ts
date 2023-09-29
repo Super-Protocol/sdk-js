@@ -6,7 +6,7 @@ import {
     defaultBlockchainUrl,
     defaultGasPrice,
 } from '../constants';
-import { checkIfActionAccountInitialized, incrementMethodCall } from '../utils';
+import { checkIfActionAccountInitialized, incrementMethodCall } from '../utils/helper';
 import { Transaction, TransactionOptions, EventData, BlockInfo } from '../types/Web3';
 import BlockchainTransaction from '../types/blockchainConnector/StorageAccess';
 import TxManager from '../utils/TxManager';

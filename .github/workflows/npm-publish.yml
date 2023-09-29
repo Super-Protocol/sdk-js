@@ -28,11 +28,11 @@ jobs:
           node-version: 16
           scope: super-protocol
           always-auth: true
-      - run: yarn --frozen-lock --ignore-scripts
+      - run: npm install --no-save --no-audit --ignore-scripts
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - run: yarn run prepare --if-present
-      - run: npm test
+      - run: npm run prepare
+      - run: npm run test
 
   publish:
     needs: test
@@ -48,10 +48,10 @@ jobs:
           scope: super-protocol
           registry-url: 'https://registry.npmjs.org'
       - run: echo "release_type=${{github.event.inputs.release_type}}"
-      - run: yarn --frozen-lock --ignore-scripts
+      - run: npm install --no-save --no-audit --ignore-scripts
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - run: yarn run prepare --if-present
+      - run: npm run prepare
       - run: npm publish --tag beta --access public
         if: |
           contains(github.ref_name, 'beta') ||

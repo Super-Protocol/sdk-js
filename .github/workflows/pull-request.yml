@@ -20,8 +20,8 @@ jobs:
                 node-version: 16
                 scope: super-protocol
                 always-auth: true
-            - run: yarn --frozen-lock --ignore-scripts
+            - run: npm install --no-save --no-audit --ignore-scripts
               env:
                 NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-            - run: yarn run prepare --if-present
-            - run: npm test
+            - run: npm run prepare
+            - run: npm run test

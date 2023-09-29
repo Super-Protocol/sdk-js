@@ -1,14 +1,11 @@
 import { formatBytes32String, parseBytes32String } from 'ethers/lib/utils';
 import rootLogger from '../logger';
 import { checkIfActionAccountInitialized, incrementMethodCall } from '../utils/helper';
-import { OrderInfo, OrderStatus } from '../types/Order';
-import { BlockInfo, TransactionOptions } from '../types/Web3';
-import { OrderCreatedEvent } from '../types/Events';
+import { OrderInfo, OrderStatus, BlockInfo, TransactionOptions, OrderCreatedEvent } from '../types';
 import Superpro from './Superpro';
 import TxManager from '../utils/TxManager';
-import BlockchainConnector from '../connectors/BlockchainConnector';
-import BlockchainEventsListener from '../connectors/BlockchainEventsListener';
-import Order from '../models/Order';
+import { BlockchainConnector, BlockchainEventsListener } from '../connectors';
+import { Order } from '../models';
 import { EventLog } from 'web3-eth-contract';
 
 class Orders {
@@ -71,8 +68,7 @@ class Orders {
 
         if (checkTxBeforeSend) {
             await TxManager.dryRun(
-                contract.methods.createOrder,
-                [orderInfoArguments, deposit, suspended],
+                contract.methods.createOrder(orderInfoArguments, deposit, suspended),
                 transactionOptions,
             );
         }
@@ -150,8 +146,7 @@ class Orders {
 
         if (checkTxBeforeSend) {
             await TxManager.dryRun(
-                contract.methods.createWorkflow,
-                [parentOrderInfoArgs, workflowDeposit, subOrdersInfoArgs],
+                contract.methods.createWorkflow(parentOrderInfoArgs, workflowDeposit, subOrdersInfoArgs),
                 transactionOptions,
             );
         }
@@ -208,8 +203,7 @@ class Orders {
         let executedCount;
         try {
             executedCount = +(await TxManager.dryRun(
-                contract.methods.unlockProfitByList,
-                [orderIds],
+                contract.methods.unlockProfitByList(orderIds),
                 transactionOptions,
             ));
         } catch (e) {

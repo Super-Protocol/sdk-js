@@ -49,7 +49,7 @@ class NonceTracker {
         this.countOfPendingTransactions--;
 
         if (this.countOfPendingTransactions === 0) {
-            void this.sendHoldTransactions(); // FIXME: void?
+            void this.sendHoldTransactions();
         }
     }
 

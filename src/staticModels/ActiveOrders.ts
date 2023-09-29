@@ -1,6 +1,5 @@
 import Superpro from './Superpro';
-import { BigNumber } from 'ethers';
-import BlockchainConnector from '../connectors/BlockchainConnector';
+import { BlockchainConnector } from '../connectors';
 import { incrementMethodCall } from '../utils/helper';
 
 class ActiveOrders {
@@ -10,10 +9,10 @@ class ActiveOrders {
 
     /**
      * Function returns amount of active orders
-     * @returns {Promise<BigNumber>}
+     * @returns {Promise<bigint>}
      */
     @incrementMethodCall()
-    public static async getListOfActiveOrdersSize(): Promise<BigNumber> {
+    public static async getListOfActiveOrdersSize(): Promise<bigint> {
         const contract = BlockchainConnector.getInstance().getContract();
 
         return await contract.methods.getListOfActiveOrdersSize().call();

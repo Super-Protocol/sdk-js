@@ -5,24 +5,26 @@ import {
     OrderStatus,
     SubOrderParams,
     OrderUsage,
-} from '../types/Order';
+    Origins,
+    TransactionOptions,
+} from '../types';
 import { Contract } from 'web3';
 import { EventLog } from 'web3-eth-contract';
 import rootLogger from '../logger';
-import { TransactionOptions } from '../types/Web3';
 import { abi } from '../contracts/abi';
 import store from '../store';
-import { checkIfActionAccountInitialized, incrementMethodCall, unpackSlotInfo } from '../utils/helper';
-import { Origins } from '../types/Origins';
+import {
+    checkIfActionAccountInitialized,
+    incrementMethodCall,
+    unpackSlotInfo,
+} from '../utils/helper';
 import { formatBytes32String } from 'ethers/lib/utils';
-import BlockchainConnector from '../connectors/BlockchainConnector';
+import { BlockchainConnector, BlockchainEventsListener } from '../connectors';
 import Superpro from '../staticModels/Superpro';
-import TxManager from '../utils/TxManager';
-import BlockchainEventsListener from '../connectors/BlockchainEventsListener';
 import TeeOffers from '../staticModels/TeeOffers';
+import TxManager from '../utils/TxManager';
 import { tryWithInterval } from '../utils/helpers';
 import { BLOCKCHAIN_CALL_RETRY_INTERVAL, BLOCKCHAIN_CALL_RETRY_ATTEMPTS } from '../constants';
-import { NonPayableMethodObject } from 'web3-eth-contract';
 
 class Order {
     private static contract: Contract<typeof abi>;
@@ -399,8 +401,7 @@ class Order {
 
         if (checkTxBeforeSend) {
             await TxManager.dryRun(
-                Order.contract.methods.createSubOrder,
-                [this.id, preparedInfo, params],
+                Order.contract.methods.createSubOrder(this.id, preparedInfo, params),
                 transactionOptions,
             );
         }

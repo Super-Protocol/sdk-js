@@ -1,11 +1,9 @@
 import rootLogger from '../logger';
-import { checkIfActionAccountInitialized, incrementMethodCall } from '../utils/helper';
-import { BlockInfo, TransactionOptions } from '../types/Web3';
 import Superpro from './Superpro';
 import TxManager from '../utils/TxManager';
-import BlockchainConnector from '../connectors/BlockchainConnector';
-import BlockchainEventsListener from '../connectors/BlockchainEventsListener';
-import { DepositInfo } from '../types/DepositInfo';
+import { checkIfActionAccountInitialized, incrementMethodCall } from '../utils/helper';
+import { BlockchainConnector, BlockchainEventsListener } from '../connectors';
+import { DepositInfo, BlockInfo, TransactionOptions } from '../types';
 import { EventLog } from 'web3-eth-contract';
 
 class Deposits {

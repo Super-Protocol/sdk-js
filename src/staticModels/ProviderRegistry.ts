@@ -1,12 +1,9 @@
 import rootLogger from '../logger';
 import { checkIfActionAccountInitialized } from '../utils/helper';
-import { ProviderInfo } from '../types/Provider';
-import { BigNumber } from 'ethers';
-import { BlockInfo, TransactionOptions } from '../types/Web3';
+import { ProviderInfo, BlockInfo, TransactionOptions } from '../types';
 import { EventLog } from 'web3-eth-contract';
-import BlockchainConnector from '../connectors/BlockchainConnector';
+import { BlockchainConnector, BlockchainEventsListener } from '../connectors';
 import TxManager from '../utils/TxManager';
-import BlockchainEventsListener from '../connectors/BlockchainEventsListener';
 
 class ProviderRegistry {
     private static readonly logger = rootLogger.child({ className: 'ProviderRegistry' });

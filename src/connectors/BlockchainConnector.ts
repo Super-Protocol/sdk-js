@@ -288,10 +288,9 @@ class BlockchainConnector extends BaseConnector {
 
         validAddresses.forEach((address) => (transactionsByAddress[address] = []));
 
-        // FIXME:
         while (startBlock <= lastBlock) {
             const batch = new store.web3Https!.eth.BatchRequest();
-            const getBlock: any = await store.web3Https!.eth.getBlock;
+            const getBlock: any = store.web3Https!.eth.getBlock;
             const batchLastBlock = Math.min(startBlock + batchSize - 1, lastBlock);
 
             for (let blockNumber = startBlock; blockNumber <= batchLastBlock; blockNumber++) {

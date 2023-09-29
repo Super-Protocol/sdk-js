@@ -32,6 +32,13 @@ export const getGasPrice = async (web3: Web3): Promise<bigint> => {
     return await web3.eth.getGasPrice();
 };
 
+export const multiplyBigIntByNumber = (big: bigint, num: number): bigint => {
+    const factor = BigInt(Math.pow(10, (num.toString().split('.')[1] || '').length));
+    const result = big * BigInt(Math.round(num * Number(factor)));
+
+    return result / factor;
+};
+
 /**
  * Merge transaction options from arguments and from store
  * Used in all set methods

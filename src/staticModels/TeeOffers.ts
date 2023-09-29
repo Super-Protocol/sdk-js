@@ -1,16 +1,20 @@
 import rootLogger from '../logger';
 import { checkIfActionAccountInitialized, packDevicId } from '../utils/helper';
 import { BytesLike, formatBytes32String, parseBytes32String } from 'ethers/lib/utils';
-import { BlockInfo, TransactionOptions } from '../types/Web3';
-import { TeeOfferInfo } from '../types/TeeOfferInfo';
-import { OfferType } from '../types/Offer';
-import { OfferCreatedEvent, OptionAddedEvent, TeeSlotAddedEvent } from '../types/Events';
-import { TeeOfferOption } from '../types/TeeOfferOption';
-import BlockchainConnector from '../connectors/BlockchainConnector';
+import {
+    BlockInfo,
+    TransactionOptions,
+    HardwareInfo,
+    TeeOfferInfo,
+    OfferType,
+    OfferCreatedEvent,
+    OptionAddedEvent,
+    TeeSlotAddedEvent,
+    TeeOfferOption,
+} from '../types';
+import { BlockchainConnector, BlockchainEventsListener } from '../connectors';
 import Superpro from './Superpro';
 import TxManager from '../utils/TxManager';
-import BlockchainEventsListener from '../connectors/BlockchainEventsListener';
-import { HardwareInfo } from '../types/HardwareInfo';
 import { EventLog } from 'web3-eth-contract';
 
 class TeeOffers {

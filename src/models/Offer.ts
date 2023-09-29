@@ -7,18 +7,21 @@ import {
     unpackSlotInfo,
     packSlotInfo,
 } from '../utils/helper';
-import { OfferInfo, OfferType } from '../types/Offer';
-import { TransactionOptions } from '../types/Web3';
-import { Origins } from '../types/Origins';
-import BlockchainConnector from '../connectors/BlockchainConnector';
-import Superpro from '../staticModels/Superpro';
-import TxManager from '../utils/TxManager';
-import { ValueOfferSlot } from '../types/ValueOfferSlot';
-import { SlotInfo } from '../types/SlotInfo';
-import { OptionInfo } from '../types/OptionInfo';
-import { SlotUsage } from '../types/SlotUsage';
+import { BlockchainConnector } from '../connectors';
+import {
+    SlotInfo,
+    OptionInfo,
+    SlotUsage,
+    Origins,
+    OfferInfo,
+    OfferType,
+    ValueOfferSlot,
+    TransactionOptions,
+} from '../types';
 import { formatBytes32String } from 'ethers/lib/utils';
+import Superpro from '../staticModels/Superpro';
 import TeeOffers from '../staticModels/TeeOffers';
+import TxManager from '../utils/TxManager';
 import { tryWithInterval } from '../utils/helpers';
 import { BLOCKCHAIN_CALL_RETRY_INTERVAL, BLOCKCHAIN_CALL_RETRY_ATTEMPTS } from '../constants';
 

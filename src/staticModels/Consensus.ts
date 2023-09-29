@@ -1,13 +1,10 @@
 import rootLogger from '../logger';
 import TCB from '../models/TCB';
-import { checkIfActionAccountInitialized } from '../utils/helper';
-import { EpochInfo } from '../types/Consensus';
-import { TransactionOptions, BlockInfo } from '../types/Web3';
 import Superpro from './Superpro';
-import BlockchainConnector from '../connectors/BlockchainConnector';
-import BlockchainEventsListener from '../connectors/BlockchainEventsListener';
+import { EpochInfo, ConsensusConstants, TransactionOptions, BlockInfo } from '../types';
+import { checkIfActionAccountInitialized } from '../utils/helper';
 import TxManager from '../utils/TxManager';
-import { ConsensusConstants } from '../types/Consensus';
+import { BlockchainConnector, BlockchainEventsListener } from '../connectors';
 import { EventLog } from 'web3-eth-contract';
 
 class Consensus {
@@ -70,8 +67,7 @@ class Consensus {
         let executedCount;
         try {
             executedCount = +(await TxManager.dryRun(
-                contract.methods.unlockTcbRewardByList,
-                [tcbIds],
+                contract.methods.unlockTcbRewardByList(tcbIds),
                 transactionOptions,
             ));
         } catch (e) {

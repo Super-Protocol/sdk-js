@@ -1,11 +1,10 @@
 import { Contract } from 'web3';
 import { abi } from '../contracts/abi';
-import { checkIfActionAccountInitialized, packDevicId, unpackDeviceId } from '../utils/helper';
-import { TransactionOptions } from '../types/Web3';
 import Superpro from '../staticModels/Superpro';
 import TxManager from '../utils/TxManager';
-import BlockchainConnector from '../connectors/BlockchainConnector';
-import { TcbData, TcbPublicData, TcbVerifiedStatus } from '../types/Consensus';
+import { BlockchainConnector } from '../connectors';
+import { TcbData, TcbPublicData, TcbVerifiedStatus, TransactionOptions } from '../types';
+import { checkIfActionAccountInitialized, packDevicId, unpackDeviceId } from '../utils/helper';
 
 class TCB {
     public tcbId: bigint;

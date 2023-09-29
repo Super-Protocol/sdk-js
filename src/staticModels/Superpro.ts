@@ -1,5 +1,5 @@
-import { ParamName } from '../types/Superpro';
-import BlockchainConnector from '../connectors/BlockchainConnector';
+import { ParamName } from '../types';
+import { BlockchainConnector } from '../connectors';
 import { Contract, ContractAbi } from 'web3';
 
 class Superpro {

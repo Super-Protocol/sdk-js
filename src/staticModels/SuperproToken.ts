@@ -3,7 +3,7 @@ import rootLogger from '../logger';
 import { abi } from '../contracts/abi';
 import store from '../store';
 import { checkIfActionAccountInitialized } from '../utils/helper';
-import { TransactionOptions, BlockInfo } from '../types/Web3';
+import { TransactionOptions, BlockInfo } from '../types';
 import { EventLog } from 'web3-eth-contract';
 import TxManager from '../utils/TxManager';
 
@@ -84,7 +84,7 @@ class SuperproToken {
         checkIfActionAccountInitialized(transactionOptions);
 
         if (checkTxBeforeSend) {
-            await TxManager.dryRun(contract.methods.transfer, [to, amount], transactionOptions);
+            await TxManager.dryRun(contract.methods.transfer(to, amount), transactionOptions);
         }
 
         const receipt = await TxManager.execute(
@@ -112,7 +112,7 @@ class SuperproToken {
         checkIfActionAccountInitialized(transactionOptions);
 
         if (checkTxBeforeSend) {
-            await TxManager.dryRun(contract.methods.approve, [address, amount], transactionOptions);
+            await TxManager.dryRun(contract.methods.approve(address, amount), transactionOptions);
         }
 
         await TxManager.execute(

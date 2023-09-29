@@ -1,11 +1,9 @@
 import { Contract, AbiFragment } from 'web3';
 import { abi } from '../contracts/abi';
 import { checkIfActionAccountInitialized } from '../utils/helper';
-import { ProviderInfo } from '../types/Provider';
-import { Origins } from '../types/Origins';
+import { ProviderInfo, Origins, TransactionOptions } from '../types';
 import Superpro from '../staticModels/Superpro';
-import { TransactionOptions } from '../types/Web3';
-import BlockchainConnector from '../connectors/BlockchainConnector';
+import { BlockchainConnector } from '../connectors';
 import TxManager from '../utils/TxManager';
 import Consensus from '../staticModels/Consensus';
 

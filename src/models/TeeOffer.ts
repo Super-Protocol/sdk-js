@@ -1,3 +1,4 @@
+import { Contract } from 'web3';
 import { abi } from '../contracts/abi';
 import {
     checkIfActionAccountInitialized,
@@ -5,24 +6,22 @@ import {
     unpackSlotInfo,
     packSlotInfo,
 } from '../utils/helper';
-import { TeeOfferInfo } from '../types/TeeOfferInfo';
-import { TransactionOptions } from '../types/Web3';
-import { OfferType } from '../types/Offer';
-import { Origins } from '../types/Origins';
-import Superpro from '../staticModels/Superpro';
-import BlockchainConnector from '../connectors/BlockchainConnector';
+import { TeeOfferInfo, TransactionOptions, OfferType, Origins } from '../types';
+import { BlockchainConnector } from '../connectors';
 import TxManager from '../utils/TxManager';
-import { HardwareInfo } from '../types/HardwareInfo';
-import { TeeOfferOption } from '../types/TeeOfferOption';
-import { TeeOfferSlot } from '../types/TeeOfferSlot';
-import { OptionInfo } from '../types/OptionInfo';
-import { SlotUsage } from '../types/SlotUsage';
+import {
+    HardwareInfo,
+    TeeOfferOption,
+    TeeOfferSlot,
+    OptionInfo,
+    SlotUsage,
+    SlotInfo,
+} from '../types';
 import { formatBytes32String } from 'ethers/lib/utils';
-import { SlotInfo } from '../types/SlotInfo';
 import TeeOffers from '../staticModels/TeeOffers';
-import TCB from '../models/TCB';
+import Superpro from '../staticModels/Superpro';
+import { TCB } from '../models';
 import { TeeConfirmationBlock, GetTcbRequest } from '@super-protocol/dto-js';
-import { Contract } from 'web3';
 
 class TeeOffer {
     private static contract: Contract<typeof abi>;

@@ -1,5 +1,5 @@
 import Superpro from './Superpro';
-import BlockchainConnector from '../connectors/BlockchainConnector';
+import { BlockchainConnector } from '../connectors';
 
 class ActiveOffers {
     public static offers?: string[];

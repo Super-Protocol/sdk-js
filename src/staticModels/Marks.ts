@@ -1,6 +1,6 @@
-import BlockchainConnector from '../connectors/BlockchainConnector';
+import { BlockchainConnector } from '../connectors';
 import Superpro from './Superpro';
-import { Mark } from '../types/Marks';
+import { Mark } from '../types';
 
 class Marks {
     public static get address(): string {

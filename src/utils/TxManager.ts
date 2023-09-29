@@ -2,11 +2,12 @@ import { TransactionReceipt } from 'web3';
 import NonceTracker from './NonceTracker';
 import rootLogger from '../logger';
 import store from '../store';
-import { TransactionOptions, DryRunError } from '../types/Web3';
+import { TransactionOptions, DryRunError } from '../types';
 import {
     checkForUsingExternalTxManager,
     checkIfActionAccountInitialized,
     createTransactionOptions,
+    multiplyBigIntByNumber,
 } from './helper';
 import Superpro from '../staticModels/Superpro';
 import { defaultGasLimit } from '../constants';
@@ -36,8 +37,6 @@ export class Web3TransactionRevertedByEvmError extends Web3TransactionError {
         this.name = 'Web3TransactionRevertedByEvmError';
     }
 }
-
-type ArgumentsType = any | any[];
 
 class TxManager {
     private static web3: Web3;
@@ -107,11 +106,9 @@ class TxManager {
     }
 
     public static async dryRun(
-        method: (...args: ArgumentsType) => any,
-        args: ArgumentsType,
+        transaction: any, // NonPayableMethodObject
         transactionOptions?: TransactionOptions,
     ): Promise<any> {
-        const transaction = method(...args);
         const from = transactionOptions?.from ?? store.actionAccount;
         let result;
 
@@ -149,8 +146,7 @@ class TxManager {
                 TxManager.logger.debug({ error: e }, 'Fail to calculate estimated gas');
                 estimatedGas = defaultGasLimit;
             }
-            txData.gas = estimatedGas;
-            // txData.gas = (txData.gas as bigint) * BigInt(store.gasLimitMultiplier); FIXME:
+            txData.gas = multiplyBigIntByNumber(estimatedGas, store.gasLimitMultiplier);
             // defaultGasLimit is max gas limit
             txData.gas = txData.gas < defaultGasLimit ? txData.gas : defaultGasLimit;
 
@@ -167,7 +163,7 @@ class TxManager {
                 txData.gas = transactionOptions.gas;
             }
 
-            // txData.gasPrice = (txData.gasPrice as bigint) * BigInt(store.gasPriceMultiplier); FIXME:
+            txData.gasPrice = multiplyBigIntByNumber(txData.gasPrice, store.gasPriceMultiplier);
         }
 
         let nonceTracker;

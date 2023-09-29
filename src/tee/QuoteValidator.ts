@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { createHash } from 'crypto';
 import { ec } from 'elliptic';
 import { util, asn1 } from 'node-forge';
 import { Certificate, Extension } from '@fidm/x509';
@@ -13,6 +12,8 @@ import rootLogger from '../logger';
 import { IQEIdentity, ITcbData } from './interface';
 import { TeeQuoteValidatorError } from './errors';
 import { QEIdentityStatuses, TCBStatuses, QuoteValidationStatuses } from './statuses';
+import { Encoding, HashAlgorithm } from '@super-protocol/dto-js';
+import Crypto from '../crypto';
 
 const BASE_SGX_URL = 'https://api.trustedservices.intel.com/sgx/certification/v4';
 const SGX_OID = '1.2.840.113741.1.13.1';
@@ -141,13 +142,15 @@ export class QuoteValidator {
         return pckCert;
     }
 
-    private verifyQeReportSignature(quote: TeeSgxQuoteDataType, pckPublicKey: Buffer): boolean {
+    private async verifyQeReportSignature(
+        quote: TeeSgxQuoteDataType,
+        pckPublicKey: Buffer,
+    ): Promise<boolean> {
         const signature = quote.qeReportSignature;
-        const hash = createHash('sha256');
-        hash.update(Buffer.from(quote.qeReport));
+        const reportHash = await this.getSha256Hash(Buffer.from(quote.qeReport));
         const ellipticEc = new ec('p256');
         const result = ellipticEc.verify(
-            hash.digest(),
+            reportHash,
             {
                 r: signature.subarray(0, 32),
                 s: signature.subarray(32),
@@ -158,28 +161,34 @@ export class QuoteValidator {
         return result;
     }
 
-    private verifyQeReportData(quote: TeeSgxQuoteDataType, report: TeeSgxReportDataType): boolean {
+    private async verifyQeReportData(
+        quote: TeeSgxQuoteDataType,
+        report: TeeSgxReportDataType,
+    ): Promise<boolean> {
         const qeAuthData = quote.qeAuthenticationData;
         const attestationKey = quote.ecdsaAttestationKey;
         const qeReportDataHash = report.dataHash;
-        const hash = createHash('sha256');
-        const hashResult = hash.update(Buffer.concat([attestationKey, qeAuthData])).digest();
-        const result = Buffer.compare(qeReportDataHash, hashResult);
+        const calculatedHash = await this.getSha256Hash(
+            Buffer.concat([attestationKey, qeAuthData]),
+        );
+        const result = Buffer.compare(qeReportDataHash, calculatedHash);
 
         return result === 0;
     }
 
-    private verifyEnclaveReportSignature(quote: TeeSgxQuoteDataType): boolean {
+    private async verifyEnclaveReportSignature(quote: TeeSgxQuoteDataType): Promise<boolean> {
         const key = Buffer.from(quote.ecdsaAttestationKey);
         const headerBuffer = Buffer.from(quote.rawHeader);
         const reportBuffer = Buffer.from(quote.report);
         const expected = quote.isvEnclaveReportSignature;
 
-        const hash = createHash('sha256');
-        hash.update(Buffer.concat([headerBuffer, reportBuffer]));
+        const calculatedHash = await this.getSha256Hash(
+            Buffer.concat([headerBuffer, reportBuffer]),
+        );
+
         const ellipticEc = new ec('p256');
         const result = ellipticEc.verify(
-            hash.digest(),
+            calculatedHash,
             {
                 r: expected.subarray(0, 32),
                 s: expected.subarray(32),
@@ -198,10 +207,10 @@ export class QuoteValidator {
         if (!(await this.verifyQeReportSignature(quote, pckPublicKey))) {
             throw new TeeQuoteValidatorError('Wrong QE report signature');
         }
-        if (!this.verifyQeReportData(quote, report)) {
+        if (!(await this.verifyQeReportData(quote, report))) {
             throw new TeeQuoteValidatorError('Wrong QE report data');
         }
-        if (!this.verifyEnclaveReportSignature(quote)) {
+        if (!(await this.verifyEnclaveReportSignature(quote))) {
             throw new TeeQuoteValidatorError('Wrong enclave report signature');
         }
     }
@@ -358,13 +367,13 @@ export class QuoteValidator {
             case QuoteValidationStatuses.UpToDate:
                 return 'The Quote verification passed and is at the latest TCB level.';
             case QuoteValidationStatuses.ConfigurationNeeded:
-                return `The SGX platform firmware and SW are at the latest security patching level 
+                return `The SGX platform firmware and SW are at the latest security patching level
                     but there are platform hardware configurations may expose the enclave to vulnerabilities.`;
             case QuoteValidationStatuses.SecurityPatchNeeded:
-                return `The SGX platform firmware and SW are not at the latest security patching level. 
+                return `The SGX platform firmware and SW are not at the latest security patching level.
                     The platform needs to be patched with firmware and/or software patches.`;
             case QuoteValidationStatuses.SoftwareUpdateNeeded:
-                return `The SGX platform firmware and SW are at the latest security patching level but there are 
+                return `The SGX platform firmware and SW are at the latest security patching level but there are
                     certain vulnerabilities that can only be mitigated with software mitigations implemented by the enclave.`;
             default:
                 return 'Quote verification failed.';
@@ -421,5 +430,14 @@ export class QuoteValidator {
                 error,
             };
         }
+    }
+
+    private async getSha256Hash(data: Buffer): Promise<Buffer> {
+        const hashInfo = {
+            algo: HashAlgorithm.SHA256,
+            encoding: Encoding.base64,
+        };
+        const hashData = await Crypto.createHash(data, hashInfo);
+        return Buffer.from(hashData.hash, hashData.encoding);
     }
 }

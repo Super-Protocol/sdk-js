@@ -10,10 +10,12 @@ import {
     DecipherGCM,
     randomBytes,
     CipherGCM,
+    createHash,
 } from 'crypto';
+import { Readable } from 'stream';
 import { once } from 'events';
 
-import { Encoding, EncryptionWithMacIV } from '@super-protocol/dto-js';
+import { Encoding, EncryptionWithMacIV, Hash, HashAlgorithm } from '@super-protocol/dto-js';
 
 /**
  *
@@ -203,6 +205,40 @@ class NativeCrypto {
 
         inputStream.pipe(decipher).pipe(outputStream);
         await once(outputStream, 'finish');
+    }
+
+    public static createHashFromBuffer(
+        data: Buffer,
+        algorithm: HashAlgorithm,
+        encoding = Encoding.base64,
+    ): Hash {
+        const hash = createHash(algorithm);
+        hash.update(data);
+        return {
+            algo: algorithm,
+            encoding,
+            hash: hash.digest(encoding),
+        };
+    }
+
+    public static createHashFromStream(
+        inputStream: Readable,
+        algorithm: HashAlgorithm,
+        encoding = Encoding.base64,
+    ): Promise<Hash> {
+        const hash = createHash(algorithm);
+
+        return new Promise((resolve) => {
+            hash.on('finish', () => {
+                resolve({
+                    algo: algorithm,
+                    encoding,
+                    hash: hash.digest(encoding),
+                });
+            });
+
+            inputStream.pipe(hash);
+        });
     }
 }
 

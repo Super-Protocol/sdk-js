@@ -3,6 +3,7 @@ import { createHash } from 'crypto';
 import { ec } from 'elliptic';
 import { util, asn1 } from 'node-forge';
 import { Certificate, Extension } from '@fidm/x509';
+import _ from 'lodash';
 import { TeeSgxParser } from './QuoteParser';
 import { TeeSgxQuoteDataType, TeeSgxReportDataType } from './types';
 import rootLogger from '../logger';
@@ -82,12 +83,22 @@ export class QuoteValidator {
         const platformChain = decodeURIComponent(
             platformCrlResult.headers['sgx-pck-crl-issuer-chain'],
         );
-        // TODO: check validTo of certificates in platformChain
-        const [, fetchedRootCertPem] = this.splitChain(platformChain);
-        // TODO: check is rootCert self-signed
-        // TODO: compare rootCert with etalon by hardcoded fingerprint
+        const certPems = this.splitChain(platformChain); // [platform, root]
+        const [platformCert, rootCert] = certPems.map((pem) =>
+            Certificate.fromPEM(Buffer.from(pem)),
+        );
 
-        return fetchedRootCertPem;
+        if (platformCert.validTo.valueOf() < Date.now()) {
+            throw new TeeQuoteValidatorError('Platform certificate expired');
+        }
+        if (rootCert.validTo.valueOf() < Date.now()) {
+            throw new TeeQuoteValidatorError('Root certificate expired');
+        }
+        if (!_.isEqual(rootCert.issuer, rootCert.subject)) {
+            throw new TeeQuoteValidatorError('Root certificate is not self-signed');
+        }
+
+        return certPems[1];
     }
 
     private getAndCheckPckCertificate(

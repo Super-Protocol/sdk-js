@@ -5,5 +5,8 @@ module.exports = {
     'ts-jest': {
         tsconfig: 'tsconfig.build.json'
       }
+  },
+  moduleNameMapper: {
+    axios: 'axios/dist/node/axios.cjs'
   }
 };

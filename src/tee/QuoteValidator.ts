@@ -246,10 +246,27 @@ export class QuoteValidator {
 
         if (tcbInfoChain[1] !== rootCertPem) {
             throw new TeeQuoteValidatorError('Invalid SGX root certificate in TCB chain');
-            // TODO: verify tcbData.data.tcbInfo by tcbData.signature
+        }
+        const tcbCert = Certificate.fromPEM(Buffer.from(tcbInfoChain[0]));
+        const key = tcbCert.publicKey.keyRaw;
+        const expected = Buffer.from(tcbData.data.signature, 'hex');
+
+        const hash = createHash('sha256');
+        hash.update(Buffer.from(JSON.stringify(tcbData.data.tcbInfo)));
+        const ellipticEc = new ec('p256');
+        const result = ellipticEc.verify(
+            hash.digest('hex'),
+            {
+                r: expected.subarray(0, 32),
+                s: expected.subarray(32),
+            },
+            ellipticEc.keyFromPublic(key, 'hex'),
+        );
+        if (!result) {
+            throw new TeeQuoteValidatorError('TCB Info signature is not valid');
         }
 
-        return tcbData.data;
+        return tcbData.data as ITcbData;
     }
 
     private async getQEIdentity(rootCertPem: string): Promise<IQEIdentity> {
@@ -264,7 +281,7 @@ export class QuoteValidator {
             // TODO: verify qeIdentityData.data.enclaveIdentity by qeIdentityData.signature
         }
 
-        return qeIdentityData.data;
+        return qeIdentityData.data as IQEIdentity;
     }
 
     private getQEIdentityStatus(

@@ -260,11 +260,12 @@ export class QuoteValidator {
         const key = tcbCert.publicKey.keyRaw;
         const expected = Buffer.from(tcbData.data.signature, 'hex');
 
-        const hash = createHash('sha256');
-        hash.update(Buffer.from(JSON.stringify(tcbData.data.tcbInfo)));
+        const calculatedhash = await this.getSha256Hash(
+            Buffer.from(JSON.stringify(tcbData.data.tcbInfo)),
+        );
         const ellipticEc = new ec('p256');
         const result = ellipticEc.verify(
-            hash.digest('hex'),
+            calculatedhash,
             {
                 r: expected.subarray(0, 32),
                 s: expected.subarray(32),

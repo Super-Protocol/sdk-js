@@ -273,7 +273,11 @@ export class QuoteValidator {
             ellipticEc.keyFromPublic(key, 'hex'),
         );
         if (!result) {
-            throw new TeeQuoteValidatorError('TCB Info signature is not valid');
+            throw new TeeQuoteValidatorError('TCB info signature is not valid');
+        }
+
+        if (tcbData.data.tcbInfo.nextUpdate.valueOf() > Date.now()) {
+            throw new TeeQuoteValidatorError('TCB next update date is out of date');
         }
 
         return tcbData.data as ITcbData;
@@ -286,7 +290,9 @@ export class QuoteValidator {
             decodeURIComponent(qeIdentityData.headers[qeIdentityHeader]),
         ); // [qeIdentity, root]
         if (qeIdentityChain[1] !== rootCertPem) {
-            throw new TeeQuoteValidatorError('Invalid SGX root certificate in QE Identity chain');
+            throw new TeeQuoteValidatorError(
+                'Invalid SGX root certificate in enclave identity chain',
+            );
             // TODO: verify qeIdentityData.data.enclaveIdentity by qeIdentityData.signature
         }
 
@@ -307,7 +313,11 @@ export class QuoteValidator {
             ellipticEc.keyFromPublic(key, 'hex'),
         );
         if (!result) {
-            throw new TeeQuoteValidatorError('QE Identity signature is not valid');
+            throw new TeeQuoteValidatorError('Enclave identity signature is not valid');
+        }
+
+        if (qeIdentityData.data.enclaveIdentity.nextUpdate.valueOf() > Date.now()) {
+            throw new TeeQuoteValidatorError('Enclave identity next update date is out of date');
         }
 
         return qeIdentityData.data as IQEIdentity;

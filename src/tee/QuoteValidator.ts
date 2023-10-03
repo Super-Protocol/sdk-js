@@ -21,6 +21,12 @@ const FMSPC_OID = `${SGX_OID}.4`;
 const PCEID_OID = `${SGX_OID}.3`;
 const TCB_OID = `${SGX_OID}.2`;
 const PCESVN_OID = `${TCB_OID}.17`;
+const INTEL_ROOT_PUB_KEY = new Uint8Array([
+    4, 11, 169, 196, 192, 192, 200, 97, 147, 163, 254, 35, 214, 176, 44, 218, 16, 168, 187, 212,
+    232, 142, 72, 180, 69, 133, 97, 163, 110, 112, 85, 37, 245, 103, 145, 142, 46, 220, 136, 228,
+    13, 134, 11, 208, 204, 78, 226, 106, 172, 201, 136, 229, 5, 169, 83, 85, 140, 69, 63, 107, 9, 4,
+    174, 115, 148,
+]);
 
 interface ValidationResult {
     quoteValidationStatus: QuoteValidationStatuses;
@@ -99,6 +105,9 @@ export class QuoteValidator {
         }
         if (!_.isEqual(rootCert.issuer, rootCert.subject)) {
             throw new TeeQuoteValidatorError('Root certificate is not self-signed');
+        }
+        if (Buffer.compare(rootCert.publicKey.keyRaw, INTEL_ROOT_PUB_KEY) !== 0) {
+            throw new TeeQuoteValidatorError('Wrong Intel root certificate public key');
         }
 
         const crlDer = formatter.pemToBin(platformCrlResult.data);
@@ -340,7 +349,7 @@ export class QuoteValidator {
 
         const status = tcbLevel?.tcbStatus as QEIdentityStatuses;
         if (status) {
-            this.logger.info(`QE identity status is ${tcbLevel?.tcbStatus}`);
+            this.logger.info(`Enclave identity status is ${tcbLevel?.tcbStatus}`);
             return status;
         }
         return QEIdentityStatuses.OutOfDate;

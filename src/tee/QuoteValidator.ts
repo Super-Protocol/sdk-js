@@ -252,10 +252,10 @@ export class QuoteValidator {
         const tcbData = await axios.get(`${BASE_SGX_URL}/tcb?fmspc=${fmspc}`);
         const tcbInfoHeader = 'tcb-info-issuer-chain';
         const tcbInfoChain = this.splitChain(decodeURIComponent(tcbData.headers[tcbInfoHeader])); // [tcb, root]
-
         if (tcbInfoChain[1] !== rootCertPem) {
             throw new TeeQuoteValidatorError('Invalid SGX root certificate in TCB chain');
         }
+
         const tcbCert = Certificate.fromPEM(Buffer.from(tcbInfoChain[0]));
         const key = tcbCert.publicKey.keyRaw;
         const expected = Buffer.from(tcbData.data.signature, 'hex');
@@ -285,10 +285,29 @@ export class QuoteValidator {
         const qeIdentityChain = this.splitChain(
             decodeURIComponent(qeIdentityData.headers[qeIdentityHeader]),
         ); // [qeIdentity, root]
-
         if (qeIdentityChain[1] !== rootCertPem) {
             throw new TeeQuoteValidatorError('Invalid SGX root certificate in QE Identity chain');
             // TODO: verify qeIdentityData.data.enclaveIdentity by qeIdentityData.signature
+        }
+
+        const qeIdentityCert = Certificate.fromPEM(Buffer.from(qeIdentityChain[0]));
+        const key = qeIdentityCert.publicKey.keyRaw;
+        const expected = Buffer.from(qeIdentityData.data.signature, 'hex');
+
+        const calculatedhash = await this.getSha256Hash(
+            Buffer.from(JSON.stringify(qeIdentityData.data.enclaveIdentity)),
+        );
+        const ellipticEc = new ec('p256');
+        const result = ellipticEc.verify(
+            calculatedhash,
+            {
+                r: expected.subarray(0, 32),
+                s: expected.subarray(32),
+            },
+            ellipticEc.keyFromPublic(key, 'hex'),
+        );
+        if (!result) {
+            throw new TeeQuoteValidatorError('QE Identity signature is not valid');
         }
 
         return qeIdentityData.data as IQEIdentity;

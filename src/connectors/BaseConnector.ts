@@ -1,6 +1,7 @@
 import abi from '../contracts/abi';
 import rootLogger from '../logger';
-import { Web3, ContractAbi, Contract } from 'web3';
+import { ContractAbi, Contract } from 'web3';
+import store from '../store';
 
 export type Config = {
     contractAddress: string;
@@ -23,7 +24,6 @@ export class BaseConnector {
     protected initialized = false;
     protected logger = rootLogger.child({ className: this.constructor['name'] });
     protected contract?: Contract<ContractAbi>;
-    protected provider?: Web3;
 
     public isInitialized(): boolean {
         return this.initialized;
@@ -55,7 +55,6 @@ export class BaseConnector {
 
     public shutdown(): void {
         if (this.initialized) {
-            this.provider?.currentProvider?.disconnect(0, '');
             this.initialized = false;
             this.logger.trace(`${this.constructor['name']} was shutdown`);
         }

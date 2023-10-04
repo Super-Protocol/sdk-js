@@ -15,9 +15,7 @@ class NonceTracker {
 
     public async initAccount(): Promise<void> {
         this.txCount = await this.web3.eth.getTransactionCount(this.address);
-        this.logger.trace(
-            `Initialized ${this.address} account with nonce: ${this.txCount?.toString()}`,
-        );
+        this.logger.trace(`Initialized ${this.address} account with nonce: ${this.txCount}`);
     }
 
     public getNonce(): bigint {
@@ -64,8 +62,8 @@ class NonceTracker {
         }
     }
 
-    private async waitForPendingTransactions(): Promise<void> {
-        return await new Promise<void>((resolve) => {
+    private waitForPendingTransactions(): Promise<void> {
+        return new Promise<void>((resolve) => {
             if (!this.transactionsOnHold) return resolve();
             this.transactionsOnHold.push(() => {
                 resolve();

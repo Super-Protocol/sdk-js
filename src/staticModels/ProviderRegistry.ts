@@ -23,16 +23,16 @@ class ProviderRegistry {
     /**
      * Fetch provider security deposit by provider authority account
      */
-    public static async getSecurityDeposit(providerAuthority: string): Promise<string> {
+    public static getSecurityDeposit(providerAuthority: string): Promise<string> {
         const contract = BlockchainConnector.getInstance().getContract();
 
-        return await contract.methods.getProviderSecurityDeposit(providerAuthority).call();
+        return contract.methods.getProviderSecurityDeposit(providerAuthority).call();
     }
 
-    public static async isProviderRegistered(providerAuthority: string): Promise<boolean> {
+    public static isProviderRegistered(providerAuthority: string): Promise<boolean> {
         const contract = BlockchainConnector.getInstance().getContract();
 
-        return await contract.methods.isProviderRegistered(providerAuthority).call();
+        return contract.methods.isProviderRegistered(providerAuthority).call();
     }
 
     /**
@@ -126,7 +126,7 @@ class ProviderRegistry {
             callback(
                 <string>event.returnValues.auth,
                 <BlockInfo>{
-                    index: <number>event.blockNumber,
+                    index: <bigint>event.blockNumber,
                     hash: <string>event.blockHash,
                 },
             );
@@ -152,7 +152,7 @@ class ProviderRegistry {
             callback(
                 <string>event.returnValues.auth,
                 <BlockInfo>{
-                    index: <number>event.blockNumber,
+                    index: <bigint>event.blockNumber,
                     hash: <string>event.blockHash,
                 },
             );
@@ -181,7 +181,7 @@ class ProviderRegistry {
                 <string>event.returnValues.auth,
                 <bigint>event.returnValues.newViolationRate,
                 <BlockInfo>{
-                    index: <number>event.blockNumber,
+                    index: <bigint>event.blockNumber,
                     hash: <string>event.blockHash,
                 },
             );
@@ -210,7 +210,7 @@ class ProviderRegistry {
                 <string>event.returnValues.auth,
                 <bigint>event.returnValues.amount,
                 <BlockInfo>{
-                    index: <number>event.blockNumber,
+                    index: <bigint>event.blockNumber,
                     hash: <string>event.blockHash,
                 },
             );
@@ -239,7 +239,7 @@ class ProviderRegistry {
                 <string>event.returnValues.auth,
                 <bigint>event.returnValues.amount,
                 <BlockInfo>{
-                    index: <number>event.blockNumber,
+                    index: <bigint>event.blockNumber,
                     hash: <string>event.blockHash,
                 },
             );

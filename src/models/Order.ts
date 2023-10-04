@@ -63,15 +63,15 @@ class Order {
     /**
      * Check if order exist
      */
-    public async isExist(): Promise<boolean> {
-        return await Order.contract.methods.isOrderValid(this.id).call();
+    public isExist(): Promise<boolean> {
+        return Order.contract.methods.isOrderValid(this.id).call();
     }
 
     /**
      * Check if order is in `processing` state
      */
-    public async isOrderProcessing(): Promise<boolean> {
-        return await Order.contract.methods.isOrderProcessing(this.id).call();
+    public isOrderProcessing(): Promise<boolean> {
+        return Order.contract.methods.isOrderProcessing(this.id).call();
     }
 
     /**
@@ -86,8 +86,8 @@ class Order {
     /**
      * Function for fetching order price
      */
-    public async calculateCurrentPrice(): Promise<bigint> {
-        return await Order.contract.methods.calculateOrderCurrentPrice(this.id).call();
+    public calculateCurrentPrice(): Promise<bigint> {
+        return Order.contract.methods.calculateOrderCurrentPrice(this.id).call();
     }
 
     /**
@@ -160,8 +160,8 @@ class Order {
      * Function for fetching order options deposit spent from blockchain
      */
     @incrementMethodCall()
-    public async getOptionsDepositSpent(): Promise<bigint> {
-        return await Order.contract.methods.getOptionsDepositSpent(this.id).call();
+    public getOptionsDepositSpent(): Promise<bigint> {
+        return Order.contract.methods.getOptionsDepositSpent(this.id).call();
     }
 
     /**
@@ -183,32 +183,32 @@ class Order {
      * Function for fetching hold deposits sum of the order and its suborders
      */
     @incrementMethodCall()
-    public async calculateTotalOrderDeposit(): Promise<bigint> {
-        return await Order.contract.methods.calculateTotalOrderDeposit(this.id).call();
+    public calculateTotalOrderDeposit(): Promise<bigint> {
+        return Order.contract.methods.calculateTotalOrderDeposit(this.id).call();
     }
 
     /**
      * Function for fetching reserve for output order
      */
     @incrementMethodCall()
-    public async calculateOrderOutputReserve(): Promise<bigint> {
-        return await Order.contract.methods.calculateOrderOutputReserve(this.id).call();
+    public calculateOrderOutputReserve(): Promise<bigint> {
+        return Order.contract.methods.calculateOrderOutputReserve(this.id).call();
     }
 
     /**
      * Function for fetching spent deposits sum of the order and its suborders
      */
     @incrementMethodCall()
-    public async calculateTotalDepositSpent(): Promise<bigint> {
-        return await Order.contract.methods.calculateTotalDepositSpent(this.id).call();
+    public calculateTotalDepositSpent(): Promise<bigint> {
+        return Order.contract.methods.calculateTotalDepositSpent(this.id).call();
     }
 
     /**
      * Function for fetching unspent deposits sum of the order and its suborders
      */
     @incrementMethodCall()
-    public async calculateTotalDepositUnspent(): Promise<bigint> {
-        return await Order.contract.methods.calculateTotalDepositUnspent(this.id).call();
+    public calculateTotalDepositUnspent(): Promise<bigint> {
+        return Order.contract.methods.calculateTotalDepositUnspent(this.id).call();
     }
 
     /**
@@ -229,16 +229,16 @@ class Order {
      * Function for fetching parent order from blockchain
      */
     @incrementMethodCall()
-    public async getAwaitingPayment(): Promise<boolean> {
-        return await Order.contract.methods.getAwaitingPayment(this.id).call();
+    public getAwaitingPayment(): Promise<boolean> {
+        return Order.contract.methods.getAwaitingPayment(this.id).call();
     }
 
     /**
      * Function for fetching deposit of order from blockchain
      */
     @incrementMethodCall()
-    public async getDeposit(): Promise<bigint> {
-        return await Order.contract.methods.getOrderDeposit(this.id).call();
+    public getDeposit(): Promise<bigint> {
+        return Order.contract.methods.getOrderDeposit(this.id).call();
     }
 
     /**

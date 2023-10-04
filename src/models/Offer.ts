@@ -65,8 +65,8 @@ class Offer {
      * Function for fetching offer status from blockchain
      */
     @incrementMethodCall()
-    public async isEnabled(): Promise<boolean> {
-        return await Offer.contract.methods.isOfferEnabled(this.id).call();
+    public isEnabled(): Promise<boolean> {
+        return Offer.contract.methods.isOfferEnabled(this.id).call();
     }
 
     /**
@@ -200,13 +200,13 @@ class Offer {
      * Function for fetching cheapest value offer from blockchain
      */
     @incrementMethodCall()
-    public async getCheapestPrice(): Promise<string> {
-        return await Offer.contract.methods.getCheapestValueOffersPrice(this.id).call();
+    public getCheapestPrice(): Promise<string> {
+        return Offer.contract.methods.getCheapestValueOffersPrice(this.id).call();
     }
 
     @incrementMethodCall()
-    public async isOfferExists(): Promise<boolean> {
-        return await Offer.contract.methods.isOfferExists(this.id).call();
+    public isOfferExists(): Promise<boolean> {
+        return Offer.contract.methods.isOfferExists(this.id).call();
     }
 
     private async checkIfOfferExistsWithInterval(): Promise<boolean> {
@@ -228,8 +228,8 @@ class Offer {
      * Function for fetching whether offer slot exists or not
      * @param slotId - Slot ID
      */
-    public async isSlotExists(slotId: string): Promise<boolean> {
-        return await Offer.contract.methods.isValueOfferSlotExists(this.id, slotId).call();
+    public isSlotExists(slotId: string): Promise<boolean> {
+        return Offer.contract.methods.isValueOfferSlotExists(this.id, slotId).call();
     }
 
     /**
@@ -248,8 +248,8 @@ class Offer {
     /**
      * @returns this TEE offer slots count
      */
-    public async getSlotsCount(): Promise<string> {
-        return await Offer.contract.methods.getValueOfferSlotsCount(this.id).call();
+    public getSlotsCount(): Promise<string> {
+        return Offer.contract.methods.getValueOfferSlotsCount(this.id).call();
     }
 
     /**
@@ -383,10 +383,8 @@ class Offer {
      * @param offerId - id of offer what needs to be checked
      */
     @incrementMethodCall()
-    public async isRestrictionsPermitThatOffer(offerId: string): Promise<void> {
-        return await Offer.contract.methods
-            .isOfferRestrictionsPermitOtherOffer(this.id, offerId)
-            .call();
+    public isRestrictionsPermitThatOffer(offerId: string): Promise<void> {
+        return Offer.contract.methods.isOfferRestrictionsPermitOtherOffer(this.id, offerId).call();
     }
 
     /**
@@ -394,8 +392,8 @@ class Offer {
      * @param type - type of offer which needs to be checked
      */
     @incrementMethodCall()
-    public async isRestrictedByOfferType(type: OfferType): Promise<void> {
-        return await Offer.contract.methods.isOfferRestrictedByOfferType(this.id, type).call();
+    public isRestrictedByOfferType(type: OfferType): Promise<void> {
+        return Offer.contract.methods.isOfferRestrictedByOfferType(this.id, type).call();
     }
 }
 

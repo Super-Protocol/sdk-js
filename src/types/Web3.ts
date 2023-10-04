@@ -1,7 +1,7 @@
 import Web3 from 'web3';
 
 export type BlockInfo = {
-    index: number;
+    index: bigint;
     hash: string | undefined;
 };
 
@@ -12,6 +12,13 @@ export type EventData = {
 };
 
 export type TransactionOptionsRequired = Required<TransactionOptions>;
+
+export type TrasnactionDataOptions = TransactionOptions & {
+    to: string;
+    nonce?: bigint;
+    data?: string;
+    value?: string;
+};
 
 export type TransactionOptions = {
     from?: string;

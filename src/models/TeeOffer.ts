@@ -56,8 +56,8 @@ class TeeOffer {
      * Function for fetching offer status from the blockchain
      */
     @incrementMethodCall()
-    public async isEnabled(): Promise<boolean> {
-        return await TeeOffer.contract.methods.isOfferEnabled(this.id).call();
+    public isEnabled(): Promise<boolean> {
+        return TeeOffer.contract.methods.isOfferEnabled(this.id).call();
     }
 
     /**
@@ -80,8 +80,8 @@ class TeeOffer {
     /**
      * @returns this TEE offer slots count
      */
-    public async getSlotsCount(): Promise<string> {
-        return await TeeOffer.contract.methods.getTeeOfferSlotsCount(this.id).call();
+    public getSlotsCount(): Promise<string> {
+        return TeeOffer.contract.methods.getTeeOfferSlotsCount(this.id).call();
     }
 
     /**
@@ -130,15 +130,15 @@ class TeeOffer {
             .getTeeOfferHardwareInfo(this.id)
             .call();
 
-        return await TeeOffers.unpackHardwareInfo(hardwareInfo);
+        return TeeOffers.unpackHardwareInfo(hardwareInfo);
     }
 
     /**
      * Function for fetching tee offer slot by id
      * @param optionId - Slot ID
      */
-    public async getOptionById(optionId: string): Promise<TeeOfferOption> {
-        return await TeeOffer.contract.methods.getOptionById(optionId).call();
+    public getOptionById(optionId: string): Promise<TeeOfferOption> {
+        return TeeOffer.contract.methods.getOptionById(optionId).call();
     }
 
     public async getOptions(begin = 0, end = 999999): Promise<TeeOfferOption[]> {
@@ -160,8 +160,8 @@ class TeeOffer {
      * Function for fetching whether tee offer slot exists or not
      * @param optionId - Option ID
      */
-    public async isOptionExists(optionId: string): Promise<boolean> {
-        return await TeeOffer.contract.methods.isTeeOfferSlotExists(this.id, optionId).call();
+    public isOptionExists(optionId: string): Promise<boolean> {
+        return TeeOffer.contract.methods.isTeeOfferSlotExists(this.id, optionId).call();
     }
 
     /**
@@ -292,8 +292,8 @@ class TeeOffer {
      * Function for fetching whether tee offer slot exists or not
      * @param slotId - Slot ID
      */
-    public async isSlotExists(slotId: string): Promise<boolean> {
-        return await TeeOffer.contract.methods.isTeeOfferSlotExists(this.id, slotId).call();
+    public isSlotExists(slotId: string): Promise<boolean> {
+        return TeeOffer.contract.methods.isTeeOfferSlotExists(this.id, slotId).call();
     }
 
     /**
@@ -404,16 +404,16 @@ class TeeOffer {
      * @param teeOfferId - TEE offer ID
      * @returns {Promise<string>} - Actual TCB ID
      */
-    public async getActualTcbId(): Promise<bigint> {
-        return await TeeOffer.contract.methods.getActualTcbId(this.id).call();
+    public getActualTcbId(): Promise<bigint> {
+        return TeeOffer.contract.methods.getActualTcbId(this.id).call();
     }
 
     /**
      * Function return last inited TCB of TEE offer
      * @param teeOfferId - id of TEE offer
      * */
-    public async getInitializedTcbId(): Promise<bigint> {
-        return await TeeOffer.contract.methods.getInitializedTcbId(this.id).call();
+    public getInitializedTcbId(): Promise<bigint> {
+        return TeeOffer.contract.methods.getInitializedTcbId(this.id).call();
     }
 
     public async isTcbCreationAvailable(): Promise<boolean> {
@@ -446,8 +446,8 @@ class TeeOffer {
     }
 
     @incrementMethodCall()
-    public async isTeeOfferVerifying(): Promise<boolean> {
-        return await TeeOffer.contract.methods.isTeeOfferVerifying(this.id).call();
+    public isTeeOfferVerifying(): Promise<boolean> {
+        return TeeOffer.contract.methods.isTeeOfferVerifying(this.id).call();
     }
 
     /**

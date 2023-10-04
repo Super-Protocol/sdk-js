@@ -45,16 +45,16 @@ class Consensus {
         };
     }
 
-    public static async getEpoch(epochIndex: number): Promise<EpochInfo> {
+    public static getEpoch(epochIndex: number): Promise<EpochInfo> {
         const contract = BlockchainConnector.getInstance().getContract();
 
-        return await contract.methods.getEpoch(epochIndex).call();
+        return contract.methods.getEpoch(epochIndex).call();
     }
 
-    public static async getSuspiciousBlockTable(): Promise<string[]> {
+    public static getSuspiciousBlockTable(): Promise<string[]> {
         const contract = BlockchainConnector.getInstance().getContract();
 
-        return await contract.methods.getSuspiciousBlockTable().call();
+        return contract.methods.getSuspiciousBlockTable().call();
     }
 
     public static async unlockProfitByTcbList(
@@ -86,22 +86,22 @@ class Consensus {
         }
     }
 
-    public static async getSuspiciousBlockTableSize(): Promise<string[]> {
+    public static getSuspiciousBlockTableSize(): Promise<string[]> {
         const contract = BlockchainConnector.getInstance().getContract();
 
-        return await contract.methods.getSuspiciousBlockTableSize().call();
+        return contract.methods.getSuspiciousBlockTableSize().call();
     }
 
-    public static async getLastBlockTable(): Promise<string[]> {
+    public static getLastBlockTable(): Promise<string[]> {
         const contract = BlockchainConnector.getInstance().getContract();
 
-        return await contract.methods.getLastBlockTable().call();
+        return contract.methods.getLastBlockTable().call();
     }
 
-    public static async getLastBlockTableSize(): Promise<string[]> {
+    public static getLastBlockTableSize(): Promise<string[]> {
         const contract = BlockchainConnector.getInstance().getContract();
 
-        return await contract.methods.getLastBlockTableSize().call();
+        return contract.methods.getLastBlockTableSize().call();
     }
 
     public static async getConstants(): Promise<ConsensusConstants> {
@@ -121,7 +121,7 @@ class Consensus {
                 <string>event.returnValues.tcbId,
                 <string>event.returnValues.provider,
                 <BlockInfo>{
-                    index: <number>event.blockNumber,
+                    index: <bigint>event.blockNumber,
                     hash: <string>event.blockHash,
                 },
             );
@@ -143,7 +143,7 @@ class Consensus {
                 <string>event.returnValues.tcbId,
                 <string>event.returnValues.provider,
                 <BlockInfo>{
-                    index: <number>event.blockNumber,
+                    index: <bigint>event.blockNumber,
                     hash: <string>event.blockHash,
                 },
             );
@@ -165,7 +165,7 @@ class Consensus {
                 <string>event.returnValues.tcbId,
                 <string>event.returnValues.provider,
                 <BlockInfo>{
-                    index: <number>event.blockNumber,
+                    index: <bigint>event.blockNumber,
                     hash: <string>event.blockHash,
                 },
             );
@@ -187,7 +187,7 @@ class Consensus {
                 <string>event.returnValues.tcbId,
                 <string>event.returnValues.provider,
                 <BlockInfo>{
-                    index: <number>event.blockNumber,
+                    index: <bigint>event.blockNumber,
                     hash: <string>event.blockHash,
                 },
             );
@@ -210,7 +210,7 @@ class Consensus {
                 <string>event.returnValues.amount,
                 <string>event.returnValues.claimer,
                 <BlockInfo>{
-                    index: <number>event.blockNumber,
+                    index: <bigint>event.blockNumber,
                     hash: <string>event.blockHash,
                 },
             );
@@ -232,7 +232,7 @@ class Consensus {
                 <string>event.returnValues.tcbId,
                 <string>event.returnValues.rewards,
                 <BlockInfo>{
-                    index: <number>event.blockNumber,
+                    index: <bigint>event.blockNumber,
                     hash: <string>event.blockHash,
                 },
             );

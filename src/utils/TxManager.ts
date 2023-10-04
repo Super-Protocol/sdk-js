@@ -2,7 +2,7 @@ import { TransactionReceipt } from 'web3';
 import NonceTracker from './NonceTracker';
 import rootLogger from '../logger';
 import store from '../store';
-import { TransactionOptions, DryRunError } from '../types';
+import { TransactionOptions, DryRunError, TrasnactionDataOptions } from '../types';
 import {
     checkForUsingExternalTxManager,
     checkIfActionAccountInitialized,
@@ -14,7 +14,7 @@ import { defaultGasLimit } from '../constants';
 import lodash from 'lodash';
 import Web3 from 'web3';
 import Bottleneck from 'bottleneck';
-import { NonPayableMethodObject } from 'web3-eth-contract';
+import { NonPayableMethodObject, NonPayableTxOptions } from 'web3-eth-contract';
 
 interface EvmError extends Error {
     data: {
@@ -59,24 +59,24 @@ class TxManager {
         await this.nonceTrackers[address].initAccount();
     }
 
-    public static async execute(
-        transaction: any, // NonPayableMethodObject
+    public static execute(
+        transaction: NonPayableMethodObject,
         transactionOptions?: TransactionOptions,
         to: string = Superpro.address,
     ): Promise<TransactionReceipt> {
-        const txData: Record<string, any> = {
+        const txData: TrasnactionDataOptions = {
             to,
             data: transaction.encodeABI(),
         };
 
-        return await TxManager.publishTransaction(txData, transactionOptions, transaction);
+        return TxManager.publishTransaction(txData, transactionOptions, transaction);
     }
 
     public static async publishTransaction(
-        txData: Record<string, any>,
+        txData: TrasnactionDataOptions,
         transactionOptions?: TransactionOptions,
         transactionCall?: NonPayableMethodObject,
-    ): Promise<any> {
+    ): Promise<TransactionReceipt> {
         this.checkIfInitialized();
         checkIfActionAccountInitialized(transactionOptions);
 
@@ -106,7 +106,7 @@ class TxManager {
     }
 
     public static async dryRun(
-        transaction: any, // NonPayableMethodObject
+        transaction: NonPayableMethodObject,
         transactionOptions?: TransactionOptions,
     ): Promise<any> {
         const from = transactionOptions?.from ?? store.actionAccount;
@@ -124,7 +124,7 @@ class TxManager {
     }
 
     private static async _publishTransaction(
-        txData: Record<string, any>,
+        txData: TrasnactionDataOptions,
         transactionOptions: TransactionOptions,
         transactionCall?: NonPayableMethodObject,
     ): Promise<TransactionReceipt> {
@@ -141,7 +141,7 @@ class TxManager {
         if (transactionCall) {
             let estimatedGas;
             try {
-                estimatedGas = await transactionCall.estimateGas(txData);
+                estimatedGas = await transactionCall.estimateGas(txData as NonPayableTxOptions);
             } catch (e) {
                 TxManager.logger.debug({ error: e }, 'Fail to calculate estimated gas');
                 estimatedGas = defaultGasLimit;
@@ -163,7 +163,7 @@ class TxManager {
                 txData.gas = transactionOptions.gas;
             }
 
-            txData.gasPrice = multiplyBigIntByNumber(txData.gasPrice, store.gasPriceMultiplier);
+            txData.gasPrice = multiplyBigIntByNumber(txData.gasPrice!, store.gasPriceMultiplier);
         }
 
         let nonceTracker;

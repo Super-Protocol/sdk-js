@@ -11,7 +11,7 @@ export const tryWithInterval = async <T>(params: TryWithIntervalParams<T>): Prom
     let checkedTimes = 0;
     const { handler, checkResult, checkError, startDelay = 0, retryInterval, retryMax } = params;
 
-    return await new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
         const checkTimes = (): void => {
             checkedTimes += 1;
             if (checkedTimes >= retryMax) {

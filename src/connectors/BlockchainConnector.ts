@@ -95,10 +95,10 @@ class BlockchainConnector extends BaseConnector {
      * Returns balance of blockchain platform tokens in wei
      */
     @incrementMethodCall()
-    public async getBalance(address: string): Promise<bigint> {
+    public getBalance(address: string): Promise<bigint> {
         this.checkIfInitialized();
 
-        return await store.web3Https!.eth.getBalance(address);
+        return store.web3Https!.eth.getBalance(address);
     }
 
     public async getTimestamp(): Promise<bigint> {
@@ -154,7 +154,7 @@ class BlockchainConnector extends BaseConnector {
     public async getLastBlockInfo(): Promise<BlockInfo> {
         this.checkIfInitialized();
 
-        const index = +(await store.web3Https!.eth.getBlockNumber()).toString();
+        const index = await store.web3Https!.eth.getBlockNumber();
         const hash = (await store.web3Https!.eth.getBlock(index)).hash;
 
         return {
@@ -168,17 +168,17 @@ class BlockchainConnector extends BaseConnector {
      * @param txHash - transaction hash
      * @returns {Promise<TransactionReceipt>} - Transaction reciept
      */
-    public async getTransactionReceipt(txHash: string): Promise<TransactionReceipt> {
+    public getTransactionReceipt(txHash: string): Promise<TransactionReceipt> {
         this.checkIfInitialized();
 
-        return await store.web3Https!.eth.getTransactionReceipt(txHash);
+        return store.web3Https!.eth.getTransactionReceipt(txHash);
     }
 
     /**
      * Returns balance of blockchain platform tokens in wei
      */
     @incrementMethodCall()
-    public async transfer(
+    public transfer(
         to: string,
         amount: string,
         transactionOptions?: TransactionOptions,
@@ -191,7 +191,7 @@ class BlockchainConnector extends BaseConnector {
             value: amount,
         };
 
-        return await TxManager.publishTransaction(transaction, transactionOptions);
+        return TxManager.publishTransaction(transaction, transactionOptions);
     }
 
     /**
@@ -199,12 +199,12 @@ class BlockchainConnector extends BaseConnector {
      * @param address - wallet address
      * @returns {Promise<number>} - Transactions count
      */
-    public async getTransactionCount(address: string, status?: string): Promise<bigint> {
+    public getTransactionCount(address: string, status?: string): Promise<bigint> {
         this.checkIfInitialized();
         if (status) {
-            return await store.web3Https!.eth.getTransactionCount(address, status);
+            return store.web3Https!.eth.getTransactionCount(address, status);
         } else {
-            return await store.web3Https!.eth.getTransactionCount(address);
+            return store.web3Https!.eth.getTransactionCount(address);
         }
     }
 
@@ -212,8 +212,8 @@ class BlockchainConnector extends BaseConnector {
         return new Wallet(pk).address;
     }
 
-    private async executeBatchAsync(batch: any): Promise<any> {
-        return await new Promise((resolve, reject) => {
+    private executeBatchAsync(batch: any): Promise<any> {
+        return new Promise((resolve, reject) => {
             const requests = batch.requests;
 
             batch.requestManager.sendBatch(requests, (error: Error, results: any) => {
@@ -294,7 +294,9 @@ class BlockchainConnector extends BaseConnector {
             const batchLastBlock = Math.min(startBlock + batchSize - 1, lastBlock);
 
             for (let blockNumber = startBlock; blockNumber <= batchLastBlock; blockNumber++) {
-                void batch.add(getBlock.request(blockNumber, true));
+                batch
+                    .add(getBlock.request(blockNumber, true))
+                    .catch((err) => this.logger.error(err));
             }
             const blocks = (await this.executeBatchAsync(batch)) as Block[];
 

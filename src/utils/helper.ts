@@ -28,8 +28,8 @@ export const checkForUsingExternalTxManager = (
 /**
  * Updates gas price determined by the last few blocks median
  */
-export const getGasPrice = async (web3: Web3): Promise<bigint> => {
-    return await web3.eth.getGasPrice();
+export const getGasPrice = (web3: Web3): Promise<bigint> => {
+    return web3.eth.getGasPrice();
 };
 
 export const multiplyBigIntByNumber = (big: bigint, num: number): bigint => {

@@ -28,7 +28,7 @@ jobs:
           node-version: 16
           scope: super-protocol
           always-auth: true
-      - run: npm install --no-save --no-audit --ignore-scripts
+      - run: npm ci
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - run: npm run prepare
@@ -48,7 +48,7 @@ jobs:
           scope: super-protocol
           registry-url: 'https://registry.npmjs.org'
       - run: echo "release_type=${{github.event.inputs.release_type}}"
-      - run: npm install --no-save --no-audit --ignore-scripts
+      - run: npm ci
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - run: npm run prepare

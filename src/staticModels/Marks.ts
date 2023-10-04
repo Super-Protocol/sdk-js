@@ -7,16 +7,16 @@ class Marks {
         return Superpro.address;
     }
 
-    static async getProviderMarks(providerId: string): Promise<bigint> {
+    static getProviderMarks(providerId: string): Promise<bigint> {
         const contract = BlockchainConnector.getInstance().getContract();
 
-        return await contract.methods.getProviderMarks(providerId).call();
+        return contract.methods.getProviderMarks(providerId).call();
     }
 
-    static async getOrderMark(orderId: bigint | number | string): Promise<bigint> {
+    static getOrderMark(orderId: bigint | number | string): Promise<bigint> {
         const contract = BlockchainConnector.getInstance().getContract();
 
-        return await contract.methods.getOrderMark(orderId).call();
+        return contract.methods.getOrderMark(orderId).call();
     }
 
     static async setOrderMark(orderId: bigint | number | string, mark: Mark): Promise<void> {

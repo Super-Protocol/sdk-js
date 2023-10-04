@@ -53,19 +53,19 @@ class SuperproToken {
     /**
      * Fetching balance of SuperProtocol tokens on address
      */
-    public static async balanceOf(address: string): Promise<bigint> {
+    public static balanceOf(address: string): Promise<bigint> {
         this.checkInit();
 
-        return await this.contractHttps!.methods.balanceOf(address).call();
+        return this.contractHttps!.methods.balanceOf(address).call();
     }
 
     /**
      * Fetching allowance of SuperProtocol tokens on address
      */
-    public static async allowance(from: string, to: string): Promise<string> {
+    public static allowance(from: string, to: string): Promise<string> {
         this.checkInit();
 
-        return await this.contractHttps!.methods.allowance(from, to).call();
+        return this.contractHttps!.methods.allowance(from, to).call();
     }
 
     /**
@@ -143,7 +143,7 @@ class SuperproToken {
                 <string>event.returnValues.spender,
                 <bigint>event.returnValues.value,
                 {
-                    index: <number>event.blockNumber,
+                    index: <bigint>event.blockNumber,
                     hash: <string>event.blockHash,
                 },
             );
@@ -176,7 +176,7 @@ class SuperproToken {
                 <string>event.returnValues.to,
                 <bigint>event.returnValues.value,
                 {
-                    index: <number>event.blockNumber,
+                    index: <bigint>event.blockNumber,
                     hash: <string>event.blockHash,
                 },
             );

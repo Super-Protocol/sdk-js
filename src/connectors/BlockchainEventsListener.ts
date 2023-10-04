@@ -23,8 +23,8 @@ class BlockchainEventsListener extends BaseConnector {
         return BlockchainEventsListener.instance;
     }
 
-    public getProvider(): WebSocketProvider {
-        return <WebSocketProvider>this.provider?.currentProvider;
+    public getProvider(): WebSocketProvider | undefined {
+        return <WebSocketProvider>store.web3Wss?.provider;
     }
 
     /**
@@ -33,10 +33,6 @@ class BlockchainEventsListener extends BaseConnector {
      */
     public async initialize(config: Config): Promise<void> {
         this.logger.trace(config, 'Initializing');
-
-        if (this.provider) {
-            (this.provider?.currentProvider as WebSocketProvider).reset();
-        }
 
         const reconnectOptions = Object.assign(
             {
@@ -69,6 +65,7 @@ class BlockchainEventsListener extends BaseConnector {
 
     public shutdown(): void {
         super.shutdown();
+        store.web3Wss?.provider?.disconnect(0, '');
         store.web3Wss = undefined;
     }
 }

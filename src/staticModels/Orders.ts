@@ -240,7 +240,7 @@ class Orders {
                 <bigint>event.returnValues.parentOrderId,
                 <bigint>event.returnValues.orderId,
                 <BlockInfo>{
-                    index: <number>event.blockNumber,
+                    index: <bigint>event.blockNumber,
                     hash: <string>event.blockHash,
                 },
             );
@@ -271,7 +271,7 @@ class Orders {
                 <bigint>event.returnValues.orderId,
                 <string>event.returnValues.consumer,
                 <BlockInfo>{
-                    index: <number>event.blockNumber,
+                    index: <bigint>event.blockNumber,
                     hash: <string>event.blockHash,
                 },
             );
@@ -305,7 +305,7 @@ class Orders {
                 <bigint>event.returnValues.orderId,
                 <OrderStatus>event.returnValues.status,
                 <BlockInfo>{
-                    index: <number>event.blockNumber,
+                    index: <bigint>event.blockNumber,
                     hash: <string>event.blockHash,
                 },
             );
@@ -345,7 +345,7 @@ class Orders {
                 <string>event.returnValues.consumer,
                 <bigint>event.returnValues.amount,
                 <BlockInfo>{
-                    index: <number>event.blockNumber,
+                    index: <bigint>event.blockNumber,
                     hash: <string>event.blockHash,
                 },
             );
@@ -380,7 +380,7 @@ class Orders {
                 <string>event.returnValues.consumer,
                 <bigint>event.returnValues.change,
                 <BlockInfo>{
-                    index: <number>event.blockNumber,
+                    index: <bigint>event.blockNumber,
                     hash: <string>event.blockHash,
                 },
             );
@@ -420,7 +420,7 @@ class Orders {
                 <string>event.returnValues.tokenReceiver,
                 <bigint>event.returnValues.profit,
                 <BlockInfo>{
-                    index: <number>event.blockNumber,
+                    index: <bigint>event.blockNumber,
                     hash: <string>event.blockHash,
                 },
             );
@@ -460,7 +460,7 @@ class Orders {
                 <string>event.returnValues.consumer,
                 <boolean>event.returnValues.awaitingPayment,
                 <BlockInfo>{
-                    index: <number>event.blockNumber,
+                    index: <bigint>event.blockNumber,
                     hash: <string>event.blockHash,
                 },
             );
@@ -500,7 +500,7 @@ class Orders {
                 <string>event.returnValues.consumer,
                 <string>event.returnValues.encryptedResult,
                 <BlockInfo>{
-                    index: <number>event.blockNumber,
+                    index: <bigint>event.blockNumber,
                     hash: <string>event.blockHash,
                 },
             );
@@ -540,7 +540,7 @@ class Orders {
                 <bigint>event.returnValues.orderId,
                 <bigint>event.returnValues.value,
                 <BlockInfo>{
-                    index: <number>event.blockNumber,
+                    index: <bigint>event.blockNumber,
                     hash: <string>event.blockHash,
                 },
             );
@@ -580,7 +580,7 @@ class Orders {
                 <bigint>event.returnValues.orderId,
                 <bigint>event.returnValues.profit,
                 <BlockInfo>{
-                    index: <number>event.blockNumber,
+                    index: <bigint>event.blockNumber,
                     hash: <string>event.blockHash,
                 },
             );

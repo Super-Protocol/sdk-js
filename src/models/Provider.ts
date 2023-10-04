@@ -119,12 +119,12 @@ class Provider {
         return violationRate >= CONSENSUS_MAX_PENALTIES;
     }
 
-    public async getOrdersLockedProfitList(): Promise<bigint[]> {
-        return await Provider.contract.methods.getOrdersLockedProfitList(this.providerId).call();
+    public getOrdersLockedProfitList(): Promise<bigint[]> {
+        return Provider.contract.methods.getOrdersLockedProfitList(this.providerId).call();
     }
 
-    public async getTcbLockedProfitList(): Promise<bigint[]> {
-        return await Provider.contract.methods.getTcbLockedProfitList(this.providerId).call();
+    public getTcbLockedProfitList(): Promise<bigint[]> {
+        return Provider.contract.methods.getTcbLockedProfitList(this.providerId).call();
     }
 }
 

@@ -32,7 +32,7 @@ class ActiveOrders {
         begin = begin ?? BigInt(0);
         end = end ?? BigInt(await contract.methods.getListOfActiveOrdersSize().call());
 
-        return await contract.methods.getListOfActiveOrdersRange(begin, end).call();
+        return contract.methods.getListOfActiveOrdersRange(begin, end).call();
     }
 
     /**

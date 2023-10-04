@@ -153,8 +153,8 @@ class TCB {
     /**
      * Function for fetching TCB avaliable reward
      */
-    public async getRewardAmount(): Promise<bigint> {
-        return await this.contract.methods.getTcbReward(this.tcbId).call();
+    public getRewardAmount(): Promise<bigint> {
+        return this.contract.methods.getTcbReward(this.tcbId).call();
     }
 }
 

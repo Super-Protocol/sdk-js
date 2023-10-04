@@ -17,20 +17,20 @@ class Deposits {
      * Function for fetching deposit info
      * @param depositOwner - Deposit owner
      */
-    public static async getDepositInfo(depositOwner: string): Promise<DepositInfo> {
+    public static getDepositInfo(depositOwner: string): Promise<DepositInfo> {
         const contract = BlockchainConnector.getInstance().getContract();
 
-        return await contract.methods.getDepositInfo(depositOwner).call();
+        return contract.methods.getDepositInfo(depositOwner).call();
     }
 
     /**
      * Function for fetching amount of locked tokens
      * @param depositOwner - Deposit owner
      */
-    public static async getLockedTokensAmount(depositOwner: string): Promise<string> {
+    public static getLockedTokensAmount(depositOwner: string): Promise<string> {
         const contract = BlockchainConnector.getInstance().getContract();
 
-        return await contract.methods.getLockedTokensAmount(depositOwner).call();
+        return contract.methods.getLockedTokensAmount(depositOwner).call();
     }
 
     /**
@@ -112,7 +112,7 @@ class Deposits {
                 <bigint>event.returnValues.amount,
                 <bigint>event.returnValues.totalLocked,
                 <BlockInfo>{
-                    index: <number>event.blockNumber,
+                    index: <bigint>event.blockNumber,
                     hash: <string>event.blockHash,
                 },
             );
@@ -147,7 +147,7 @@ class Deposits {
                 <bigint>event.returnValues.amount,
                 <bigint>event.returnValues.totalLocked,
                 <BlockInfo>{
-                    index: <number>event.blockNumber,
+                    index: <bigint>event.blockNumber,
                     hash: <string>event.blockHash,
                 },
             );
@@ -182,7 +182,7 @@ class Deposits {
                 <bigint>event.returnValues.amount,
                 <bigint>event.returnValues.totalLocked,
                 <BlockInfo>{
-                    index: <number>event.blockNumber,
+                    index: <bigint>event.blockNumber,
                     hash: <string>event.blockHash,
                 },
             );
@@ -217,7 +217,7 @@ class Deposits {
                 <bigint>event.returnValues.amount,
                 <bigint>event.returnValues.totalLocked,
                 <BlockInfo>{
-                    index: <number>event.blockNumber,
+                    index: <bigint>event.blockNumber,
                     hash: <string>event.blockHash,
                 },
             );

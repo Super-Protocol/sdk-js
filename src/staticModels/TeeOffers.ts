@@ -156,19 +156,19 @@ class TeeOffers {
      * Function for fetching whether tee offer option exists or not
      * @param optionId - Option ID
      */
-    public static async isOptionExists(optionId: string): Promise<boolean> {
+    public static isOptionExists(optionId: string): Promise<boolean> {
         const contract = BlockchainConnector.getInstance().getContract();
 
-        return await contract.methods.isOptionExists(optionId).call();
+        return contract.methods.isOptionExists(optionId).call();
     }
 
     /**
      * Function for fetching total count of options
      */
-    public static async getOptionsCount(): Promise<number> {
+    public static getOptionsCount(): Promise<bigint> {
         const contract = BlockchainConnector.getInstance().getContract();
 
-        return Number(await contract.methods.getOptionsCount().call());
+        return contract.methods.getOptionsCount().call();
     }
 
     /**
@@ -247,7 +247,7 @@ class TeeOffers {
                 <bigint>event.returnValues.slotId,
                 parseBytes32String(<BytesLike>event.returnValues.externalId),
                 <BlockInfo>{
-                    index: <number>event.blockNumber,
+                    index: <bigint>event.blockNumber,
                     hash: <string>event.blockHash,
                 },
             );
@@ -274,7 +274,7 @@ class TeeOffers {
                 <bigint>event.returnValues.offerId,
                 <bigint>event.returnValues.slotId,
                 <BlockInfo>{
-                    index: <number>event.blockNumber,
+                    index: <bigint>event.blockNumber,
                     hash: <string>event.blockHash,
                 },
             );
@@ -301,7 +301,7 @@ class TeeOffers {
                 <bigint>event.returnValues.offerId,
                 <bigint>event.returnValues.slotId,
                 <BlockInfo>{
-                    index: <number>event.blockNumber,
+                    index: <bigint>event.blockNumber,
                     hash: <string>event.blockHash,
                 },
             );
@@ -334,7 +334,7 @@ class TeeOffers {
                 <bigint>event.returnValues.optionId,
                 parseBytes32String(<BytesLike>event.returnValues.externalId),
                 <BlockInfo>{
-                    index: <number>event.blockNumber,
+                    index: <bigint>event.blockNumber,
                     hash: <string>event.blockHash,
                 },
             );
@@ -368,7 +368,7 @@ class TeeOffers {
                 <bigint>event.returnValues.teeOfferId,
                 <bigint>event.returnValues.optionId,
                 <BlockInfo>{
-                    index: <number>event.blockNumber,
+                    index: <bigint>event.blockNumber,
                     hash: <string>event.blockHash,
                 },
             );
@@ -402,7 +402,7 @@ class TeeOffers {
                 <bigint>event.returnValues.teeOfferId,
                 <bigint>event.returnValues.optionId,
                 <BlockInfo>{
-                    index: <number>event.blockNumber,
+                    index: <bigint>event.blockNumber,
                     hash: <string>event.blockHash,
                 },
             );
@@ -430,7 +430,7 @@ class TeeOffers {
                 <string>event.returnValues.creator,
                 parseBytes32String(<BytesLike>event.returnValues.externalId),
                 <BlockInfo>{
-                    index: <number>event.blockNumber,
+                    index: <bigint>event.blockNumber,
                     hash: <string>event.blockHash,
                 },
             );
@@ -453,7 +453,7 @@ class TeeOffers {
                 <string>event.returnValues.providerAuth,
                 <bigint>event.returnValues.violationRate,
                 <BlockInfo>{
-                    index: <number>event.blockNumber,
+                    index: <bigint>event.blockNumber,
                     hash: <string>event.blockHash,
                 },
             );

@@ -63,7 +63,7 @@ class AES {
         };
     }
 
-    public static async decrypt(encryption: AESEncryption): Promise<string> {
+    public static decrypt(encryption: AESEncryption): string {
         if (!encryption.key) throw Error('Decryption key is not provided');
 
         const key = Buffer.from(encryption.key, encryption.encoding);
@@ -75,7 +75,7 @@ class AES {
             params.mac = Buffer.from((encryption as AESEncryptionWithMac).mac, encryption.encoding);
         }
 
-        return await NativeCrypto.decrypt(
+        return NativeCrypto.decrypt(
             key,
             encryption.ciphertext!,
             encryption.cipher,

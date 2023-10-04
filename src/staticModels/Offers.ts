@@ -153,7 +153,7 @@ class Offers {
                 <bigint>event.returnValues.slotId,
                 parseBytes32String(<BytesLike>event.returnValues.externalId),
                 <BlockInfo>{
-                    index: <number>event.blockNumber,
+                    index: <bigint>event.blockNumber,
                     hash: <string>event.blockHash,
                 },
             );
@@ -180,7 +180,7 @@ class Offers {
                 <bigint>event.returnValues.offerId,
                 <bigint>event.returnValues.slotId,
                 <BlockInfo>{
-                    index: <number>event.blockNumber,
+                    index: <bigint>event.blockNumber,
                     hash: <string>event.blockHash,
                 },
             );
@@ -207,7 +207,7 @@ class Offers {
                 <bigint>event.returnValues.offerId,
                 <bigint>event.returnValues.slotId,
                 <BlockInfo>{
-                    index: <number>event.blockNumber,
+                    index: <bigint>event.blockNumber,
                     hash: <string>event.blockHash,
                 },
             );
@@ -235,7 +235,7 @@ class Offers {
                 <string>event.returnValues.creator,
                 parseBytes32String(<BytesLike>event.returnValues.externalId),
                 <BlockInfo>{
-                    index: <number>event.blockNumber,
+                    index: <bigint>event.blockNumber,
                     hash: <string>event.blockHash,
                 },
             );
@@ -258,7 +258,7 @@ class Offers {
                 <bigint>event.returnValues.offerId,
                 <OfferType>event.returnValues.offerType,
                 <BlockInfo>{
-                    index: <number>event.blockNumber,
+                    index: <bigint>event.blockNumber,
                     hash: <string>event.blockHash,
                 },
             );
@@ -281,7 +281,7 @@ class Offers {
                 <bigint>event.returnValues.offerId,
                 <OfferType>event.returnValues.offerType,
                 <BlockInfo>{
-                    index: <number>event.blockNumber,
+                    index: <bigint>event.blockNumber,
                     hash: <string>event.blockHash,
                 },
             );

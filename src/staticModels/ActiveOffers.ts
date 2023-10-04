@@ -8,16 +8,16 @@ class ActiveOffers {
         return Superpro.address;
     }
 
-    public static async getListOfActiveOffersSize(): Promise<bigint> {
+    public static getListOfActiveOffersSize(): Promise<bigint> {
         const contract = BlockchainConnector.getInstance().getContract();
 
-        return await contract.methods.getListOfActiveOffersSize().call();
+        return contract.methods.getListOfActiveOffersSize().call();
     }
 
-    public static async getActiveOffersEventsQueueLength(): Promise<bigint> {
+    public static getActiveOffersEventsQueueLength(): Promise<bigint> {
         const contract = BlockchainConnector.getInstance().getContract();
 
-        return await contract.methods.getActiveOffersEventsQueueLength().call();
+        return contract.methods.getActiveOffersEventsQueueLength().call();
     }
 
     /**
@@ -36,7 +36,7 @@ class ActiveOffers {
         begin = begin ?? BigInt(0);
         end = end ?? BigInt(await contract.methods.getListOfActiveOffersSize().call()) ?? BigInt(0);
 
-        return await contract.methods.getListOfActiveOffersRange(begin, end).call();
+        return contract.methods.getListOfActiveOffersRange(begin, end).call();
     }
 }
 

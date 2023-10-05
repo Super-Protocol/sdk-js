@@ -488,6 +488,14 @@ export class QuoteValidator {
         }
     }
 
+    public hasQuoteUserData(quoteBuffer: Buffer, userDataBuffer: Uint8Array): boolean {
+        const quote: TeeSgxQuoteDataType = this.teeSgxParser.parseQuote(quoteBuffer);
+        const report: TeeSgxReportDataType = this.teeSgxParser.parseReport(quote.qeReport);
+        const compareResult = Buffer.compare(report.userData, userDataBuffer);
+
+        return compareResult === 0;
+    }
+
     private async getSha256Hash(data: Buffer): Promise<Buffer> {
         const hashInfo = {
             algo: HashAlgorithm.SHA256,

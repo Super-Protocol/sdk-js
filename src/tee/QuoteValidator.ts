@@ -85,7 +85,6 @@ export class QuoteValidator {
     }
 
     private async fetchSgxRootCertificate(): Promise<string> {
-        // TODO: use cache for http requests
         const platformCrlResult = await axios.get(
             `${BASE_SGX_URL}/pckcrl?ca=platform&encoding=pem`,
         );
@@ -302,7 +301,6 @@ export class QuoteValidator {
             throw new TeeQuoteValidatorError(
                 'Invalid SGX root certificate in enclave identity chain',
             );
-            // TODO: verify qeIdentityData.data.enclaveIdentity by qeIdentityData.signature
         }
 
         const qeIdentityCert = Certificate.fromPEM(Buffer.from(qeIdentityChain[0]));
@@ -488,7 +486,7 @@ export class QuoteValidator {
         }
     }
 
-    public hasQuoteUserData(quoteBuffer: Buffer, userDataBuffer: Uint8Array): boolean {
+    public isQuoteHasUserData(quoteBuffer: Buffer, userDataBuffer: Uint8Array): boolean {
         const quote: TeeSgxQuoteDataType = this.teeSgxParser.parseQuote(quoteBuffer);
         const report: TeeSgxReportDataType = this.teeSgxParser.parseReport(quote.qeReport);
         const compareResult = Buffer.compare(report.userData, userDataBuffer);

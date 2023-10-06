@@ -442,7 +442,7 @@ class TeeOffer {
     }
 
     public async isTcbCreationAvailable(): Promise<boolean> {
-        const [offerNotBlocked, newEpochStarted, halfEpochPassed, benchmarkVerified] =
+        const { offerNotBlocked, newEpochStarted, halfEpochPassed, benchmarkVerified } =
             await TeeOffer.contract.methods.isTcbCreationAvailable(this.id).call();
 
         return offerNotBlocked && newEpochStarted && halfEpochPassed && benchmarkVerified;

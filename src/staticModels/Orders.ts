@@ -200,12 +200,14 @@ class Orders {
         const contract = BlockchainConnector.getInstance().getContract();
         checkIfActionAccountInitialized(transactionOptions);
 
-        let executedCount;
+        let executedCount: number;
         try {
-            executedCount = +(await TxManager.dryRun(
-                contract.methods.unlockProfitByList(orderIds),
-                transactionOptions,
-            ));
+            executedCount = Number(
+                (await TxManager.dryRun(
+                    contract.methods.unlockProfitByList(orderIds),
+                    transactionOptions,
+                )) as string,
+            );
         } catch (e) {
             executedCount = 0;
         }

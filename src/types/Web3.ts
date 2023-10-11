@@ -8,12 +8,14 @@ export type BlockInfo = {
 export type EventData = {
     contract: string;
     name: string;
-    data: any;
+    data: unknown;
 };
 
 export type TransactionOptionsRequired = Required<TransactionOptions>;
 
-export type TrasnactionDataOptions = TransactionOptions & {
+export type BlockchainError = { message: string };
+
+export type TransactionDataOptions = TransactionOptions & {
     to: string;
     nonce?: bigint;
     data?: string;

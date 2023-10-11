@@ -64,12 +64,14 @@ class Consensus {
         const contract = BlockchainConnector.getInstance().getContract();
         checkIfActionAccountInitialized(transactionOptions);
 
-        let executedCount;
+        let executedCount: number;
         try {
-            executedCount = +(await TxManager.dryRun(
-                contract.methods.unlockTcbRewardByList(tcbIds),
-                transactionOptions,
-            ));
+            executedCount = Number(
+                (await TxManager.dryRun(
+                    contract.methods.unlockTcbRewardByList(tcbIds),
+                    transactionOptions,
+                )) as string,
+            );
         } catch (e) {
             executedCount = 0;
         }

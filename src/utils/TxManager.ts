@@ -2,7 +2,7 @@ import { TransactionReceipt } from 'web3';
 import NonceTracker from './NonceTracker';
 import rootLogger from '../logger';
 import store from '../store';
-import { TransactionOptions, DryRunError, TrasnactionDataOptions } from '../types';
+import { TransactionOptions, DryRunError, TransactionDataOptions, BlockchainError } from '../types';
 import {
     checkForUsingExternalTxManager,
     checkIfActionAccountInitialized,
@@ -64,7 +64,7 @@ class TxManager {
         transactionOptions?: TransactionOptions,
         to: string = Superpro.address,
     ): Promise<TransactionReceipt> {
-        const txData: TrasnactionDataOptions = {
+        const txData: TransactionDataOptions = {
             to,
             data: transaction.encodeABI(),
         };
@@ -73,7 +73,7 @@ class TxManager {
     }
 
     public static async publishTransaction(
-        txData: TrasnactionDataOptions,
+        txData: TransactionDataOptions,
         transactionOptions?: TransactionOptions,
         transactionCall?: NonPayableMethodObject,
     ): Promise<TransactionReceipt> {
@@ -105,17 +105,14 @@ class TxManager {
         );
     }
 
-    public static async dryRun(
+    public static async dryRun<SpecialOutput = unknown>(
         transaction: NonPayableMethodObject,
         transactionOptions?: TransactionOptions,
-    ): Promise<any> {
+    ): Promise<SpecialOutput> {
         const from = transactionOptions?.from ?? store.actionAccount;
-        let result;
 
         try {
-            result = await transaction.call({ from });
-
-            return result;
+            return await transaction.call({ from });
         } catch (e) {
             (e as DryRunError).txErrorMsg =
                 (e as EvmError).data.message || 'Error text is undefined';
@@ -124,7 +121,7 @@ class TxManager {
     }
 
     private static async _publishTransaction(
-        txData: TrasnactionDataOptions,
+        txData: TransactionDataOptions,
         transactionOptions: TransactionOptions,
         transactionCall?: NonPayableMethodObject,
     ): Promise<TransactionReceipt> {
@@ -219,11 +216,13 @@ class TxManager {
             if (nonceTracker) nonceTracker.onTransactionPublished();
 
             return transactionResultData;
-        } catch (e: any) {
+        } catch (e: unknown) {
             const message = 'Error during transaction execution';
             TxManager.logger.error(e, message);
             if (nonceTracker) await nonceTracker.onTransactionError();
-            if (e.message?.includes('Transaction has been reverted by the EVM')) {
+            if (
+                (e as BlockchainError).message?.includes('Transaction has been reverted by the EVM')
+            ) {
                 throw new Web3TransactionRevertedByEvmError(e, message);
             } else {
                 throw new Web3TransactionError(e, message);

@@ -86,6 +86,20 @@ export class QuoteValidator {
         return null;
     }
 
+    private verifyDataBySignature(data: Buffer, signature: Buffer, key: Buffer): boolean {
+        const ellipticEc = new ec('p256');
+        const result = ellipticEc.verify(
+            data,
+            {
+                r: signature.subarray(0, 32),
+                s: signature.subarray(32),
+            },
+            ellipticEc.keyFromPublic(key, 'hex'),
+        );
+
+        return result;
+    }
+
     private async fetchSgxRootCertificate(): Promise<string> {
         const platformCrlResult = await axios.get(
             `${this.baseUrl}/pckcrl?ca=platform&encoding=pem`,
@@ -156,19 +170,10 @@ export class QuoteValidator {
         quote: TeeSgxQuoteDataType,
         pckPublicKey: Buffer,
     ): Promise<boolean> {
-        const signature = quote.qeReportSignature;
+        const signature = Buffer.from(quote.qeReportSignature);
         const reportHash = await this.getSha256Hash(Buffer.from(quote.qeReport));
-        const ellipticEc = new ec('p256');
-        const result = ellipticEc.verify(
-            reportHash,
-            {
-                r: signature.subarray(0, 32),
-                s: signature.subarray(32),
-            },
-            ellipticEc.keyFromPublic(pckPublicKey, 'hex'),
-        );
 
-        return result;
+        return this.verifyDataBySignature(reportHash, signature, pckPublicKey);
     }
 
     private async verifyQeReportData(
@@ -268,20 +273,12 @@ export class QuoteValidator {
 
         const tcbCert = Certificate.fromPEM(Buffer.from(tcbInfoChain[0]));
         const key = tcbCert.publicKey.keyRaw;
-        const expected = Buffer.from(tcbData.data.signature, 'hex');
-
+        const signature = Buffer.from(tcbData.data.signature, 'hex');
         const calculatedhash = await this.getSha256Hash(
             Buffer.from(JSON.stringify(tcbData.data.tcbInfo)),
         );
-        const ellipticEc = new ec('p256');
-        const result = ellipticEc.verify(
-            calculatedhash,
-            {
-                r: expected.subarray(0, 32),
-                s: expected.subarray(32),
-            },
-            ellipticEc.keyFromPublic(key, 'hex'),
-        );
+
+        const result = this.verifyDataBySignature(calculatedhash, signature, key);
         if (!result) {
             throw new TeeQuoteValidatorError('TCB info signature is not valid');
         }
@@ -307,20 +304,12 @@ export class QuoteValidator {
 
         const qeIdentityCert = Certificate.fromPEM(Buffer.from(qeIdentityChain[0]));
         const key = qeIdentityCert.publicKey.keyRaw;
-        const expected = Buffer.from(qeIdentityData.data.signature, 'hex');
-
+        const signature = Buffer.from(qeIdentityData.data.signature, 'hex');
         const calculatedhash = await this.getSha256Hash(
             Buffer.from(JSON.stringify(qeIdentityData.data.enclaveIdentity)),
         );
-        const ellipticEc = new ec('p256');
-        const result = ellipticEc.verify(
-            calculatedhash,
-            {
-                r: expected.subarray(0, 32),
-                s: expected.subarray(32),
-            },
-            ellipticEc.keyFromPublic(key, 'hex'),
-        );
+
+        const result = this.verifyDataBySignature(calculatedhash, signature, key);
         if (!result) {
             throw new TeeQuoteValidatorError('Enclave identity signature is not valid');
         }

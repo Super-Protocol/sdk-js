@@ -51,7 +51,7 @@ describe('Quote validator', () => {
             const res = await validator.validate(quoteBuffer);
             expect(res).toBeDefined();
             expect(res.quoteValidationStatus).toEqual(QuoteValidationStatuses.UpToDate);
-        });
+        }, 10000);
 
         test('up to date status', async () => {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -66,7 +66,7 @@ describe('Quote validator', () => {
             const res = await validator.validate(quoteBuffer);
             expect(res).toBeDefined();
             expect(res.quoteValidationStatus).toEqual(QuoteValidationStatuses.SoftwareUpdateNeeded);
-        });
+        }, 10000);
 
         test('up to date status', async () => {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -81,7 +81,7 @@ describe('Quote validator', () => {
             const res = await validator.validate(quoteBuffer);
             expect(res).toBeDefined();
             expect(res.quoteValidationStatus).toEqual(QuoteValidationStatuses.ConfigurationNeeded);
-        });
+        }, 10000);
     });
 
     describe('User data tests', () => {

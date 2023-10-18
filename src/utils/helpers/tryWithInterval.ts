@@ -11,14 +11,12 @@ export const tryWithInterval = async <T>(params: TryWithIntervalParams<T>): Prom
     let checkedTimes = 0;
     const { handler, checkResult, checkError, startDelay = 0, retryInterval, retryMax } = params;
 
+    const reachedMaxRetries = (): boolean => checkedTimes >= retryMax;
+
     return await new Promise((resolve, reject) => {
-        const checkTimes = (): void => {
+        const scheduleNewIteration = (delay: number): void => {
             checkedTimes += 1;
-            if (checkedTimes >= retryMax) {
-                reject(new Error(`checkWithInterval: MaxCheck count reached!}`));
-            } else {
-                setTimeout(timeoutFn, retryInterval);
-            }
+            setTimeout(timeoutFn, delay);
         };
 
         const timeoutFn = async (): Promise<void> => {
@@ -30,18 +28,23 @@ export const tryWithInterval = async <T>(params: TryWithIntervalParams<T>): Prom
 
                     return;
                 }
-                checkTimes();
+                if (reachedMaxRetries()) {
+                    reject(new Error(`${tryWithInterval.name}: MaxCheck count reached!`));
+
+                    return;
+                }
             } catch (err) {
                 const isErrorRetryable = checkError ? checkError(err).retryable : true;
-                if (!isErrorRetryable) {
+                if (!isErrorRetryable || reachedMaxRetries()) {
                     reject(err);
 
                     return;
                 }
-                checkTimes();
             }
+
+            scheduleNewIteration(retryInterval);
         };
 
-        setTimeout(timeoutFn, startDelay);
+        scheduleNewIteration(startDelay);
     });
 };

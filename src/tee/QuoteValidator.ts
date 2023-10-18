@@ -105,6 +105,17 @@ export class QuoteValidator {
         return from < now && now < to;
     }
 
+    private checkChainForIssuers(
+        pckCert: Certificate,
+        platformCert: Certificate,
+        rootCert: Certificate,
+    ): boolean {
+        return (
+            _.isEqual(pckCert.issuer, platformCert.subject) &&
+            _.isEqual(platformCert.issuer, rootCert.subject)
+        );
+    }
+
     private async getCertificates(
         quote: TeeSgxQuoteDataType,
     ): Promise<{ pckCert: Certificate; rootCertPem: string }> {
@@ -157,11 +168,23 @@ export class QuoteValidator {
             );
         }
 
+        if (!this.checkChainForIssuers(pckCert, platformFetchedCert, rootFetchedCert)) {
+            throw new TeeQuoteValidatorError('Invalid issuers in certificates chain');
+        }
+
         const crlDer = formatter.pemToBin(platformCrlResult.data);
         const crlAsn = fromBER(crlDer as Uint8Array);
         const crl = new CertificateRevocationList({ schema: crlAsn.result });
         if (!crl || !crl.revokedCertificates) {
             throw new TeeQuoteValidatorError('Certificate revocation list not found');
+        }
+        if (!crl.thisUpdate || !crl.nextUpdate) {
+            throw new TeeQuoteValidatorError(
+                'Certificate revocation list has no update date field',
+            );
+        }
+        if (!this.checkValidDate(crl.thisUpdate.value.valueOf(), crl.nextUpdate.value.valueOf())) {
+            throw new TeeQuoteValidatorError('Certificate revocation list has invalid update date');
         }
         const hasRevoked = crl.revokedCertificates.find((revoked) =>
             [

@@ -100,29 +100,61 @@ export class QuoteValidator {
         return result;
     }
 
-    private async fetchSgxRootCertificate(): Promise<string> {
+    private checkValidDate(from: number, to: number): boolean {
+        const now = Date.now();
+        return from < now && now < to;
+    }
+
+    private async getCertificates(
+        quote: TeeSgxQuoteDataType,
+    ): Promise<{ pckCert: Certificate; rootCertPem: string }> {
         const platformCrlResult = await axios.get(
             `${this.baseUrl}/pckcrl?ca=platform&encoding=pem`,
         );
         const platformChain = decodeURIComponent(
             platformCrlResult.headers['sgx-pck-crl-issuer-chain'],
         );
-        const certPems = this.splitChain(platformChain); // [platform, root]
-        const [platformCert, rootCert] = certPems.map((pem) =>
-            Certificate.fromPEM(Buffer.from(pem)),
-        );
+        const [platformFetchedPem, rootFetchedPem] = this.splitChain(platformChain); // [platform, root]
+        const platformFetchedCert = Certificate.fromPEM(Buffer.from(platformFetchedPem));
+        const rootFetchedCert = Certificate.fromPEM(Buffer.from(rootFetchedPem));
 
-        if (platformCert.validTo.valueOf() < Date.now()) {
-            throw new TeeQuoteValidatorError('Platform certificate expired');
+        if (
+            !this.checkValidDate(
+                platformFetchedCert.validFrom.valueOf(),
+                platformFetchedCert.validTo.valueOf(),
+            )
+        ) {
+            throw new TeeQuoteValidatorError('Platform certificate validation date is not valid');
         }
-        if (rootCert.validTo.valueOf() < Date.now()) {
-            throw new TeeQuoteValidatorError('Root certificate expired');
+        if (
+            !this.checkValidDate(
+                rootFetchedCert.validFrom.valueOf(),
+                rootFetchedCert.validTo.valueOf(),
+            )
+        ) {
+            throw new TeeQuoteValidatorError('Root certificate validation date is not valid');
         }
-        if (!_.isEqual(rootCert.issuer, rootCert.subject)) {
+        if (!_.isEqual(rootFetchedCert.issuer, rootFetchedCert.subject)) {
             throw new TeeQuoteValidatorError('Root certificate is not self-signed');
         }
-        if (Buffer.compare(rootCert.publicKey.keyRaw, INTEL_ROOT_PUB_KEY) !== 0) {
+        if (Buffer.compare(rootFetchedCert.publicKey.keyRaw, INTEL_ROOT_PUB_KEY) !== 0) {
             throw new TeeQuoteValidatorError('Wrong Intel root certificate public key');
+        }
+
+        const certificatePems: string[] = this.splitChain(quote.qeCertificationData.toString()); // [pck, platform, root]
+        const pckCert = Certificate.fromPEM(Buffer.from(certificatePems[0]));
+        const certType = quote.qeCertificationDataType;
+
+        if (!this.checkValidDate(pckCert.validFrom.valueOf(), pckCert.validTo.valueOf())) {
+            throw new TeeQuoteValidatorError('PCK certificate validation date is not valid');
+        }
+        if (certType !== 5) {
+            throw new TeeQuoteValidatorError(`Unsupported certification data type: ${certType}`);
+        }
+        if (rootFetchedPem !== certificatePems[2]) {
+            throw new TeeQuoteValidatorError(
+                "Invalid SGX root certificate in quote's certificate chain",
+            );
         }
 
         const crlDer = formatter.pemToBin(platformCrlResult.data);
@@ -132,7 +164,11 @@ export class QuoteValidator {
             throw new TeeQuoteValidatorError('Certificate revocation list not found');
         }
         const hasRevoked = crl.revokedCertificates.find((revoked) =>
-            [rootCert.serialNumber, platformCert.serialNumber].includes(
+            [
+                rootFetchedCert.serialNumber,
+                platformFetchedCert.serialNumber,
+                pckCert.serialNumber,
+            ].includes(
                 Buffer.from(revoked.userCertificate.valueBlock.valueHexView).toString('hex'),
             ),
         );
@@ -140,30 +176,7 @@ export class QuoteValidator {
             throw new TeeQuoteValidatorError('Certificate in revoked list');
         }
 
-        return certPems[1];
-    }
-
-    private getAndCheckPckCertificate(
-        quote: TeeSgxQuoteDataType,
-        rootCertPem: string,
-    ): Certificate {
-        const certificatePems: string[] = this.splitChain(quote.qeCertificationData.toString()); // [pck, platform, root]
-        const pckCert = Certificate.fromPEM(Buffer.from(certificatePems[0]));
-        const certType = quote.qeCertificationDataType;
-
-        if (certType !== 5) {
-            throw new TeeQuoteValidatorError(`Unsupported certification data type: ${certType}`);
-        }
-        if (pckCert.validTo.valueOf() < Date.now()) {
-            throw new TeeQuoteValidatorError('PCK certificate expired');
-        }
-        if (rootCertPem !== certificatePems[2]) {
-            throw new TeeQuoteValidatorError(
-                "Invalid SGX root certificate in quote's certificate chain",
-            );
-        }
-
-        return pckCert;
+        return { pckCert, rootCertPem: rootFetchedPem };
     }
 
     private async verifyQeReportSignature(
@@ -430,8 +443,7 @@ export class QuoteValidator {
             const quote: TeeSgxQuoteDataType = this.teeSgxParser.parseQuote(quoteBuffer);
             const report: TeeSgxReportDataType = this.teeSgxParser.parseReport(quote.qeReport);
 
-            const rootCertPem = await this.fetchSgxRootCertificate();
-            const pckCert = this.getAndCheckPckCertificate(quote, rootCertPem);
+            const { pckCert, rootCertPem } = await this.getCertificates(quote);
 
             await this.validateQuoteStructure(quote, report, pckCert.publicKey.keyRaw);
             this.logger.info('Quote structure validated successfully');

@@ -1,6 +1,6 @@
 import abi from '../contracts/abi';
 import rootLogger from '../logger';
-import { ContractAbi, Contract } from 'web3';
+import { Contract } from 'web3';
 import store from '../store';
 
 export type Config = {
@@ -23,7 +23,7 @@ export type Config = {
 export class BaseConnector {
     protected initialized = false;
     protected logger = rootLogger.child({ className: this.constructor['name'] });
-    protected contract?: Contract<ContractAbi>;
+    protected contract?: Contract<typeof abi>;
 
     public isInitialized(): boolean {
         return this.initialized;

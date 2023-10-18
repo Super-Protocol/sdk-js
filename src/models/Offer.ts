@@ -19,7 +19,6 @@ import {
     TransactionOptions,
 } from '../types';
 import { formatBytes32String } from 'ethers/lib/utils';
-import Superpro from '../staticModels/Superpro';
 import TeeOffers from '../staticModels/TeeOffers';
 import TxManager from '../utils/TxManager';
 import { tryWithInterval } from '../utils/helpers';
@@ -51,17 +50,6 @@ class Offer {
     }
 
     /**
-     * Checks if contract has been initialized, if not - initialize contract
-     */
-    private checkInitOffer(transactionOptions: TransactionOptions): Contract<typeof abi> {
-        if (transactionOptions?.web3) {
-            return new transactionOptions.web3.eth.Contract(abi, Superpro.address);
-        }
-
-        return Offer.contract;
-    }
-
-    /**
      * Function for fetching offer status from blockchain
      */
     @incrementMethodCall()
@@ -75,7 +63,6 @@ class Offer {
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
     public async setName(name: string, transactionOptions?: TransactionOptions): Promise<void> {
-        transactionOptions ?? this.checkInitOffer(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
         await TxManager.execute(
@@ -94,7 +81,6 @@ class Offer {
         description: string,
         transactionOptions?: TransactionOptions,
     ): Promise<void> {
-        transactionOptions ?? this.checkInitOffer(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
         await TxManager.execute(
@@ -113,7 +99,6 @@ class Offer {
         newInfo: OfferInfo,
         transactionOptions?: TransactionOptions,
     ): Promise<void> {
-        transactionOptions ?? this.checkInitOffer(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
         await TxManager.execute(
@@ -291,12 +276,11 @@ class Offer {
         externalId = 'default',
         transactionOptions?: TransactionOptions,
     ): Promise<void> {
-        const contract = BlockchainConnector.getInstance().getContract();
         checkIfActionAccountInitialized(transactionOptions);
 
         slotInfo = packSlotInfo(slotInfo, await TeeOffers.getDenominator());
         const formattedExternalId = formatBytes32String(externalId);
-        const transactionCall = contract.methods.addValueOfferSlot(
+        const transactionCall = Offer.contract.methods.addValueOfferSlot(
             this.id,
             formattedExternalId,
             slotInfo,
@@ -321,12 +305,11 @@ class Offer {
         newUsage: SlotUsage,
         transactionOptions?: TransactionOptions,
     ): Promise<void> {
-        const contract = BlockchainConnector.getInstance().getContract();
         checkIfActionAccountInitialized(transactionOptions);
 
         newSlotInfo = packSlotInfo(newSlotInfo, await TeeOffers.getDenominator());
         await TxManager.execute(
-            contract.methods.updateValueOfferSlot(
+            Offer.contract.methods.updateValueOfferSlot(
                 this.id,
                 slotId,
                 newSlotInfo,
@@ -347,11 +330,10 @@ class Offer {
         slotId: string,
         transactionOptions?: TransactionOptions,
     ): Promise<void> {
-        const contract = BlockchainConnector.getInstance().getContract();
         checkIfActionAccountInitialized(transactionOptions);
 
         await TxManager.execute(
-            contract.methods.deleteValueOfferSlot(this.id, slotId),
+            Offer.contract.methods.deleteValueOfferSlot(this.id, slotId),
             transactionOptions,
         );
     }
@@ -361,7 +343,6 @@ class Offer {
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
     public async disable(transactionOptions?: TransactionOptions): Promise<void> {
-        transactionOptions ?? this.checkInitOffer(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
         await TxManager.execute(Offer.contract.methods.disableOffer(this.id), transactionOptions);
@@ -372,7 +353,6 @@ class Offer {
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
     public async enable(transactionOptions?: TransactionOptions): Promise<void> {
-        transactionOptions ?? this.checkInitOffer(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
         await TxManager.execute(Offer.contract.methods.enableOffer(this.id), transactionOptions);

@@ -1,12 +1,25 @@
 import { formatBytes32String, parseBytes32String } from 'ethers/lib/utils';
 import rootLogger from '../logger';
-import { checkIfActionAccountInitialized, incrementMethodCall } from '../utils/helper';
-import { OrderInfo, OrderStatus, BlockInfo, TransactionOptions, OrderCreatedEvent } from '../types';
+import {
+    checkIfActionAccountInitialized,
+    cleanEventData,
+    incrementMethodCall,
+    isValidBytes32Hex,
+} from '../utils/helper';
+import {
+    OrderInfo,
+    OrderStatus,
+    BlockInfo,
+    TransactionOptions,
+    OrderCreatedEvent,
+    EventOptions,
+} from '../types';
 import Superpro from './Superpro';
 import TxManager from '../utils/TxManager';
 import { BlockchainConnector, BlockchainEventsListener } from '../connectors';
 import { Order } from '../models';
 import { EventLog } from 'web3-eth-contract';
+import { DecodedParams } from 'web3-types';
 
 class Orders {
     private static readonly logger = rootLogger.child({ className: 'Orders' });
@@ -81,38 +94,35 @@ class Orders {
 
     @incrementMethodCall()
     public static async getByExternalId(
-        consumer = '',
-        externalId = '',
+        filter: {
+            externalId: string;
+            consumer?: string;
+        },
         fromBlock?: number | string,
         toBlock?: number | string,
-    ): Promise<OrderCreatedEvent> {
+    ): Promise<OrderCreatedEvent | null> {
         const contract = BlockchainConnector.getInstance().getContract();
-
-        const filter = {
-            consumer,
-            externalId: formatBytes32String(externalId),
-        };
-        const options: any = { filter };
-
+        const options: EventOptions = { filter };
+        if (!isValidBytes32Hex(filter.externalId)) {
+            options.filter!.externalId = formatBytes32String(filter.externalId);
+        }
         if (fromBlock) options.fromBlock = fromBlock;
         if (toBlock) options.toBlock = toBlock;
 
         const foundIds = await contract.getPastEvents('OrderCreated', options);
-        const notFound = {
-            ...filter,
-            offerId: '-1',
-            parentOrderId: '-1',
-            orderId: '-1',
-        };
+        if (foundIds.length > 0) {
+            if (foundIds.length > 1) {
+                Orders.logger.warn(
+                    { foundIds },
+                    `More than one item found, please refine your filters!`,
+                );
+            }
+            return cleanEventData(
+                (foundIds[0] as EventLog).returnValues as DecodedParams,
+            ) as OrderCreatedEvent;
+        }
 
-        const response: OrderCreatedEvent =
-            foundIds.length > 0
-                ? ((foundIds[0] as EventLog).returnValues as OrderCreatedEvent)
-                : notFound;
-
-        response.externalId = parseBytes32String(response.externalId);
-
-        return response;
+        return null;
     }
 
     /**

@@ -1,5 +1,5 @@
 import rootLogger from '../logger';
-import { checkIfActionAccountInitialized, packDevicId } from '../utils/helper';
+import { checkIfActionAccountInitialized, cleanEventData, isValidBytes32Hex, packDevicId } from '../utils/helper';
 import { BytesLike, formatBytes32String, parseBytes32String } from 'ethers/lib/utils';
 import {
     BlockInfo,
@@ -11,11 +11,13 @@ import {
     OptionAddedEvent,
     TeeSlotAddedEvent,
     TeeOfferOption,
+    EventOptions,
 } from '../types';
 import { BlockchainConnector, BlockchainEventsListener } from '../connectors';
 import Superpro from './Superpro';
 import TxManager from '../utils/TxManager';
 import { EventLog } from 'web3-eth-contract';
+import { DecodedParams } from 'web3-types';
 
 class TeeOffers {
     private static cpuDenominator?: number;
@@ -100,34 +102,35 @@ class TeeOffers {
     }
 
     public static async getByExternalId(
-        creator: string,
-        externalId: string,
+        filter: {
+            externalId: string;
+            creator?: string;
+        },
         fromBlock?: number | string,
         toBlock?: number | string,
-    ): Promise<OfferCreatedEvent> {
+    ): Promise<OfferCreatedEvent | null> {
         const contract = BlockchainConnector.getInstance().getContract();
-
-        const filter = {
-            creator,
-            externalId: formatBytes32String(externalId),
-        };
-        const options: any = { filter };
-
+        const options: EventOptions = { filter };
+        if (!isValidBytes32Hex(filter.externalId)) {
+            options.filter!.externalId = formatBytes32String(filter.externalId);
+        }
         if (fromBlock) options.fromBlock = fromBlock;
         if (toBlock) options.toBlock = toBlock;
 
         const foundIds = await contract.getPastEvents('TeeOfferCreated', options);
-        const notFound = {
-            creator,
-            externalId,
-            offerId: '-1',
-        };
-        const response: OfferCreatedEvent =
-            foundIds.length > 0
-                ? ((foundIds[0] as EventLog).returnValues as OfferCreatedEvent)
-                : notFound;
+        if (foundIds.length > 0) {
+            if (foundIds.length > 1) {
+                TeeOffers.logger.warn(
+                    { foundIds },
+                    `More than one item found, please refine your filters!`,
+                );
+            }
+            return cleanEventData(
+                (foundIds[0] as EventLog).returnValues as DecodedParams,
+            ) as OfferCreatedEvent;
+        }
 
-        return response;
+        return null;
     }
 
     /**
@@ -182,48 +185,65 @@ class TeeOffers {
     }
 
     public static async getSlotByExternalId(
-        filter: { creator: string; offerId: string; externalId: string },
+        filter: { externalId: string; creator?: string; offerId?: string },
         fromBlock?: number | string,
         toBlock?: number | string,
     ): Promise<TeeSlotAddedEvent | null> {
         const contract = BlockchainConnector.getInstance().getContract();
-        const options: any = { filter };
-        filter.externalId = formatBytes32String(filter.externalId);
-
+        const options: EventOptions = { filter };
+        if (!isValidBytes32Hex(filter.externalId)) {
+            options.filter!.externalId = formatBytes32String(filter.externalId);
+        }
         if (fromBlock) options.fromBlock = fromBlock;
         if (toBlock) options.toBlock = toBlock;
 
-        const foundEvents = await contract.getPastEvents('TeeSlotAdded', options);
-        const response = foundEvents.length
-            ? ((foundEvents[0] as EventLog).returnValues as TeeSlotAddedEvent)
-            : null;
+        const foundIds = await contract.getPastEvents('TeeSlotAdded', options);
+        if (foundIds.length > 0) {
+            if (foundIds.length > 1) {
+                TeeOffers.logger.warn(
+                    { foundIds },
+                    `More than one item found, please refine your filters!`,
+                );
+            }
+            return cleanEventData(
+                (foundIds[0] as EventLog).returnValues as DecodedParams,
+            ) as TeeSlotAddedEvent;
+        }
 
-        return response;
+        return null;
     }
 
     public static async getOptionByExternalId(
         filter: {
-            creator: string;
-            teeOfferId: string;
             externalId: string;
+            creator?: string;
+            teeOfferId?: string;
         },
         fromBlock?: number | string,
         toBlock?: number | string,
     ): Promise<OptionAddedEvent | null> {
         const contract = BlockchainConnector.getInstance().getContract();
-        const options: any = { filter };
-        filter.externalId = formatBytes32String(filter.externalId);
-
+        const options: EventOptions = { filter };
+        if (!isValidBytes32Hex(filter.externalId)) {
+            options.filter!.externalId = formatBytes32String(filter.externalId);
+        }
         if (fromBlock) options.fromBlock = fromBlock;
         if (toBlock) options.toBlock = toBlock;
 
-        const foundEvents = await contract.getPastEvents('OptionAdded', options);
+        const foundIds = await contract.getPastEvents('OptionAdded', options);
+        if (foundIds.length > 0) {
+            if (foundIds.length > 1) {
+                TeeOffers.logger.warn(
+                    { foundIds },
+                    `More than one item found, please refine your filters!`,
+                );
+            }
+            return cleanEventData(
+                (foundIds[0] as EventLog).returnValues as DecodedParams,
+            ) as OptionAddedEvent;
+        }
 
-        const response = foundEvents.length
-            ? ((foundEvents[0] as EventLog).returnValues as OptionAddedEvent)
-            : null;
-
-        return response;
+        return null;
     }
 
     /**

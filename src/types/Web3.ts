@@ -1,4 +1,4 @@
-import Web3 from 'web3';
+import Web3, { Numbers, TransactionInfo } from 'web3';
 
 export type BlockInfo = {
     index: bigint;
@@ -8,7 +8,17 @@ export type BlockInfo = {
 export type EventData = {
     contract: string;
     name: string;
-    data: unknown;
+    data: { [key: string]: unknown };
+};
+
+export type ExtendedTransactionInfo = TransactionInfo & {
+    timestamp?: number;
+};
+
+export type EventOptions = {
+    filter?: Record<string, Numbers | Numbers[] | boolean | boolean[]>;
+    toBlock?: number | string;
+    fromBlock?: number | string;
 };
 
 export type TransactionOptionsRequired = Required<TransactionOptions>;
@@ -19,7 +29,7 @@ export type TransactionDataOptions = TransactionOptions & {
     to: string;
     nonce?: bigint;
     data?: string;
-    value?: string;
+    value?: bigint;
 };
 
 export type TransactionOptions = {

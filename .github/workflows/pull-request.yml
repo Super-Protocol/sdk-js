@@ -20,7 +20,7 @@ jobs:
                 node-version: 16
                 scope: super-protocol
                 always-auth: true
-            - run: npm install --no-save --no-audit --ignore-scripts
+            - run: npm ci
               env:
                 NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
             - run: npm run prepare

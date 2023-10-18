@@ -1,4 +1,4 @@
-import { Contract, AbiFragment } from 'web3';
+import { Contract } from 'web3';
 import { abi } from '../contracts/abi';
 import { checkIfActionAccountInitialized } from '../utils/helper';
 import { ProviderInfo, Origins, TransactionOptions } from '../types';
@@ -25,19 +25,10 @@ class Provider {
         }
     }
 
-    private checkInitProvider(
-        transactionOptions: TransactionOptions,
-    ): void | Contract<AbiFragment[]> {
-        if (transactionOptions?.web3) {
-            return new transactionOptions.web3.eth.Contract(abi, Superpro.address);
-        }
-    }
-
     public async modify(
         providerInfo: ProviderInfo,
         transactionOptions?: TransactionOptions,
     ): Promise<void> {
-        transactionOptions ?? this.checkInitProvider(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
         await TxManager.execute(

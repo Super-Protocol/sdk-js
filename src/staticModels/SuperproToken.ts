@@ -20,7 +20,10 @@ class SuperproToken {
 
     public static set addressHttps(newAddress: string) {
         SuperproToken._addressHttps = newAddress;
-        SuperproToken.contractHttps = new store.web3Https!.eth.Contract(abi, newAddress);
+        SuperproToken.contractHttps = new store.web3Https!.eth.Contract(abi, newAddress, {
+            provider: store.web3Https!.currentProvider,
+            config: { contractDataInputFill: 'data' },
+        });
     }
 
     public static get addressWss(): string {
@@ -29,15 +32,18 @@ class SuperproToken {
 
     public static set addressWss(newAddress: string) {
         SuperproToken._addressWss = newAddress;
-        SuperproToken.contractWss = new store.web3Wss!.eth.Contract(abi, newAddress);
+        SuperproToken.contractWss = new store.web3Wss!.eth.Contract(abi, newAddress, {
+            provider: store.web3Wss!.currentProvider,
+            config: { contractDataInputFill: 'data' },
+        });
     }
 
     /**
      * Checks if contract has been initialized, if not - initialize contract
      */
-    private static checkInit(transactionOptions?: TransactionOptions): Contract<typeof abi> {
-        if (transactionOptions?.web3) {
-            return new transactionOptions.web3.eth.Contract(abi, SuperproToken.addressHttps);
+    private static checkInit(): Contract<typeof abi> {
+        if (!SuperproToken.contractHttps) {
+            throw Error(`SuperproToken must be initialized before it can be used`);
         }
 
         return SuperproToken.contractHttps!;
@@ -80,7 +86,7 @@ class SuperproToken {
         transactionOptions?: TransactionOptions,
         checkTxBeforeSend = false,
     ): Promise<Transaction> {
-        const contract = this.checkInit(transactionOptions);
+        const contract = this.checkInit();
         checkIfActionAccountInitialized(transactionOptions);
 
         if (checkTxBeforeSend) {
@@ -108,7 +114,7 @@ class SuperproToken {
         transactionOptions?: TransactionOptions,
         checkTxBeforeSend = false,
     ): Promise<void> {
-        const contract = this.checkInit(transactionOptions);
+        const contract = this.checkInit();
         checkIfActionAccountInitialized(transactionOptions);
 
         if (checkTxBeforeSend) {

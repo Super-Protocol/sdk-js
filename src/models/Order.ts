@@ -8,13 +8,14 @@ import {
     Origins,
     TransactionOptions,
 } from '../types';
-import { Contract } from 'web3';
+import { Contract, TransactionReceipt } from 'web3';
 import { EventLog } from 'web3-eth-contract';
 import rootLogger from '../logger';
 import { abi } from '../contracts/abi';
 import store from '../store';
 import {
     checkIfActionAccountInitialized,
+    createTransactionOptions,
     incrementMethodCall,
     unpackSlotInfo,
 } from '../utils/helper';
@@ -47,17 +48,6 @@ class Order {
         }
 
         this.logger = rootLogger.child({ className: 'Order', orderId: this.id });
-    }
-
-    /**
-     * Checks if contract has been initialized, if not - initialize contract
-     */
-    private checkInitOrder(transactionOptions: TransactionOptions): Contract<typeof abi> {
-        if (transactionOptions?.web3) {
-            return new transactionOptions.web3.eth.Contract(abi, Superpro.address);
-        }
-
-        return Order.contract;
     }
 
     /**
@@ -120,8 +110,8 @@ class Order {
 
     @incrementMethodCall()
     public async getConsumer(): Promise<string> {
-        const [orderInfoParams] = await Order.contract.methods.getOrder(this.id).call();
-        this.consumer = orderInfoParams;
+        const [consumer, ,] = await Order.contract.methods.getOrder(this.id).call();
+        this.consumer = consumer;
 
         return this.consumer!;
     }
@@ -257,7 +247,6 @@ class Order {
         value: boolean,
         transactionOptions?: TransactionOptions,
     ): Promise<void> {
-        transactionOptions ?? this.checkInitOrder(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
         await TxManager.execute(
@@ -274,7 +263,6 @@ class Order {
         value: string,
         transactionOptions?: TransactionOptions,
     ): Promise<void> {
-        transactionOptions ?? this.checkInitOrder(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
         await TxManager.execute(
@@ -291,7 +279,6 @@ class Order {
         status: OrderStatus,
         transactionOptions?: TransactionOptions,
     ): Promise<void> {
-        transactionOptions ?? this.checkInitOrder(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
         if (status === OrderStatus.Processing) {
@@ -309,7 +296,6 @@ class Order {
      */
     @incrementMethodCall()
     public async cancelOrder(transactionOptions?: TransactionOptions): Promise<void> {
-        transactionOptions ?? this.checkInitOrder(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
         await TxManager.execute(Order.contract.methods.cancelOrder(this.id), transactionOptions);
@@ -320,7 +306,6 @@ class Order {
      */
     @incrementMethodCall()
     public async start(transactionOptions?: TransactionOptions): Promise<void> {
-        transactionOptions ?? this.checkInitOrder(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
         await TxManager.execute(Order.contract.methods.startOrder(this.id), transactionOptions);
@@ -334,7 +319,6 @@ class Order {
         encryptedResult = '',
         transactionOptions?: TransactionOptions,
     ): Promise<void> {
-        transactionOptions ?? this.checkInitOrder(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
         await TxManager.execute(
@@ -352,7 +336,6 @@ class Order {
         encryptedResult = '',
         transactionOptions?: TransactionOptions,
     ): Promise<void> {
-        transactionOptions ?? this.checkInitOrder(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
         await TxManager.execute(
@@ -366,7 +349,6 @@ class Order {
      */
     @incrementMethodCall()
     public async unlockProfit(transactionOptions?: TransactionOptions): Promise<void> {
-        transactionOptions ?? this.checkInitOrder(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
         await TxManager.execute(Order.contract.methods.unlockProfit(this.id), transactionOptions);
@@ -387,7 +369,6 @@ class Order {
         transactionOptions?: TransactionOptions,
         checkTxBeforeSend = false,
     ): Promise<void> {
-        transactionOptions ?? this.checkInitOrder(transactionOptions!);
         checkIfActionAccountInitialized(transactionOptions);
 
         const preparedInfo = {
@@ -423,44 +404,29 @@ class Order {
         subOrdersInfo: ExtendedOrderInfo[],
         transactionOptions: TransactionOptions,
     ): Promise<string[]> {
-        this.checkInitOrder(transactionOptions);
         checkIfActionAccountInitialized(transactionOptions);
 
-        const batch = new transactionOptions.web3!.BatchRequest();
-        const promises: any = subOrdersInfo.map((subOrderInfo) => {
-            return new Promise((res, rej) => {
-                const preparedInfo = {
-                    ...subOrderInfo,
-                    externalId: formatBytes32String(subOrderInfo.externalId),
-                };
-                const params: SubOrderParams = {
-                    blockParentOrder: subOrderInfo.blocking,
-                    deposit: subOrderInfo.deposit,
-                };
+        const promises: Promise<TransactionReceipt>[] = [];
+        subOrdersInfo.map((subOrderInfo) => {
+            const preparedInfo = {
+                ...subOrderInfo,
+                externalId: formatBytes32String(subOrderInfo.externalId),
+            };
+            const params: SubOrderParams = {
+                blockParentOrder: subOrderInfo.blocking,
+                deposit: subOrderInfo.deposit,
+            };
 
-                const request = (Order.contract.methods.createSubOrder as any)(
-                    this.id,
-                    preparedInfo,
-                    params,
-                ).send.request(
-                    {
-                        from: transactionOptions.from,
-                        gasPrice: store.gasPrice,
-                        gas: store.gasLimit,
-                    },
-                    (err: any, data: any) => {
-                        if (data) res(data);
-                        if (err) rej(err);
-                    },
-                );
-                void batch.add(request);
-            });
+            const transactionCall = Order.contract.methods.createSubOrder(
+                this.id,
+                preparedInfo,
+                params,
+            );
+
+            promises.push(TxManager.execute(transactionCall, transactionOptions));
         });
 
-        void batch.execute();
-        const txs = await Promise.all(promises);
-
-        return txs.reduce((a: any, b: any) => a.concat(b), []) as string[];
+        return (await Promise.all(promises)).map((tx) => tx.transactionHash as string);
     }
 
     /**

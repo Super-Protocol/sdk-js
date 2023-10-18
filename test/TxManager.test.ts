@@ -33,7 +33,7 @@ describe('TxManager', () => {
         it('should send unSigned transaction', async () => {
             const txData = {
                 to: 'recipient',
-                value: '1000',
+                value: BigInt(1000),
             };
             const txOptions = { ...mockTxOptions, web3 };
 
@@ -58,7 +58,7 @@ describe('TxManager', () => {
         it('should send signed transaction', async () => {
             const txData = {
                 to: 'recipient',
-                value: '1000',
+                value: BigInt(1000),
             };
             store.keys[mockTxOptions.from!] = mockPrivateKey;
             const txOptions = { ...mockTxOptions, web3 };

@@ -1,6 +1,7 @@
 import store from '../store';
 import { TransactionOptions } from '../types/Web3';
-import Web3 from 'web3';
+import Web3, { DecodedParams, JsonRpcError } from 'web3';
+import { Web3BatchRequest } from 'web3-core';
 import { Monitoring } from './Monitoring';
 import { SlotInfo } from '../types/SlotInfo';
 
@@ -75,13 +76,13 @@ export const isNodeJS = (): boolean => {
 
 export function incrementMethodCall() {
     return function (
-        _target: any,
+        _target: unknown,
         propertyName: string,
         propertyDescriptor: PropertyDescriptor,
     ): PropertyDescriptor {
         const monitoring = Monitoring.getInstance();
         const method = propertyDescriptor.value;
-        propertyDescriptor.value = function (...args: any[]): Promise<void> {
+        propertyDescriptor.value = function (...args: unknown[]): Promise<void> {
             monitoring.incrementCall(propertyName);
 
             return method.apply(this, args);
@@ -128,3 +129,33 @@ export function packSlotInfo(slotInfo: SlotInfo, cpuDenominator: number): SlotIn
         diskUsage: slotInfo.diskUsage,
     };
 }
+
+export function isValidBytes32Hex(data: string): boolean {
+    const regex = /^0x[a-fA-F0-9]{64}$/;
+    return regex.test(data);
+}
+
+export const cleanEventData = (data: DecodedParams): { [key: string]: unknown } => {
+    const result = { ...data };
+    delete (result as any).__length__;
+
+    for (let i = 0; i < (data.__length__ ?? 0); i++) {
+        delete result[i.toString()];
+    }
+
+    return result;
+};
+
+export const executeBatchAsync = async (batch: Web3BatchRequest): Promise<unknown[]> => {
+    const result: unknown[] = [];
+    const responses = await batch.execute();
+    for (const response of responses) {
+        if ('error' in response) {
+            throw new Error((response.error as JsonRpcError).message);
+        } else {
+            result.push(response.result);
+        }
+    }
+
+    return result;
+};

@@ -1,5 +1,5 @@
 import { BaseConnector, Config } from './BaseConnector';
-import Web3, { WebSocketProvider } from 'web3';
+import Web3, { Web3Context, WebSocketProvider } from 'web3';
 import { abi } from '../contracts/abi';
 
 // TODO: remove this dependencies
@@ -44,17 +44,14 @@ class BlockchainEventsListener extends BaseConnector {
             config.reconnect,
         );
 
-        const provider = new WebSocketProvider(
-            config.blockchainUrl!,
-            {
-                // TODO
-            },
-            reconnectOptions,
-        );
-        store.web3Wss = new Web3();
-        store.web3Wss.setProvider(provider);
+        const provider = new WebSocketProvider(config.blockchainUrl!, {}, reconnectOptions);
+        store.web3Wss = new Web3(provider);
+        const web3Context = new Web3Context({
+            provider: store.web3Wss.currentProvider,
+            config: { contractDataInputFill: 'data' },
+        });
 
-        this.contract = new store.web3Wss!.eth.Contract(abi, config.contractAddress);
+        this.contract = new store.web3Wss.eth.Contract(abi, config.contractAddress, web3Context);
         Superpro.address = config.contractAddress;
         SuperproToken.addressWss = await Superpro.getTokenAddress(this.contract);
 

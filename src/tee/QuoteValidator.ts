@@ -15,7 +15,7 @@ import { QEIdentityStatuses, TCBStatuses, QuoteValidationStatuses } from './stat
 import { Encoding, HashAlgorithm } from '@super-protocol/dto-js';
 import Crypto from '../crypto';
 
-const BASE_SGX_URL = 'https://api.trustedservices.intel.com/sgx/certification/v4';
+const DEFAULT_BASE_SGX_URL = 'https://api.trustedservices.intel.com/sgx/certification/v4';
 const SGX_OID = '1.2.840.113741.1.13.1';
 const FMSPC_OID = `${SGX_OID}.4`;
 const PCEID_OID = `${SGX_OID}.3`;
@@ -35,10 +35,12 @@ interface ValidationResult {
 }
 
 export class QuoteValidator {
+    private readonly baseUrl: string;
     private readonly teeSgxParser: TeeSgxParser;
     private logger: typeof rootLogger;
 
-    constructor() {
+    constructor(baseUrl?: string) {
+        this.baseUrl = baseUrl || DEFAULT_BASE_SGX_URL;
         this.teeSgxParser = new TeeSgxParser();
         this.logger = rootLogger.child({ className: QuoteValidator.name });
     }
@@ -86,7 +88,7 @@ export class QuoteValidator {
 
     private async fetchSgxRootCertificate(): Promise<string> {
         const platformCrlResult = await axios.get(
-            `${BASE_SGX_URL}/pckcrl?ca=platform&encoding=pem`,
+            `${this.baseUrl}/pckcrl?ca=platform&encoding=pem`,
         );
         const platformChain = decodeURIComponent(
             platformCrlResult.headers['sgx-pck-crl-issuer-chain'],
@@ -257,7 +259,7 @@ export class QuoteValidator {
     }
 
     private async getTcbInfo(fmspc: string, rootCertPem: string): Promise<ITcbData> {
-        const tcbData = await axios.get(`${BASE_SGX_URL}/tcb?fmspc=${fmspc}`);
+        const tcbData = await axios.get(`${this.baseUrl}/tcb?fmspc=${fmspc}`);
         const tcbInfoHeader = 'tcb-info-issuer-chain';
         const tcbInfoChain = this.splitChain(decodeURIComponent(tcbData.headers[tcbInfoHeader])); // [tcb, root]
         if (tcbInfoChain[1] !== rootCertPem) {
@@ -292,7 +294,7 @@ export class QuoteValidator {
     }
 
     private async getQEIdentity(rootCertPem: string): Promise<IQEIdentity> {
-        const qeIdentityData = await axios.get(`${BASE_SGX_URL}/qe/identity`);
+        const qeIdentityData = await axios.get(`${this.baseUrl}/qe/identity`);
         const qeIdentityHeader = 'sgx-enclave-identity-issuer-chain';
         const qeIdentityChain = this.splitChain(
             decodeURIComponent(qeIdentityData.headers[qeIdentityHeader]),

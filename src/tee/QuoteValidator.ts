@@ -15,7 +15,7 @@ import { QEIdentityStatuses, TCBStatuses, QuoteValidationStatuses } from './stat
 import { Encoding, HashAlgorithm } from '@super-protocol/dto-js';
 import Crypto from '../crypto';
 
-const DEFAULT_BASE_SGX_URL = 'https://api.trustedservices.intel.com/sgx/certification/v4';
+const DEFAULT_BASE_SGX_URL = 'https://api.trustedservices.intel.com';
 const INTEL_SGX_ROOT_CA_URL = 'https://certificates.trustedservices.intel.com/IntelSGXRootCA.der';
 const SGX_OID = '1.2.840.113741.1.13.1';
 const FMSPC_OID = `${SGX_OID}.4`;
@@ -41,7 +41,7 @@ export class QuoteValidator {
     private logger: typeof rootLogger;
 
     constructor(baseUrl?: string) {
-        this.baseUrl = baseUrl || DEFAULT_BASE_SGX_URL;
+        this.baseUrl = `${baseUrl || DEFAULT_BASE_SGX_URL}/sgx/certification/v4`;
         this.teeSgxParser = new TeeSgxParser();
         this.logger = rootLogger.child({ className: QuoteValidator.name });
     }
@@ -133,7 +133,7 @@ export class QuoteValidator {
                 ),
             );
             if (isAnyRevoked) {
-                throw new TeeQuoteValidatorError('Certificate in revoked list');
+                throw new TeeQuoteValidatorError('Certificate in revokation list');
             }
         }
     }
@@ -200,14 +200,18 @@ export class QuoteValidator {
             pckCert.serialNumber,
         ];
 
-        const intelCrlDer = await axios.get(INTEL_SGX_ROOT_CA_URL, { responseType: 'arraybuffer' });
+        const intelCrlDer = await axios.get(INTEL_SGX_ROOT_CA_URL, {
+            responseType: 'arraybuffer',
+        });
         const intelCrlAsn = fromBER(Buffer.from(intelCrlDer.data));
         this.checkCertificatesInCrl(
             new CertificateRevocationList({ schema: intelCrlAsn.result }),
             certIds,
         );
 
-        const platformCrlDer = formatter.pemToBin(platformCrlResult.data);
+        const platformCrlDer = platformCrlResult.data.startsWith('-----')
+            ? formatter.pemToBin(platformCrlResult.data)
+            : Buffer.from(platformCrlResult.data, 'hex');
         const crlAsn = fromBER(platformCrlDer as Uint8Array);
         this.checkCertificatesInCrl(
             new CertificateRevocationList({ schema: crlAsn.result }),
@@ -401,7 +405,7 @@ export class QuoteValidator {
         tcbData: ITcbData,
         sgxExtensionData: Extension,
     ): TCBStatuses {
-        if (fmspc !== tcbData.tcbInfo.fmspc) {
+        if (fmspc.toUpperCase() !== tcbData.tcbInfo.fmspc.toUpperCase()) {
             throw new TeeQuoteValidatorError('Wrong FMSPC in PCK certificate');
         }
         if (pceId !== tcbData.tcbInfo.pceId) {

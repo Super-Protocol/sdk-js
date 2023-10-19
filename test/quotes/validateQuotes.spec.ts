@@ -3,7 +3,7 @@ import { QuoteValidationStatuses } from '../../src/tee/statuses';
 import { testQuotes, quotesUserDatas } from './examples';
 
 describe('Quote validator', () => {
-    const validator = new QuoteValidator();
+    const validator = new QuoteValidator('https://pccs.superprotocol.io');
 
     beforeEach(() => {
         jest.restoreAllMocks();

@@ -16,6 +16,7 @@ import { Encoding, HashAlgorithm } from '@super-protocol/dto-js';
 import Crypto from '../crypto';
 
 const DEFAULT_BASE_SGX_URL = 'https://api.trustedservices.intel.com/sgx/certification/v4';
+const INTEL_SGX_ROOT_CA_URL = 'https://certificates.trustedservices.intel.com/IntelSGXRootCA.der';
 const SGX_OID = '1.2.840.113741.1.13.1';
 const FMSPC_OID = `${SGX_OID}.4`;
 const PCEID_OID = `${SGX_OID}.3`;
@@ -116,6 +117,27 @@ export class QuoteValidator {
         );
     }
 
+    private checkCertificatesInCrl(crl: CertificateRevocationList, certIds: string[]): void {
+        if (!crl.thisUpdate || !crl.nextUpdate) {
+            throw new TeeQuoteValidatorError(
+                'Certificate revocation list has no update date field',
+            );
+        }
+        if (!this.checkValidDate(crl.thisUpdate.value.valueOf(), crl.nextUpdate.value.valueOf())) {
+            throw new TeeQuoteValidatorError('Certificate revocation list has invalid update date');
+        }
+        if (crl.revokedCertificates) {
+            const isAnyRevoked = crl.revokedCertificates.find((revoked) =>
+                certIds.includes(
+                    Buffer.from(revoked.userCertificate.valueBlock.valueHexView).toString('hex'),
+                ),
+            );
+            if (isAnyRevoked) {
+                throw new TeeQuoteValidatorError('Certificate in revoked list');
+            }
+        }
+    }
+
     private async getCertificates(
         quote: TeeSgxQuoteDataType,
     ): Promise<{ pckCert: Certificate; rootCertPem: string }> {
@@ -172,32 +194,25 @@ export class QuoteValidator {
             throw new TeeQuoteValidatorError('Invalid issuers in certificates chain');
         }
 
-        const crlDer = formatter.pemToBin(platformCrlResult.data);
-        const crlAsn = fromBER(crlDer as Uint8Array);
-        const crl = new CertificateRevocationList({ schema: crlAsn.result });
-        if (!crl || !crl.revokedCertificates) {
-            throw new TeeQuoteValidatorError('Certificate revocation list not found');
-        }
-        if (!crl.thisUpdate || !crl.nextUpdate) {
-            throw new TeeQuoteValidatorError(
-                'Certificate revocation list has no update date field',
-            );
-        }
-        if (!this.checkValidDate(crl.thisUpdate.value.valueOf(), crl.nextUpdate.value.valueOf())) {
-            throw new TeeQuoteValidatorError('Certificate revocation list has invalid update date');
-        }
-        const hasRevoked = crl.revokedCertificates.find((revoked) =>
-            [
-                rootFetchedCert.serialNumber,
-                platformFetchedCert.serialNumber,
-                pckCert.serialNumber,
-            ].includes(
-                Buffer.from(revoked.userCertificate.valueBlock.valueHexView).toString('hex'),
-            ),
+        const certIds = [
+            rootFetchedCert.serialNumber,
+            platformFetchedCert.serialNumber,
+            pckCert.serialNumber,
+        ];
+
+        const intelCrlDer = await axios.get(INTEL_SGX_ROOT_CA_URL, { responseType: 'arraybuffer' });
+        const intelCrlAsn = fromBER(Buffer.from(intelCrlDer.data));
+        this.checkCertificatesInCrl(
+            new CertificateRevocationList({ schema: intelCrlAsn.result }),
+            certIds,
         );
-        if (hasRevoked) {
-            throw new TeeQuoteValidatorError('Certificate in revoked list');
-        }
+
+        const platformCrlDer = formatter.pemToBin(platformCrlResult.data);
+        const crlAsn = fromBER(platformCrlDer as Uint8Array);
+        this.checkCertificatesInCrl(
+            new CertificateRevocationList({ schema: crlAsn.result }),
+            certIds,
+        );
 
         return { pckCert, rootCertPem: rootFetchedPem };
     }

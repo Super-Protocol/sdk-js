@@ -15,28 +15,28 @@ describe('Quote validator', () => {
             const res = await validator.validate(quoteBuffer);
             expect(res).toBeDefined();
             expect(res.quoteValidationStatus).toEqual(QuoteValidationStatuses.SecurityPatchNeeded);
-        }, 10000);
+        }, 15000);
 
         test('provisioner quote', async () => {
             const quoteBuffer = Buffer.from(testQuotes.provisionerQuote, 'base64');
             const res = await validator.validate(quoteBuffer);
             expect(res).toBeDefined();
             expect(res.quoteValidationStatus).toEqual(QuoteValidationStatuses.SecurityPatchNeeded);
-        }, 10000);
+        }, 15000);
 
         test('tunnel quote', async () => {
             const quoteBuffer = Buffer.from(testQuotes.tunnelQuote, 'base64');
             const res = await validator.validate(quoteBuffer);
             expect(res).toBeDefined();
             expect(res.quoteValidationStatus).toEqual(QuoteValidationStatuses.SecurityPatchNeeded);
-        }, 10000);
+        }, 15000);
 
         test('invalid quote', async () => {
             const quoteBuffer = Buffer.from(testQuotes.invalidQuote, 'base64');
             const res = await validator.validate(quoteBuffer);
             expect(res).toBeDefined();
             expect(res.quoteValidationStatus).toEqual(QuoteValidationStatuses.Error);
-        }, 10000);
+        }, 15000);
     });
 
     describe('Validation tests with mocks', () => {
@@ -51,7 +51,7 @@ describe('Quote validator', () => {
             const res = await validator.validate(quoteBuffer);
             expect(res).toBeDefined();
             expect(res.quoteValidationStatus).toEqual(QuoteValidationStatuses.UpToDate);
-        }, 10000);
+        }, 15000);
 
         test('up to date status', async () => {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -66,7 +66,7 @@ describe('Quote validator', () => {
             const res = await validator.validate(quoteBuffer);
             expect(res).toBeDefined();
             expect(res.quoteValidationStatus).toEqual(QuoteValidationStatuses.SoftwareUpdateNeeded);
-        }, 10000);
+        }, 15000);
 
         test('up to date status', async () => {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -81,7 +81,7 @@ describe('Quote validator', () => {
             const res = await validator.validate(quoteBuffer);
             expect(res).toBeDefined();
             expect(res.quoteValidationStatus).toEqual(QuoteValidationStatuses.ConfigurationNeeded);
-        }, 10000);
+        }, 15000);
     });
 
     describe('User data tests', () => {
@@ -90,7 +90,7 @@ describe('Quote validator', () => {
             const res = validator.isQuoteHasUserData(quoteBuffer, quotesUserDatas.testUserData);
             expect(res).toBeDefined();
             expect(res).toEqual(true);
-        }, 10000);
+        }, 15000);
 
         test('provisioner quote and user data', () => {
             const quoteBuffer = Buffer.from(testQuotes.provisionerQuote, 'base64');
@@ -100,14 +100,14 @@ describe('Quote validator', () => {
             );
             expect(res).toBeDefined();
             expect(res).toEqual(true);
-        }, 10000);
+        }, 15000);
 
         test('tunnel quote and user data', () => {
             const quoteBuffer = Buffer.from(testQuotes.tunnelQuote, 'base64');
             const res = validator.isQuoteHasUserData(quoteBuffer, quotesUserDatas.tunnelUserData);
             expect(res).toBeDefined();
             expect(res).toEqual(true);
-        }, 10000);
+        }, 15000);
 
         test('tunnel quote and provisioner user data', () => {
             const quoteBuffer = Buffer.from(testQuotes.tunnelQuote, 'base64');
@@ -117,7 +117,7 @@ describe('Quote validator', () => {
             );
             expect(res).toBeDefined();
             expect(res).toEqual(true);
-        }, 10000);
+        }, 15000);
 
         test('tunnel quote and test user data', () => {
             const quoteBuffer = Buffer.from(testQuotes.tunnelQuote, 'base64');
@@ -127,6 +127,6 @@ describe('Quote validator', () => {
             );
             expect(res).toBeDefined();
             expect(res).toEqual(false);
-        }, 10000);
+        }, 15000);
     });
 });

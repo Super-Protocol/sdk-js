@@ -12,12 +12,15 @@ let blockNumber = 0
 function __setBlockNumber(number: number): void {
     blockNumber = number;
 }
+
+let txCount = 0
+
 const eth = {
   Contract: jest.fn().mockImplementation(() => mockWeb3EthContract),
   getBlockNumber: (): number => blockNumber,
   sendSignedTransaction: jest.fn().mockImplementation((_signedTransactionData) => Promise.resolve({ status: true })),
   sendTransaction: jest.fn().mockImplementation((txConfig) => Promise.resolve({ status: true, from: txConfig.from })),
-
+  getTransactionCount: (): number => txCount,
   accounts: {
     signTransaction: jest.fn().mockImplementation((_txData, _privateKey) => Promise.resolve({ rawTransaction: 'rawTransaction' })),
   }

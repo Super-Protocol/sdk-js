@@ -363,7 +363,7 @@ class Offer {
      * @param offerId - id of offer what needs to be checked
      */
     @incrementMethodCall()
-    public isRestrictionsPermitThatOffer(offerId: string): Promise<void> {
+    public isRestrictionsPermitThatOffer(offerId: string): Promise<boolean> {
         return Offer.contract.methods.isOfferRestrictionsPermitOtherOffer(this.id, offerId).call();
     }
 
@@ -372,7 +372,7 @@ class Offer {
      * @param type - type of offer which needs to be checked
      */
     @incrementMethodCall()
-    public isRestrictedByOfferType(type: OfferType): Promise<void> {
+    public isRestrictedByOfferType(type: OfferType): Promise<boolean> {
         return Offer.contract.methods.isOfferRestrictedByOfferType(this.id, type).call();
     }
 }

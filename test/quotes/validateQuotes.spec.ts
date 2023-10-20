@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { QuoteValidator } from '../../src/tee/QuoteValidator';
 import { QuoteValidationStatuses } from '../../src/tee/statuses';
 import {
@@ -10,35 +9,23 @@ import {
     qeIdentityData,
 } from './examples';
 
-jest.mock('axios');
+jest.mock('axios', () => ({
+    get: (url: string): Promise<unknown> => {
+        switch (url) {
+            case 'https://pccs.superprotocol.io/sgx/certification/v4/pckcrl?ca=platform&encoding=pem':
+                return Promise.resolve(platformCrlResult);
+            case 'https://certificates.trustedservices.intel.com/IntelSGXRootCA.der':
+                return Promise.resolve(intelCrlDer);
+            case 'https://pccs.superprotocol.io/sgx/certification/v4/tcb?fmspc=30606a000000':
+                return Promise.resolve(tcbData);
+            default:
+                return Promise.resolve(qeIdentityData);
+        }
+    },
+}));
 
 describe('Quote validator', () => {
     const validator = new QuoteValidator('https://pccs.superprotocol.io');
-
-    beforeEach(() => {
-        (axios.get as jest.Mock).mockImplementation((url: string) => {
-            if (
-                url ===
-                'https://pccs.superprotocol.io/sgx/certification/v4/pckcrl?ca=platform&encoding=pem'
-            ) {
-                return Promise.resolve(platformCrlResult);
-            } else if (
-                url === 'https://certificates.trustedservices.intel.com/IntelSGXRootCA.der'
-            ) {
-                return Promise.resolve(intelCrlDer);
-            } else if (
-                url === 'https://pccs.superprotocol.io/sgx/certification/v4/tcb?fmspc=30606a000000'
-            ) {
-                return Promise.resolve(tcbData);
-            }
-
-            return Promise.resolve(qeIdentityData);
-        });
-    });
-
-    afterEach(() => {
-        jest.restoreAllMocks();
-    });
 
     describe('Validation tests with Intel SGX API', () => {
         test('test quote', async () => {

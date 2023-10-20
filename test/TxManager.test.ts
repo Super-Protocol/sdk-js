@@ -3,6 +3,7 @@ import { TransactionOptions } from '../src/types/Web3';
 import TxManager from '../src/utils/TxManager';
 import { defaultBlockchainUrl } from '../src/constants';
 import store from '../src/store';
+import NonceTracker from '../src/utils/NonceTracker';
 
 jest.mock<typeof import('../src/store')>('../src/store');
 
@@ -25,6 +26,8 @@ describe('TxManager', () => {
     });
 
     afterEach(() => {
+        store.actionAccount = '';
+        store.keys = {};
         jest.restoreAllMocks();
         jest.clearAllMocks();
     });
@@ -89,6 +92,42 @@ describe('TxManager', () => {
             expect(sendSignedTxSpy).toHaveBeenCalledTimes(1);
             expect(sendSignedTxSpy).toHaveBeenCalledWith(expectedSignTxResult.rawTransaction);
             expect(result.status).toBe(true);
+        });
+
+        it('should send transaction using NonceTracker', async () => {
+            store.actionAccount = mockTxOptions.from;
+
+            const txData = {
+                to: 'recipient',
+                value: BigInt(1000),
+            };
+            const txOptions = { ...mockTxOptions };
+
+            const sendTxSpy = jest.spyOn(web3.eth, 'sendTransaction');
+
+            const expectedNonce = BigInt(1);
+            const consumeNonceSpy = jest
+                .spyOn(NonceTracker.prototype, 'consumeNonce')
+                .mockImplementation(() => expectedNonce);
+
+            const initAccountSpy = jest.spyOn(NonceTracker.prototype, 'initAccount');
+
+            await TxManager.initAccount(mockTxOptions.from!);
+            await TxManager.publishTransaction(txData, txOptions);
+
+            const expectedCallArgs = {
+                ...txData,
+                from: mockTxOptions.from,
+                gas: mockTxOptions.gas,
+                gasPrice: mockTxOptions.gasPrice,
+                gasPriceMultiplier: mockTxOptions.gasPriceMultiplier,
+                nonce: expectedNonce,
+            };
+
+            expect(initAccountSpy).toHaveBeenCalledTimes(1);
+            expect(consumeNonceSpy).toHaveBeenCalledTimes(1);
+            expect(sendTxSpy).toHaveBeenCalledTimes(1);
+            expect(sendTxSpy).toHaveBeenCalledWith(expectedCallArgs);
         });
     });
 });

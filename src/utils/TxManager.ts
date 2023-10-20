@@ -2,7 +2,13 @@ import { TransactionReceipt } from 'web3';
 import NonceTracker from './NonceTracker';
 import rootLogger from '../logger';
 import store from '../store';
-import { TransactionOptions, DryRunError, TransactionDataOptions, BlockchainError } from '../types';
+import {
+    TransactionOptions,
+    DryRunError,
+    TransactionDataOptions,
+    BlockchainError,
+    TransactionOptionsRequired,
+} from '../types';
 import {
     checkForUsingExternalTxManager,
     checkIfActionAccountInitialized,
@@ -37,6 +43,8 @@ export class Web3TransactionRevertedByEvmError extends Web3TransactionError {
         this.name = 'Web3TransactionRevertedByEvmError';
     }
 }
+
+type PublishTransactionOptions = Required<TransactionOptions> & { useExternalTxManager: boolean };
 
 class TxManager {
     private static web3: Web3;
@@ -80,28 +88,29 @@ class TxManager {
         this.checkIfInitialized();
         checkIfActionAccountInitialized(transactionOptions);
 
-        const options = await createTransactionOptions({ ...transactionOptions });
-        options.web3 = transactionOptions?.web3 || this.web3;
-        if (!options.from) {
+        const txOptions = await createTransactionOptions({ ...transactionOptions });
+
+        if (!txOptions.from) {
             throw Error(
                 'From account is undefined. You should pass it to transactionOptions or init action account.',
             );
         }
 
-        if (!this.queues[options.from]) {
-            this.queues[options.from] = new Bottleneck({
+        const publishTxOptions: PublishTransactionOptions = {
+            ...(txOptions as TransactionOptionsRequired),
+            web3: transactionOptions?.web3 || this.web3,
+            useExternalTxManager: checkForUsingExternalTxManager(transactionOptions),
+        };
+
+        if (!this.queues[publishTxOptions.from]) {
+            this.queues[publishTxOptions.from] = new Bottleneck({
                 maxConcurrent: store.txConcurrency,
                 minTime: store.txIntervalMs,
             });
         }
 
-        return this.queues[options.from].schedule(
-            (): Promise<TransactionReceipt> =>
-                TxManager._publishTransaction(
-                    txData,
-                    options as TransactionOptions,
-                    transactionCall,
-                ),
+        return this.queues[publishTxOptions.from].schedule(() =>
+            TxManager._publishTransaction(txData, publishTxOptions, transactionCall),
         );
     }
 
@@ -122,7 +131,7 @@ class TxManager {
 
     private static async _publishTransaction(
         txData: TransactionDataOptions,
-        transactionOptions: TransactionOptions,
+        transactionOptions: PublishTransactionOptions,
         transactionCall?: NonPayableMethodObject,
     ): Promise<TransactionReceipt> {
         const { from, gas, gasPrice, gasPriceMultiplier, web3 } = transactionOptions;
@@ -166,8 +175,8 @@ class TxManager {
         let nonceTracker;
         // TODO: Consider a better way to organize different strategies for publishing transactions.
         if (
-            !checkForUsingExternalTxManager(transactionOptions) &&
-            this.nonceTrackers[transactionOptions.from!]
+            !transactionOptions.useExternalTxManager &&
+            this.nonceTrackers[transactionOptions.from]
         ) {
             nonceTracker = this.nonceTrackers[transactionOptions.from!];
             await nonceTracker.onTransactionStartPublishing();

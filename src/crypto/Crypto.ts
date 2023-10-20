@@ -4,6 +4,7 @@ import {
     CryptoAlgorithm,
     ECIESEncryption,
     Encryption,
+    Hash,
     RSAHybridEncryption,
 } from '@super-protocol/dto-js';
 import fs from 'fs';
@@ -11,6 +12,8 @@ import AES from './nodejs/AES';
 import ARIA from './nodejs/ARIA';
 import ECIES from './nodejs/ECIES';
 import RSAHybrid from './nodejs/RSA-Hybrid';
+import NativeCrypto from './nodejs/NativeCrypto';
+import { Readable } from 'stream';
 
 class Crypto {
     /**
@@ -122,6 +125,33 @@ class Crypto {
             default:
                 throw Error(`${encryption.algo} algorithm not supported`);
         }
+    }
+
+    /**
+     * Create hash from content
+     * @param content - buffer data to create hash from
+     * @param hashInfo - information about hash algorithm and encoding
+     * @returns Hash structure with hash itself hash algorithm and encoding
+     */
+    public static async createHash(content: Buffer, hashInfo: Omit<Hash, 'hash'>): Promise<Hash>;
+    /**
+     * Create hash from stream
+     * @param inputStream - readable stream
+     * @param hashInfo - information about hash algorithm and encoding
+     * @returns Hash structure with hash itself hash algorithm and encoding
+     */
+    public static async createHash(
+        inputStream: Readable,
+        hashInfo: Omit<Hash, 'hash'>,
+    ): Promise<Hash>;
+    public static async createHash(
+        param1: Buffer | Readable,
+        hashInfo: Omit<Hash, 'hash'>,
+    ): Promise<Hash> {
+        const { algo, encoding } = hashInfo;
+        return Buffer.isBuffer(param1)
+            ? NativeCrypto.createHashFromBuffer(param1, algo, encoding)
+            : await NativeCrypto.createHashFromStream(param1, algo, encoding);
     }
 }
 

@@ -2,6 +2,7 @@
     "extends": "./tsconfig.json",
     "compilerOptions": {
         "rootDir": "src",
+        "outDir": "build",
         "noUnusedLocals": false, //TODO: make true after refactoring
         "noUnusedParameters": false //TODO: make true after refactoring
     },

@@ -4,7 +4,7 @@ export class Monitoring {
     private static instance: Monitoring;
     private logger = rootLogger.child({ className: 'Monitoring' });
     private contractMethodCalls = new Map<string, number>();
-    private interval?: NodeJS.Timer;
+    private interval?: NodeJS.Timeout;
 
     private constructor() {}
 

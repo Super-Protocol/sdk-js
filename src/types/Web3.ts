@@ -15,8 +15,14 @@ export type ExtendedTransactionInfo = TransactionInfo & {
     timestamp?: number;
 };
 
+type Filter = Record<string, Numbers | Numbers[] | boolean | boolean[]>;
+
+export type FilterWithExternalId = Filter & {
+    externalId: string;
+};
+
 export type EventOptions = {
-    filter?: Record<string, Numbers | Numbers[] | boolean | boolean[]>;
+    filter?: Filter;
     toBlock?: number | string;
     fromBlock?: number | string;
 };

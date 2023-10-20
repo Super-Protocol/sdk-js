@@ -53,16 +53,15 @@ export const createTransactionOptions = async (
     if (!options.gasPriceMultiplier) options.gasPriceMultiplier = store.gasPriceMultiplier;
     if (!options.gasPrice) {
         const web3 = options.web3 || store.web3Https;
-        if (web3) {
-            try {
-                options.gasPrice = await getGasPrice(web3);
-            } catch (e) {
-                options.gasPrice = store.gasPrice;
-            }
-        } else {
+        if (!web3) {
             throw Error(
                 'web3 is undefined, define it in transaction options or initialize BlockchainConnector with web3 instance.',
             );
+        }
+        try {
+            options.gasPrice = await getGasPrice(web3);
+        } catch (e) {
+            options.gasPrice = store.gasPrice;
         }
     }
     delete options.web3;
@@ -146,14 +145,16 @@ export const cleanEventData = (data: DecodedParams): { [key: string]: unknown } 
     return result;
 };
 
-export const executeBatchAsync = async (batch: Web3BatchRequest): Promise<unknown[]> => {
-    const result: unknown[] = [];
+export const executeBatchAsync = async <BatchResponse = unknown>(
+    batch: Web3BatchRequest,
+): Promise<BatchResponse[]> => {
+    const result: BatchResponse[] = [];
     const responses = await batch.execute();
     for (const response of responses) {
         if ('error' in response) {
             throw new Error((response.error as JsonRpcError).message);
         } else {
-            result.push(response.result);
+            result.push(response.result as BatchResponse);
         }
     }
 

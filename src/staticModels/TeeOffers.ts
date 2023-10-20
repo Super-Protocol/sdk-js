@@ -1,5 +1,5 @@
 import rootLogger from '../logger';
-import { checkIfActionAccountInitialized, cleanEventData, isValidBytes32Hex, packDevicId } from '../utils/helper';
+import { checkIfActionAccountInitialized, packDevicId } from '../utils/helper';
 import { BytesLike, formatBytes32String, parseBytes32String } from 'ethers/lib/utils';
 import {
     BlockInfo,
@@ -11,13 +11,12 @@ import {
     OptionAddedEvent,
     TeeSlotAddedEvent,
     TeeOfferOption,
-    EventOptions,
 } from '../types';
 import { BlockchainConnector, BlockchainEventsListener } from '../connectors';
 import Superpro from './Superpro';
 import TxManager from '../utils/TxManager';
 import { EventLog } from 'web3-eth-contract';
-import { DecodedParams } from 'web3-types';
+import StaticModel from './StaticModel';
 
 class TeeOffers {
     private static cpuDenominator?: number;
@@ -109,28 +108,16 @@ class TeeOffers {
         fromBlock?: number | string,
         toBlock?: number | string,
     ): Promise<OfferCreatedEvent | null> {
-        const contract = BlockchainConnector.getInstance().getContract();
-        const options: EventOptions = { filter };
-        if (!isValidBytes32Hex(filter.externalId)) {
-            options.filter!.externalId = formatBytes32String(filter.externalId);
-        }
-        if (fromBlock) options.fromBlock = fromBlock;
-        if (toBlock) options.toBlock = toBlock;
+        const founded = await StaticModel.findItemsById(
+            'TeeOfferCreated',
+            filter,
+            fromBlock,
+            toBlock,
+        );
 
-        const foundIds = await contract.getPastEvents('TeeOfferCreated', options);
-        if (foundIds.length > 0) {
-            if (foundIds.length > 1) {
-                TeeOffers.logger.warn(
-                    { foundIds },
-                    `More than one item found, please refine your filters!`,
-                );
-            }
-            return cleanEventData(
-                (foundIds[0] as EventLog).returnValues as DecodedParams,
-            ) as OfferCreatedEvent;
-        }
+        if (!founded) return null;
 
-        return null;
+        return founded as OfferCreatedEvent;
     }
 
     /**
@@ -189,28 +176,11 @@ class TeeOffers {
         fromBlock?: number | string,
         toBlock?: number | string,
     ): Promise<TeeSlotAddedEvent | null> {
-        const contract = BlockchainConnector.getInstance().getContract();
-        const options: EventOptions = { filter };
-        if (!isValidBytes32Hex(filter.externalId)) {
-            options.filter!.externalId = formatBytes32String(filter.externalId);
-        }
-        if (fromBlock) options.fromBlock = fromBlock;
-        if (toBlock) options.toBlock = toBlock;
+        const founded = await StaticModel.findItemsById('TeeSlotAdded', filter, fromBlock, toBlock);
 
-        const foundIds = await contract.getPastEvents('TeeSlotAdded', options);
-        if (foundIds.length > 0) {
-            if (foundIds.length > 1) {
-                TeeOffers.logger.warn(
-                    { foundIds },
-                    `More than one item found, please refine your filters!`,
-                );
-            }
-            return cleanEventData(
-                (foundIds[0] as EventLog).returnValues as DecodedParams,
-            ) as TeeSlotAddedEvent;
-        }
+        if (!founded) return null;
 
-        return null;
+        return founded as TeeSlotAddedEvent;
     }
 
     public static async getOptionByExternalId(
@@ -222,28 +192,11 @@ class TeeOffers {
         fromBlock?: number | string,
         toBlock?: number | string,
     ): Promise<OptionAddedEvent | null> {
-        const contract = BlockchainConnector.getInstance().getContract();
-        const options: EventOptions = { filter };
-        if (!isValidBytes32Hex(filter.externalId)) {
-            options.filter!.externalId = formatBytes32String(filter.externalId);
-        }
-        if (fromBlock) options.fromBlock = fromBlock;
-        if (toBlock) options.toBlock = toBlock;
+        const founded = await StaticModel.findItemsById('OptionAdded', filter, fromBlock, toBlock);
 
-        const foundIds = await contract.getPastEvents('OptionAdded', options);
-        if (foundIds.length > 0) {
-            if (foundIds.length > 1) {
-                TeeOffers.logger.warn(
-                    { foundIds },
-                    `More than one item found, please refine your filters!`,
-                );
-            }
-            return cleanEventData(
-                (foundIds[0] as EventLog).returnValues as DecodedParams,
-            ) as OptionAddedEvent;
-        }
+        if (!founded) return null;
 
-        return null;
+        return founded as OptionAddedEvent;
     }
 
     /**

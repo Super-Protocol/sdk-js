@@ -299,7 +299,7 @@ class BlockchainConnector extends BaseConnector {
                     })
                     .catch((err) => this.logger.error(err));
             }
-            const blocks: Block[] = (await executeBatchAsync(batch)).map((item) => item as Block);
+            const blocks: Block[] = await executeBatchAsync<Block>(batch);
 
             blocks.forEach((block: Block) => {
                 if (!block?.transactions) return;

@@ -1,5 +1,6 @@
 import rootLogger from '../logger';
-import { checkIfActionAccountInitialized, cleanEventData, isValidBytes32Hex } from '../utils/helper';
+import StaticModel from './StaticModel';
+import { checkIfActionAccountInitialized } from '../utils/helper';
 import { BytesLike, formatBytes32String, parseBytes32String } from 'ethers/lib/utils';
 import {
     OfferCreatedEvent,
@@ -8,15 +9,13 @@ import {
     TransactionOptions,
     OfferInfo,
     OfferType,
-    EventOptions,
 } from '../types';
 import Superpro from './Superpro';
 import TxManager from '../utils/TxManager';
 import { BlockchainConnector, BlockchainEventsListener } from '../connectors';
 import { EventLog } from 'web3-eth-contract';
-import { DecodedParams } from 'web3-types';
 
-class Offers {
+class Offers implements StaticModel {
     private static readonly logger = rootLogger.child({ className: 'Offers' });
 
     public static offers?: string[];
@@ -91,28 +90,11 @@ class Offers {
         fromBlock?: number | string,
         toBlock?: number | string,
     ): Promise<OfferCreatedEvent | null> {
-        const contract = BlockchainConnector.getInstance().getContract();
-        const options: EventOptions = { filter };
-        if (!isValidBytes32Hex(filter.externalId)) {
-            options.filter!.externalId = formatBytes32String(filter.externalId);
-        }
-        if (fromBlock) options.fromBlock = fromBlock;
-        if (toBlock) options.toBlock = toBlock;
+        const founded = await StaticModel.findItemsById('OfferCreated', filter, fromBlock, toBlock);
 
-        const foundIds = await contract.getPastEvents('OfferCreated', options);
-        if (foundIds.length > 0) {
-            if (foundIds.length > 1) {
-                Offers.logger.warn(
-                    { foundIds },
-                    `More than one item found, please refine your filters!`,
-                );
-            }
-            return cleanEventData(
-                (foundIds[0] as EventLog).returnValues as DecodedParams,
-            ) as OfferCreatedEvent;
-        }
+        if (!founded) return null;
 
-        return null;
+        return founded as OfferCreatedEvent;
     }
 
     public static async getSlotByExternalId(
@@ -124,28 +106,16 @@ class Offers {
         fromBlock?: number | string,
         toBlock?: number | string,
     ): Promise<ValueSlotAddedEvent | null> {
-        const contract = BlockchainConnector.getInstance().getContract();
-        const options: EventOptions = { filter };
-        if (!isValidBytes32Hex(filter.externalId)) {
-            options.filter!.externalId = formatBytes32String(filter.externalId);
-        }
-        if (fromBlock) options.fromBlock = fromBlock;
-        if (toBlock) options.toBlock = toBlock;
+        const founded = await StaticModel.findItemsById(
+            'ValueSlotAdded',
+            filter,
+            fromBlock,
+            toBlock,
+        );
 
-        const foundIds = await contract.getPastEvents('ValueSlotAdded', options);
-        if (foundIds.length > 0) {
-            if (foundIds.length > 1) {
-                Offers.logger.warn(
-                    { foundIds },
-                    `More than one item found, please refine your filters!`,
-                );
-            }
-            return cleanEventData(
-                (foundIds[0] as EventLog).returnValues as DecodedParams,
-            ) as ValueSlotAddedEvent;
-        }
+        if (!founded) return null;
 
-        return null;
+        return founded as ValueSlotAddedEvent;
     }
 
     /**

@@ -1,27 +1,15 @@
 import { formatBytes32String, parseBytes32String } from 'ethers/lib/utils';
 import rootLogger from '../logger';
-import {
-    checkIfActionAccountInitialized,
-    cleanEventData,
-    incrementMethodCall,
-    isValidBytes32Hex,
-} from '../utils/helper';
-import {
-    OrderInfo,
-    OrderStatus,
-    BlockInfo,
-    TransactionOptions,
-    OrderCreatedEvent,
-    EventOptions,
-} from '../types';
+import { checkIfActionAccountInitialized, incrementMethodCall } from '../utils/helper';
+import { OrderInfo, OrderStatus, BlockInfo, TransactionOptions, OrderCreatedEvent } from '../types';
 import Superpro from './Superpro';
 import TxManager from '../utils/TxManager';
 import { BlockchainConnector, BlockchainEventsListener } from '../connectors';
 import { Order } from '../models';
 import { EventLog } from 'web3-eth-contract';
-import { DecodedParams } from 'web3-types';
+import StaticModel from './StaticModel';
 
-class Orders {
+class Orders implements StaticModel {
     private static readonly logger = rootLogger.child({ className: 'Orders' });
 
     public static orders?: bigint[];
@@ -101,28 +89,11 @@ class Orders {
         fromBlock?: number | string,
         toBlock?: number | string,
     ): Promise<OrderCreatedEvent | null> {
-        const contract = BlockchainConnector.getInstance().getContract();
-        const options: EventOptions = { filter };
-        if (!isValidBytes32Hex(filter.externalId)) {
-            options.filter!.externalId = formatBytes32String(filter.externalId);
-        }
-        if (fromBlock) options.fromBlock = fromBlock;
-        if (toBlock) options.toBlock = toBlock;
+        const founded = await StaticModel.findItemsById('OrderCreated', filter, fromBlock, toBlock);
 
-        const foundIds = await contract.getPastEvents('OrderCreated', options);
-        if (foundIds.length > 0) {
-            if (foundIds.length > 1) {
-                Orders.logger.warn(
-                    { foundIds },
-                    `More than one item found, please refine your filters!`,
-                );
-            }
-            return cleanEventData(
-                (foundIds[0] as EventLog).returnValues as DecodedParams,
-            ) as OrderCreatedEvent;
-        }
+        if (!founded) return null;
 
-        return null;
+        return founded as OrderCreatedEvent;
     }
 
     /**

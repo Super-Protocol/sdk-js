@@ -365,7 +365,7 @@ class Order {
     public async createSubOrder(
         subOrderInfo: OrderInfo,
         blockParentOrder: boolean,
-        deposit = '0',
+        deposit = BigInt(0),
         transactionOptions?: TransactionOptions,
         checkTxBeforeSend = false,
     ): Promise<void> {

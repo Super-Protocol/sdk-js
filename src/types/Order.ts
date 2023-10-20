@@ -38,7 +38,7 @@ export type OrderInfo = {
 
 export type ExtendedOrderInfo = OrderInfo & {
     blocking: boolean;
-    deposit: string;
+    deposit: bigint;
 };
 
 export type OrderResult = {
@@ -48,7 +48,7 @@ export type OrderResult = {
 
 export type SubOrderParams = {
     blockParentOrder: boolean;
-    deposit: string;
+    deposit: bigint;
 };
 
 export type OrderUsage = {

@@ -7,7 +7,7 @@ class ECIES {
 
         const ecdh = crypto.createECDH('secp256k1');
 
-        ecdh.generateKeys('binary', 'uncompressed');
+        ecdh.generateKeys();
         const epk = ecdh.getPublicKey();
 
         const pk = ecdh.computeSecret(Buffer.from(encryption.key, encryption.encoding));

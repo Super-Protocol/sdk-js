@@ -1,11 +1,42 @@
+import axios from 'axios';
 import { QuoteValidator } from '../../src/tee/QuoteValidator';
 import { QuoteValidationStatuses } from '../../src/tee/statuses';
-import { testQuotes, quotesUserDatas } from './examples';
+import {
+    testQuotes,
+    quotesUserDatas,
+    platformCrlResult,
+    intelCrlDer,
+    tcbData,
+    qeIdentityData,
+} from './examples';
+
+jest.mock('axios');
 
 describe('Quote validator', () => {
     const validator = new QuoteValidator('https://pccs.superprotocol.io');
 
     beforeEach(() => {
+        (axios.get as jest.Mock).mockImplementation((url: string) => {
+            if (
+                url ===
+                'https://pccs.superprotocol.io/sgx/certification/v4/pckcrl?ca=platform&encoding=pem'
+            ) {
+                return Promise.resolve(platformCrlResult);
+            } else if (
+                url === 'https://certificates.trustedservices.intel.com/IntelSGXRootCA.der'
+            ) {
+                return Promise.resolve(intelCrlDer);
+            } else if (
+                url === 'https://pccs.superprotocol.io/sgx/certification/v4/tcb?fmspc=30606a000000'
+            ) {
+                return Promise.resolve(tcbData);
+            }
+
+            return Promise.resolve(qeIdentityData);
+        });
+    });
+
+    afterEach(() => {
         jest.restoreAllMocks();
     });
 

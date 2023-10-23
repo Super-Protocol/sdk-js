@@ -14,7 +14,7 @@ jest.mock('axios', () => ({
         switch (url) {
             case 'https://pccs.superprotocol.io/sgx/certification/v4/pckcrl?ca=platform&encoding=pem':
                 return Promise.resolve(platformCrlResult);
-            case 'https://certificates.trustedservices.intel.com/IntelSGXRootCA.der':
+            case 'https://pccs.superprotocol.io/sgx/certification/v4/rootcacrl':
                 return Promise.resolve(intelCrlDer);
             case 'https://pccs.superprotocol.io/sgx/certification/v4/tcb?fmspc=30606a000000':
                 return Promise.resolve(tcbData);

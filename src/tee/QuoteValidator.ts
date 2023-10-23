@@ -36,12 +36,14 @@ interface ValidationResult {
 }
 
 export class QuoteValidator {
+  private readonly isDefault: boolean;
   private readonly baseUrl: string;
   private readonly teeSgxParser: TeeSgxParser;
   private logger: typeof rootLogger;
 
   constructor(baseUrl?: string) {
-    this.baseUrl = `${baseUrl || DEFAULT_BASE_SGX_URL}/sgx/certification/v4`;
+    this.isDefault = !baseUrl;
+    this.baseUrl = `${this.isDefault ? DEFAULT_BASE_SGX_URL : baseUrl}/sgx/certification/v4`;
     this.teeSgxParser = new TeeSgxParser();
     this.logger = rootLogger.child({ className: QuoteValidator.name });
   }
@@ -117,6 +119,15 @@ export class QuoteValidator {
     );
   }
 
+  private getCrl(crlData: string): CertificateRevocationList {
+    const crlDer = crlData.startsWith('-----')
+      ? formatter.pemToBin(crlData)
+      : Buffer.from(crlData, 'hex');
+    const crlAsn = fromBER(crlDer as Uint8Array);
+
+    return new CertificateRevocationList({ schema: crlAsn.result });
+  }
+
   private checkCertificatesInCrl(crl: CertificateRevocationList, certIds: string[]): void {
     if (!crl.thisUpdate || !crl.nextUpdate) {
       throw new TeeQuoteValidatorError('Certificate revocation list has no update date field');
@@ -189,20 +200,23 @@ export class QuoteValidator {
       pckCert.serialNumber,
     ];
 
-    const intelCrlDer = await axios.get(INTEL_SGX_ROOT_CA_URL, {
-      responseType: 'arraybuffer',
-    });
-    const intelCrlAsn = fromBER(Buffer.from(intelCrlDer.data));
-    this.checkCertificatesInCrl(
-      new CertificateRevocationList({ schema: intelCrlAsn.result }),
-      certIds,
-    );
+    if (this.isDefault) {
+      const intelCrlDer = await axios.get(INTEL_SGX_ROOT_CA_URL, {
+        responseType: 'arraybuffer',
+      });
+      const intelCrlAsn = fromBER(Buffer.from(intelCrlDer.data));
+      this.checkCertificatesInCrl(
+        new CertificateRevocationList({ schema: intelCrlAsn.result }),
+        certIds,
+      );
+    } else {
+      const intelCrlDer = await axios.get(`${this.baseUrl}/rootcacrl`);
+      const intelCrl = this.getCrl(intelCrlDer.data);
+      this.checkCertificatesInCrl(intelCrl, certIds);
+    }
 
-    const platformCrlDer = platformCrlResult.data.startsWith('-----')
-      ? formatter.pemToBin(platformCrlResult.data)
-      : Buffer.from(platformCrlResult.data, 'hex');
-    const crlAsn = fromBER(platformCrlDer as Uint8Array);
-    this.checkCertificatesInCrl(new CertificateRevocationList({ schema: crlAsn.result }), certIds);
+    const platformCrl = this.getCrl(platformCrlResult.data);
+    this.checkCertificatesInCrl(platformCrl, certIds);
 
     return { pckCert, rootCertPem: rootFetchedPem };
   }

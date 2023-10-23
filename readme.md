@@ -3,7 +3,7 @@
 ## Installation
 
 ```
-yarn add @super-protocol/sdk-js
+npm install @super-protocol/sdk-js
 ```
 
 ## Prepare protobuf
@@ -12,25 +12,24 @@ yarn add @super-protocol/sdk-js
 
 2. Install protobuf (http://google.github.io/proto-lens/installing-protoc.html)
 
-3. yarn dto::update
+3. npm run dto::update
 
 ## Local Dev Setup
-1. npm install uplink-nodejs
+1. npm install
 
-2. Just run ```yarn```
+2. Just run ```npm run build```
 
 ## Scripts
 
-`yarn prettier` - run auto code style fixing
+`npm run prettier` - run auto code style fixing
 
-`yarn build` - create production build (in build folder)
+`npm run build` - create production build (in build folder)
 
-`yarn dto:update` - generate TypeScript classes based on DTO submodule
+`npm run dto:update` - generate TypeScript classes based on DTO submodule
 
 ## Dependencies
 - NodeJS v16.8.0
 - NPM v7.21.0
-- yarn v1.22.11
 
 ## Apple M1 instructions
 Some dependencies is not supported arm64 architecture. You can face with error like `dyld[12398]: missing symbol called`. To install everything correctly, do next:

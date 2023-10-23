@@ -1,7 +1,7 @@
-import { Transaction } from '../Web3';
+import { ExtendedTransactionInfo } from '../../types';
 
 type BlockchainTransaction = {
-    transactionsByAddress: { [p: string]: Transaction[] };
+    transactionsByAddress: { [p: string]: ExtendedTransactionInfo[] };
     lastBlock: number;
 };
 

@@ -76,16 +76,16 @@ class Crypto {
     static async decrypt(encryption: Encryption): Promise<string> {
         switch (encryption.algo) {
             case CryptoAlgorithm.AES:
-                return await AES.decrypt(encryption as AESEncryption);
+                return AES.decrypt(encryption as AESEncryption);
 
             case CryptoAlgorithm.ARIA:
-                return await ARIA.decrypt(encryption as ARIAEncryption);
+                return ARIA.decrypt(encryption as ARIAEncryption);
 
             case CryptoAlgorithm.ECIES:
                 return await ECIES.decrypt(encryption as ECIESEncryption);
 
             case CryptoAlgorithm.RSAHybrid:
-                return await RSAHybrid.decrypt(encryption as RSAHybridEncryption);
+                return RSAHybrid.decrypt(encryption as RSAHybridEncryption);
 
             default:
                 throw Error(`${encryption.algo} algorithm not supported`);

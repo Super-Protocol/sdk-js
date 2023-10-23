@@ -1,12 +1,13 @@
+import abi from '../contracts/abi';
 import rootLogger from '../logger';
-import { HttpProviderBase, WebsocketProviderBase } from 'web3-core-helpers';
-import { Contract } from 'web3-eth-contract';
+import { Contract } from 'web3';
+import store from '../store';
 
 export type Config = {
     contractAddress: string;
     blockchainUrl?: string;
-    gasPrice?: string;
-    gasLimit?: number;
+    gasPrice?: bigint;
+    gasLimit?: bigint;
     gasLimitMultiplier?: number;
     gasPriceMultiplier?: number;
     txConcurrency?: number;
@@ -22,14 +23,13 @@ export type Config = {
 export class BaseConnector {
     protected initialized = false;
     protected logger = rootLogger.child({ className: this.constructor['name'] });
-    protected contract?: Contract;
-    protected provider?: WebsocketProviderBase | HttpProviderBase;
+    protected contract?: Contract<typeof abi>;
 
     public isInitialized(): boolean {
         return this.initialized;
     }
 
-    public checkIfInitialized() {
+    public checkIfInitialized(): void {
         if (!this.initialized)
             throw new Error(
                 `${this.constructor['name']} is not initialized, needs to run '${this.constructor['name']}.initialize(CONFIG)' first`,
@@ -40,7 +40,7 @@ export class BaseConnector {
      *
      * @returns initialized contract
      */
-    public getContract(): Contract {
+    public getContract(): Contract<typeof abi> {
         this.checkIfInitialized();
 
         return this.contract!;
@@ -51,11 +51,10 @@ export class BaseConnector {
      * Used to setting up settings for blockchain connector
      * Needs to run this function before using blockchain connector
      */
-    public async initialize(config: Config): Promise<void> {}
+    public async initialize(_config: Config): Promise<void> {}
 
-    public shutdown() {
+    public shutdown(): void {
         if (this.initialized) {
-            this.provider?.disconnect(0, '');
             this.initialized = false;
             this.logger.trace(`${this.constructor['name']} was shutdown`);
         }

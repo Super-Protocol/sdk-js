@@ -1,8 +1,6 @@
 import { BaseConnector, Config } from './BaseConnector';
-import Web3 from 'web3';
-import appJSON from '../contracts/app.json';
-import { AbiItem } from 'web3-utils';
-import { WebsocketProviderBase } from 'web3-core-helpers';
+import Web3, { Web3Context, WebSocketProvider } from 'web3';
+import { abi } from '../contracts/abi';
 
 // TODO: remove this dependencies
 import store from '../store';
@@ -25,8 +23,8 @@ class BlockchainEventsListener extends BaseConnector {
         return BlockchainEventsListener.instance;
     }
 
-    public getProvider() {
-        return <WebsocketProviderBase | undefined>this.provider;
+    public getProvider(): WebSocketProvider | undefined {
+        return <WebSocketProvider>store.web3Wss?.provider;
     }
 
     /**
@@ -35,10 +33,6 @@ class BlockchainEventsListener extends BaseConnector {
      */
     public async initialize(config: Config): Promise<void> {
         this.logger.trace(config, 'Initializing');
-
-        if (this.provider) {
-            (this.provider as WebsocketProviderBase).reset();
-        }
 
         const reconnectOptions = Object.assign(
             {
@@ -50,15 +44,14 @@ class BlockchainEventsListener extends BaseConnector {
             config.reconnect,
         );
 
-        this.provider = new Web3.providers.WebsocketProvider(config.blockchainUrl!, {
-            reconnect: reconnectOptions,
+        const provider = new WebSocketProvider(config.blockchainUrl!, {}, reconnectOptions);
+        store.web3Wss = new Web3(provider);
+        const web3Context = new Web3Context({
+            provider: store.web3Wss.currentProvider,
+            config: { contractDataInputFill: 'data' },
         });
-        store.web3Wss = new Web3(this.provider);
 
-        this.contract = new store.web3Wss!.eth.Contract(
-            <AbiItem[]>appJSON.abi,
-            config.contractAddress,
-        );
+        this.contract = new store.web3Wss.eth.Contract(abi, config.contractAddress, web3Context);
         Superpro.address = config.contractAddress;
         SuperproToken.addressWss = await Superpro.getTokenAddress(this.contract);
 
@@ -67,8 +60,9 @@ class BlockchainEventsListener extends BaseConnector {
         this.logger.trace('Initialized');
     }
 
-    public shutdown() {
+    public shutdown(): void {
         super.shutdown();
+        store.web3Wss?.provider?.disconnect(0, '');
         store.web3Wss = undefined;
     }
 }

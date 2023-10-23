@@ -1,7 +1,7 @@
 import * as protobuf from 'protobufjs';
 import { EtlModel as IEtlModel, EtlModelMetadata } from '@super-protocol/dto-js';
 import { EtlModelType } from '@super-protocol/dto-js/build/enum/EtlModel.enum';
-import { EtlModelSubtype } from '../types/EtlModel';
+import { EtlModelSubtype } from '../types';
 import rootLogger from '../logger';
 import { ModelPackager } from '../staticModels/ModelPackager';
 import { ResourceContentType } from '@super-protocol/dto-js/build/enum/ResourceContentType.enum';
@@ -34,7 +34,7 @@ export class EtlModel {
      *
      * @returns EltModel in binary format
      */
-    public async pack(): Promise<Buffer> {
+    public pack(): Promise<Buffer> {
         return ModelPackager.pack(this.etlModel);
     }
 

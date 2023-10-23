@@ -11,8 +11,8 @@ const mockPrivateKey = '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d
 
 const mockTxOptions: TransactionOptions = {
     from: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266',
-    gas: 1000,
-    gasPrice: '1000',
+    gas: BigInt(1000),
+    gasPrice: BigInt(1000),
     gasPriceMultiplier: 1,
 };
 
@@ -36,7 +36,7 @@ describe('TxManager', () => {
         it('should send unSigned transaction', async () => {
             const txData = {
                 to: 'recipient',
-                value: '1000',
+                value: BigInt(1000),
             };
             const txOptions = { ...mockTxOptions, web3 };
 
@@ -61,7 +61,7 @@ describe('TxManager', () => {
         it('should send signed transaction', async () => {
             const txData = {
                 to: 'recipient',
-                value: '1000',
+                value: BigInt(1000),
             };
             store.keys[mockTxOptions.from!] = mockPrivateKey;
             const txOptions = { ...mockTxOptions, web3 };
@@ -74,7 +74,7 @@ describe('TxManager', () => {
 
             const signTransaction = jest
                 .spyOn(web3.eth.accounts, 'signTransaction')
-                .mockReturnValue(Promise.resolve(expectedSignTxResult));
+                .mockReturnValue(Promise.resolve(expectedSignTxResult as any));
             const sendSignedTxSpy = jest.spyOn(web3.eth, 'sendSignedTransaction');
 
             const result = await TxManager.publishTransaction(txData, txOptions);
@@ -99,13 +99,13 @@ describe('TxManager', () => {
 
             const txData = {
                 to: 'recipient',
-                value: '1000',
+                value: BigInt(1000),
             };
             const txOptions = { ...mockTxOptions };
 
             const sendTxSpy = jest.spyOn(web3.eth, 'sendTransaction');
 
-            const expectedNonce = 1;
+            const expectedNonce = BigInt(1);
             const consumeNonceSpy = jest
                 .spyOn(NonceTracker.prototype, 'consumeNonce')
                 .mockImplementation(() => expectedNonce);

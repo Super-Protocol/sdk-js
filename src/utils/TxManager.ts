@@ -1,19 +1,26 @@
-import { TransactionReceipt } from 'web3-core';
-import { ContractSendMethod } from 'web3-eth-contract';
+import { TransactionReceipt } from 'web3';
 import NonceTracker from './NonceTracker';
 import rootLogger from '../logger';
 import store from '../store';
-import { TransactionOptions, DryRunError, TransactionOptionsRequired } from '../types/Web3';
+import {
+    TransactionOptions,
+    DryRunError,
+    TransactionDataOptions,
+    BlockchainError,
+    TransactionOptionsRequired,
+} from '../types';
 import {
     checkForUsingExternalTxManager,
     checkIfActionAccountInitialized,
     createTransactionOptions,
-} from '../utils';
+    multiplyBigIntByNumber,
+} from './helper';
 import Superpro from '../staticModels/Superpro';
 import { defaultGasLimit } from '../constants';
 import lodash from 'lodash';
 import Web3 from 'web3';
 import Bottleneck from 'bottleneck';
+import { NonPayableMethodObject, NonPayableTxOptions } from 'web3-eth-contract';
 
 interface EvmError extends Error {
     data: {
@@ -37,14 +44,6 @@ export class Web3TransactionRevertedByEvmError extends Web3TransactionError {
     }
 }
 
-type ArgumentsType = any | any[];
-
-type MethodReturnType = ContractSendMethod & {
-    _parent: {
-        _address: string;
-    };
-};
-
 type PublishTransactionOptions = Required<TransactionOptions> & { useExternalTxManager: boolean };
 
 class TxManager {
@@ -52,11 +51,11 @@ class TxManager {
     private static logger = rootLogger.child({ className: 'TxManager' });
     private static nonceTrackers: { [address: string]: NonceTracker } = {};
     private static queues: { [address: string]: Bottleneck } = {};
-    public static init(web3: Web3) {
+    public static init(web3: Web3): void {
         this.web3 = web3;
     }
 
-    private static checkIfInitialized() {
+    private static checkIfInitialized(): void {
         if (!this.web3) {
             throw Error('TxManager should be initialized before using.');
         }
@@ -68,26 +67,24 @@ class TxManager {
         await this.nonceTrackers[address].initAccount();
     }
 
-    public static async execute(
-        method: (...args: ArgumentsType) => MethodReturnType,
-        args: ArgumentsType,
+    public static execute(
+        transaction: NonPayableMethodObject,
         transactionOptions?: TransactionOptions,
         to: string = Superpro.address,
     ): Promise<TransactionReceipt> {
-        const transaction = method(...args);
-        const txData: Record<string, any> = {
+        const txData: TransactionDataOptions = {
             to,
             data: transaction.encodeABI(),
         };
 
-        return await TxManager.publishTransaction(txData, transactionOptions, transaction);
+        return TxManager.publishTransaction(txData, transactionOptions, transaction);
     }
 
     public static async publishTransaction(
-        txData: Record<string, any>,
+        txData: TransactionDataOptions,
         transactionOptions?: TransactionOptions,
-        transactionCall?: MethodReturnType,
-    ): Promise<any> {
+        transactionCall?: NonPayableMethodObject,
+    ): Promise<TransactionReceipt> {
         this.checkIfInitialized();
         checkIfActionAccountInitialized(transactionOptions);
 
@@ -112,24 +109,19 @@ class TxManager {
             });
         }
 
-        return this.queues[publishTxOptions.from].schedule(async () =>
+        return this.queues[publishTxOptions.from].schedule(() =>
             TxManager._publishTransaction(txData, publishTxOptions, transactionCall),
         );
     }
 
-    public static async dryRun(
-        method: (...args: ArgumentsType) => MethodReturnType,
-        args: ArgumentsType,
+    public static async dryRun<SpecialOutput = unknown>(
+        transaction: NonPayableMethodObject,
         transactionOptions?: TransactionOptions,
-    ): Promise<any> {
-        const transaction = method(...args);
+    ): Promise<SpecialOutput> {
         const from = transactionOptions?.from ?? store.actionAccount;
-        let result;
 
         try {
-            result = await transaction.call({ from });
-
-            return result;
+            return await transaction.call({ from });
         } catch (e) {
             (e as DryRunError).txErrorMsg =
                 (e as EvmError).data.message || 'Error text is undefined';
@@ -138,9 +130,9 @@ class TxManager {
     }
 
     private static async _publishTransaction(
-        txData: Record<string, any>,
+        txData: TransactionDataOptions,
         transactionOptions: PublishTransactionOptions,
-        transactionCall?: MethodReturnType,
+        transactionCall?: NonPayableMethodObject,
     ): Promise<TransactionReceipt> {
         const { from, gas, gasPrice, gasPriceMultiplier, web3 } = transactionOptions;
 
@@ -155,13 +147,12 @@ class TxManager {
         if (transactionCall) {
             let estimatedGas;
             try {
-                estimatedGas = await transactionCall.estimateGas(txData);
+                estimatedGas = await transactionCall.estimateGas(txData as NonPayableTxOptions);
             } catch (e) {
                 TxManager.logger.debug({ error: e }, 'Fail to calculate estimated gas');
                 estimatedGas = defaultGasLimit;
             }
-            txData.gas = estimatedGas;
-            txData.gas = Math.ceil(txData.gas * store.gasLimitMultiplier);
+            txData.gas = multiplyBigIntByNumber(estimatedGas, store.gasLimitMultiplier);
             // defaultGasLimit is max gas limit
             txData.gas = txData.gas < defaultGasLimit ? txData.gas : defaultGasLimit;
 
@@ -178,7 +169,7 @@ class TxManager {
                 txData.gas = transactionOptions.gas;
             }
 
-            txData.gasPrice = Math.ceil(txData.gasPrice * store.gasPriceMultiplier);
+            txData.gasPrice = multiplyBigIntByNumber(txData.gasPrice!, store.gasPriceMultiplier);
         }
 
         let nonceTracker;
@@ -187,15 +178,15 @@ class TxManager {
             !transactionOptions.useExternalTxManager &&
             this.nonceTrackers[transactionOptions.from]
         ) {
-            nonceTracker = this.nonceTrackers[transactionOptions.from];
+            nonceTracker = this.nonceTrackers[transactionOptions.from!];
             await nonceTracker.onTransactionStartPublishing();
             txData.nonce = nonceTracker.consumeNonce();
         }
-        const signingKey = store.keys[transactionOptions.from];
+        const signingKey = store.keys[transactionOptions.from!];
         try {
             let transactionResultData;
             if (signingKey) {
-                const signed = await web3.eth.accounts.signTransaction(txData, signingKey);
+                const signed = await web3!.eth.accounts.signTransaction(txData, signingKey);
                 if (!signed.rawTransaction) {
                     throw new Error('Failed to sign transaction');
                 }
@@ -208,7 +199,9 @@ class TxManager {
                     'Publishing signed transaction',
                 );
 
-                transactionResultData = await web3.eth.sendSignedTransaction(signed.rawTransaction);
+                transactionResultData = await web3!.eth.sendSignedTransaction(
+                    signed.rawTransaction,
+                );
 
                 TxManager.logger.debug(
                     {
@@ -226,17 +219,19 @@ class TxManager {
                     'Publishing unsigned transaction',
                 );
 
-                transactionResultData = await web3.eth.sendTransaction(txData);
+                transactionResultData = await web3!.eth.sendTransaction(txData);
             }
 
             if (nonceTracker) nonceTracker.onTransactionPublished();
 
             return transactionResultData;
-        } catch (e: any) {
+        } catch (e: unknown) {
             const message = 'Error during transaction execution';
             TxManager.logger.error(e, message);
             if (nonceTracker) await nonceTracker.onTransactionError();
-            if (e.message?.includes('Transaction has been reverted by the EVM')) {
+            if (
+                (e as BlockchainError).message?.includes('Transaction has been reverted by the EVM')
+            ) {
                 throw new Web3TransactionRevertedByEvmError(e, message);
             } else {
                 throw new Web3TransactionError(e, message);

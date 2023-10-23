@@ -62,7 +62,7 @@ class ARIA {
         };
     }
 
-    public static async decrypt(encryption: ARIAEncryption): Promise<string> {
+    public static decrypt(encryption: ARIAEncryption): string {
         if (!encryption.key) throw Error('Decryption key is not provided');
 
         const key = Buffer.from(encryption.key, encryption.encoding);
@@ -77,7 +77,7 @@ class ARIA {
             );
         }
 
-        return await NativeCrypto.decrypt(
+        return NativeCrypto.decrypt(
             key,
             encryption.ciphertext!,
             encryption.cipher,

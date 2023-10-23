@@ -5,42 +5,21 @@ export enum TcbVerifiedStatus {
     InvalidBcbHash = 3,
 }
 
-// Order of keys and type conversion functions for this object in blockchain contract
-export const PublicDataStructure = {
-    teeOffer: String,
-    deviceID: String,
-    benchmark: Number,
-    properties: String,
-};
 export type TcbPublicData = {
-    teeOffer?: string;
+    teeOffer?: bigint;
     deviceID: string;
     benchmark: number;
     properties: string;
 };
 
-export const UtilityDataStructure = {
-    checkingBlocks: [String],
-    checkingBlockMarks: [TcbVerifiedStatus],
-    lastBlocksTakenAmount: Number,
-    suspiciousBlocksTakenAmount: Number,
-    negative: Number,
-    positive: Number,
-    previousTcb: String,
-    lastBlocksTaken: Boolean,
-    suspiciousBlocksTaken: Boolean,
-    assignedToEpoch: Boolean,
-    checked: Boolean,
-    rewardClaimed: Boolean,
-};
 export type TcbUtilityData = {
-    checkingBlocks: [string];
+    checkingBlocks: [bigint];
     checkingBlockMarks: [TcbVerifiedStatus];
     lastBlocksTakenAmount: number;
     suspiciousBlocksTakenAmount: number;
     negative: number;
     positive: number;
-    previousTcb: string;
+    previousTcb: bigint;
     lastBlocksTaken: boolean;
     suspiciousBlocksTaken: boolean;
     assignedToEpoch: boolean;
@@ -48,12 +27,6 @@ export type TcbUtilityData = {
     rewardClaimed: boolean;
 };
 
-// Order of keys and type conversion functions for this object in blockchain contract
-export const EpochStructure = {
-    reward: String,
-    benchmark: Number,
-    penaltyBenchmark: Number,
-};
 export type Epoch = {
     reward: string;
     benchmark: number;
@@ -67,15 +40,6 @@ export enum TcbStatus {
     BenchmarkChanged = '3',
 }
 
-// Order of keys and type conversion functions for this object in blockchain contract
-export const TcbStructure = {
-    quote: String,
-    timeInitialized: Number,
-    timeAdded: Number,
-    publicData: PublicDataStructure,
-    utilData: UtilityDataStructure,
-    status: TcbStatus,
-};
 export type TcbData = {
     quote: string;
     timeInitialized: number;
@@ -86,9 +50,9 @@ export type TcbData = {
 };
 
 export type EpochInfo = {
-    reward: number;
-    benchmark: number;
-    penaltyBenchmark: number;
+    reward: bigint;
+    benchmark: bigint;
+    penaltyBenchmark: bigint;
 };
 
 export type ConsensusConstants = {

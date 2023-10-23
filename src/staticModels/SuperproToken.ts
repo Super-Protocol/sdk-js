@@ -1,53 +1,49 @@
-import { Contract } from 'web3-eth-contract';
+import { Contract, ContractAbi, Transaction } from 'web3';
 import rootLogger from '../logger';
-import { AbiItem } from 'web3-utils';
-import { Transaction } from 'web3-core';
-import appJSON from '../contracts/app.json';
+import { abi } from '../contracts/abi';
 import store from '../store';
-import { checkIfActionAccountInitialized } from '../utils';
-import { TransactionOptions, ContractEvent, BlockInfo } from '../types/Web3';
+import { checkIfActionAccountInitialized } from '../utils/helper';
+import { TransactionOptions, BlockInfo } from '../types';
+import { EventLog } from 'web3-eth-contract';
 import TxManager from '../utils/TxManager';
 
 class SuperproToken {
     private static _addressHttps: string;
     private static _addressWss: string;
-    private static contractHttps?: Contract;
-    private static contractWss?: Contract;
+    private static contractHttps?: Contract<typeof abi>;
+    private static contractWss?: Contract<typeof abi>;
     private static readonly logger = rootLogger.child({ className: 'SuperproToken' });
 
-    public static get addressHttps() {
+    public static get addressHttps(): string {
         return SuperproToken._addressHttps;
     }
 
     public static set addressHttps(newAddress: string) {
         SuperproToken._addressHttps = newAddress;
-        SuperproToken.contractHttps = new store.web3Https!.eth.Contract(
-            <AbiItem[]>appJSON.abi,
-            newAddress,
-        );
+        SuperproToken.contractHttps = new store.web3Https!.eth.Contract(abi, newAddress, {
+            provider: store.web3Https!.currentProvider,
+            config: { contractDataInputFill: 'data' },
+        });
     }
 
-    public static get addressWss() {
+    public static get addressWss(): string {
         return SuperproToken._addressWss;
     }
 
     public static set addressWss(newAddress: string) {
         SuperproToken._addressWss = newAddress;
-        SuperproToken.contractWss = new store.web3Wss!.eth.Contract(
-            <AbiItem[]>appJSON.abi,
-            newAddress,
-        );
+        SuperproToken.contractWss = new store.web3Wss!.eth.Contract(abi, newAddress, {
+            provider: store.web3Wss!.currentProvider,
+            config: { contractDataInputFill: 'data' },
+        });
     }
 
     /**
      * Checks if contract has been initialized, if not - initialize contract
      */
-    private static checkInit(transactionOptions?: TransactionOptions) {
-        if (transactionOptions?.web3) {
-            return new transactionOptions.web3.eth.Contract(
-                <AbiItem[]>appJSON.abi,
-                SuperproToken.addressHttps,
-            );
+    private static checkInit(): Contract<typeof abi> {
+        if (!SuperproToken.contractHttps) {
+            throw Error(`SuperproToken must be initialized before it can be used`);
         }
 
         return SuperproToken.contractHttps!;
@@ -56,26 +52,26 @@ class SuperproToken {
     /**
      * Checks if contract has been initialized with socket support
      */
-    private static checkWssInit() {
+    private static checkWssInit(): Contract<ContractAbi> {
         return SuperproToken.contractWss!;
     }
 
     /**
      * Fetching balance of SuperProtocol tokens on address
      */
-    public static async balanceOf(address: string): Promise<string> {
+    public static balanceOf(address: string): Promise<bigint> {
         this.checkInit();
 
-        return await this.contractHttps!.methods.balanceOf(address).call();
+        return this.contractHttps!.methods.balanceOf(address).call();
     }
 
     /**
      * Fetching allowance of SuperProtocol tokens on address
      */
-    public static async allowance(from: string, to: string): Promise<string> {
+    public static allowance(from: string, to: string): Promise<string> {
         this.checkInit();
 
-        return await this.contractHttps!.methods.allowance(from, to).call();
+        return this.contractHttps!.methods.allowance(from, to).call();
     }
 
     /**
@@ -86,20 +82,19 @@ class SuperproToken {
      */
     public static async transfer(
         to: string,
-        amount: string,
+        amount: bigint,
         transactionOptions?: TransactionOptions,
         checkTxBeforeSend = false,
     ): Promise<Transaction> {
-        const contract = this.checkInit(transactionOptions);
+        const contract = this.checkInit();
         checkIfActionAccountInitialized(transactionOptions);
 
         if (checkTxBeforeSend) {
-            TxManager.dryRun(contract.methods.transfer, [to, amount], transactionOptions);
+            await TxManager.dryRun(contract.methods.transfer(to, amount), transactionOptions);
         }
 
         const receipt = await TxManager.execute(
-            contract.methods.transfer,
-            [to, amount],
+            contract.methods.transfer(to, amount),
             transactionOptions,
             SuperproToken.addressHttps,
         );
@@ -115,20 +110,19 @@ class SuperproToken {
      */
     public static async approve(
         address: string,
-        amount: string,
+        amount: bigint,
         transactionOptions?: TransactionOptions,
         checkTxBeforeSend = false,
     ): Promise<void> {
-        const contract = this.checkInit(transactionOptions);
+        const contract = this.checkInit();
         checkIfActionAccountInitialized(transactionOptions);
 
         if (checkTxBeforeSend) {
-            await TxManager.dryRun(contract.methods.approve, [address, amount], transactionOptions);
+            await TxManager.dryRun(contract.methods.approve(address, amount), transactionOptions);
         }
 
         await TxManager.execute(
-            contract.methods.approve,
-            [address, amount],
+            contract.methods.approve(address, amount),
             transactionOptions,
             SuperproToken.addressHttps,
         );
@@ -142,29 +136,27 @@ class SuperproToken {
         const contract = this.checkWssInit();
         const logger = this.logger.child({ method: 'onTokenApprove' });
 
-        const subscription = contract.events
-            .Approval()
-            .on('data', async (event: ContractEvent) => {
-                if (owner && event.returnValues.owner != owner) {
-                    return;
-                }
-                if (spender && event.returnValues.spender != spender) {
-                    return;
-                }
-                callback(
-                    <string>event.returnValues.owner,
-                    <string>event.returnValues.spender,
-                    <string>event.returnValues.value,
-                    {
-                        index: <number>event.blockNumber,
-                        hash: <string>event.blockHash,
-                    },
-                );
-            })
-            .on('error', (error: Error, receipt: string) => {
-                if (receipt) return; // Used to avoid logging of transaction rejected
-                logger.warn(error);
-            });
+        const subscription = contract.events.Approval();
+        subscription.on('data', (event: EventLog): void => {
+            if (owner && event.returnValues.owner != owner) {
+                return;
+            }
+            if (spender && event.returnValues.spender != spender) {
+                return;
+            }
+            callback(
+                <string>event.returnValues.owner,
+                <string>event.returnValues.spender,
+                <bigint>event.returnValues.value,
+                {
+                    index: <bigint>event.blockNumber,
+                    hash: <string>event.blockHash,
+                },
+            );
+        });
+        subscription.on('error', (error: Error) => {
+            logger.warn(error);
+        });
 
         return () => subscription.unsubscribe();
     }
@@ -177,29 +169,27 @@ class SuperproToken {
         const contract = this.checkWssInit();
         const logger = this.logger.child({ method: 'onTokenTransfer' });
 
-        const subscription = contract.events
-            .Approval()
-            .on('data', async (event: ContractEvent) => {
-                if (from && event.returnValues.from != from) {
-                    return;
-                }
-                if (to && event.returnValues.to != to) {
-                    return;
-                }
-                callback(
-                    <string>event.returnValues.from,
-                    <string>event.returnValues.to,
-                    <string>event.returnValues.value,
-                    {
-                        index: <number>event.blockNumber,
-                        hash: <string>event.blockHash,
-                    },
-                );
-            })
-            .on('error', (error: Error, receipt: string) => {
-                if (receipt) return; // Used to avoid logging of transaction rejected
-                logger.warn(error);
-            });
+        const subscription = contract.events.Approval();
+        subscription.on('data', (event: EventLog): void => {
+            if (from && event.returnValues.from != from) {
+                return;
+            }
+            if (to && event.returnValues.to != to) {
+                return;
+            }
+            callback(
+                <string>event.returnValues.from,
+                <string>event.returnValues.to,
+                <bigint>event.returnValues.value,
+                {
+                    index: <bigint>event.blockNumber,
+                    hash: <string>event.blockHash,
+                },
+            );
+        });
+        subscription.on('error', (error: Error) => {
+            logger.warn(error);
+        });
 
         return () => subscription.unsubscribe();
     }
@@ -208,13 +198,13 @@ class SuperproToken {
 export type onTokenApproveCallback = (
     owner: string,
     spender: string,
-    value: string,
+    value: bigint,
     block?: BlockInfo,
 ) => void;
 export type onTokenTransferCallback = (
     from: string,
     to: string,
-    value: string,
+    value: bigint,
     block?: BlockInfo,
 ) => void;
 

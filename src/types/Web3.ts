@@ -1,29 +1,47 @@
-import Web3 from 'web3';
-
-// Event what used as payload for Web3 events
-export type ContractEvent = {
-    blockHash: string;
-    blockNumber: number;
-    returnValues: { [key: string]: unknown };
-};
+import Web3, { Numbers, TransactionInfo } from 'web3';
 
 export type BlockInfo = {
-    index: number;
-    hash: string;
+    index: bigint;
+    hash: string | undefined;
 };
 
 export type EventData = {
     contract: string;
     name: string;
-    data: any;
+    data: { [key: string]: unknown };
+};
+
+export type ExtendedTransactionInfo = TransactionInfo & {
+    timestamp?: number;
+};
+
+type Filter = Record<string, Numbers | Numbers[] | boolean | boolean[]>;
+
+export type FilterWithExternalId = Filter & {
+    externalId: string;
+};
+
+export type EventOptions = {
+    filter?: Filter;
+    toBlock?: number | string;
+    fromBlock?: number | string;
 };
 
 export type TransactionOptionsRequired = Required<TransactionOptions>;
 
+export type BlockchainError = { message: string };
+
+export type TransactionDataOptions = TransactionOptions & {
+    to: string;
+    nonce?: bigint;
+    data?: string;
+    value?: bigint;
+};
+
 export type TransactionOptions = {
     from?: string;
-    gas?: number;
-    gasPrice?: string;
+    gas?: bigint;
+    gasPrice?: bigint;
     gasPriceMultiplier?: number;
     web3?: Web3;
 };

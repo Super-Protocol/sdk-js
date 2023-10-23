@@ -1,11 +1,9 @@
 import rootLogger from '../logger';
-import { checkIfActionAccountInitialized, objectToTuple } from '../utils';
-import { ProviderInfo, ProviderInfoStructure } from '../types/Provider';
-import { BigNumber } from 'ethers';
-import { BlockInfo, ContractEvent, TransactionOptions } from '../types/Web3';
-import BlockchainConnector from '../connectors/BlockchainConnector';
+import { checkIfActionAccountInitialized } from '../utils/helper';
+import { ProviderInfo, BlockInfo, TransactionOptions } from '../types';
+import { EventLog } from 'web3-eth-contract';
+import { BlockchainConnector, BlockchainEventsListener } from '../connectors';
 import TxManager from '../utils/TxManager';
-import BlockchainEventsListener from '../connectors/BlockchainEventsListener';
 
 class ProviderRegistry {
     private static readonly logger = rootLogger.child({ className: 'ProviderRegistry' });
@@ -19,29 +17,22 @@ class ProviderRegistry {
         const contract = BlockchainConnector.getInstance().getContract();
         this.providers = await contract.methods.getProvidersAuths().call();
 
-        return this.providers!;
-    }
-
-    /**
-     * Fetch provider address by provider authority account
-     */
-    public static async get(providerAuthority: string): Promise<string> {
-        return providerAuthority;
+        return this.providers;
     }
 
     /**
      * Fetch provider security deposit by provider authority account
      */
-    public static async getSecurityDeposit(providerAuthority: string): Promise<string> {
+    public static getSecurityDeposit(providerAuthority: string): Promise<string> {
         const contract = BlockchainConnector.getInstance().getContract();
 
-        return await contract.methods.getProviderSecurityDeposit(providerAuthority).call();
+        return contract.methods.getProviderSecurityDeposit(providerAuthority).call();
     }
 
-    public static async isProviderRegistered(providerAuthority: string): Promise<boolean> {
+    public static isProviderRegistered(providerAuthority: string): Promise<boolean> {
         const contract = BlockchainConnector.getInstance().getContract();
 
-        return await contract.methods.isProviderRegistered(providerAuthority).call();
+        return contract.methods.isProviderRegistered(providerAuthority).call();
     }
 
     /**
@@ -52,16 +43,15 @@ class ProviderRegistry {
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
     public static async refillSecurityDepositFor(
-        amount: string,
+        amount: bigint,
         recipient: string,
         transactionOptions?: TransactionOptions,
     ): Promise<void> {
-        const contract = BlockchainConnector.getInstance().getContract(transactionOptions);
+        const contract = BlockchainConnector.getInstance().getContract();
         checkIfActionAccountInitialized(transactionOptions);
 
         await TxManager.execute(
-            contract.methods.refillProviderSecurityDepoFor,
-            [amount, recipient],
+            contract.methods.refillProviderSecurityDepoFor(recipient, amount),
             transactionOptions,
         );
     }
@@ -75,13 +65,11 @@ class ProviderRegistry {
         providerInfo: ProviderInfo,
         transactionOptions?: TransactionOptions,
     ): Promise<void> {
-        const contract = BlockchainConnector.getInstance().getContract(transactionOptions);
+        const contract = BlockchainConnector.getInstance().getContract();
         checkIfActionAccountInitialized(transactionOptions);
 
-        const providerInfoParams = objectToTuple(providerInfo, ProviderInfoStructure);
         await TxManager.execute(
-            contract.methods.registerProvider,
-            [providerInfoParams],
+            contract.methods.registerProvider(providerInfo),
             transactionOptions,
         );
     }
@@ -93,15 +81,14 @@ class ProviderRegistry {
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
     public static async refillSecurityDeposit(
-        amount: string,
+        amount: bigint,
         transactionOptions?: TransactionOptions,
     ): Promise<void> {
-        const contract = BlockchainConnector.getInstance().getContract(transactionOptions);
+        const contract = BlockchainConnector.getInstance().getContract();
         checkIfActionAccountInitialized(transactionOptions);
 
         await TxManager.execute(
-            contract.methods.refillProviderSecurityDepo,
-            [amount],
+            contract.methods.refillProviderSecurityDepo(amount),
             transactionOptions,
         );
     }
@@ -116,12 +103,11 @@ class ProviderRegistry {
         amount: string,
         transactionOptions?: TransactionOptions,
     ): Promise<void> {
-        const contract = BlockchainConnector.getInstance().getContract(transactionOptions);
+        const contract = BlockchainConnector.getInstance().getContract();
         checkIfActionAccountInitialized(transactionOptions);
 
         await TxManager.execute(
-            contract.methods.returnProviderSecurityDepo,
-            [amount],
+            contract.methods.returnProviderSecurityDepo(amount),
             transactionOptions,
         );
     }
@@ -135,21 +121,19 @@ class ProviderRegistry {
         const contract = BlockchainEventsListener.getInstance().getContract();
         const logger = this.logger.child({ method: 'onProviderRegistered' });
 
-        const subscription = contract.events
-            .ProviderRegistered()
-            .on('data', async (event: ContractEvent) => {
-                callback(
-                    <string>event.returnValues.auth,
-                    <BlockInfo>{
-                        index: <number>event.blockNumber,
-                        hash: <string>event.blockHash,
-                    },
-                );
-            })
-            .on('error', (error: Error, receipt: string) => {
-                if (receipt) return; // Used to avoid logging of transaction rejected
-                logger.warn(error);
-            });
+        const subscription = contract.events.ProviderRegistered();
+        subscription.on('data', (event: EventLog): void => {
+            callback(
+                <string>event.returnValues.auth,
+                <BlockInfo>{
+                    index: <bigint>event.blockNumber,
+                    hash: <string>event.blockHash,
+                },
+            );
+        });
+        subscription.on('error', (error: Error) => {
+            logger.warn(error);
+        });
 
         return () => subscription.unsubscribe();
     }
@@ -163,21 +147,19 @@ class ProviderRegistry {
         const contract = BlockchainEventsListener.getInstance().getContract();
         const logger = this.logger.child({ method: 'onProviderModified' });
 
-        const subscription = contract.events
-            .ProviderModified()
-            .on('data', async (event: ContractEvent) => {
-                callback(
-                    <string>event.returnValues.auth,
-                    <BlockInfo>{
-                        index: <number>event.blockNumber,
-                        hash: <string>event.blockHash,
-                    },
-                );
-            })
-            .on('error', (error: Error, receipt: string) => {
-                if (receipt) return; // Used to avoid logging of transaction rejected
-                logger.warn(error);
-            });
+        const subscription = contract.events.ProviderModified();
+        subscription.on('data', (event: EventLog): void => {
+            callback(
+                <string>event.returnValues.auth,
+                <BlockInfo>{
+                    index: <bigint>event.blockNumber,
+                    hash: <string>event.blockHash,
+                },
+            );
+        });
+        subscription.on('error', (error: Error) => {
+            logger.warn(error);
+        });
 
         return () => subscription.unsubscribe();
     }
@@ -193,22 +175,20 @@ class ProviderRegistry {
         const contract = BlockchainEventsListener.getInstance().getContract();
         const logger = this.logger.child({ method: 'onProviderViolationRateIncremented' });
 
-        const subscription = contract.events
-            .ProviderViolationRateIncremented()
-            .on('data', async (event: ContractEvent) => {
-                callback(
-                    <string>event.returnValues.auth,
-                    <BigNumber>event.returnValues.newViolationRate,
-                    <BlockInfo>{
-                        index: <number>event.blockNumber,
-                        hash: <string>event.blockHash,
-                    },
-                );
-            })
-            .on('error', (error: Error, receipt: string) => {
-                if (receipt) return; // Used to avoid logging of transaction rejected
-                logger.warn(error);
-            });
+        const subscription = contract.events.ProviderViolationRateIncremented();
+        subscription.on('data', (event: EventLog): void => {
+            callback(
+                <string>event.returnValues.auth,
+                <bigint>event.returnValues.newViolationRate,
+                <BlockInfo>{
+                    index: <bigint>event.blockNumber,
+                    hash: <string>event.blockHash,
+                },
+            );
+        });
+        subscription.on('error', (error: Error) => {
+            logger.warn(error);
+        });
 
         return () => subscription.unsubscribe();
     }
@@ -224,22 +204,20 @@ class ProviderRegistry {
         const contract = BlockchainEventsListener.getInstance().getContract();
         const logger = this.logger.child({ method: 'onProviderSecurityDepoRefilled' });
 
-        const subscription = contract.events
-            .ProviderSecurityDepoRefilled()
-            .on('data', async (event: ContractEvent) => {
-                callback(
-                    <string>event.returnValues.auth,
-                    <string>event.returnValues.amount,
-                    <BlockInfo>{
-                        index: <number>event.blockNumber,
-                        hash: <string>event.blockHash,
-                    },
-                );
-            })
-            .on('error', (error: Error, receipt: string) => {
-                if (receipt) return; // Used to avoid logging of transaction rejected
-                logger.warn(error);
-            });
+        const subscription = contract.events.ProviderSecurityDepoRefilled();
+        subscription.on('data', (event: EventLog): void => {
+            callback(
+                <string>event.returnValues.auth,
+                <bigint>event.returnValues.amount,
+                <BlockInfo>{
+                    index: <bigint>event.blockNumber,
+                    hash: <string>event.blockHash,
+                },
+            );
+        });
+        subscription.on('error', (error: Error) => {
+            logger.warn(error);
+        });
 
         return () => subscription.unsubscribe();
     }
@@ -255,22 +233,20 @@ class ProviderRegistry {
         const contract = BlockchainEventsListener.getInstance().getContract();
         const logger = this.logger.child({ method: 'onProviderSecurityDepoUnlocked' });
 
-        const subscription = contract.events
-            .ProviderSecurityDepoUnlocked()
-            .on('data', async (event: ContractEvent) => {
-                callback(
-                    <string>event.returnValues.auth,
-                    <string>event.returnValues.amount,
-                    <BlockInfo>{
-                        index: <number>event.blockNumber,
-                        hash: <string>event.blockHash,
-                    },
-                );
-            })
-            .on('error', (error: Error, receipt: string) => {
-                if (receipt) return; // Used to avoid logging of transaction rejected
-                logger.warn(error);
-            });
+        const subscription = contract.events.ProviderSecurityDepoUnlocked();
+        subscription.on('data', (event: EventLog): void => {
+            callback(
+                <string>event.returnValues.auth,
+                <bigint>event.returnValues.amount,
+                <BlockInfo>{
+                    index: <bigint>event.blockNumber,
+                    hash: <string>event.blockHash,
+                },
+            );
+        });
+        subscription.on('error', (error: Error) => {
+            logger.warn(error);
+        });
 
         return () => subscription.unsubscribe();
     }
@@ -281,17 +257,17 @@ export type onProviderRegisteredCallback = (address: string, block?: BlockInfo) 
 export type onProviderModifiedCallback = (address: string, block?: BlockInfo) => void;
 export type onProviderSecurityDepoRefilledCallback = (
     address: string,
-    amount: string,
+    amount: bigint,
     block?: BlockInfo,
 ) => void;
 export type onProviderSecurityDepoUnlockedCallback = (
     address: string,
-    amount: string,
+    amount: bigint,
     block?: BlockInfo,
 ) => void;
 export type onProviderViolationRateIncrementedCallback = (
     address: string,
-    newViolationRate: BigNumber,
+    newViolationRate: bigint,
     block?: BlockInfo,
 ) => void;
 

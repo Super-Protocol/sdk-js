@@ -1,25 +1,25 @@
-import BlockchainConnector from '../connectors/BlockchainConnector';
+import { BlockchainConnector } from '../connectors';
 import Superpro from './Superpro';
-import { Mark } from '../types/Marks';
+import { Mark } from '../types';
 
 class Marks {
     public static get address(): string {
         return Superpro.address;
     }
 
-    static async getProviderMarks(providerAddress: string) {
+    static getProviderMarks(providerId: string): Promise<bigint> {
         const contract = BlockchainConnector.getInstance().getContract();
 
-        await contract.methods.getProviderMarks(providerAddress).call();
+        return contract.methods.getProviderMarks(providerId).call();
     }
 
-    static async getOrderMark(orderId: string) {
+    static getOrderMark(orderId: bigint | number | string): Promise<bigint> {
         const contract = BlockchainConnector.getInstance().getContract();
 
-        await contract.methods.getOrderMark(orderId).call();
+        return contract.methods.getOrderMark(orderId).call();
     }
 
-    static async setOrderMark(orderId: string, mark: Mark) {
+    static async setOrderMark(orderId: bigint | number | string, mark: Mark): Promise<void> {
         const contract = BlockchainConnector.getInstance().getContract();
 
         await contract.methods.setOrderMark(orderId, mark).call();

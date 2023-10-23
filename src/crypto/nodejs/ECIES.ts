@@ -1,4 +1,4 @@
-import { CryptoAlgorithm, ECIESEncryption, Encryption } from '@super-protocol/dto-js';
+import { CryptoAlgorithm, ECIESEncryption, Encoding, Encryption } from '@super-protocol/dto-js';
 import crypto from 'crypto';
 
 class ECIES {

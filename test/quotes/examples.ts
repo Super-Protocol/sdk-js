@@ -8,3 +8,822 @@ export const testQuotes = {
     invalidQuote:
         'AwDuAAAAAAAHAAwAk5pyM/ecTKmUCg2zlX8GBwJX89R8jleEwXkbJf/FicYAAAAABQUJCv//AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABQAAAAAAAADnAAAAAAAAAE1C17FbWsvKt00Q+pGSgpr5HBorPTQb/g+noCtUezTwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABKXLR5uKMPo4IbiKoputBHiOoAap4Jklvz7DY5j8nWSwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACXiTD2WltRuHzxT4ib1nkIyvRjy0vrz/QvkvhMhBOLyQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAxBAAAKDy2JLfcCUy3bwQBqBd/3iIIJay7P3kXhyFulBcfpS/nMR3D7N+FN5dO6Bid345+niwu2W8TArYvquB8Cih1MsfqH/yGd9HnKz9lWo8SYNJacdTBvplUMrCpO2XzlJsdj0dDH0OTMWxYnroUUHVlZMkPyCWGoVUWBZRpKfMvKNFBQUJCv//AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
 };
+
+export const quotesUserDatas = {
+    provisionerUserData: new Uint8Array([
+        52, 65, 38, 111, 218, 206, 248, 1, 204, 192, 1, 173, 63, 130, 84, 222, 136, 205, 204, 141,
+        167, 153, 234, 246, 127, 55, 235, 73, 95, 110, 26, 55, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    ]),
+    tunnelUserData: new Uint8Array([
+        52, 65, 38, 111, 218, 206, 248, 1, 204, 192, 1, 173, 63, 130, 84, 222, 136, 205, 204, 141,
+        167, 153, 234, 246, 127, 55, 235, 73, 95, 110, 26, 55, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    ]),
+    testUserData: new Uint8Array([
+        158, 195, 222, 163, 164, 16, 59, 61, 138, 12, 168, 153, 212, 205, 66, 4, 62, 189, 120, 39,
+        99, 111, 132, 90, 18, 142, 123, 243, 166, 118, 8, 203, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    ]),
+};
+
+export const platformCrlResult = {
+    status: 200,
+    statusText: 'OK',
+    headers: {
+        'sgx-pck-crl-issuer-chain':
+            '-----BEGIN%20CERTIFICATE-----%0AMIICljCCAj2gAwIBAgIVAJVvXc29G%2BHpQEnJ1PQzzgFXC95UMAoGCCqGSM49BAMC%0AMGgxGjAYBgNVBAMMEUludGVsIFNHWCBSb290IENBMRowGAYDVQQKDBFJbnRlbCBD%0Ab3Jwb3JhdGlvbjEUMBIGA1UEBwwLU2FudGEgQ2xhcmExCzAJBgNVBAgMAkNBMQsw%0ACQYDVQQGEwJVUzAeFw0xODA1MjExMDUwMTBaFw0zMzA1MjExMDUwMTBaMHAxIjAg%0ABgNVBAMMGUludGVsIFNHWCBQQ0sgUGxhdGZvcm0gQ0ExGjAYBgNVBAoMEUludGVs%0AIENvcnBvcmF0aW9uMRQwEgYDVQQHDAtTYW50YSBDbGFyYTELMAkGA1UECAwCQ0Ex%0ACzAJBgNVBAYTAlVTMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAENSB%2F7t21lXSO%0A2Cuzpxw74eJB72EyDGgW5rXCtx2tVTLq6hKk6z%2BUiRZCnqR7psOvgqFeSxlmTlJl%0AeTmi2WYz3qOBuzCBuDAfBgNVHSMEGDAWgBQiZQzWWp00ifODtJVSv1AbOScGrDBS%0ABgNVHR8ESzBJMEegRaBDhkFodHRwczovL2NlcnRpZmljYXRlcy50cnVzdGVkc2Vy%0AdmljZXMuaW50ZWwuY29tL0ludGVsU0dYUm9vdENBLmRlcjAdBgNVHQ4EFgQUlW9d%0Azb0b4elAScnU9DPOAVcL3lQwDgYDVR0PAQH%2FBAQDAgEGMBIGA1UdEwEB%2FwQIMAYB%0AAf8CAQAwCgYIKoZIzj0EAwIDRwAwRAIgXsVki0w%2Bi6VYGW3UF%2F22uaXe0YJDj1Ue%0AnA%2BTjD1ai5cCICYb1SAmD5xkfTVpvo4UoyiSYxrDWLmUR4CI9NKyfPN%2B%0A-----END%20CERTIFICATE-----%0A-----BEGIN%20CERTIFICATE-----%0AMIICjzCCAjSgAwIBAgIUImUM1lqdNInzg7SVUr9QGzknBqwwCgYIKoZIzj0EAwIw%0AaDEaMBgGA1UEAwwRSW50ZWwgU0dYIFJvb3QgQ0ExGjAYBgNVBAoMEUludGVsIENv%0AcnBvcmF0aW9uMRQwEgYDVQQHDAtTYW50YSBDbGFyYTELMAkGA1UECAwCQ0ExCzAJ%0ABgNVBAYTAlVTMB4XDTE4MDUyMTEwNDUxMFoXDTQ5MTIzMTIzNTk1OVowaDEaMBgG%0AA1UEAwwRSW50ZWwgU0dYIFJvb3QgQ0ExGjAYBgNVBAoMEUludGVsIENvcnBvcmF0%0AaW9uMRQwEgYDVQQHDAtTYW50YSBDbGFyYTELMAkGA1UECAwCQ0ExCzAJBgNVBAYT%0AAlVTMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEC6nEwMDIYZOj%2FiPWsCzaEKi7%0A1OiOSLRFhWGjbnBVJfVnkY4u3IjkDYYL0MxO4mqsyYjlBalTVYxFP2sJBK5zlKOB%0AuzCBuDAfBgNVHSMEGDAWgBQiZQzWWp00ifODtJVSv1AbOScGrDBSBgNVHR8ESzBJ%0AMEegRaBDhkFodHRwczovL2NlcnRpZmljYXRlcy50cnVzdGVkc2VydmljZXMuaW50%0AZWwuY29tL0ludGVsU0dYUm9vdENBLmRlcjAdBgNVHQ4EFgQUImUM1lqdNInzg7SV%0AUr9QGzknBqwwDgYDVR0PAQH%2FBAQDAgEGMBIGA1UdEwEB%2FwQIMAYBAf8CAQEwCgYI%0AKoZIzj0EAwIDSQAwRgIhAOW%2F5QkR%2BS9CiSDcNoowLuPRLsWGf%2FYi7GSX94BgwTwg%0AAiEA4J0lrHoMs%2BXo5o%2FsX6O9QWxHRAvZUGOdRQ7cvqRXaqI%3D%0A-----END%20CERTIFICATE-----%0A',
+    },
+    data: '30820a6130820a08020101300a06082a8648ce3d04030230703122302006035504030c19496e74656c205347582050434b20506c6174666f726d204341311a3018060355040a0c11496e74656c20436f72706f726174696f6e3114301206035504070c0b53616e746120436c617261310b300906035504080c024341310b3009060355040613025553170d3233313032303030323935335a170d3233313131393030323935335a30820934303302146fc34e5023e728923435d61aa4b83c618166ad35170d3233313032303030323935335a300c300a0603551d1504030a01013034021500efae6e9715fca13b87e333e8261ed6d990a926ad170d3233313032303030323935335a300c300a0603551d1504030a01013034021500fd608648629cba73078b4d492f4b3ea741ad08cd170d3233313032303030323935335a300c300a0603551d1504030a010130340215008af924184e1d5afddd73c3d63a12f5e8b5737e56170d3233313032303030323935335a300c300a0603551d1504030a01013034021500b1257978cfa9ccdd0759abf8c5ca72fae3a78a9b170d3233313032303030323935335a300c300a0603551d1504030a01013033021474fea614a972be0e2843f2059835811ed872f9b3170d3233313032303030323935335a300c300a0603551d1504030a01013034021500f9c4ef56b3ab48d577e108baedf4bf88014214b9170d3233313032303030323935335a300c300a0603551d1504030a010130330214071de0778f9e5fc4f2878f30d6b07c9a30e6b30b170d3233313032303030323935335a300c300a0603551d1504030a01013034021500cde2424f972cea94ff239937f4d80c25029dd60b170d3233313032303030323935335a300c300a0603551d1504030a0101303302146c3319e5109b64507d3cf1132ce00349ef527319170d3233313032303030323935335a300c300a0603551d1504030a01013034021500df08d756b66a7497f43b5bb58ada04d3f4f7a937170d3233313032303030323935335a300c300a0603551d1504030a01013033021428af485b6cf67e409a39d5cb5aee4598f7a8fa7b170d3233313032303030323935335a300c300a0603551d1504030a01013034021500fb8b2daec092cada8aa9bc4ff2f1c20d0346668c170d3233313032303030323935335a300c300a0603551d1504030a01013034021500cd4850ac52bdcc69a6a6f058c8bc57bbd0b5f864170d3233313032303030323935335a300c300a0603551d1504030a01013034021500994dd3666f5275fb805f95dd02bd50cb2679d8ad170d3233313032303030323935335a300c300a0603551d1504030a0101303302140702136900252274d9035eedf5457462fad0ef4c170d3233313032303030323935335a300c300a0603551d1504030a01013033021461f2bf73e39b4e04aa27d801bd73d24319b5bf80170d3233313032303030323935335a300c300a0603551d1504030a0101303302143992be851b96902eff38959e6c2eff1b0651a4b5170d3233313032303030323935335a300c300a0603551d1504030a010130330214639f139a5040fdcff191e8a4fb1bf086ed603971170d3233313032303030323935335a300c300a0603551d1504030a01013034021500959d533f9249dc1e513544cdc830bf19b7f1f301170d3233313032303030323935335a300c300a0603551d1504030a0101303302140fda43a00b68ea79b7c2deaeac0b498bdfb2af90170d3233313032303030323935335a300c300a0603551d1504030a010130340215009d67753b81e47090aea763fbec4c4549bcdb9933170d3233313032303030323935335a300c300a0603551d1504030a01013033021434bfbb7a1d9c568147e118b614f7b76ed3ef68df170d3233313032303030323935335a300c300a0603551d1504030a0101303402150085d3c9381b77a7e04d119c9e5ad6749ff3ffab87170d3233313032303030323935335a300c300a0603551d1504030a0101303402150093887ca4411e7a923bd1fed2819b2949f201b5b4170d3233313032303030323935335a300c300a0603551d1504030a0101303302142498dc6283930996fd8bf23a37acbe26a3bed457170d3233313032303030323935335a300c300a0603551d1504030a010130340215008a66f1a749488667689cc3903ac54c662b712e73170d3233313032303030323935335a300c300a0603551d1504030a01013034021500afc13610bdd36cb7985d106481a880d3a01fda07170d3233313032303030323935335a300c300a0603551d1504030a01013034021500efe04b2c33d036aac96ca673bf1e9a47b64d5cbb170d3233313032303030323935335a300c300a0603551d1504030a0101303402150083d9ac8d8bb509d1c6c809ad712e8430559ed7f3170d3233313032303030323935335a300c300a0603551d1504030a0101303302147931fd50b5071c1bbfc5b7b6ded8b45b9d8b8529170d3233313032303030323935335a300c300a0603551d1504030a0101303302141fa20e2970bde5d57f7b8ddf8339484e1f1d0823170d3233313032303030323935335a300c300a0603551d1504030a0101303302141e87b2c3b32d8d23e411cef34197b95af0c8adf5170d3233313032303030323935335a300c300a0603551d1504030a010130340215009afd2ee90a473550a167d996911437c7502d1f09170d3233313032303030323935335a300c300a0603551d1504030a0101303302144481b0f11728a13b696d3ea9c770a0b15ec58dda170d3233313032303030323935335a300c300a0603551d1504030a01013034021500a7859f57982ef0e67d37bc8ef2ef5ac835ff1aa9170d3233313032303030323935335a300c300a0603551d1504030a0101303302147ae37748a9f912f4c63ba7ab07c593ce1d1d1181170d3233313032303030323935335a300c300a0603551d1504030a01013033021413884b33269938c195aa170fca75da177538df0b170d3233313032303030323935335a300c300a0603551d1504030a0101303302142c3cc6fe9279db1516d5ce39f2a898cda5a175e1170d3233313032303030323935335a300c300a0603551d1504030a010130330214717948687509234be979e4b7dce6f31bef64b68c170d3233313032303030323935335a300c300a0603551d1504030a010130340215009d76ef2c39c136e8658b6e7396b1d7445a27631f170d3233313032303030323935335a300c300a0603551d1504030a01013034021500c3e025fca995f36f59b48467939e3e34e6361a6f170d3233313032303030323935335a300c300a0603551d1504030a010130340215008c5f6b3257da05b17429e2e61ba965d67330606a170d3233313032303030323935335a300c300a0603551d1504030a01013034021500a17c51722ec1e0c3278fe8bdf052059cbec4e648170d3233313032303030323935335a300c300a0603551d1504030a0101a02f302d300a0603551d140403020101301f0603551d23041830168014956f5dcdbd1be1e94049c9d4f433ce01570bde54300a06082a8648ce3d040302034700304402200fc13e7efa692ad2870701a479bb8819a429f6903795441abbe0e512c7e0c9df0220510698c421a45fc65b35344eef87244bdf0dfa5e80450dec5333f8038df75597',
+};
+
+export const intelCrlDer = {
+    status: 200,
+    statusText: 'OK',
+    data: new Uint8Array([
+        48, 130, 1, 33, 48, 129, 200, 2, 1, 1, 48, 10, 6, 8, 42, 134, 72, 206, 61, 4, 3, 2, 48, 104,
+        49, 26, 48, 24, 6, 3, 85, 4, 3, 12, 17, 73, 110, 116, 101, 108, 32, 83, 71, 88, 32, 82, 111,
+        111, 116, 32, 67, 65, 49, 26, 48, 24, 6, 3, 85, 4, 10, 12, 17, 73, 110, 116, 101, 108, 32,
+        67, 111, 114, 112, 111, 114, 97, 116, 105, 111, 110, 49, 20, 48, 18, 6, 3, 85, 4, 7, 12, 11,
+        83, 97, 110, 116, 97, 32, 67, 108, 97, 114, 97, 49, 11, 48, 9, 6, 3, 85, 4, 8, 12, 2, 67,
+        65, 49, 11, 48, 9, 6, 3, 85, 4, 6, 19, 2, 85, 83, 23, 13, 50, 51, 48, 52, 48, 51, 49, 48,
+        50, 50, 53, 49, 90, 23, 13, 50, 52, 48, 52, 48, 50, 49, 48, 50, 50, 53, 49, 90, 160, 47, 48,
+        45, 48, 10, 6, 3, 85, 29, 20, 4, 3, 2, 1, 1, 48, 31, 6, 3, 85, 29, 35, 4, 24, 48, 22, 128,
+        20, 34, 101, 12, 214, 90, 157, 52, 137, 243, 131, 180, 149, 82, 191, 80, 27, 57, 39, 6, 172,
+        48, 10, 6, 8, 42, 134, 72, 206, 61, 4, 3, 2, 3, 72, 0, 48, 69, 2, 32, 81, 87, 125, 71, 217,
+        251, 161, 87, 182, 95, 30, 181, 244, 101, 123, 188, 94, 86, 204, 175, 115, 90, 3, 241, 185,
+        99, 215, 4, 128, 90, 177, 24, 2, 33, 0, 147, 144, 21, 236, 22, 54, 231, 234, 250, 95, 66,
+        108, 30, 64, 38, 71, 198, 115, 19, 43, 104, 80, 202, 189, 104, 206, 246, 186, 215, 104, 42,
+        3,
+    ]),
+};
+
+export const tcbData = {
+    status: 200,
+    statusText: 'OK',
+    headers: {
+        'tcb-info-issuer-chain':
+            '-----BEGIN%20CERTIFICATE-----%0AMIICizCCAjKgAwIBAgIUfjiC1ftVKUpASY5FhAPpFJG99FUwCgYIKoZIzj0EAwIw%0AaDEaMBgGA1UEAwwRSW50ZWwgU0dYIFJvb3QgQ0ExGjAYBgNVBAoMEUludGVsIENv%0AcnBvcmF0aW9uMRQwEgYDVQQHDAtTYW50YSBDbGFyYTELMAkGA1UECAwCQ0ExCzAJ%0ABgNVBAYTAlVTMB4XDTE4MDUyMTEwNTAxMFoXDTI1MDUyMTEwNTAxMFowbDEeMBwG%0AA1UEAwwVSW50ZWwgU0dYIFRDQiBTaWduaW5nMRowGAYDVQQKDBFJbnRlbCBDb3Jw%0Ab3JhdGlvbjEUMBIGA1UEBwwLU2FudGEgQ2xhcmExCzAJBgNVBAgMAkNBMQswCQYD%0AVQQGEwJVUzBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABENFG8xzydWRfK92bmGv%0AP%2BmAh91PEyV7Jh6FGJd5ndE9aBH7R3E4A7ubrlh%2FzN3C4xvpoouGlirMba%2BW2lju%0AypajgbUwgbIwHwYDVR0jBBgwFoAUImUM1lqdNInzg7SVUr9QGzknBqwwUgYDVR0f%0ABEswSTBHoEWgQ4ZBaHR0cHM6Ly9jZXJ0aWZpY2F0ZXMudHJ1c3RlZHNlcnZpY2Vz%0ALmludGVsLmNvbS9JbnRlbFNHWFJvb3RDQS5kZXIwHQYDVR0OBBYEFH44gtX7VSlK%0AQEmORYQD6RSRvfRVMA4GA1UdDwEB%2FwQEAwIGwDAMBgNVHRMBAf8EAjAAMAoGCCqG%0ASM49BAMCA0cAMEQCIB9C8wOAN%2FImxDtGACV246KcqjagZOR0kyctyBrsGGJVAiAj%0AftbrNGsGU8YH211dRiYNoPPu19Zp%2Fze8JmhujB0oBw%3D%3D%0A-----END%20CERTIFICATE-----%0A-----BEGIN%20CERTIFICATE-----%0AMIICjzCCAjSgAwIBAgIUImUM1lqdNInzg7SVUr9QGzknBqwwCgYIKoZIzj0EAwIw%0AaDEaMBgGA1UEAwwRSW50ZWwgU0dYIFJvb3QgQ0ExGjAYBgNVBAoMEUludGVsIENv%0AcnBvcmF0aW9uMRQwEgYDVQQHDAtTYW50YSBDbGFyYTELMAkGA1UECAwCQ0ExCzAJ%0ABgNVBAYTAlVTMB4XDTE4MDUyMTEwNDUxMFoXDTQ5MTIzMTIzNTk1OVowaDEaMBgG%0AA1UEAwwRSW50ZWwgU0dYIFJvb3QgQ0ExGjAYBgNVBAoMEUludGVsIENvcnBvcmF0%0AaW9uMRQwEgYDVQQHDAtTYW50YSBDbGFyYTELMAkGA1UECAwCQ0ExCzAJBgNVBAYT%0AAlVTMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEC6nEwMDIYZOj%2FiPWsCzaEKi7%0A1OiOSLRFhWGjbnBVJfVnkY4u3IjkDYYL0MxO4mqsyYjlBalTVYxFP2sJBK5zlKOB%0AuzCBuDAfBgNVHSMEGDAWgBQiZQzWWp00ifODtJVSv1AbOScGrDBSBgNVHR8ESzBJ%0AMEegRaBDhkFodHRwczovL2NlcnRpZmljYXRlcy50cnVzdGVkc2VydmljZXMuaW50%0AZWwuY29tL0ludGVsU0dYUm9vdENBLmRlcjAdBgNVHQ4EFgQUImUM1lqdNInzg7SV%0AUr9QGzknBqwwDgYDVR0PAQH%2FBAQDAgEGMBIGA1UdEwEB%2FwQIMAYBAf8CAQEwCgYI%0AKoZIzj0EAwIDSQAwRgIhAOW%2F5QkR%2BS9CiSDcNoowLuPRLsWGf%2FYi7GSX94BgwTwg%0AAiEA4J0lrHoMs%2BXo5o%2FsX6O9QWxHRAvZUGOdRQ7cvqRXaqI%3D%0A-----END%20CERTIFICATE-----%0A',
+    },
+    data: {
+        tcbInfo: {
+            id: 'SGX',
+            version: 3,
+            issueDate: '2023-10-19T23:45:40Z',
+            nextUpdate: '2023-11-18T23:45:40Z',
+            fmspc: '30606A000000',
+            pceId: '0000',
+            tcbType: 0,
+            tcbEvaluationDataNumber: 16,
+            tcbLevels: [
+                {
+                    tcb: {
+                        sgxtcbcomponents: [
+                            {
+                                svn: 12,
+                                category: 'BIOS',
+                                type: 'Early Microcode Update',
+                            },
+                            {
+                                svn: 12,
+                                category: 'OS/VMM',
+                                type: 'SGX Late Microcode Update',
+                            },
+                            {
+                                svn: 3,
+                                category: 'OS/VMM',
+                                type: 'TXT SINIT',
+                            },
+                            {
+                                svn: 3,
+                                category: 'BIOS',
+                            },
+                            {
+                                svn: 255,
+                            },
+                            {
+                                svn: 255,
+                            },
+                            {
+                                svn: 1,
+                            },
+                            {
+                                svn: 0,
+                            },
+                            {
+                                svn: 0,
+                            },
+                            {
+                                svn: 0,
+                            },
+                            {
+                                svn: 0,
+                            },
+                            {
+                                svn: 0,
+                            },
+                            {
+                                svn: 0,
+                            },
+                            {
+                                svn: 0,
+                            },
+                            {
+                                svn: 0,
+                            },
+                            {
+                                svn: 0,
+                            },
+                        ],
+                        pcesvn: 13,
+                    },
+                    tcbDate: '2023-08-09T00:00:00Z',
+                    tcbStatus: 'SWHardeningNeeded',
+                    advisoryIDs: ['INTEL-SA-00615'],
+                },
+                {
+                    tcb: {
+                        sgxtcbcomponents: [
+                            {
+                                svn: 12,
+                                category: 'BIOS',
+                                type: 'Early Microcode Update',
+                            },
+                            {
+                                svn: 12,
+                                category: 'OS/VMM',
+                                type: 'SGX Late Microcode Update',
+                            },
+                            {
+                                svn: 3,
+                                category: 'OS/VMM',
+                                type: 'TXT SINIT',
+                            },
+                            {
+                                svn: 3,
+                                category: 'BIOS',
+                            },
+                            {
+                                svn: 255,
+                            },
+                            {
+                                svn: 255,
+                            },
+                            {
+                                svn: 0,
+                            },
+                            {
+                                svn: 0,
+                            },
+                            {
+                                svn: 0,
+                            },
+                            {
+                                svn: 0,
+                            },
+                            {
+                                svn: 0,
+                            },
+                            {
+                                svn: 0,
+                            },
+                            {
+                                svn: 0,
+                            },
+                            {
+                                svn: 0,
+                            },
+                            {
+                                svn: 0,
+                            },
+                            {
+                                svn: 0,
+                            },
+                        ],
+                        pcesvn: 13,
+                    },
+                    tcbDate: '2023-08-09T00:00:00Z',
+                    tcbStatus: 'ConfigurationAndSWHardeningNeeded',
+                    advisoryIDs: ['INTEL-SA-00657', 'INTEL-SA-00767', 'INTEL-SA-00615'],
+                },
+                {
+                    tcb: {
+                        sgxtcbcomponents: [
+                            {
+                                svn: 11,
+                                category: 'BIOS',
+                                type: 'Early Microcode Update',
+                            },
+                            {
+                                svn: 11,
+                                category: 'OS/VMM',
+                                type: 'SGX Late Microcode Update',
+                            },
+                            {
+                                svn: 3,
+                                category: 'OS/VMM',
+                                type: 'TXT SINIT',
+                            },
+                            {
+                                svn: 3,
+                                category: 'BIOS',
+                            },
+                            {
+                                svn: 255,
+                            },
+                            {
+                                svn: 255,
+                            },
+                            {
+                                svn: 1,
+                            },
+                            {
+                                svn: 0,
+                            },
+                            {
+                                svn: 0,
+                            },
+                            {
+                                svn: 0,
+                            },
+                            {
+                                svn: 0,
+                            },
+                            {
+                                svn: 0,
+                            },
+                            {
+                                svn: 0,
+                            },
+                            {
+                                svn: 0,
+                            },
+                            {
+                                svn: 0,
+                            },
+                            {
+                                svn: 0,
+                            },
+                        ],
+                        pcesvn: 13,
+                    },
+                    tcbDate: '2023-02-15T00:00:00Z',
+                    tcbStatus: 'OutOfDate',
+                    advisoryIDs: [
+                        'INTEL-SA-00828',
+                        'INTEL-SA-00837',
+                        'INTEL-SA-00657',
+                        'INTEL-SA-00767',
+                        'INTEL-SA-00615',
+                    ],
+                },
+                {
+                    tcb: {
+                        sgxtcbcomponents: [
+                            {
+                                svn: 11,
+                                category: 'BIOS',
+                                type: 'Early Microcode Update',
+                            },
+                            {
+                                svn: 11,
+                                category: 'OS/VMM',
+                                type: 'SGX Late Microcode Update',
+                            },
+                            {
+                                svn: 3,
+                                category: 'OS/VMM',
+                                type: 'TXT SINIT',
+                            },
+                            {
+                                svn: 3,
+                                category: 'BIOS',
+                            },
+                            {
+                                svn: 255,
+                            },
+                            {
+                                svn: 255,
+                            },
+                            {
+                                svn: 0,
+                            },
+                            {
+                                svn: 0,
+                            },
+                            {
+                                svn: 0,
+                            },
+                            {
+                                svn: 0,
+                            },
+                            {
+                                svn: 0,
+                            },
+                            {
+                                svn: 0,
+                            },
+                            {
+                                svn: 0,
+                            },
+                            {
+                                svn: 0,
+                            },
+                            {
+                                svn: 0,
+                            },
+                            {
+                                svn: 0,
+                            },
+                        ],
+                        pcesvn: 13,
+                    },
+                    tcbDate: '2023-02-15T00:00:00Z',
+                    tcbStatus: 'OutOfDateConfigurationNeeded',
+                    advisoryIDs: [
+                        'INTEL-SA-00828',
+                        'INTEL-SA-00837',
+                        'INTEL-SA-00657',
+                        'INTEL-SA-00767',
+                        'INTEL-SA-00615',
+                    ],
+                },
+                {
+                    tcb: {
+                        sgxtcbcomponents: [
+                            {
+                                svn: 7,
+                                category: 'BIOS',
+                                type: 'Early Microcode Update',
+                            },
+                            {
+                                svn: 9,
+                                category: 'OS/VMM',
+                                type: 'SGX Late Microcode Update',
+                            },
+                            {
+                                svn: 3,
+                                category: 'OS/VMM',
+                                type: 'TXT SINIT',
+                            },
+                            {
+                                svn: 3,
+                                category: 'BIOS',
+                            },
+                            {
+                                svn: 255,
+                            },
+                            {
+                                svn: 255,
+                            },
+                            {
+                                svn: 1,
+                            },
+                            {
+                                svn: 0,
+                            },
+                            {
+                                svn: 0,
+                            },
+                            {
+                                svn: 0,
+                            },
+                            {
+                                svn: 0,
+                            },
+                            {
+                                svn: 0,
+                            },
+                            {
+                                svn: 0,
+                            },
+                            {
+                                svn: 0,
+                            },
+                            {
+                                svn: 0,
+                            },
+                            {
+                                svn: 0,
+                            },
+                        ],
+                        pcesvn: 13,
+                    },
+                    tcbDate: '2022-08-10T00:00:00Z',
+                    tcbStatus: 'OutOfDate',
+                    advisoryIDs: [
+                        'INTEL-SA-00657',
+                        'INTEL-SA-00730',
+                        'INTEL-SA-00738',
+                        'INTEL-SA-00767',
+                        'INTEL-SA-00828',
+                        'INTEL-SA-00837',
+                        'INTEL-SA-00615',
+                    ],
+                },
+                {
+                    tcb: {
+                        sgxtcbcomponents: [
+                            {
+                                svn: 7,
+                                category: 'BIOS',
+                                type: 'Early Microcode Update',
+                            },
+                            {
+                                svn: 9,
+                                category: 'OS/VMM',
+                                type: 'SGX Late Microcode Update',
+                            },
+                            {
+                                svn: 3,
+                                category: 'OS/VMM',
+                                type: 'TXT SINIT',
+                            },
+                            {
+                                svn: 3,
+                                category: 'BIOS',
+                            },
+                            {
+                                svn: 255,
+                            },
+                            {
+                                svn: 255,
+                            },
+                            {
+                                svn: 0,
+                            },
+                            {
+                                svn: 0,
+                            },
+                            {
+                                svn: 0,
+                            },
+                            {
+                                svn: 0,
+                            },
+                            {
+                                svn: 0,
+                            },
+                            {
+                                svn: 0,
+                            },
+                            {
+                                svn: 0,
+                            },
+                            {
+                                svn: 0,
+                            },
+                            {
+                                svn: 0,
+                            },
+                            {
+                                svn: 0,
+                            },
+                        ],
+                        pcesvn: 13,
+                    },
+                    tcbDate: '2022-08-10T00:00:00Z',
+                    tcbStatus: 'OutOfDateConfigurationNeeded',
+                    advisoryIDs: [
+                        'INTEL-SA-00657',
+                        'INTEL-SA-00730',
+                        'INTEL-SA-00738',
+                        'INTEL-SA-00767',
+                        'INTEL-SA-00828',
+                        'INTEL-SA-00837',
+                        'INTEL-SA-00615',
+                    ],
+                },
+                {
+                    tcb: {
+                        sgxtcbcomponents: [
+                            {
+                                svn: 4,
+                                category: 'BIOS',
+                                type: 'Early Microcode Update',
+                            },
+                            {
+                                svn: 4,
+                                category: 'OS/VMM',
+                                type: 'SGX Late Microcode Update',
+                            },
+                            {
+                                svn: 3,
+                                category: 'OS/VMM',
+                                type: 'TXT SINIT',
+                            },
+                            {
+                                svn: 3,
+                                category: 'BIOS',
+                            },
+                            {
+                                svn: 255,
+                            },
+                            {
+                                svn: 255,
+                            },
+                            {
+                                svn: 0,
+                            },
+                            {
+                                svn: 0,
+                            },
+                            {
+                                svn: 0,
+                            },
+                            {
+                                svn: 0,
+                            },
+                            {
+                                svn: 0,
+                            },
+                            {
+                                svn: 0,
+                            },
+                            {
+                                svn: 0,
+                            },
+                            {
+                                svn: 0,
+                            },
+                            {
+                                svn: 0,
+                            },
+                            {
+                                svn: 0,
+                            },
+                        ],
+                        pcesvn: 11,
+                    },
+                    tcbDate: '2021-11-10T00:00:00Z',
+                    tcbStatus: 'OutOfDate',
+                    advisoryIDs: [
+                        'INTEL-SA-00586',
+                        'INTEL-SA-00614',
+                        'INTEL-SA-00615',
+                        'INTEL-SA-00657',
+                        'INTEL-SA-00730',
+                        'INTEL-SA-00738',
+                        'INTEL-SA-00767',
+                        'INTEL-SA-00828',
+                        'INTEL-SA-00837',
+                    ],
+                },
+                {
+                    tcb: {
+                        sgxtcbcomponents: [
+                            {
+                                svn: 4,
+                                category: 'BIOS',
+                                type: 'Early Microcode Update',
+                            },
+                            {
+                                svn: 4,
+                                category: 'OS/VMM',
+                                type: 'SGX Late Microcode Update',
+                            },
+                            {
+                                svn: 3,
+                                category: 'OS/VMM',
+                                type: 'TXT SINIT',
+                            },
+                            {
+                                svn: 3,
+                                category: 'BIOS',
+                            },
+                            {
+                                svn: 255,
+                            },
+                            {
+                                svn: 255,
+                            },
+                            {
+                                svn: 0,
+                            },
+                            {
+                                svn: 0,
+                            },
+                            {
+                                svn: 0,
+                            },
+                            {
+                                svn: 0,
+                            },
+                            {
+                                svn: 0,
+                            },
+                            {
+                                svn: 0,
+                            },
+                            {
+                                svn: 0,
+                            },
+                            {
+                                svn: 0,
+                            },
+                            {
+                                svn: 0,
+                            },
+                            {
+                                svn: 0,
+                            },
+                        ],
+                        pcesvn: 10,
+                    },
+                    tcbDate: '2020-11-11T00:00:00Z',
+                    tcbStatus: 'OutOfDate',
+                    advisoryIDs: [
+                        'INTEL-SA-00477',
+                        'INTEL-SA-00586',
+                        'INTEL-SA-00614',
+                        'INTEL-SA-00615',
+                        'INTEL-SA-00657',
+                        'INTEL-SA-00730',
+                        'INTEL-SA-00738',
+                        'INTEL-SA-00767',
+                        'INTEL-SA-00828',
+                        'INTEL-SA-00837',
+                    ],
+                },
+                {
+                    tcb: {
+                        sgxtcbcomponents: [
+                            {
+                                svn: 4,
+                                category: 'BIOS',
+                                type: 'Early Microcode Update',
+                            },
+                            {
+                                svn: 4,
+                                category: 'OS/VMM',
+                                type: 'SGX Late Microcode Update',
+                            },
+                            {
+                                svn: 3,
+                                category: 'OS/VMM',
+                                type: 'TXT SINIT',
+                            },
+                            {
+                                svn: 3,
+                                category: 'BIOS',
+                            },
+                            {
+                                svn: 255,
+                            },
+                            {
+                                svn: 255,
+                            },
+                            {
+                                svn: 0,
+                            },
+                            {
+                                svn: 0,
+                            },
+                            {
+                                svn: 0,
+                            },
+                            {
+                                svn: 0,
+                            },
+                            {
+                                svn: 0,
+                            },
+                            {
+                                svn: 0,
+                            },
+                            {
+                                svn: 0,
+                            },
+                            {
+                                svn: 0,
+                            },
+                            {
+                                svn: 0,
+                            },
+                            {
+                                svn: 0,
+                            },
+                        ],
+                        pcesvn: 5,
+                    },
+                    tcbDate: '2018-01-04T00:00:00Z',
+                    tcbStatus: 'OutOfDate',
+                    advisoryIDs: [
+                        'INTEL-SA-00106',
+                        'INTEL-SA-00115',
+                        'INTEL-SA-00135',
+                        'INTEL-SA-00203',
+                        'INTEL-SA-00220',
+                        'INTEL-SA-00233',
+                        'INTEL-SA-00270',
+                        'INTEL-SA-00293',
+                        'INTEL-SA-00320',
+                        'INTEL-SA-00329',
+                        'INTEL-SA-00381',
+                        'INTEL-SA-00389',
+                        'INTEL-SA-00477',
+                        'INTEL-SA-00586',
+                        'INTEL-SA-00614',
+                        'INTEL-SA-00615',
+                        'INTEL-SA-00657',
+                        'INTEL-SA-00730',
+                        'INTEL-SA-00738',
+                        'INTEL-SA-00767',
+                        'INTEL-SA-00828',
+                        'INTEL-SA-00837',
+                    ],
+                },
+            ],
+        },
+        signature:
+            'de03ae609488174b4a33f966538846fae5b899d5109f75f10d465f99edea53b636d6f25df4d8911cafb5c2caee9414e25c6d2efc1531c6e07de2ea146acdac7f',
+    },
+};
+
+export const qeIdentityData = {
+    status: 200,
+    statusText: 'OK',
+    headers: {
+        'sgx-enclave-identity-issuer-chain':
+            '-----BEGIN%20CERTIFICATE-----%0AMIICizCCAjKgAwIBAgIUfjiC1ftVKUpASY5FhAPpFJG99FUwCgYIKoZIzj0EAwIw%0AaDEaMBgGA1UEAwwRSW50ZWwgU0dYIFJvb3QgQ0ExGjAYBgNVBAoMEUludGVsIENv%0AcnBvcmF0aW9uMRQwEgYDVQQHDAtTYW50YSBDbGFyYTELMAkGA1UECAwCQ0ExCzAJ%0ABgNVBAYTAlVTMB4XDTE4MDUyMTEwNTAxMFoXDTI1MDUyMTEwNTAxMFowbDEeMBwG%0AA1UEAwwVSW50ZWwgU0dYIFRDQiBTaWduaW5nMRowGAYDVQQKDBFJbnRlbCBDb3Jw%0Ab3JhdGlvbjEUMBIGA1UEBwwLU2FudGEgQ2xhcmExCzAJBgNVBAgMAkNBMQswCQYD%0AVQQGEwJVUzBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABENFG8xzydWRfK92bmGv%0AP%2BmAh91PEyV7Jh6FGJd5ndE9aBH7R3E4A7ubrlh%2FzN3C4xvpoouGlirMba%2BW2lju%0AypajgbUwgbIwHwYDVR0jBBgwFoAUImUM1lqdNInzg7SVUr9QGzknBqwwUgYDVR0f%0ABEswSTBHoEWgQ4ZBaHR0cHM6Ly9jZXJ0aWZpY2F0ZXMudHJ1c3RlZHNlcnZpY2Vz%0ALmludGVsLmNvbS9JbnRlbFNHWFJvb3RDQS5kZXIwHQYDVR0OBBYEFH44gtX7VSlK%0AQEmORYQD6RSRvfRVMA4GA1UdDwEB%2FwQEAwIGwDAMBgNVHRMBAf8EAjAAMAoGCCqG%0ASM49BAMCA0cAMEQCIB9C8wOAN%2FImxDtGACV246KcqjagZOR0kyctyBrsGGJVAiAj%0AftbrNGsGU8YH211dRiYNoPPu19Zp%2Fze8JmhujB0oBw%3D%3D%0A-----END%20CERTIFICATE-----%0A-----BEGIN%20CERTIFICATE-----%0AMIICjzCCAjSgAwIBAgIUImUM1lqdNInzg7SVUr9QGzknBqwwCgYIKoZIzj0EAwIw%0AaDEaMBgGA1UEAwwRSW50ZWwgU0dYIFJvb3QgQ0ExGjAYBgNVBAoMEUludGVsIENv%0AcnBvcmF0aW9uMRQwEgYDVQQHDAtTYW50YSBDbGFyYTELMAkGA1UECAwCQ0ExCzAJ%0ABgNVBAYTAlVTMB4XDTE4MDUyMTEwNDUxMFoXDTQ5MTIzMTIzNTk1OVowaDEaMBgG%0AA1UEAwwRSW50ZWwgU0dYIFJvb3QgQ0ExGjAYBgNVBAoMEUludGVsIENvcnBvcmF0%0AaW9uMRQwEgYDVQQHDAtTYW50YSBDbGFyYTELMAkGA1UECAwCQ0ExCzAJBgNVBAYT%0AAlVTMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEC6nEwMDIYZOj%2FiPWsCzaEKi7%0A1OiOSLRFhWGjbnBVJfVnkY4u3IjkDYYL0MxO4mqsyYjlBalTVYxFP2sJBK5zlKOB%0AuzCBuDAfBgNVHSMEGDAWgBQiZQzWWp00ifODtJVSv1AbOScGrDBSBgNVHR8ESzBJ%0AMEegRaBDhkFodHRwczovL2NlcnRpZmljYXRlcy50cnVzdGVkc2VydmljZXMuaW50%0AZWwuY29tL0ludGVsU0dYUm9vdENBLmRlcjAdBgNVHQ4EFgQUImUM1lqdNInzg7SV%0AUr9QGzknBqwwDgYDVR0PAQH%2FBAQDAgEGMBIGA1UdEwEB%2FwQIMAYBAf8CAQEwCgYI%0AKoZIzj0EAwIDSQAwRgIhAOW%2F5QkR%2BS9CiSDcNoowLuPRLsWGf%2FYi7GSX94BgwTwg%0AAiEA4J0lrHoMs%2BXo5o%2FsX6O9QWxHRAvZUGOdRQ7cvqRXaqI%3D%0A-----END%20CERTIFICATE-----%0A',
+    },
+    data: {
+        enclaveIdentity: {
+            id: 'QE',
+            version: 2,
+            issueDate: '2023-10-20T00:06:54Z',
+            nextUpdate: '2023-11-19T00:06:54Z',
+            tcbEvaluationDataNumber: 16,
+            miscselect: '00000000',
+            miscselectMask: 'FFFFFFFF',
+            attributes: '11000000000000000000000000000000',
+            attributesMask: 'FBFFFFFFFFFFFFFF0000000000000000',
+            mrsigner: '8C4F5775D796503E96137F77C68A829A0056AC8DED70140B081B094490C57BFF',
+            isvprodid: 1,
+            tcbLevels: [
+                {
+                    tcb: {
+                        isvsvn: 8,
+                    },
+                    tcbDate: '2023-08-09T00:00:00Z',
+                    tcbStatus: 'UpToDate',
+                },
+                {
+                    tcb: {
+                        isvsvn: 6,
+                    },
+                    tcbDate: '2021-11-10T00:00:00Z',
+                    tcbStatus: 'OutOfDate',
+                    advisoryIDs: ['INTEL-SA-00615'],
+                },
+                {
+                    tcb: {
+                        isvsvn: 5,
+                    },
+                    tcbDate: '2020-11-11T00:00:00Z',
+                    tcbStatus: 'OutOfDate',
+                    advisoryIDs: ['INTEL-SA-00477', 'INTEL-SA-00615'],
+                },
+                {
+                    tcb: {
+                        isvsvn: 4,
+                    },
+                    tcbDate: '2019-11-13T00:00:00Z',
+                    tcbStatus: 'OutOfDate',
+                    advisoryIDs: ['INTEL-SA-00334', 'INTEL-SA-00477', 'INTEL-SA-00615'],
+                },
+                {
+                    tcb: {
+                        isvsvn: 2,
+                    },
+                    tcbDate: '2019-05-15T00:00:00Z',
+                    tcbStatus: 'OutOfDate',
+                    advisoryIDs: [
+                        'INTEL-SA-00219',
+                        'INTEL-SA-00293',
+                        'INTEL-SA-00334',
+                        'INTEL-SA-00477',
+                        'INTEL-SA-00615',
+                    ],
+                },
+                {
+                    tcb: {
+                        isvsvn: 1,
+                    },
+                    tcbDate: '2018-08-15T00:00:00Z',
+                    tcbStatus: 'OutOfDate',
+                    advisoryIDs: [
+                        'INTEL-SA-00202',
+                        'INTEL-SA-00219',
+                        'INTEL-SA-00293',
+                        'INTEL-SA-00334',
+                        'INTEL-SA-00477',
+                        'INTEL-SA-00615',
+                    ],
+                },
+            ],
+        },
+        signature:
+            '2669ff5c3dcf010de5038f5892ce440a169d327a5f55d892a68bc03bb4c13e95e5490d37fc97732fb694e814e789ee013d7e8fe0fca6c10ccf8c653e7a7580eb',
+    },
+};

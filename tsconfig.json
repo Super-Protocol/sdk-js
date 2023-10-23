@@ -2,12 +2,7 @@
   "extends": "@super-protocol/eslint-config-typescript/tsconfig.json",
   "compilerOptions": {
     "target": "es6",
-    "lib": [
-      "ES2020",
-      "es7",
-      "dom",
-    ],
-    "outDir": "build",
+    "lib": ["es7", "dom"],
     "allowJs": true,
     "declaration": true,
   },

@@ -23,7 +23,7 @@ class TeeOffers {
 
   private static readonly logger = rootLogger.child({ className: 'TeeOffers' });
 
-  public static teeOffers?: string[];
+  public static teeOffers?: bigint[];
 
   public static get address(): string {
     return Superpro.address;
@@ -62,7 +62,7 @@ class TeeOffers {
     for (let offerId = teeOfffersSet.size + 1; offerId <= count; ++offerId) {
       const offerType = (await contract.methods.getOfferType(offerId).call()) as OfferType;
       if (offerType === OfferType.TeeOffer) {
-        teeOfffersSet.add(offerId.toString());
+        teeOfffersSet.add(BigInt(offerId));
       }
     }
     this.teeOffers = Array.from(teeOfffersSet);

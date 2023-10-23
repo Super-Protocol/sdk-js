@@ -2,7 +2,7 @@
 {
     "extends": ["@super-protocol/eslint-config-typescript/eslint-config.js"],
     "ignorePatterns": [
-        "src/contracts/app.json",
+        "src/contracts/abi.ts",
         "**/gen/*"
     ]
 }

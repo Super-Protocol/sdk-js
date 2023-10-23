@@ -1,74 +1,74 @@
 export enum TcbVerifiedStatus {
-    Valid = 0,
-    InvalidQuote = 1,
-    InvalidMrEnclave = 2,
-    InvalidBcbHash = 3,
+  Valid = 0,
+  InvalidQuote = 1,
+  InvalidMrEnclave = 2,
+  InvalidBcbHash = 3,
 }
 
 export type TcbPublicData = {
-    teeOffer?: bigint;
-    deviceID: string;
-    benchmark: number;
-    properties: string;
+  teeOffer?: bigint;
+  deviceID: string;
+  benchmark: number;
+  properties: string;
 };
 
 export type TcbUtilityData = {
-    checkingBlocks: [bigint];
-    checkingBlockMarks: [TcbVerifiedStatus];
-    lastBlocksTakenAmount: number;
-    suspiciousBlocksTakenAmount: number;
-    negative: number;
-    positive: number;
-    previousTcb: bigint;
-    lastBlocksTaken: boolean;
-    suspiciousBlocksTaken: boolean;
-    assignedToEpoch: boolean;
-    checked: boolean;
-    rewardClaimed: boolean;
+  checkingBlocks: [bigint];
+  checkingBlockMarks: [TcbVerifiedStatus];
+  lastBlocksTakenAmount: number;
+  suspiciousBlocksTakenAmount: number;
+  negative: number;
+  positive: number;
+  previousTcb: bigint;
+  lastBlocksTaken: boolean;
+  suspiciousBlocksTaken: boolean;
+  assignedToEpoch: boolean;
+  checked: boolean;
+  rewardClaimed: boolean;
 };
 
 export type Epoch = {
-    reward: string;
-    benchmark: number;
-    penaltyBenchmark: number;
+  reward: string;
+  benchmark: number;
+  penaltyBenchmark: number;
 };
 
 export enum TcbStatus {
-    Inited = '0',
-    Completed = '1',
-    Banned = '2',
-    BenchmarkChanged = '3',
+  Inited = '0',
+  Completed = '1',
+  Banned = '2',
+  BenchmarkChanged = '3',
 }
 
 export type TcbData = {
-    quote: string;
-    timeInitialized: number;
-    timeAdded: number;
-    publicData: TcbPublicData;
-    utilData: TcbUtilityData;
-    status: TcbStatus;
+  quote: string;
+  timeInitialized: number;
+  timeAdded: number;
+  publicData: TcbPublicData;
+  utilData: TcbUtilityData;
+  status: TcbStatus;
 };
 
 export type EpochInfo = {
-    reward: bigint;
-    benchmark: bigint;
-    penaltyBenchmark: bigint;
+  reward: bigint;
+  benchmark: bigint;
+  penaltyBenchmark: bigint;
 };
 
 export type ConsensusConstants = {
-    CONSENSUS_L1: number;
-    CONSENSUS_L2: number;
-    CONSENSUS_K: number;
-    CONSENSUS_MAX_PENALTIES: number;
-    MAX_BECHMARK_OVERRUN_PERCENT: number;
-    CONSENSUS_EPOCH_DURATION: number;
+  CONSENSUS_L1: number;
+  CONSENSUS_L2: number;
+  CONSENSUS_K: number;
+  CONSENSUS_MAX_PENALTIES: number;
+  MAX_BECHMARK_OVERRUN_PERCENT: number;
+  CONSENSUS_EPOCH_DURATION: number;
 };
 
 export const ConsensusConstantsStructure = {
-    CONSENSUS_L1: Number,
-    CONSENSUS_L2: Number,
-    CONSENSUS_K: Number,
-    CONSENSUS_MAX_PENALTIES: Number,
-    MAX_BECHMARK_OVERRUN_PERCENT: Number,
-    CONSENSUS_EPOCH_DURATION: Number,
+  CONSENSUS_L1: Number,
+  CONSENSUS_L2: Number,
+  CONSENSUS_K: Number,
+  CONSENSUS_MAX_PENALTIES: Number,
+  MAX_BECHMARK_OVERRUN_PERCENT: Number,
+  CONSENSUS_EPOCH_DURATION: Number,
 };

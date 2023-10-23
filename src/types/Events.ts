@@ -1,34 +1,34 @@
 export type OfferCreatedEvent = {
-    creator: string;
-    externalId: string;
-    offerId: string;
+  creator: string;
+  externalId: string;
+  offerId: bigint;
 };
 
 export type OrderCreatedEvent = {
-    consumer: string;
-    externalId: string;
-    offerId: string;
-    parentOrderId: string;
-    orderId: string;
+  consumer: string;
+  externalId: string;
+  offerId: bigint;
+  parentOrderId: bigint;
+  orderId: bigint;
 };
 
 export type TeeSlotAddedEvent = {
-    creator: string;
-    offerId: string;
-    slotId: string;
-    externalId: string;
+  creator: string;
+  offerId: bigint;
+  slotId: bigint;
+  externalId: string;
 };
 
 export type ValueSlotAddedEvent = {
-    creator: string;
-    offerId: string;
-    slotId: string;
-    externalId: string;
+  creator: string;
+  offerId: bigint;
+  slotId: bigint;
+  externalId: string;
 };
 
 export type OptionAddedEvent = {
-    creator: string;
-    teeOfferId: string;
-    optionId: string;
-    externalId: string;
+  creator: string;
+  teeOfferId: bigint;
+  optionId: bigint;
+  externalId: string;
 };

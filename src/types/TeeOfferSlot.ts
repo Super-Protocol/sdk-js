@@ -2,7 +2,7 @@ import { SlotInfo } from './SlotInfo';
 import { SlotUsage } from './SlotUsage';
 
 export type TeeOfferSlot = {
-    id: string;
-    info: SlotInfo;
-    usage: SlotUsage;
+  id: bigint;
+  info: SlotInfo;
+  usage: SlotUsage;
 };

@@ -42,7 +42,7 @@ owo6lyCYNeUtdCbO1yfzfEa/mrUGCLC/Ikjk1r19
 // ECC keys in base64
 const eccPrivateKey = '6W6C+mZySBfsFKjiu3uOXsFlBwd1vXDL8QJHDdGlz5s=';
 const eccPublicKey =
-    'BHlWgcWngcGxGMoy/xvri5qY0aeddEt5JMnQpsNZQSbbd1OCfPLOnLDa0J5nhofA+/78DbBdBpo2g6XeDPQGZWA=';
+  'BHlWgcWngcGxGMoy/xvri5qY0aeddEt5JMnQpsNZQSbbd1OCfPLOnLDa0J5nhofA+/78DbBdBpo2g6XeDPQGZWA=';
 const eccPrivateKeyIncorrect = 'KQ/00gBxyIpgyB73Cbxadi7TZiJKIpykrCMOU/FSRkQ=';
 
 // AES keys in base64
@@ -52,180 +52,180 @@ const aesKeyIncorrect = 'lzAkEIqprIYuR3p5CqkLi+6keblQH5+AyFywj+eJlww=';
 const data = 'I am a secret data!';
 
 describe('Crypto', () => {
-    describe('RSA-Hybrid', () => {
-        test('correct', async () => {
-            const encrypted = await Crypto.encrypt(data, {
-                algo: CryptoAlgorithm.RSAHybrid,
-                key: rsaPublicKey,
-                encoding: Encoding.base64,
-            });
+  describe('RSA-Hybrid', () => {
+    test('correct', async () => {
+      const encrypted = await Crypto.encrypt(data, {
+        algo: CryptoAlgorithm.RSAHybrid,
+        key: rsaPublicKey,
+        encoding: Encoding.base64,
+      });
 
-            encrypted.key = rsaPrivateKey;
-            const decrypted = await Crypto.decrypt(encrypted);
+      encrypted.key = rsaPrivateKey;
+      const decrypted = await Crypto.decrypt(encrypted);
 
-            expect(decrypted).toEqual(data);
-            expect(encrypted).not.toContain(data);
-        });
-
-        test('incorrect data', async () => {
-            const encrypted = await Crypto.encrypt(data, {
-                algo: CryptoAlgorithm.RSAHybrid,
-                key: rsaPublicKey,
-                encoding: Encoding.base64,
-            });
-
-            // Replace center of encrypted content to random characters
-            const ciphertext = encrypted.ciphertext!;
-            const replacePosition = ciphertext.length / 2;
-            encrypted.ciphertext =
-                ciphertext.substring(0, replacePosition) +
-                'oRHAW7' +
-                ciphertext.substring(replacePosition + 6);
-
-            encrypted.key = rsaPrivateKey;
-            await expect(Crypto.decrypt(encrypted)).rejects.toThrowError();
-        });
-
-        test('incorrect keys', async () => {
-            const encrypted = await Crypto.encrypt(data, {
-                algo: CryptoAlgorithm.RSAHybrid,
-                key: rsaPublicKey,
-                encoding: Encoding.base64,
-            });
-
-            encrypted.key = rsaPrivateKeyIncorrect;
-            await expect(Crypto.decrypt(encrypted)).rejects.toThrowError();
-        });
+      expect(decrypted).toEqual(data);
+      expect(encrypted).not.toContain(data);
     });
 
-    describe('ECIES', () => {
-        test('correct', async () => {
-            const encrypted = await Crypto.encrypt(data, {
-                algo: CryptoAlgorithm.ECIES,
-                key: eccPublicKey,
-                encoding: Encoding.base64,
-            });
+    test('incorrect data', async () => {
+      const encrypted = await Crypto.encrypt(data, {
+        algo: CryptoAlgorithm.RSAHybrid,
+        key: rsaPublicKey,
+        encoding: Encoding.base64,
+      });
 
-            encrypted.key = eccPrivateKey;
-            const decrypted = await Crypto.decrypt(encrypted);
+      // Replace center of encrypted content to random characters
+      const ciphertext = encrypted.ciphertext!;
+      const replacePosition = ciphertext.length / 2;
+      encrypted.ciphertext =
+        ciphertext.substring(0, replacePosition) +
+        'oRHAW7' +
+        ciphertext.substring(replacePosition + 6);
 
-            expect(decrypted).toEqual(data);
-            expect(encrypted).not.toContain(data);
-        });
-
-        test('incorrect data', async () => {
-            const encrypted = await Crypto.encrypt(data, {
-                algo: CryptoAlgorithm.ECIES,
-                key: eccPublicKey,
-                encoding: Encoding.base64,
-            });
-
-            // Replace center of encrypted content to random characters
-            const ciphertext = encrypted.ciphertext!;
-            const replacePosition = ciphertext.length / 2;
-            encrypted.ciphertext =
-                ciphertext.substring(0, replacePosition) +
-                'oRHAW7' +
-                ciphertext.substring(replacePosition + 6);
-
-            encrypted.key = eccPrivateKey;
-            await expect(Crypto.decrypt(encrypted)).rejects.toThrowError();
-        });
-
-        test('incorrect keys', async () => {
-            const encrypted = await Crypto.encrypt(data, {
-                algo: CryptoAlgorithm.ECIES,
-                key: eccPublicKey,
-                encoding: Encoding.base64,
-            });
-
-            encrypted.key = eccPrivateKeyIncorrect;
-            await expect(Crypto.decrypt(encrypted)).rejects.toThrowError();
-        });
+      encrypted.key = rsaPrivateKey;
+      await expect(Crypto.decrypt(encrypted)).rejects.toThrowError();
     });
 
-    describe('AES', () => {
-        test('correct', async () => {
-            const encrypted = await Crypto.encrypt(data, {
-                algo: CryptoAlgorithm.AES,
-                key: aesKey,
-                encoding: Encoding.base64,
-            });
+    test('incorrect keys', async () => {
+      const encrypted = await Crypto.encrypt(data, {
+        algo: CryptoAlgorithm.RSAHybrid,
+        key: rsaPublicKey,
+        encoding: Encoding.base64,
+      });
 
-            encrypted.key = aesKey;
-            const decrypted = await Crypto.decrypt(encrypted);
+      encrypted.key = rsaPrivateKeyIncorrect;
+      await expect(Crypto.decrypt(encrypted)).rejects.toThrowError();
+    });
+  });
 
-            expect(decrypted).toEqual(data);
-            expect(encrypted).not.toContain(data);
-        });
+  describe('ECIES', () => {
+    test('correct', async () => {
+      const encrypted = await Crypto.encrypt(data, {
+        algo: CryptoAlgorithm.ECIES,
+        key: eccPublicKey,
+        encoding: Encoding.base64,
+      });
 
-        test('incorrect data', async () => {
-            const encrypted = await Crypto.encrypt(data, {
-                algo: CryptoAlgorithm.AES,
-                key: aesKey,
-                encoding: Encoding.base64,
-            });
+      encrypted.key = eccPrivateKey;
+      const decrypted = await Crypto.decrypt(encrypted);
 
-            // Replace center of encrypted content to random characters
-            const ciphertext = encrypted.ciphertext!;
-            const replacePosition = ciphertext.length / 2;
-            encrypted.ciphertext =
-                ciphertext.substring(0, replacePosition) +
-                'oRHAW7' +
-                ciphertext.substring(replacePosition + 6);
-
-            encrypted.key = aesKey;
-            await expect(Crypto.decrypt(encrypted)).rejects.toThrowError();
-        });
-
-        test('incorrect keys', async () => {
-            const encrypted = await Crypto.encrypt(data, {
-                algo: CryptoAlgorithm.AES,
-                key: aesKey,
-                encoding: Encoding.base64,
-            });
-
-            encrypted.key = aesKeyIncorrect;
-            await expect(Crypto.decrypt(encrypted)).rejects.toThrowError();
-        });
+      expect(decrypted).toEqual(data);
+      expect(encrypted).not.toContain(data);
     });
 
-    describe('createHash', () => {
-        const data = 'test hash creation string';
-        const sha256inBase64OfData = 'EwQUJ4VissaUcG+T+XiFVMA2lsARcyazRnXYP+cDXSg=';
+    test('incorrect data', async () => {
+      const encrypted = await Crypto.encrypt(data, {
+        algo: CryptoAlgorithm.ECIES,
+        key: eccPublicKey,
+        encoding: Encoding.base64,
+      });
 
-        test('creates hash from buffer', async () => {
-            const content = Buffer.from(data);
-            const hashInfo = {
-                algo: HashAlgorithm.SHA256,
-                encoding: Encoding.base64,
-            };
+      // Replace center of encrypted content to random characters
+      const ciphertext = encrypted.ciphertext!;
+      const replacePosition = ciphertext.length / 2;
+      encrypted.ciphertext =
+        ciphertext.substring(0, replacePosition) +
+        'oRHAW7' +
+        ciphertext.substring(replacePosition + 6);
 
-            const hash = await Crypto.createHash(content, hashInfo);
-
-            expect(hash).toEqual({
-                algo: HashAlgorithm.SHA256,
-                encoding: Encoding.base64,
-                hash: sha256inBase64OfData,
-            });
-        });
-
-        test('creates hash from stream', async () => {
-            const readable = new Readable();
-            readable.push(data);
-            readable.push(null);
-            const hashInfo = {
-                algo: HashAlgorithm.SHA256,
-                encoding: Encoding.base64,
-            };
-
-            const hash = await Crypto.createHash(readable, hashInfo);
-
-            expect(hash).toEqual({
-                algo: HashAlgorithm.SHA256,
-                encoding: Encoding.base64,
-                hash: sha256inBase64OfData,
-            });
-        });
+      encrypted.key = eccPrivateKey;
+      await expect(Crypto.decrypt(encrypted)).rejects.toThrowError();
     });
+
+    test('incorrect keys', async () => {
+      const encrypted = await Crypto.encrypt(data, {
+        algo: CryptoAlgorithm.ECIES,
+        key: eccPublicKey,
+        encoding: Encoding.base64,
+      });
+
+      encrypted.key = eccPrivateKeyIncorrect;
+      await expect(Crypto.decrypt(encrypted)).rejects.toThrowError();
+    });
+  });
+
+  describe('AES', () => {
+    test('correct', async () => {
+      const encrypted = await Crypto.encrypt(data, {
+        algo: CryptoAlgorithm.AES,
+        key: aesKey,
+        encoding: Encoding.base64,
+      });
+
+      encrypted.key = aesKey;
+      const decrypted = await Crypto.decrypt(encrypted);
+
+      expect(decrypted).toEqual(data);
+      expect(encrypted).not.toContain(data);
+    });
+
+    test('incorrect data', async () => {
+      const encrypted = await Crypto.encrypt(data, {
+        algo: CryptoAlgorithm.AES,
+        key: aesKey,
+        encoding: Encoding.base64,
+      });
+
+      // Replace center of encrypted content to random characters
+      const ciphertext = encrypted.ciphertext!;
+      const replacePosition = ciphertext.length / 2;
+      encrypted.ciphertext =
+        ciphertext.substring(0, replacePosition) +
+        'oRHAW7' +
+        ciphertext.substring(replacePosition + 6);
+
+      encrypted.key = aesKey;
+      await expect(Crypto.decrypt(encrypted)).rejects.toThrowError();
+    });
+
+    test('incorrect keys', async () => {
+      const encrypted = await Crypto.encrypt(data, {
+        algo: CryptoAlgorithm.AES,
+        key: aesKey,
+        encoding: Encoding.base64,
+      });
+
+      encrypted.key = aesKeyIncorrect;
+      await expect(Crypto.decrypt(encrypted)).rejects.toThrowError();
+    });
+  });
+
+  describe('createHash', () => {
+    const data = 'test hash creation string';
+    const sha256inBase64OfData = 'EwQUJ4VissaUcG+T+XiFVMA2lsARcyazRnXYP+cDXSg=';
+
+    test('creates hash from buffer', async () => {
+      const content = Buffer.from(data);
+      const hashInfo = {
+        algo: HashAlgorithm.SHA256,
+        encoding: Encoding.base64,
+      };
+
+      const hash = await Crypto.createHash(content, hashInfo);
+
+      expect(hash).toEqual({
+        algo: HashAlgorithm.SHA256,
+        encoding: Encoding.base64,
+        hash: sha256inBase64OfData,
+      });
+    });
+
+    test('creates hash from stream', async () => {
+      const readable = new Readable();
+      readable.push(data);
+      readable.push(null);
+      const hashInfo = {
+        algo: HashAlgorithm.SHA256,
+        encoding: Encoding.base64,
+      };
+
+      const hash = await Crypto.createHash(readable, hashInfo);
+
+      expect(hash).toEqual({
+        algo: HashAlgorithm.SHA256,
+        encoding: Encoding.base64,
+        hash: sha256inBase64OfData,
+      });
+    });
+  });
 });

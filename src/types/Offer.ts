@@ -1,35 +1,35 @@
 export enum OfferType {
-    TeeOffer = '0',
-    Storage = '1',
-    Solution = '2',
-    Data = '3',
+  TeeOffer = '0',
+  Storage = '1',
+  Solution = '2',
+  Data = '3',
 }
 
 export enum OfferGroup {
-    Input = '0',
-    Processing = '1',
-    Output = '2',
+  Input = '0',
+  Processing = '1',
+  Output = '2',
 }
 
 export type OfferRestrictions = {
-    offers: bigint[];
-    types: OfferType[];
+  offers: bigint[];
+  types: OfferType[];
 };
 
 export type OfferInfo = {
-    name: string;
-    group: OfferGroup;
-    offerType: OfferType;
-    cancelable: boolean;
-    description: string;
-    restrictions: OfferRestrictions;
-    input: string;
-    output: string;
-    allowedArgs: string;
-    allowedAccounts: string[];
-    argsPublicKey: string;
-    resultResource: string;
-    linkage: string;
-    hash: string;
-    metadata: string;
+  name: string;
+  group: OfferGroup;
+  offerType: OfferType;
+  cancelable: boolean;
+  description: string;
+  restrictions: OfferRestrictions;
+  input: string;
+  output: string;
+  allowedArgs: string;
+  allowedAccounts: string[];
+  argsPublicKey: string;
+  resultResource: string;
+  linkage: string;
+  hash: string;
+  metadata: string;
 };

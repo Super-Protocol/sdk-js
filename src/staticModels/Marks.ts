@@ -13,13 +13,13 @@ class Marks {
         return contract.methods.getProviderMarks(providerId).call();
     }
 
-    static getOrderMark(orderId: bigint | number | string): Promise<bigint> {
+    static getOrderMark(orderId: bigint): Promise<bigint> {
         const contract = BlockchainConnector.getInstance().getContract();
 
         return contract.methods.getOrderMark(orderId).call();
     }
 
-    static async setOrderMark(orderId: bigint | number | string, mark: Mark): Promise<void> {
+    static async setOrderMark(orderId: bigint, mark: Mark): Promise<void> {
         const contract = BlockchainConnector.getInstance().getContract();
 
         await contract.methods.setOrderMark(orderId, mark).call();

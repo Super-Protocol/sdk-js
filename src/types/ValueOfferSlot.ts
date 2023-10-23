@@ -3,7 +3,7 @@ import { SlotInfo } from './SlotInfo';
 import { SlotUsage } from './SlotUsage';
 
 export type ValueOfferSlot = {
-    id: string;
+    id: bigint;
     info: SlotInfo;
     option: OptionInfo;
     usage: SlotUsage;

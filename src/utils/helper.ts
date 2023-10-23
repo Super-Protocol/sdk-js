@@ -90,7 +90,7 @@ export function incrementMethodCall() {
     };
 }
 
-export function packDevicId(hexedDeviceId: string): string {
+export function packDeviceId(hexedDeviceId: string): string {
     const hexRegex = /^[0-9a-fA-F]+$/;
 
     if (hexedDeviceId.length !== 64) {

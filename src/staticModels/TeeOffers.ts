@@ -1,5 +1,5 @@
 import rootLogger from '../logger';
-import { checkIfActionAccountInitialized, packDevicId } from '../utils/helper';
+import { checkIfActionAccountInitialized, packDeviceId } from '../utils/helper';
 import { BytesLike, formatBytes32String, parseBytes32String } from 'ethers/lib/utils';
 import {
     BlockInfo,
@@ -52,7 +52,7 @@ class TeeOffers {
     /**
      * Function for fetching list of all TEE offers addresses
      */
-    public static async getAll(): Promise<string[]> {
+    public static async getAll(): Promise<bigint[]> {
         const contract = BlockchainConnector.getInstance().getContract();
 
         const count = Number(await contract.methods.getOffersTotalCount().call());
@@ -128,7 +128,7 @@ class TeeOffers {
     public static getByDeviceId(deviceId: string): Promise<string> {
         const contract = BlockchainConnector.getInstance().getContract();
 
-        const fromattedDeviceId = packDevicId(deviceId);
+        const fromattedDeviceId = packDeviceId(deviceId);
 
         return contract.methods.getTeeOfferByDeviceId(fromattedDeviceId).call();
     }
@@ -146,7 +146,7 @@ class TeeOffers {
      * Function for fetching whether tee offer option exists or not
      * @param optionId - Option ID
      */
-    public static isOptionExists(optionId: string): Promise<boolean> {
+    public static isOptionExists(optionId: bigint): Promise<boolean> {
         const contract = BlockchainConnector.getInstance().getContract();
 
         return contract.methods.isOptionExists(optionId).call();
@@ -165,14 +165,14 @@ class TeeOffers {
      * Function for fetching tee offer option by id
      * @param optionId - Option ID
      */
-    public static async getOptionById(optionId: string): Promise<TeeOfferOption> {
+    public static async getOptionById(optionId: bigint): Promise<TeeOfferOption> {
         const contract = BlockchainConnector.getInstance().getContract();
 
         return await contract.methods.getOptionById(optionId).call();
     }
 
     public static async getSlotByExternalId(
-        filter: { externalId: string; creator?: string; offerId?: string },
+        filter: { externalId: string; creator?: string; offerId?: bigint },
         fromBlock?: number | string,
         toBlock?: number | string,
     ): Promise<TeeSlotAddedEvent | null> {
@@ -187,7 +187,7 @@ class TeeOffers {
         filter: {
             externalId: string;
             creator?: string;
-            teeOfferId?: string;
+            teeOfferId?: bigint;
         },
         fromBlock?: number | string,
         toBlock?: number | string,
@@ -327,7 +327,7 @@ class TeeOffers {
      */
     public static onOptionUpdated(
         callback: onTeeOptionUpdatedCallback,
-        teeOfferId?: string,
+        teeOfferId?: bigint,
     ): () => void {
         const contract = BlockchainEventsListener.getInstance().getContract();
         const logger = this.logger.child({ method: 'onTeeOptionUpdatedCallback' });
@@ -361,7 +361,7 @@ class TeeOffers {
      */
     public static onOptionDeleted(
         callback: onTeeOptionDeletedCallback,
-        teeOfferId?: string,
+        teeOfferId?: bigint,
     ): () => void {
         const contract = BlockchainEventsListener.getInstance().getContract();
         const logger = this.logger.child({ method: 'onTeeOptionDeletedCallback' });

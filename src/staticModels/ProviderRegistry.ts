@@ -23,7 +23,7 @@ class ProviderRegistry {
     /**
      * Fetch provider security deposit by provider authority account
      */
-    public static getSecurityDeposit(providerAuthority: string): Promise<string> {
+    public static getSecurityDeposit(providerAuthority: string): Promise<bigint> {
         const contract = BlockchainConnector.getInstance().getContract();
 
         return contract.methods.getProviderSecurityDeposit(providerAuthority).call();
@@ -100,7 +100,7 @@ class ProviderRegistry {
      * @param transactionOptions - object what contains alternative action account or gas limit (optional)
      */
     public static async returnSecurityDeposit(
-        amount: string,
+        amount: bigint,
         transactionOptions?: TransactionOptions,
     ): Promise<void> {
         const contract = BlockchainConnector.getInstance().getContract();

@@ -2,7 +2,7 @@ import { OptionInfo } from './OptionInfo';
 import { SlotUsage } from './SlotUsage';
 
 export type TeeOfferOption = {
-    id: string;
+    id: bigint;
     info: OptionInfo;
     usage: SlotUsage;
 };

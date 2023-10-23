@@ -20,13 +20,13 @@ class ActiveOrders {
 
     /**
      * Function returns ids of active orders
-     * @returns {Promise<string[]>}
+     * @returns {Promise<bigint[]>}
      */
     @incrementMethodCall()
     public static async getListOfActiveOrdersRange(
         begin?: bigint,
         end?: bigint,
-    ): Promise<string[]> {
+    ): Promise<bigint[]> {
         const contract = BlockchainConnector.getInstance().getContract();
 
         begin = begin ?? BigInt(0);
@@ -37,7 +37,7 @@ class ActiveOrders {
 
     /**
      * Function returns ids of active orders by offers
-     * @returns {Promise<string[]>}
+     * @returns {Promise<bigint[]>}
      */
     @incrementMethodCall()
     public static async getActiveOrdersRangeByOffers(

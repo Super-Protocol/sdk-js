@@ -5,7 +5,7 @@ export enum PriceType {
 
 export type SlotUsage = {
     priceType: PriceType;
-    price: string;
+    price: bigint;
     minTimeMinutes: number;
     maxTimeMinutes: number;
 };

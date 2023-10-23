@@ -27,7 +27,7 @@ class Deposits {
      * Function for fetching amount of locked tokens
      * @param depositOwner - Deposit owner
      */
-    public static getLockedTokensAmount(depositOwner: string): Promise<string> {
+    public static getLockedTokensAmount(depositOwner: string): Promise<bigint> {
         const contract = BlockchainConnector.getInstance().getContract();
 
         return contract.methods.getLockedTokensAmount(depositOwner).call();

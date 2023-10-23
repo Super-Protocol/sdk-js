@@ -18,7 +18,7 @@ import { EventLog } from 'web3-eth-contract';
 class Offers implements StaticModel {
     private static readonly logger = rootLogger.child({ className: 'Offers' });
 
-    public static offers?: string[];
+    public static offers?: bigint[];
 
     public static get address(): string {
         return Superpro.address;
@@ -27,7 +27,7 @@ class Offers implements StaticModel {
     /**
      * Function for fetching list of all offers ids
      */
-    public static async getAll(): Promise<string[]> {
+    public static async getAll(): Promise<bigint[]> {
         const contract = BlockchainConnector.getInstance().getContract();
 
         const count = Number(await contract.methods.getOffersTotalCount().call());
@@ -37,7 +37,7 @@ class Offers implements StaticModel {
         for (let offerId = offersSet.size + 1; offerId <= count; ++offerId) {
             const offerType = (await contract.methods.getOfferType(offerId).call()) as OfferType;
             if (offerType !== OfferType.TeeOffer) {
-                offersSet.add(offerId.toString());
+                offersSet.add(BigInt(offerId));
             }
         }
         this.offers = Array.from(offersSet);
@@ -101,11 +101,12 @@ class Offers implements StaticModel {
         filter: {
             externalId: string;
             creator?: string;
-            offerId?: string;
+            offerId?: bigint;
         },
         fromBlock?: number | string,
         toBlock?: number | string,
     ): Promise<ValueSlotAddedEvent | null> {
+        // TODO what is filter type
         const founded = await StaticModel.findItemsById(
             'ValueSlotAdded',
             filter,

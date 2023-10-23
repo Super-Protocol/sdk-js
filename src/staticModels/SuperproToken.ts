@@ -68,7 +68,7 @@ class SuperproToken {
     /**
      * Fetching allowance of SuperProtocol tokens on address
      */
-    public static allowance(from: string, to: string): Promise<string> {
+    public static allowance(from: string, to: string): Promise<bigint> {
         this.checkInit();
 
         return this.contractHttps!.methods.allowance(from, to).call();

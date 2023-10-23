@@ -35,8 +35,7 @@ class Offer {
     public origins?: Origins;
     public id: bigint;
     public enabled?: boolean;
-    public closingPrice?: string;
-    public minDeposit?: string;
+    public minDeposit?: bigint;
 
     constructor(offerId: bigint) {
         this.id = offerId;
@@ -173,7 +172,7 @@ class Offer {
      * Function for fetching offer hold deposit
      */
     @incrementMethodCall()
-    public async getMinDeposit(slotId: string): Promise<string> {
+    public async getMinDeposit(slotId: bigint): Promise<bigint> {
         this.minDeposit = await Offer.contract.methods
             .getOfferMinDeposit(this.id, slotId, '0', [], [])
             .call();
@@ -185,7 +184,7 @@ class Offer {
      * Function for fetching cheapest value offer from blockchain
      */
     @incrementMethodCall()
-    public getCheapestPrice(): Promise<string> {
+    public getCheapestPrice(): Promise<bigint> {
         return Offer.contract.methods.getCheapestValueOffersPrice(this.id).call();
     }
 
@@ -213,7 +212,7 @@ class Offer {
      * Function for fetching whether offer slot exists or not
      * @param slotId - Slot ID
      */
-    public isSlotExists(slotId: string): Promise<boolean> {
+    public isSlotExists(slotId: bigint): Promise<boolean> {
         return Offer.contract.methods.isValueOfferSlotExists(this.id, slotId).call();
     }
 
@@ -221,7 +220,7 @@ class Offer {
      * Function for fetching offer slot by id
      * @param slotId - Slot ID
      */
-    public async getSlotById(slotId: string): Promise<ValueOfferSlot> {
+    public async getSlotById(slotId: bigint): Promise<ValueOfferSlot> {
         const slot: ValueOfferSlot = await Offer.contract.methods
             .getValueOfferSlotById(this.id, slotId)
             .call();
@@ -233,7 +232,7 @@ class Offer {
     /**
      * @returns this TEE offer slots count
      */
-    public getSlotsCount(): Promise<string> {
+    public getSlotsCount(): Promise<number> {
         return Offer.contract.methods.getValueOfferSlotsCount(this.id).call();
     }
 
@@ -299,7 +298,7 @@ class Offer {
      */
     @incrementMethodCall()
     public async updateSlot(
-        slotId: string,
+        slotId: bigint,
         newSlotInfo: SlotInfo,
         newOptionInfo: OptionInfo,
         newUsage: SlotUsage,
@@ -327,7 +326,7 @@ class Offer {
      */
     @incrementMethodCall()
     public async deleteSlot(
-        slotId: string,
+        slotId: bigint,
         transactionOptions?: TransactionOptions,
     ): Promise<void> {
         checkIfActionAccountInitialized(transactionOptions);
@@ -363,7 +362,7 @@ class Offer {
      * @param offerId - id of offer what needs to be checked
      */
     @incrementMethodCall()
-    public isRestrictionsPermitThatOffer(offerId: string): Promise<boolean> {
+    public isRestrictionsPermitThatOffer(offerId: bigint): Promise<boolean> {
         return Offer.contract.methods.isOfferRestrictionsPermitOtherOffer(this.id, offerId).call();
     }
 

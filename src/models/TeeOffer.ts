@@ -36,7 +36,6 @@ class TeeOffer {
     public provider?: string;
     public enabled?: boolean;
     public tcb?: string;
-    public closingPrice?: string;
     public tlbAddedTime?: number;
     public tcbAddedTime?: number;
     public origins?: Origins;
@@ -79,7 +78,7 @@ class TeeOffer {
     /**
      * @returns this TEE offer slots count
      */
-    public getSlotsCount(): Promise<string> {
+    public getSlotsCount(): Promise<number> {
         return TeeOffer.contract.methods.getTeeOfferSlotsCount(this.id).call();
     }
 
@@ -124,7 +123,7 @@ class TeeOffer {
      * Function for fetching tee offer slot by id
      * @param optionId - Slot ID
      */
-    public getOptionById(optionId: string): Promise<TeeOfferOption> {
+    public getOptionById(optionId: bigint): Promise<TeeOfferOption> {
         return TeeOffer.contract.methods.getOptionById(optionId).call();
     }
 
@@ -147,7 +146,7 @@ class TeeOffer {
      * Function for fetching whether tee offer slot exists or not
      * @param optionId - Option ID
      */
-    public isOptionExists(optionId: string): Promise<boolean> {
+    public isOptionExists(optionId: bigint): Promise<boolean> {
         return TeeOffer.contract.methods.isTeeOfferSlotExists(this.id, optionId).call();
     }
 
@@ -184,7 +183,7 @@ class TeeOffer {
      */
     @incrementMethodCall()
     public async updateOption(
-        optionId: string,
+        optionId: bigint,
         newInfo: OptionInfo,
         newUsage: SlotUsage,
         transactionOptions?: TransactionOptions,
@@ -204,7 +203,7 @@ class TeeOffer {
      */
     @incrementMethodCall()
     public async deleteOption(
-        optionId: string,
+        optionId: bigint,
         transactionOptions?: TransactionOptions,
     ): Promise<void> {
         checkIfActionAccountInitialized(transactionOptions);
@@ -279,7 +278,7 @@ class TeeOffer {
      * Function for fetching whether tee offer slot exists or not
      * @param slotId - Slot ID
      */
-    public isSlotExists(slotId: string): Promise<boolean> {
+    public isSlotExists(slotId: bigint): Promise<boolean> {
         return TeeOffer.contract.methods.isTeeOfferSlotExists(this.id, slotId).call();
     }
 
@@ -287,7 +286,7 @@ class TeeOffer {
      * Function for fetching tee offer slot by id
      * @param slotId - Slot ID
      */
-    public async getSlotById(slotId: string): Promise<TeeOfferSlot> {
+    public async getSlotById(slotId: bigint): Promise<TeeOfferSlot> {
         const slot: TeeOfferSlot = await TeeOffer.contract.methods
             .getTeeOfferSlotById(this.id, slotId)
             .call();
@@ -352,7 +351,7 @@ class TeeOffer {
      */
     @incrementMethodCall()
     public async updateSlot(
-        slotId: string,
+        slotId: bigint,
         newInfo: SlotInfo,
         newUsage: SlotUsage,
         transactionOptions?: TransactionOptions,
@@ -373,7 +372,7 @@ class TeeOffer {
      */
     @incrementMethodCall()
     public async deleteSlot(
-        slotId: string,
+        slotId: bigint,
         transactionOptions?: TransactionOptions,
     ): Promise<void> {
         checkIfActionAccountInitialized(transactionOptions);

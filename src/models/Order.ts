@@ -260,7 +260,7 @@ class Order {
      */
     @incrementMethodCall()
     public async setOptionsDepositSpent(
-        value: string,
+        value: bigint,
         transactionOptions?: TransactionOptions,
     ): Promise<void> {
         checkIfActionAccountInitialized(transactionOptions);

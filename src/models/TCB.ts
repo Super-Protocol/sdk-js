@@ -4,7 +4,7 @@ import Superpro from '../staticModels/Superpro';
 import TxManager from '../utils/TxManager';
 import { BlockchainConnector } from '../connectors';
 import { TcbData, TcbPublicData, TcbVerifiedStatus, TransactionOptions } from '../types';
-import { checkIfActionAccountInitialized, packDevicId, unpackDeviceId } from '../utils/helper';
+import { checkIfActionAccountInitialized, packDeviceId, unpackDeviceId } from '../utils/helper';
 
 class TCB {
     public tcbId: bigint;
@@ -34,7 +34,7 @@ class TCB {
     ): Promise<void> {
         checkIfActionAccountInitialized(transactionOptions);
 
-        const fromattedDeviceId = packDevicId(pb.deviceID);
+        const fromattedDeviceId = packDeviceId(pb.deviceID);
         await TxManager.execute(
             TCB.contract.methods.setTcbData(
                 this.tcbId,

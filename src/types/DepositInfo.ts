@@ -1,5 +1,5 @@
 export type DepositInfo = {
-    amount: bigint;
-    totalLocked: bigint;
-    profit: bigint;
+  amount: bigint;
+  totalLocked: bigint;
+  profit: bigint;
 };

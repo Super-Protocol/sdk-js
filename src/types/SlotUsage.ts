@@ -1,11 +1,11 @@
 export enum PriceType {
-    PerHour = '0',
-    Fixed = '1',
+  PerHour = '0',
+  Fixed = '1',
 }
 
 export type SlotUsage = {
-    priceType: PriceType;
-    price: bigint;
-    minTimeMinutes: number;
-    maxTimeMinutes: number;
+  priceType: PriceType;
+  price: bigint;
+  minTimeMinutes: number;
+  maxTimeMinutes: number;
 };

@@ -3,12 +3,12 @@ import StaticModel from './StaticModel';
 import { checkIfActionAccountInitialized } from '../utils/helper';
 import { BytesLike, formatBytes32String, parseBytes32String } from 'ethers/lib/utils';
 import {
-    OfferCreatedEvent,
-    ValueSlotAddedEvent,
-    BlockInfo,
-    TransactionOptions,
-    OfferInfo,
-    OfferType,
+  OfferCreatedEvent,
+  ValueSlotAddedEvent,
+  BlockInfo,
+  TransactionOptions,
+  OfferInfo,
+  OfferType,
 } from '../types';
 import Superpro from './Superpro';
 import TxManager from '../utils/TxManager';
@@ -16,296 +16,291 @@ import { BlockchainConnector, BlockchainEventsListener } from '../connectors';
 import { EventLog } from 'web3-eth-contract';
 
 class Offers implements StaticModel {
-    private static readonly logger = rootLogger.child({ className: 'Offers' });
+  private static readonly logger = rootLogger.child({ className: 'Offers' });
 
-    public static offers?: bigint[];
+  public static offers?: bigint[];
 
-    public static get address(): string {
-        return Superpro.address;
+  public static get address(): string {
+    return Superpro.address;
+  }
+
+  /**
+   * Function for fetching list of all offers ids
+   */
+  public static async getAll(): Promise<bigint[]> {
+    const contract = BlockchainConnector.getInstance().getContract();
+
+    const count = Number(await contract.methods.getOffersTotalCount().call());
+    this.offers = this.offers || [];
+    const offersSet = new Set(this.offers);
+
+    for (let offerId = offersSet.size + 1; offerId <= count; ++offerId) {
+      const offerType = (await contract.methods.getOfferType(offerId).call()) as OfferType;
+      if (offerType !== OfferType.TeeOffer) {
+        offersSet.add(BigInt(offerId));
+      }
     }
+    this.offers = Array.from(offersSet);
 
-    /**
-     * Function for fetching list of all offers ids
-     */
-    public static async getAll(): Promise<bigint[]> {
-        const contract = BlockchainConnector.getInstance().getContract();
+    return this.offers;
+  }
 
-        const count = Number(await contract.methods.getOffersTotalCount().call());
-        this.offers = this.offers || [];
-        const offersSet = new Set(this.offers);
+  /**
+   * Function for fetching total count of value offer slots
+   */
+  public static async getSlotsCount(): Promise<number> {
+    const contract = BlockchainConnector.getInstance().getContract();
 
-        for (let offerId = offersSet.size + 1; offerId <= count; ++offerId) {
-            const offerType = (await contract.methods.getOfferType(offerId).call()) as OfferType;
-            if (offerType !== OfferType.TeeOffer) {
-                offersSet.add(BigInt(offerId));
-            }
-        }
-        this.offers = Array.from(offersSet);
+    return +(await contract.methods.getValueOffersSlotsCount().call());
+  }
 
-        return this.offers;
-    }
+  /**
+   * Creates new offer
+   * @param providerAuthorityAccount - address of authority account of provider
+   * @param offerInfo - data of new offer
+   * @param transactionOptions - object what contains alternative action account or gas limit (optional)
+   */
+  public static async create(
+    providerAuthorityAccount: string,
+    offerInfo: OfferInfo,
+    externalId = 'default',
+    enabled = true,
+    transactionOptions?: TransactionOptions,
+  ): Promise<void> {
+    const contract = BlockchainConnector.getInstance().getContract();
+    checkIfActionAccountInitialized(transactionOptions);
 
-    /**
-     * Function for fetching total count of value offer slots
-     */
-    public static async getSlotsCount(): Promise<number> {
-        const contract = BlockchainConnector.getInstance().getContract();
+    const formattedExternalId = formatBytes32String(externalId);
+    await TxManager.execute(
+      contract.methods.createValueOffer(
+        providerAuthorityAccount,
+        offerInfo,
+        formattedExternalId,
+        enabled,
+      ),
+      transactionOptions,
+    );
+  }
 
-        return +(await contract.methods.getValueOffersSlotsCount().call());
-    }
+  public static async getByExternalId(
+    filter: {
+      externalId: string;
+      creator?: string;
+    },
+    fromBlock?: number | string,
+    toBlock?: number | string,
+  ): Promise<OfferCreatedEvent | null> {
+    const founded = await StaticModel.findItemsById('OfferCreated', filter, fromBlock, toBlock);
 
-    /**
-     * Creates new offer
-     * @param providerAuthorityAccount - address of authority account of provider
-     * @param offerInfo - data of new offer
-     * @param transactionOptions - object what contains alternative action account or gas limit (optional)
-     */
-    public static async create(
-        providerAuthorityAccount: string,
-        offerInfo: OfferInfo,
-        externalId = 'default',
-        enabled = true,
-        transactionOptions?: TransactionOptions,
-    ): Promise<void> {
-        const contract = BlockchainConnector.getInstance().getContract();
-        checkIfActionAccountInitialized(transactionOptions);
+    if (!founded) return null;
 
-        const formattedExternalId = formatBytes32String(externalId);
-        await TxManager.execute(
-            contract.methods.createValueOffer(
-                providerAuthorityAccount,
-                offerInfo,
-                formattedExternalId,
-                enabled,
-            ),
-            transactionOptions,
-        );
-    }
+    return founded as OfferCreatedEvent;
+  }
 
-    public static async getByExternalId(
-        filter: {
-            externalId: string;
-            creator?: string;
+  public static async getSlotByExternalId(
+    filter: {
+      externalId: string;
+      creator?: string;
+      offerId?: bigint;
+    },
+    fromBlock?: number | string,
+    toBlock?: number | string,
+  ): Promise<ValueSlotAddedEvent | null> {
+    // TODO what is filter type
+    const founded = await StaticModel.findItemsById('ValueSlotAdded', filter, fromBlock, toBlock);
+
+    if (!founded) return null;
+
+    return founded as ValueSlotAddedEvent;
+  }
+
+  /**
+   * Function for adding event listeners on onSlotAdded event in contract
+   * @param creator - creator address
+   * @param callback - function for processing created order
+   * @returns unsubscribe - unsubscribe function from event
+   */
+  public static onSlotAdded(callback: onSlotAddedCallback, creator?: string): () => void {
+    const contract = BlockchainEventsListener.getInstance().getContract();
+    const logger = this.logger.child({ method: 'onValueSlotAdded' });
+
+    const subscription = contract.events.ValueSlotAdded();
+    subscription.on('data', (event: EventLog): void => {
+      if (creator && event.returnValues.creator != creator) {
+        return;
+      }
+      callback(
+        <string>event.returnValues.creator,
+        <bigint>event.returnValues.offerId,
+        <bigint>event.returnValues.slotId,
+        parseBytes32String(<BytesLike>event.returnValues.externalId),
+        <BlockInfo>{
+          index: <bigint>event.blockNumber,
+          hash: <string>event.blockHash,
         },
-        fromBlock?: number | string,
-        toBlock?: number | string,
-    ): Promise<OfferCreatedEvent | null> {
-        const founded = await StaticModel.findItemsById('OfferCreated', filter, fromBlock, toBlock);
+      );
+    });
+    subscription.on('error', (error: Error) => {
+      logger.warn(error);
+    });
 
-        if (!founded) return null;
+    return () => subscription.unsubscribe();
+  }
 
-        return founded as OfferCreatedEvent;
-    }
+  /**
+   * Function for adding event listeners on onSlotUpdated event in contract
+   * @param callback - function for processing created order
+   * @returns unsubscribe - unsubscribe function from event
+   */
+  public static onSlotUpdated(callback: onSlotUpdatedCallback): () => void {
+    const contract = BlockchainEventsListener.getInstance().getContract();
+    const logger = this.logger.child({ method: 'onValueSlotUpdated' });
 
-    public static async getSlotByExternalId(
-        filter: {
-            externalId: string;
-            creator?: string;
-            offerId?: bigint;
+    const subscription = contract.events.ValueSlotUpdated();
+    subscription.on('data', (event: EventLog): void => {
+      callback(
+        <bigint>event.returnValues.offerId,
+        <bigint>event.returnValues.slotId,
+        <BlockInfo>{
+          index: <bigint>event.blockNumber,
+          hash: <string>event.blockHash,
         },
-        fromBlock?: number | string,
-        toBlock?: number | string,
-    ): Promise<ValueSlotAddedEvent | null> {
-        // TODO what is filter type
-        const founded = await StaticModel.findItemsById(
-            'ValueSlotAdded',
-            filter,
-            fromBlock,
-            toBlock,
-        );
+      );
+    });
+    subscription.on('error', (error: Error): void => {
+      logger.warn(error);
+    });
 
-        if (!founded) return null;
+    return () => subscription.unsubscribe();
+  }
 
-        return founded as ValueSlotAddedEvent;
-    }
+  /**
+   * Function for adding event listeners on onSlotDeleted event in contract
+   * @param callback - function for processing created order
+   * @returns unsubscribe - unsubscribe function from event
+   */
+  public static onSlotDeleted(callback: onSlotDeletedCallback): () => void {
+    const contract = BlockchainEventsListener.getInstance().getContract();
+    const logger = this.logger.child({ method: 'onValueSlotDeleted' });
 
-    /**
-     * Function for adding event listeners on onSlotAdded event in contract
-     * @param creator - creator address
-     * @param callback - function for processing created order
-     * @returns unsubscribe - unsubscribe function from event
-     */
-    public static onSlotAdded(callback: onSlotAddedCallback, creator?: string): () => void {
-        const contract = BlockchainEventsListener.getInstance().getContract();
-        const logger = this.logger.child({ method: 'onValueSlotAdded' });
+    const subscription = contract.events.ValueSlotDeleted();
+    subscription.on('data', (event: EventLog): void => {
+      callback(
+        <bigint>event.returnValues.offerId,
+        <bigint>event.returnValues.slotId,
+        <BlockInfo>{
+          index: <bigint>event.blockNumber,
+          hash: <string>event.blockHash,
+        },
+      );
+    });
+    subscription.on('error', (error: Error) => {
+      logger.warn(error);
+    });
 
-        const subscription = contract.events.ValueSlotAdded();
-        subscription.on('data', (event: EventLog): void => {
-            if (creator && event.returnValues.creator != creator) {
-                return;
-            }
-            callback(
-                <string>event.returnValues.creator,
-                <bigint>event.returnValues.offerId,
-                <bigint>event.returnValues.slotId,
-                parseBytes32String(<BytesLike>event.returnValues.externalId),
-                <BlockInfo>{
-                    index: <bigint>event.blockNumber,
-                    hash: <string>event.blockHash,
-                },
-            );
-        });
-        subscription.on('error', (error: Error) => {
-            logger.warn(error);
-        });
+    return () => subscription.unsubscribe();
+  }
 
-        return () => subscription.unsubscribe();
-    }
+  /**
+   * Function for adding event listeners on offer created event in offers factory contract
+   * @param callback - function for processing created offer
+   * @returns unsubscribe - unsubscribe function from event
+   */
+  public static onCreated(callback: onOfferCreatedCallback): () => void {
+    const contract = BlockchainEventsListener.getInstance().getContract();
+    const logger = this.logger.child({ method: 'onOfferCreated' });
 
-    /**
-     * Function for adding event listeners on onSlotUpdated event in contract
-     * @param callback - function for processing created order
-     * @returns unsubscribe - unsubscribe function from event
-     */
-    public static onSlotUpdated(callback: onSlotUpdatedCallback): () => void {
-        const contract = BlockchainEventsListener.getInstance().getContract();
-        const logger = this.logger.child({ method: 'onValueSlotUpdated' });
+    const subscription = contract.events.OfferCreated();
+    subscription.on('data', (event: EventLog): void => {
+      callback(
+        <bigint>event.returnValues.offerId,
+        <string>event.returnValues.creator,
+        parseBytes32String(<BytesLike>event.returnValues.externalId),
+        <BlockInfo>{
+          index: <bigint>event.blockNumber,
+          hash: <string>event.blockHash,
+        },
+      );
+    });
+    subscription.on('error', (error: Error) => {
+      logger.warn(error);
+    });
 
-        const subscription = contract.events.ValueSlotUpdated();
-        subscription.on('data', (event: EventLog): void => {
-            callback(
-                <bigint>event.returnValues.offerId,
-                <bigint>event.returnValues.slotId,
-                <BlockInfo>{
-                    index: <bigint>event.blockNumber,
-                    hash: <string>event.blockHash,
-                },
-            );
-        });
-        subscription.on('error', (error: Error): void => {
-            logger.warn(error);
-        });
+    return () => subscription.unsubscribe();
+  }
 
-        return () => subscription.unsubscribe();
-    }
+  public static onEnabled(callback: onOfferEnabledCallback): () => void {
+    const contract = BlockchainEventsListener.getInstance().getContract();
+    const logger = this.logger.child({ method: 'onOfferEnabled' });
 
-    /**
-     * Function for adding event listeners on onSlotDeleted event in contract
-     * @param callback - function for processing created order
-     * @returns unsubscribe - unsubscribe function from event
-     */
-    public static onSlotDeleted(callback: onSlotDeletedCallback): () => void {
-        const contract = BlockchainEventsListener.getInstance().getContract();
-        const logger = this.logger.child({ method: 'onValueSlotDeleted' });
+    const subscription = contract.events.OfferEnabled();
+    subscription.on('data', (event: EventLog): void => {
+      callback(
+        <string>event.returnValues.providerAuth,
+        <bigint>event.returnValues.offerId,
+        <OfferType>event.returnValues.offerType,
+        <BlockInfo>{
+          index: <bigint>event.blockNumber,
+          hash: <string>event.blockHash,
+        },
+      );
+    });
+    subscription.on('error', (error: Error) => {
+      logger.warn(error);
+    });
 
-        const subscription = contract.events.ValueSlotDeleted();
-        subscription.on('data', (event: EventLog): void => {
-            callback(
-                <bigint>event.returnValues.offerId,
-                <bigint>event.returnValues.slotId,
-                <BlockInfo>{
-                    index: <bigint>event.blockNumber,
-                    hash: <string>event.blockHash,
-                },
-            );
-        });
-        subscription.on('error', (error: Error) => {
-            logger.warn(error);
-        });
+    return () => subscription.unsubscribe();
+  }
 
-        return () => subscription.unsubscribe();
-    }
+  public static onDisabled(callback: onOfferDisbledCallback): () => void {
+    const contract = BlockchainEventsListener.getInstance().getContract();
+    const logger = this.logger.child({ method: 'onOfferDisabled' });
 
-    /**
-     * Function for adding event listeners on offer created event in offers factory contract
-     * @param callback - function for processing created offer
-     * @returns unsubscribe - unsubscribe function from event
-     */
-    public static onCreated(callback: onOfferCreatedCallback): () => void {
-        const contract = BlockchainEventsListener.getInstance().getContract();
-        const logger = this.logger.child({ method: 'onOfferCreated' });
+    const subscription = contract.events.OfferDisabled();
+    subscription.on('data', (event: EventLog): void => {
+      callback(
+        <string>event.returnValues.providerAuth,
+        <bigint>event.returnValues.offerId,
+        <OfferType>event.returnValues.offerType,
+        <BlockInfo>{
+          index: <bigint>event.blockNumber,
+          hash: <string>event.blockHash,
+        },
+      );
+    });
+    subscription.on('error', (error: Error): void => {
+      logger.warn(error);
+    });
 
-        const subscription = contract.events.OfferCreated();
-        subscription.on('data', (event: EventLog): void => {
-            callback(
-                <bigint>event.returnValues.offerId,
-                <string>event.returnValues.creator,
-                parseBytes32String(<BytesLike>event.returnValues.externalId),
-                <BlockInfo>{
-                    index: <bigint>event.blockNumber,
-                    hash: <string>event.blockHash,
-                },
-            );
-        });
-        subscription.on('error', (error: Error) => {
-            logger.warn(error);
-        });
-
-        return () => subscription.unsubscribe();
-    }
-
-    public static onEnabled(callback: onOfferEnabledCallback): () => void {
-        const contract = BlockchainEventsListener.getInstance().getContract();
-        const logger = this.logger.child({ method: 'onOfferEnabled' });
-
-        const subscription = contract.events.OfferEnabled();
-        subscription.on('data', (event: EventLog): void => {
-            callback(
-                <string>event.returnValues.providerAuth,
-                <bigint>event.returnValues.offerId,
-                <OfferType>event.returnValues.offerType,
-                <BlockInfo>{
-                    index: <bigint>event.blockNumber,
-                    hash: <string>event.blockHash,
-                },
-            );
-        });
-        subscription.on('error', (error: Error) => {
-            logger.warn(error);
-        });
-
-        return () => subscription.unsubscribe();
-    }
-
-    public static onDisabled(callback: onOfferDisbledCallback): () => void {
-        const contract = BlockchainEventsListener.getInstance().getContract();
-        const logger = this.logger.child({ method: 'onOfferDisabled' });
-
-        const subscription = contract.events.OfferDisabled();
-        subscription.on('data', (event: EventLog): void => {
-            callback(
-                <string>event.returnValues.providerAuth,
-                <bigint>event.returnValues.offerId,
-                <OfferType>event.returnValues.offerType,
-                <BlockInfo>{
-                    index: <bigint>event.blockNumber,
-                    hash: <string>event.blockHash,
-                },
-            );
-        });
-        subscription.on('error', (error: Error): void => {
-            logger.warn(error);
-        });
-
-        return () => subscription.unsubscribe();
-    }
+    return () => subscription.unsubscribe();
+  }
 }
 
 // address -> offerId
 export type onOfferCreatedCallback = (
-    id: bigint,
-    creator: string,
-    externalId: string,
-    block?: BlockInfo,
+  id: bigint,
+  creator: string,
+  externalId: string,
+  block?: BlockInfo,
 ) => void;
 export type onOfferEnabledCallback = (
-    providerAuth: string,
-    id: bigint,
-    offerType: OfferType,
-    block?: BlockInfo,
+  providerAuth: string,
+  id: bigint,
+  offerType: OfferType,
+  block?: BlockInfo,
 ) => void;
 export type onOfferDisbledCallback = (
-    providerAuth: string,
-    id: bigint,
-    offerType: OfferType,
-    block?: BlockInfo,
+  providerAuth: string,
+  id: bigint,
+  offerType: OfferType,
+  block?: BlockInfo,
 ) => void;
 export type onSlotAddedCallback = (
-    creator: string,
-    offerId: bigint,
-    slotId: bigint,
-    externalId: string,
-    block?: BlockInfo,
+  creator: string,
+  offerId: bigint,
+  slotId: bigint,
+  externalId: string,
+  block?: BlockInfo,
 ) => void;
 export type onSlotUpdatedCallback = (offerId: bigint, slotId: bigint, block?: BlockInfo) => void;
 export type onSlotDeletedCallback = (offerId: bigint, slotId: bigint, block?: BlockInfo) => void;

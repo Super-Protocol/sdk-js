@@ -3,27 +3,27 @@ import Superpro from './Superpro';
 import { Mark } from '../types';
 
 class Marks {
-    public static get address(): string {
-        return Superpro.address;
-    }
+  public static get address(): string {
+    return Superpro.address;
+  }
 
-    static getProviderMarks(providerId: string): Promise<bigint> {
-        const contract = BlockchainConnector.getInstance().getContract();
+  static getProviderMarks(providerId: string): Promise<bigint> {
+    const contract = BlockchainConnector.getInstance().getContract();
 
-        return contract.methods.getProviderMarks(providerId).call();
-    }
+    return contract.methods.getProviderMarks(providerId).call();
+  }
 
-    static getOrderMark(orderId: bigint): Promise<bigint> {
-        const contract = BlockchainConnector.getInstance().getContract();
+  static getOrderMark(orderId: bigint): Promise<bigint> {
+    const contract = BlockchainConnector.getInstance().getContract();
 
-        return contract.methods.getOrderMark(orderId).call();
-    }
+    return contract.methods.getOrderMark(orderId).call();
+  }
 
-    static async setOrderMark(orderId: bigint, mark: Mark): Promise<void> {
-        const contract = BlockchainConnector.getInstance().getContract();
+  static async setOrderMark(orderId: bigint, mark: Mark): Promise<void> {
+    const contract = BlockchainConnector.getInstance().getContract();
 
-        await contract.methods.setOrderMark(orderId, mark).call();
-    }
+    await contract.methods.setOrderMark(orderId, mark).call();
+  }
 }
 
 export default Marks;

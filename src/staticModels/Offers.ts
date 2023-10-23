@@ -106,12 +106,11 @@ class Offers implements StaticModel {
     fromBlock?: number | string,
     toBlock?: number | string,
   ): Promise<ValueSlotAddedEvent | null> {
-    // TODO what is filter type
-    const founded = await StaticModel.findItemsById('ValueSlotAdded', filter, fromBlock, toBlock);
+    const found = await StaticModel.findItemsById('ValueSlotAdded', filter, fromBlock, toBlock);
 
-    if (!founded) return null;
+    if (!found) return null;
 
-    return founded as ValueSlotAddedEvent;
+    return found as ValueSlotAddedEvent;
   }
 
   /**

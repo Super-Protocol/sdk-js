@@ -7,6 +7,7 @@ import {
   OrderUsage,
   Origins,
   TransactionOptions,
+  PriceType,
 } from '../types';
 import { Contract, TransactionReceipt } from 'web3';
 import { EventLog } from 'web3-eth-contract';
@@ -65,9 +66,9 @@ class Order {
    * Function for fetching avaliable for unlock order profit.
    */
   public async isOrderProfitAvailable(): Promise<bigint> {
-    const [, profit] = await Order.contract.methods.isOrderProfitAvailable(this.id).call();
+    const profit = await Order.contract.methods.isOrderProfitAvailable(this.id).call();
 
-    return BigInt(profit);
+    return BigInt(profit[1]);
   }
 
   /**
@@ -85,9 +86,13 @@ class Order {
     if (!(await this.checkIfOrderExistsWithInterval())) {
       throw Error(`Order ${this.id} does not exist`);
     }
-    const [, orderInfoParams] = await Order.contract.methods.getOrder(this.id).call();
+    const orderInfoParams = await Order.contract.methods.getOrder(this.id).call();
+    const orderInfo: OrderInfo = {
+      ...(orderInfoParams[1] as OrderInfo),
+      status: orderInfoParams[1].status.toString() as OrderStatus,
+    };
 
-    return (this.orderInfo = orderInfoParams as OrderInfo);
+    return (this.orderInfo = orderInfo);
   }
 
   private async checkIfOrderExistsWithInterval(): Promise<boolean> {
@@ -107,8 +112,8 @@ class Order {
 
   @incrementMethodCall()
   public async getConsumer(): Promise<string> {
-    const [consumer, ,] = await Order.contract.methods.getOrder(this.id).call();
-    this.consumer = consumer;
+    const consumer = await Order.contract.methods.getOrder(this.id).call();
+    this.consumer = consumer[0];
 
     return this.consumer!;
   }
@@ -118,9 +123,9 @@ class Order {
    */
   @incrementMethodCall()
   public async getOrderResult(): Promise<OrderResult> {
-    const [, , orderResults] = await Order.contract.methods.getOrder(this.id).call();
+    const orderResults = await Order.contract.methods.getOrder(this.id).call();
 
-    return (this.orderResult = orderResults as OrderResult);
+    return (this.orderResult = orderResults[2] as OrderResult);
   }
 
   /**
@@ -162,6 +167,12 @@ class Order {
       this.selectedUsage.slotInfo,
       await TeeOffers.getDenominator(),
     );
+    this.selectedUsage.slotUsage.priceType =
+      this.selectedUsage.slotUsage.priceType.toString() as PriceType;
+    this.selectedUsage.optionUsage = this.selectedUsage.optionUsage.map((usage) => ({
+      ...usage,
+      priceType: usage.priceType.toString() as PriceType,
+    }));
 
     return this.selectedUsage;
   }
@@ -434,8 +445,9 @@ class Order {
       if (event.returnValues.orderId != this.id) {
         return;
       }
-      if (this.orderInfo) this.orderInfo.status = <OrderStatus>event.returnValues.status;
-      callback(<OrderStatus>event.returnValues.status);
+      const newStatus = <OrderStatus>event.returnValues.status?.toString();
+      if (this.orderInfo) this.orderInfo.status = newStatus;
+      callback(newStatus);
     });
     subscription.on('error', (error: Error) => {
       logger.warn(error);

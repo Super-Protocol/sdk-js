@@ -17,6 +17,7 @@ import {
   OfferType,
   ValueOfferSlot,
   TransactionOptions,
+  PriceType,
 } from '../types';
 import { formatBytes32String } from 'ethers/lib/utils';
 import TeeOffers from '../staticModels/TeeOffers';
@@ -217,6 +218,7 @@ class Offer {
       .getValueOfferSlotById(this.id, slotId)
       .call();
     slot.info = unpackSlotInfo(slot.info, await TeeOffers.getDenominator());
+    slot.usage.priceType = slot.usage.priceType.toString() as PriceType;
 
     return slot;
   }
@@ -245,6 +247,7 @@ class Offer {
       .call();
     for (const slot of slots) {
       slot.info = unpackSlotInfo(slot.info, await TeeOffers.getDenominator());
+      slot.usage.priceType = slot.usage.priceType.toString() as PriceType;
     }
 
     return slots;

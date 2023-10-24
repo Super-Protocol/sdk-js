@@ -5,8 +5,9 @@ import {
   incrementMethodCall,
   unpackSlotInfo,
   packSlotInfo,
+  formatOfferOption,
 } from '../utils/helper';
-import { TeeOfferInfo, TransactionOptions, OfferType, Origins } from '../types';
+import { TeeOfferInfo, TransactionOptions, OfferType, Origins, PriceType } from '../types';
 import { BlockchainConnector } from '../connectors';
 import TxManager from '../utils/TxManager';
 import {
@@ -122,7 +123,10 @@ class TeeOffer {
    * @param optionId - Slot ID
    */
   public getOptionById(optionId: bigint): Promise<TeeOfferOption> {
-    return TeeOffer.contract.methods.getOptionById(optionId).call();
+    return TeeOffer.contract.methods
+      .getOptionById(optionId)
+      .call()
+      .then((option) => formatOfferOption(option as TeeOfferOption));
   }
 
   public async getOptions(begin = 0, end = 999999): Promise<TeeOfferOption[]> {
@@ -137,7 +141,7 @@ class TeeOffer {
       .getTeeOfferOptions(this.id, begin, end)
       .call();
 
-    return teeOfferOption;
+    return teeOfferOption.map(formatOfferOption);
   }
 
   /**
@@ -286,6 +290,7 @@ class TeeOffer {
       .getTeeOfferSlotById(this.id, slotId)
       .call();
     slot.info = unpackSlotInfo(slot.info, await TeeOffers.getDenominator());
+    slot.usage.priceType = slot.usage.priceType.toString() as PriceType;
 
     return slot;
   }
@@ -309,6 +314,7 @@ class TeeOffer {
       .call();
     for (const slot of slots) {
       slot.info = unpackSlotInfo(slot.info, await TeeOffers.getDenominator());
+      slot.usage.priceType = slot.usage.priceType.toString() as PriceType;
     }
 
     return slots;

@@ -4,6 +4,7 @@ import Web3, { DecodedParams, JsonRpcError } from 'web3';
 import { Web3BatchRequest } from 'web3-core';
 import { Monitoring } from './Monitoring';
 import { SlotInfo } from '../types/SlotInfo';
+import { PriceType, TeeOfferOption } from '../types';
 
 /**
  * Function for checking if provider action account initialized (required for set methods)
@@ -111,6 +112,16 @@ export function unpackDeviceId(bytes32: string): string {
 
   // removes '0x'
   return bytes32.slice(2, 66);
+}
+
+export function formatOfferOption(option: TeeOfferOption): TeeOfferOption {
+  return {
+    ...option,
+    usage: {
+      ...option.usage,
+      priceType: option.usage.priceType.toString() as PriceType,
+    },
+  };
 }
 
 export function unpackSlotInfo(slotInfo: SlotInfo, cpuDenominator: number): SlotInfo {

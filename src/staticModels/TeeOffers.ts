@@ -1,5 +1,5 @@
 import rootLogger from '../logger';
-import { checkIfActionAccountInitialized, packDeviceId } from '../utils/helper';
+import { checkIfActionAccountInitialized, formatOfferOption, packDeviceId } from '../utils/helper';
 import { BytesLike, formatBytes32String, parseBytes32String } from 'ethers/lib/utils';
 import {
   BlockInfo,
@@ -163,7 +163,10 @@ class TeeOffers {
   public static async getOptionById(optionId: bigint): Promise<TeeOfferOption> {
     const contract = BlockchainConnector.getInstance().getContract();
 
-    return await contract.methods.getOptionById(optionId).call();
+    return await contract.methods
+      .getOptionById(optionId)
+      .call()
+      .then((option) => formatOfferOption(option as TeeOfferOption));
   }
 
   public static async getSlotByExternalId(

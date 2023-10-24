@@ -7,7 +7,6 @@ import {
   OrderUsage,
   Origins,
   TransactionOptions,
-  PriceType,
 } from '../types';
 import { Contract, TransactionReceipt } from 'web3';
 import { EventLog } from 'web3-eth-contract';
@@ -15,6 +14,8 @@ import rootLogger from '../logger';
 import { abi } from '../contracts/abi';
 import {
   checkIfActionAccountInitialized,
+  cleanEventData,
+  formatOptionInfo,
   formatUsage,
   incrementMethodCall,
   unpackSlotInfo,
@@ -89,9 +90,11 @@ class Order {
     }
     const orderInfoParams = await Order.contract.methods.getOrder(this.id).call();
     const orderInfo: OrderInfo = {
-      ...(orderInfoParams[1] as OrderInfo),
+      ...(cleanEventData(orderInfoParams[1]) as OrderInfo),
       status: orderInfoParams[1].status.toString() as OrderStatus,
     };
+    orderInfo.slots.optionsCount = orderInfo.slots.optionsCount.map((count) => Number(count));
+    orderInfo.slots.slotCount = Number(orderInfo.slots.slotCount);
 
     return (this.orderInfo = orderInfo);
   }
@@ -169,11 +172,13 @@ class Order {
     this.selectedUsage.slotInfo = unpackSlotInfo(this.selectedUsage.slotInfo, cpuDenominator);
     this.selectedUsage.slotUsage = formatUsage(this.selectedUsage.slotUsage);
 
-    this.selectedUsage.optionsCount = this.selectedUsage.optionsCount.map((item) => +item);
-    this.selectedUsage.optionUsage = this.selectedUsage.optionUsage.map((usage) => ({
-      ...usage,
-      priceType: usage.priceType.toString() as PriceType,
-    }));
+    this.selectedUsage.optionsCount = this.selectedUsage.optionsCount.map((item) => Number(item));
+    this.selectedUsage.optionInfo = this.selectedUsage.optionInfo.map((optionInfo) =>
+      formatOptionInfo(optionInfo),
+    );
+    this.selectedUsage.optionUsage = this.selectedUsage.optionUsage.map((usage) =>
+      formatUsage(usage),
+    );
 
     return this.selectedUsage;
   }

@@ -103,3 +103,9 @@ export { default as IStorageProvider } from './providers/storage/IStorageProvide
 export * as helpers from './utils/helpers';
 
 export { Web3TransactionRevertedByEvmError } from './utils/TxManager';
+
+if (!(BigInt.prototype as any).toJSON) {
+  (BigInt.prototype as any).toJSON = function () {
+    return this.toString();
+  };
+}

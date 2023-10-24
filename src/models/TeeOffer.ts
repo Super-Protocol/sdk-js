@@ -423,7 +423,7 @@ class TeeOffer {
   public async getOfferType(): Promise<OfferType> {
     this.type = await TeeOffer.contract.methods.getOfferType(this.id).call();
 
-    return this.type;
+    return this.type.toString() as OfferType;
   }
 
   @incrementMethodCall()

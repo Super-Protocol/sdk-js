@@ -6,6 +6,7 @@ import {
   incrementMethodCall,
   packSlotInfo,
   formatOfferSlot,
+  convertBigIntToString,
 } from '../utils/helper';
 import { BlockchainConnector } from '../connectors';
 import {
@@ -111,7 +112,7 @@ class Offer {
     }
     const { info } = await Offer.contract.methods.getValueOffer(this.id).call();
 
-    this.offerInfo = info as OfferInfo;
+    this.offerInfo = convertBigIntToString(info) as OfferInfo;
 
     return this.offerInfo;
   }
@@ -133,7 +134,7 @@ class Offer {
   public async getOfferType(): Promise<OfferType> {
     this.type = await Offer.contract.methods.getOfferType(this.id).call();
 
-    return this.type!;
+    return this.type!.toString() as OfferType;
   }
 
   /**

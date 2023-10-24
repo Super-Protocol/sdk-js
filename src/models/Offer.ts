@@ -4,8 +4,8 @@ import rootLogger from '../logger';
 import {
   checkIfActionAccountInitialized,
   incrementMethodCall,
-  unpackSlotInfo,
   packSlotInfo,
+  formatOfferSlot,
 } from '../utils/helper';
 import { BlockchainConnector } from '../connectors';
 import {
@@ -17,7 +17,6 @@ import {
   OfferType,
   ValueOfferSlot,
   TransactionOptions,
-  PriceType,
 } from '../types';
 import { formatBytes32String } from 'ethers/lib/utils';
 import TeeOffers from '../staticModels/TeeOffers';
@@ -217,10 +216,10 @@ class Offer {
     const slot: ValueOfferSlot = await Offer.contract.methods
       .getValueOfferSlotById(this.id, slotId)
       .call();
-    slot.info = unpackSlotInfo(slot.info, await TeeOffers.getDenominator());
-    slot.usage.priceType = slot.usage.priceType.toString() as PriceType;
 
-    return slot;
+    const cpuDenominator = await TeeOffers.getDenominator();
+
+    return formatOfferSlot(slot, cpuDenominator);
   }
 
   /**
@@ -245,12 +244,12 @@ class Offer {
     const slots: ValueOfferSlot[] = await Offer.contract.methods
       .getValueOfferSlots(this.id, begin, end)
       .call();
-    for (const slot of slots) {
-      slot.info = unpackSlotInfo(slot.info, await TeeOffers.getDenominator());
-      slot.usage.priceType = slot.usage.priceType.toString() as PriceType;
-    }
 
-    return slots;
+    const cpuDenominator = await TeeOffers.getDenominator();
+
+    const slotsResult = slots.map((slot) => formatOfferSlot(slot, cpuDenominator));
+
+    return slotsResult;
   }
 
   /**

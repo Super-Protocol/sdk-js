@@ -4,7 +4,14 @@ import Web3, { DecodedParams, JsonRpcError } from 'web3';
 import { Web3BatchRequest } from 'web3-core';
 import { Monitoring } from './Monitoring';
 import { SlotInfo } from '../types/SlotInfo';
-import { PriceType, TeeOfferOption } from '../types';
+import {
+  OptionInfo,
+  PriceType,
+  SlotUsage,
+  TeeOfferOption,
+  TeeOfferSlot,
+  ValueOfferSlot,
+} from '../types';
 
 /**
  * Function for checking if provider action account initialized (required for set methods)
@@ -114,21 +121,53 @@ export function unpackDeviceId(bytes32: string): string {
   return bytes32.slice(2, 66);
 }
 
-export function formatOfferOption(option: TeeOfferOption): TeeOfferOption {
+export function formatTeeOfferOption(option: TeeOfferOption): TeeOfferOption {
   return {
     ...option,
-    usage: {
-      ...option.usage,
-      priceType: option.usage.priceType.toString() as PriceType,
-    },
+    info: formatOptionInfo(option.info),
+    usage: formatUsage(option.usage),
+  };
+}
+
+export function formatTeeOfferSlot(slot: TeeOfferSlot, cpuDenominator: number): TeeOfferSlot {
+  return {
+    ...slot,
+    info: unpackSlotInfo(slot.info, cpuDenominator),
+    usage: formatUsage(slot.usage),
+  };
+}
+
+export function formatOfferSlot(slot: ValueOfferSlot, cpuDenominator: number): ValueOfferSlot {
+  return {
+    ...slot,
+    option: formatOptionInfo(slot.option),
+    info: unpackSlotInfo(slot.info, cpuDenominator),
+    usage: formatUsage(slot.usage),
+  };
+}
+
+export function formatUsage(usage: SlotUsage): SlotUsage {
+  return {
+    priceType: usage.priceType.toString() as PriceType,
+    price: usage.price,
+    minTimeMinutes: Number(usage.minTimeMinutes),
+    maxTimeMinutes: Number(usage.maxTimeMinutes),
+  };
+}
+
+export function formatOptionInfo(optionInfo: OptionInfo): OptionInfo {
+  return {
+    bandwidth: Number(optionInfo.bandwidth),
+    traffic: Number(optionInfo.traffic),
+    externalPort: Number(optionInfo.externalPort),
   };
 }
 
 export function unpackSlotInfo(slotInfo: SlotInfo, cpuDenominator: number): SlotInfo {
   return {
-    cpuCores: slotInfo.cpuCores / cpuDenominator,
-    ram: slotInfo.ram,
-    diskUsage: slotInfo.diskUsage,
+    cpuCores: Number(slotInfo.cpuCores) / cpuDenominator,
+    ram: Number(slotInfo.ram),
+    diskUsage: Number(slotInfo.diskUsage),
   };
 }
 

@@ -3,11 +3,11 @@ import { abi } from '../contracts/abi';
 import {
   checkIfActionAccountInitialized,
   incrementMethodCall,
-  unpackSlotInfo,
   packSlotInfo,
-  formatOfferOption,
+  formatTeeOfferOption,
+  formatTeeOfferSlot,
 } from '../utils/helper';
-import { TeeOfferInfo, TransactionOptions, OfferType, Origins, PriceType } from '../types';
+import { TeeOfferInfo, TransactionOptions, OfferType, Origins } from '../types';
 import { BlockchainConnector } from '../connectors';
 import TxManager from '../utils/TxManager';
 import {
@@ -126,7 +126,7 @@ class TeeOffer {
     return TeeOffer.contract.methods
       .getOptionById(optionId)
       .call()
-      .then((option) => formatOfferOption(option as TeeOfferOption));
+      .then((option) => formatTeeOfferOption(option as TeeOfferOption));
   }
 
   public async getOptions(begin = 0, end = 999999): Promise<TeeOfferOption[]> {
@@ -141,7 +141,7 @@ class TeeOffer {
       .getTeeOfferOptions(this.id, begin, end)
       .call();
 
-    return teeOfferOption.map(formatOfferOption);
+    return teeOfferOption.map(formatTeeOfferOption);
   }
 
   /**
@@ -289,10 +289,10 @@ class TeeOffer {
     const slot: TeeOfferSlot = await TeeOffer.contract.methods
       .getTeeOfferSlotById(this.id, slotId)
       .call();
-    slot.info = unpackSlotInfo(slot.info, await TeeOffers.getDenominator());
-    slot.usage.priceType = slot.usage.priceType.toString() as PriceType;
 
-    return slot;
+    const cpuDenominator = await TeeOffers.getDenominator();
+
+    return formatTeeOfferSlot(slot, cpuDenominator);
   }
 
   /**
@@ -312,12 +312,12 @@ class TeeOffer {
     const slots: TeeOfferSlot[] = await TeeOffer.contract.methods
       .getTeeOfferSlots(this.id, begin, end)
       .call();
-    for (const slot of slots) {
-      slot.info = unpackSlotInfo(slot.info, await TeeOffers.getDenominator());
-      slot.usage.priceType = slot.usage.priceType.toString() as PriceType;
-    }
 
-    return slots;
+    const cpuDenominator = await TeeOffers.getDenominator();
+
+    const slotsResult = slots.map((slot) => formatTeeOfferSlot(slot, cpuDenominator));
+
+    return slotsResult;
   }
 
   /**

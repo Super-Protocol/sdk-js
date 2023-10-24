@@ -1,5 +1,5 @@
 import rootLogger from '../logger';
-import { checkIfActionAccountInitialized, formatOfferOption, packDeviceId } from '../utils/helper';
+import { checkIfActionAccountInitialized, formatTeeOfferOption, packDeviceId } from '../utils/helper';
 import { BytesLike, formatBytes32String, parseBytes32String } from 'ethers/lib/utils';
 import {
   BlockInfo,
@@ -166,7 +166,7 @@ class TeeOffers {
     return await contract.methods
       .getOptionById(optionId)
       .call()
-      .then((option) => formatOfferOption(option as TeeOfferOption));
+      .then((option) => formatTeeOfferOption(option as TeeOfferOption));
   }
 
   public static async getSlotByExternalId(

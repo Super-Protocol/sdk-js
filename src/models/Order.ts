@@ -15,6 +15,7 @@ import rootLogger from '../logger';
 import { abi } from '../contracts/abi';
 import {
   checkIfActionAccountInitialized,
+  formatUsage,
   incrementMethodCall,
   unpackSlotInfo,
 } from '../utils/helper';
@@ -162,13 +163,13 @@ class Order {
   @incrementMethodCall()
   public async getSelectedUsage(): Promise<OrderUsage> {
     this.selectedUsage = await Order.contract.methods.getOrderSelectedUsage(this.id).call();
+
+    const cpuDenominator = await TeeOffers.getDenominator();
+
+    this.selectedUsage.slotInfo = unpackSlotInfo(this.selectedUsage.slotInfo, cpuDenominator);
+    this.selectedUsage.slotUsage = formatUsage(this.selectedUsage.slotUsage);
+
     this.selectedUsage.optionsCount = this.selectedUsage.optionsCount.map((item) => +item);
-    this.selectedUsage.slotInfo = unpackSlotInfo(
-      this.selectedUsage.slotInfo,
-      await TeeOffers.getDenominator(),
-    );
-    this.selectedUsage.slotUsage.priceType =
-      this.selectedUsage.slotUsage.priceType.toString() as PriceType;
     this.selectedUsage.optionUsage = this.selectedUsage.optionUsage.map((usage) => ({
       ...usage,
       priceType: usage.priceType.toString() as PriceType,
@@ -217,8 +218,8 @@ class Order {
     const origins: Origins = await Order.contract.methods.getOrderOrigins(this.id).call();
 
     // Convert blockchain time seconds to js time milliseconds
-    origins.createdDate = origins.createdDate * 1000;
-    origins.modifiedDate = origins.modifiedDate * 1000;
+    origins.createdDate = Number(origins.createdDate) * 1000;
+    origins.modifiedDate = Number(origins.modifiedDate) * 1000;
 
     return (this.origins = origins);
   }

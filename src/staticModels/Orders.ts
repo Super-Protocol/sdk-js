@@ -279,7 +279,7 @@ class Orders implements StaticModel {
       }
       callback(
         <bigint>event.returnValues.orderId,
-        <OrderStatus>event.returnValues.status,
+        <OrderStatus>event.returnValues.status?.toString(),
         <BlockInfo>{
           index: <bigint>event.blockNumber,
           hash: <string>event.blockHash,

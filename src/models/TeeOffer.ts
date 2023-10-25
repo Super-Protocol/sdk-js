@@ -7,7 +7,7 @@ import {
   formatTeeOfferOption,
   formatTeeOfferSlot,
 } from '../utils/helper';
-import { TeeOfferInfo, TransactionOptions, OfferType, Origins } from '../types';
+import { TeeOfferInfo, TransactionOptions, OfferType, Origins, BlockchainId } from '../types';
 import { BlockchainConnector } from '../connectors';
 import TxManager from '../utils/TxManager';
 import {
@@ -26,7 +26,7 @@ import { TeeConfirmationBlock, GetTcbRequest } from '@super-protocol/dto-js';
 class TeeOffer {
   private static contract: Contract<typeof abi>;
 
-  public id: bigint;
+  public id: BlockchainId;
 
   public violationRate?: number;
   public totalLocked?: number;
@@ -41,10 +41,9 @@ class TeeOffer {
   public tcbAddedTime?: number;
   public origins?: Origins;
   public isCancelable?: boolean;
-  public cpuDenominator?: bigint;
   public minDeposit?: bigint;
 
-  constructor(offerId: bigint) {
+  constructor(offerId: BlockchainId) {
     this.id = offerId;
     if (!TeeOffer.contract) {
       TeeOffer.contract = BlockchainConnector.getInstance().getContract();
@@ -64,9 +63,9 @@ class TeeOffer {
    */
   @incrementMethodCall()
   public async getMinDeposit(
-    slotId: bigint,
+    slotId: BlockchainId,
     slotCount: number,
-    optionsIds: bigint[],
+    optionsIds: BlockchainId[],
     optionsCount: number[],
   ): Promise<bigint> {
     this.minDeposit = await TeeOffer.contract.methods
@@ -122,7 +121,7 @@ class TeeOffer {
    * Function for fetching tee offer slot by id
    * @param optionId - Slot ID
    */
-  public getOptionById(optionId: bigint): Promise<TeeOfferOption> {
+  public getOptionById(optionId: BlockchainId): Promise<TeeOfferOption> {
     return TeeOffer.contract.methods
       .getOptionById(optionId)
       .call()
@@ -148,7 +147,7 @@ class TeeOffer {
    * Function for fetching whether tee offer slot exists or not
    * @param optionId - Option ID
    */
-  public isOptionExists(optionId: bigint): Promise<boolean> {
+  public isOptionExists(optionId: BlockchainId): Promise<boolean> {
     return TeeOffer.contract.methods.isTeeOfferSlotExists(this.id, optionId).call();
   }
 
@@ -185,7 +184,7 @@ class TeeOffer {
    */
   @incrementMethodCall()
   public async updateOption(
-    optionId: bigint,
+    optionId: BlockchainId,
     newInfo: OptionInfo,
     newUsage: SlotUsage,
     transactionOptions?: TransactionOptions,
@@ -205,7 +204,7 @@ class TeeOffer {
    */
   @incrementMethodCall()
   public async deleteOption(
-    optionId: bigint,
+    optionId: BlockchainId,
     transactionOptions?: TransactionOptions,
   ): Promise<void> {
     checkIfActionAccountInitialized(transactionOptions);
@@ -285,7 +284,7 @@ class TeeOffer {
    * Function for fetching tee offer slot by id
    * @param slotId - Slot ID
    */
-  public async getSlotById(slotId: bigint): Promise<TeeOfferSlot> {
+  public async getSlotById(slotId: BlockchainId): Promise<TeeOfferSlot> {
     const slot: TeeOfferSlot = await TeeOffer.contract.methods
       .getTeeOfferSlotById(this.id, slotId)
       .call();
@@ -372,7 +371,7 @@ class TeeOffer {
    * @param transactionOptions - object what contains alternative action account or gas limit (optional)
    */
   @incrementMethodCall()
-  public async deleteSlot(slotId: bigint, transactionOptions?: TransactionOptions): Promise<void> {
+  public async deleteSlot(slotId: BlockchainId, transactionOptions?: TransactionOptions): Promise<void> {
     checkIfActionAccountInitialized(transactionOptions);
 
     await TxManager.execute(

@@ -1,6 +1,6 @@
 import { BlockchainConnector } from '../connectors';
 import Superpro from './Superpro';
-import { Mark } from '../types';
+import { BlockchainId, Mark } from '../types';
 
 class Marks {
   public static get address(): string {
@@ -13,13 +13,13 @@ class Marks {
     return contract.methods.getProviderMarks(providerId).call();
   }
 
-  static getOrderMark(orderId: bigint): Promise<bigint> {
+  static getOrderMark(orderId: BlockchainId): Promise<bigint> {
     const contract = BlockchainConnector.getInstance().getContract();
 
     return contract.methods.getOrderMark(orderId).call();
   }
 
-  static async setOrderMark(orderId: bigint, mark: Mark): Promise<void> {
+  static async setOrderMark(orderId: BlockchainId, mark: Mark): Promise<void> {
     const contract = BlockchainConnector.getInstance().getContract();
 
     await contract.methods.setOrderMark(orderId, mark).call();

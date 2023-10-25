@@ -71,6 +71,7 @@ export * from './types/OptionInfo';
 export * from './types/TeeOfferInfo';
 export * from './types/TeeOfferOption';
 export * from './types/TeeOfferSlot';
+export * from './types/ValueOfferSlot';
 export * from './types/Provider';
 export * from './types/Superpro';
 export * from './types/Consensus';
@@ -101,6 +102,7 @@ export { default as getStorageProvider } from './providers/storage/getStoragePro
 export { default as IStorageProvider } from './providers/storage/IStorageProvider';
 
 export * as helpers from './utils/helpers';
+export { convertBigIntToString } from './utils/helper';
 
 export { Web3TransactionRevertedByEvmError } from './utils/TxManager';
 

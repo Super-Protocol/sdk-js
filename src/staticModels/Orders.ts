@@ -1,7 +1,7 @@
 import { formatBytes32String, parseBytes32String } from 'ethers/lib/utils';
 import rootLogger from '../logger';
 import { checkIfActionAccountInitialized, incrementMethodCall } from '../utils/helper';
-import { OrderInfo, OrderStatus, BlockInfo, TransactionOptions, OrderCreatedEvent } from '../types';
+import { OrderInfo, OrderStatus, BlockInfo, TransactionOptions, OrderCreatedEvent, BlockchainId } from '../types';
 import Superpro from './Superpro';
 import TxManager from '../utils/TxManager';
 import { BlockchainConnector, BlockchainEventsListener } from '../connectors';
@@ -12,7 +12,7 @@ import StaticModel from './StaticModel';
 class Orders implements StaticModel {
   private static readonly logger = rootLogger.child({ className: 'Orders' });
 
-  public static orders?: bigint[];
+  public static orders?: BlockchainId[];
 
   public static get address(): string {
     return Superpro.address;
@@ -22,7 +22,7 @@ class Orders implements StaticModel {
    * Function for fetching list of all orders ids
    * @returns list of orders ids
    */
-  public static async getAll(): Promise<bigint[]> {
+  public static async getAll(): Promise<BlockchainId[]> {
     const contract = BlockchainConnector.getInstance().getContract();
     this.orders = this.orders ?? [];
     const ordersSet = new Set(this.orders);
@@ -144,7 +144,7 @@ class Orders implements StaticModel {
    * @returns {Promise<void>} - Does not return id of created order!
    */
   public static async cancelWorkflow(
-    perentOrderId: bigint,
+    perentOrderId: BlockchainId,
     transactionOptions?: TransactionOptions,
   ): Promise<void> {
     const contract = BlockchainConnector.getInstance().getContract();
@@ -160,7 +160,7 @@ class Orders implements StaticModel {
    * @param transactionOptions - object what contains alternative action account or gas limit (optional)
    */
   public static async refillOrderDeposit(
-    orderId: bigint,
+    orderId: BlockchainId,
     amount: bigint,
     transactionOptions?: TransactionOptions,
   ): Promise<void> {
@@ -171,7 +171,7 @@ class Orders implements StaticModel {
   }
 
   public static async unlockProfitByOrderList(
-    orderIds: bigint[],
+    orderIds: BlockchainId[],
     transactionOptions?: TransactionOptions,
   ): Promise<void> {
     const contract = BlockchainConnector.getInstance().getContract();
@@ -212,9 +212,9 @@ class Orders implements StaticModel {
       callback(
         <string>event.returnValues.consumer,
         parseBytes32String(<string>event.returnValues.externalId),
-        <bigint>event.returnValues.offerId,
-        <bigint>event.returnValues.parentOrderId,
-        <bigint>event.returnValues.orderId,
+        <BlockchainId>event.returnValues.offerId,
+        <BlockchainId>event.returnValues.parentOrderId,
+        <BlockchainId>event.returnValues.orderId,
         <BlockInfo>{
           index: <bigint>event.blockNumber,
           hash: <string>event.blockHash,
@@ -244,7 +244,7 @@ class Orders implements StaticModel {
         return;
       }
       callback(
-        <bigint>event.returnValues.orderId,
+        <BlockchainId>event.returnValues.orderId,
         <string>event.returnValues.consumer,
         <BlockInfo>{
           index: <bigint>event.blockNumber,
@@ -267,18 +267,18 @@ class Orders implements StaticModel {
    */
   public static onStatusUpdated(
     callback: onOrdersStatusUpdatedCallback,
-    orderId?: bigint,
+    orderId?: BlockchainId,
   ): () => void {
     const contract = BlockchainEventsListener.getInstance().getContract();
     const logger = this.logger.child({ method: 'onOrdersStatusUpdated' });
 
     const subscription = contract.events.OrderStatusUpdated();
     subscription.on('data', (event: EventLog): void => {
-      if (orderId && event.returnValues.orderId != orderId) {
+      if (orderId && event.returnValues.orderId != BigInt(orderId)) {
         return;
       }
       callback(
-        <bigint>event.returnValues.orderId,
+        <BlockchainId>event.returnValues.orderId,
         <OrderStatus>event.returnValues.status?.toString(),
         <BlockInfo>{
           index: <bigint>event.blockNumber,
@@ -303,7 +303,7 @@ class Orders implements StaticModel {
   public static onDepositRefilled(
     callback: onOrderDepositRefilledCallback,
     consumer?: string,
-    orderId?: bigint,
+    orderId?: BlockchainId,
   ): () => void {
     const contract = BlockchainEventsListener.getInstance().getContract();
     const logger = this.logger.child({ method: 'onOrderDepositRefilled' });
@@ -317,7 +317,7 @@ class Orders implements StaticModel {
         return;
       }
       callback(
-        <bigint>event.returnValues.orderId,
+        <BlockchainId>event.returnValues.orderId,
         <string>event.returnValues.consumer,
         <bigint>event.returnValues.amount,
         <BlockInfo>{
@@ -341,7 +341,7 @@ class Orders implements StaticModel {
    */
   public static onChangedWithdrawn(
     callback: onOrderChangedWithdrawnCallback,
-    orderId?: bigint,
+    orderId?: BlockchainId,
   ): () => void {
     const contract = BlockchainEventsListener.getInstance().getContract();
     const logger = this.logger.child({ method: 'onOrderChangedWithdrawn' });
@@ -352,7 +352,7 @@ class Orders implements StaticModel {
         return;
       }
       callback(
-        <bigint>event.returnValues.orderId,
+        <BlockchainId>event.returnValues.orderId,
         <string>event.returnValues.consumer,
         <bigint>event.returnValues.change,
         <BlockInfo>{
@@ -377,7 +377,7 @@ class Orders implements StaticModel {
    */
   public static onProfitWithdrawn(
     callback: onOrderProfitWithdrawnCallback,
-    orderId?: bigint,
+    orderId?: BlockchainId,
     tokenReceiver?: string,
   ): () => void {
     const contract = BlockchainEventsListener.getInstance().getContract();
@@ -392,7 +392,7 @@ class Orders implements StaticModel {
         return;
       }
       callback(
-        <bigint>event.returnValues.orderId,
+        <BlockchainId>event.returnValues.orderId,
         <string>event.returnValues.tokenReceiver,
         <bigint>event.returnValues.profit,
         <BlockInfo>{
@@ -418,7 +418,7 @@ class Orders implements StaticModel {
   public static onAwaitingPaymentChanged(
     callback: onOrderAwaitingPaymentChangedCallback,
     consumer?: string,
-    orderId?: bigint,
+    orderId?: BlockchainId,
   ): () => void {
     const contract = BlockchainEventsListener.getInstance().getContract();
     const logger = this.logger.child({ method: 'onOrderAwaitingPaymentChanged' });
@@ -432,7 +432,7 @@ class Orders implements StaticModel {
         return;
       }
       callback(
-        <bigint>event.returnValues.orderId,
+        <BlockchainId>event.returnValues.orderId,
         <string>event.returnValues.consumer,
         <boolean>event.returnValues.awaitingPayment,
         <BlockInfo>{
@@ -458,7 +458,7 @@ class Orders implements StaticModel {
   public static onEncryptedResultUpdated(
     callback: onOrderEncryptedResultUpdatedCallback,
     consumer?: string,
-    orderId?: bigint,
+    orderId?: BlockchainId,
   ): () => void {
     const contract = BlockchainEventsListener.getInstance().getContract();
     const logger = this.logger.child({ method: 'onOrderEncryptedResultUpdated' });
@@ -472,7 +472,7 @@ class Orders implements StaticModel {
         return;
       }
       callback(
-        <bigint>event.returnValues.orderId,
+        <BlockchainId>event.returnValues.orderId,
         <string>event.returnValues.consumer,
         <string>event.returnValues.encryptedResult,
         <BlockInfo>{
@@ -498,7 +498,7 @@ class Orders implements StaticModel {
   public static onOptionsDepositSpentChanged(
     callback: onOrderOptionsDepositSpentChangedCallback,
     consumer?: string,
-    orderId?: bigint,
+    orderId?: BlockchainId,
   ): () => void {
     const contract = BlockchainEventsListener.getInstance().getContract();
     const logger = this.logger.child({ method: 'onOrderOptionsDepositSpentChanged' });
@@ -513,7 +513,7 @@ class Orders implements StaticModel {
       }
       callback(
         <string>event.returnValues.consumer,
-        <bigint>event.returnValues.orderId,
+        <BlockchainId>event.returnValues.orderId,
         <bigint>event.returnValues.value,
         <BlockInfo>{
           index: <bigint>event.blockNumber,
@@ -538,7 +538,7 @@ class Orders implements StaticModel {
   public static onOProfitUnlocked(
     callback: onOrderProfitUnlockedCallback,
     tokenReceiver?: string,
-    orderId?: bigint,
+    orderId?: BlockchainId,
   ): () => void {
     const contract = BlockchainEventsListener.getInstance().getContract();
     const logger = this.logger.child({ method: 'onOrderProfitUnlocked' });
@@ -553,7 +553,7 @@ class Orders implements StaticModel {
       }
       callback(
         <string>event.returnValues.tokenReceiver,
-        <bigint>event.returnValues.orderId,
+        <BlockchainId>event.returnValues.orderId,
         <bigint>event.returnValues.profit,
         <BlockInfo>{
           index: <bigint>event.blockNumber,
@@ -569,59 +569,59 @@ class Orders implements StaticModel {
   }
 }
 
-export type onOrderStartedCallback = (orderId: bigint, consumer: string, block?: BlockInfo) => void;
+export type onOrderStartedCallback = (orderId: BlockchainId, consumer: string, block?: BlockInfo) => void;
 export type onOrdersStatusUpdatedCallback = (
-  orderId: bigint,
+  orderId: BlockchainId,
   status: OrderStatus,
   block?: BlockInfo,
 ) => void;
 export type onOrderCreatedCallback = (
   consumer: string,
   externalId: string,
-  offerId: bigint,
-  parentOrderId: bigint,
-  orderId: bigint,
+  offerId: BlockchainId,
+  parentOrderId: BlockchainId,
+  orderId: BlockchainId,
   block?: BlockInfo,
 ) => void;
 export type onOrderDepositRefilledCallback = (
-  orderId: bigint,
+  orderId: BlockchainId,
   consumer: string,
   amount: bigint,
   block?: BlockInfo,
 ) => void;
 export type onOrderChangedWithdrawnCallback = (
-  orderId: bigint,
+  orderId: BlockchainId,
   consumer: string,
   change: bigint,
   block?: BlockInfo,
 ) => void;
 export type onOrderProfitWithdrawnCallback = (
-  orderId: bigint,
+  orderId: BlockchainId,
   tokenReceiver: string,
   profit: bigint,
   block?: BlockInfo,
 ) => void;
 export type onOrderAwaitingPaymentChangedCallback = (
-  orderId: bigint,
+  orderId: BlockchainId,
   consumer: string,
   awaitingPaymentFlag: boolean,
   block?: BlockInfo,
 ) => void;
 export type onOrderEncryptedResultUpdatedCallback = (
-  orderId: bigint,
+  orderId: BlockchainId,
   consumer: string,
   encryptedResult: string,
   block?: BlockInfo,
 ) => void;
 export type onOrderOptionsDepositSpentChangedCallback = (
   consumer: string,
-  orderId: bigint,
+  orderId: BlockchainId,
   value: bigint,
   block?: BlockInfo,
 ) => void;
 export type onOrderProfitUnlockedCallback = (
   tokenReceiver: string,
-  orderId: bigint,
+  orderId: BlockchainId,
   profit: bigint,
   block?: BlockInfo,
 ) => void;

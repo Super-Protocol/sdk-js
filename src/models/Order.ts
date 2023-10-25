@@ -7,6 +7,7 @@ import {
   OrderUsage,
   Origins,
   TransactionOptions,
+  BlockchainId,
 } from '../types';
 import { Contract, TransactionReceipt } from 'web3';
 import { EventLog } from 'web3-eth-contract';
@@ -34,14 +35,14 @@ class Order {
   public selectedUsage?: OrderUsage;
   public orderInfo?: OrderInfo;
   public orderResult?: OrderResult;
-  public subOrders?: bigint[];
-  public parentOrder?: bigint;
+  public subOrders?: BlockchainId[];
+  public parentOrder?: BlockchainId;
   public consumer?: string;
   public origins?: Origins;
   public startDate?: number;
-  public id: bigint;
+  public id: BlockchainId;
 
-  constructor(orderId: bigint) {
+  constructor(orderId: BlockchainId) {
     this.id = orderId;
     if (!Order.contract) {
       Order.contract = BlockchainConnector.getInstance().getContract();
@@ -136,7 +137,7 @@ class Order {
    * Function for fetching sub orders from blockchain
    */
   @incrementMethodCall()
-  public async getSubOrders(): Promise<bigint[]> {
+  public async getSubOrders(): Promise<BlockchainId[]> {
     this.subOrders = await Order.contract.methods.getOrderSubOrders(this.id).call();
 
     return this.subOrders;
@@ -146,7 +147,7 @@ class Order {
    * Function for fetching parent order from blockchain
    */
   @incrementMethodCall()
-  public async getParentOrder(): Promise<bigint> {
+  public async getParentOrder(): Promise<BlockchainId> {
     this.parentOrder = await Order.contract.methods.getOrderParentOrder(this.id).call();
 
     return this.parentOrder;

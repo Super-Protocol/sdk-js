@@ -9,6 +9,7 @@ import {
   TransactionOptions,
   OfferInfo,
   OfferType,
+  BlockchainId,
 } from '../types';
 import Superpro from './Superpro';
 import TxManager from '../utils/TxManager';
@@ -18,7 +19,7 @@ import { EventLog } from 'web3-eth-contract';
 class Offers implements StaticModel {
   private static readonly logger = rootLogger.child({ className: 'Offers' });
 
-  public static offers?: bigint[];
+  public static offers?: BlockchainId[];
 
   public static get address(): string {
     return Superpro.address;
@@ -27,7 +28,7 @@ class Offers implements StaticModel {
   /**
    * Function for fetching list of all offers ids
    */
-  public static async getAll(): Promise<bigint[]> {
+  public static async getAll(): Promise<BlockchainId[]> {
     const contract = BlockchainConnector.getInstance().getContract();
 
     const count = Number(await contract.methods.getOffersTotalCount().call());
@@ -101,7 +102,7 @@ class Offers implements StaticModel {
     filter: {
       externalId: string;
       creator?: string;
-      offerId?: bigint;
+      offerId?: BlockchainId;
     },
     fromBlock?: number | string,
     toBlock?: number | string,
@@ -130,8 +131,8 @@ class Offers implements StaticModel {
       }
       callback(
         <string>event.returnValues.creator,
-        <bigint>event.returnValues.offerId,
-        <bigint>event.returnValues.slotId,
+        <BlockchainId>event.returnValues.offerId,
+        <BlockchainId>event.returnValues.slotId,
         parseBytes32String(<BytesLike>event.returnValues.externalId),
         <BlockInfo>{
           index: <bigint>event.blockNumber,
@@ -158,8 +159,8 @@ class Offers implements StaticModel {
     const subscription = contract.events.ValueSlotUpdated();
     subscription.on('data', (event: EventLog): void => {
       callback(
-        <bigint>event.returnValues.offerId,
-        <bigint>event.returnValues.slotId,
+        <BlockchainId>event.returnValues.offerId,
+        <BlockchainId>event.returnValues.slotId,
         <BlockInfo>{
           index: <bigint>event.blockNumber,
           hash: <string>event.blockHash,
@@ -185,8 +186,8 @@ class Offers implements StaticModel {
     const subscription = contract.events.ValueSlotDeleted();
     subscription.on('data', (event: EventLog): void => {
       callback(
-        <bigint>event.returnValues.offerId,
-        <bigint>event.returnValues.slotId,
+        <BlockchainId>event.returnValues.offerId,
+        <BlockchainId>event.returnValues.slotId,
         <BlockInfo>{
           index: <bigint>event.blockNumber,
           hash: <string>event.blockHash,
@@ -212,7 +213,7 @@ class Offers implements StaticModel {
     const subscription = contract.events.OfferCreated();
     subscription.on('data', (event: EventLog): void => {
       callback(
-        <bigint>event.returnValues.offerId,
+        <BlockchainId>event.returnValues.offerId,
         <string>event.returnValues.creator,
         parseBytes32String(<BytesLike>event.returnValues.externalId),
         <BlockInfo>{
@@ -236,7 +237,7 @@ class Offers implements StaticModel {
     subscription.on('data', (event: EventLog): void => {
       callback(
         <string>event.returnValues.providerAuth,
-        <bigint>event.returnValues.offerId,
+        <BlockchainId>event.returnValues.offerId,
         <OfferType>event.returnValues.offerType,
         <BlockInfo>{
           index: <bigint>event.blockNumber,
@@ -259,7 +260,7 @@ class Offers implements StaticModel {
     subscription.on('data', (event: EventLog): void => {
       callback(
         <string>event.returnValues.providerAuth,
-        <bigint>event.returnValues.offerId,
+        <BlockchainId>event.returnValues.offerId,
         <OfferType>event.returnValues.offerType,
         <BlockInfo>{
           index: <bigint>event.blockNumber,
@@ -277,31 +278,31 @@ class Offers implements StaticModel {
 
 // address -> offerId
 export type onOfferCreatedCallback = (
-  id: bigint,
+  id: BlockchainId,
   creator: string,
   externalId: string,
   block?: BlockInfo,
 ) => void;
 export type onOfferEnabledCallback = (
   providerAuth: string,
-  id: bigint,
+  id: BlockchainId,
   offerType: OfferType,
   block?: BlockInfo,
 ) => void;
 export type onOfferDisbledCallback = (
   providerAuth: string,
-  id: bigint,
+  id: BlockchainId,
   offerType: OfferType,
   block?: BlockInfo,
 ) => void;
 export type onSlotAddedCallback = (
   creator: string,
-  offerId: bigint,
-  slotId: bigint,
+  offerId: BlockchainId,
+  slotId: BlockchainId,
   externalId: string,
   block?: BlockInfo,
 ) => void;
-export type onSlotUpdatedCallback = (offerId: bigint, slotId: bigint, block?: BlockInfo) => void;
-export type onSlotDeletedCallback = (offerId: bigint, slotId: bigint, block?: BlockInfo) => void;
+export type onSlotUpdatedCallback = (offerId: BlockchainId, slotId: BlockchainId, block?: BlockInfo) => void;
+export type onSlotDeletedCallback = (offerId: BlockchainId, slotId: BlockchainId, block?: BlockInfo) => void;
 
 export default Offers;

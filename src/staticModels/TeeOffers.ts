@@ -1,5 +1,11 @@
 import rootLogger from '../logger';
-import { checkIfActionAccountInitialized, packDeviceId } from '../utils/helper';
+import {
+  checkIfActionAccountInitialized,
+  formatOptionInfo,
+  formatTeeOfferOption,
+  packDeviceId,
+  unpackSlotInfo,
+} from '../utils/helper';
 import { BytesLike, formatBytes32String, parseBytes32String } from 'ethers/lib/utils';
 import {
   BlockInfo,
@@ -11,6 +17,7 @@ import {
   OptionAddedEvent,
   TeeSlotAddedEvent,
   TeeOfferOption,
+  BlockchainId,
 } from '../types';
 import { BlockchainConnector, BlockchainEventsListener } from '../connectors';
 import Superpro from './Superpro';
@@ -23,7 +30,7 @@ class TeeOffers {
 
   private static readonly logger = rootLogger.child({ className: 'TeeOffers' });
 
-  public static teeOffers?: bigint[];
+  public static teeOffers: BlockchainId[] = [];
 
   public static get address(): string {
     return Superpro.address;
@@ -36,7 +43,9 @@ class TeeOffers {
   }
 
   public static async unpackHardwareInfo(hw: HardwareInfo): Promise<HardwareInfo> {
-    hw.slotInfo.cpuCores /= await TeeOffers.getDenominator();
+    const cpuDenominator = await TeeOffers.getDenominator();
+    hw.slotInfo = unpackSlotInfo(hw.slotInfo, cpuDenominator);
+    hw.optionInfo = formatOptionInfo(hw.optionInfo);
 
     return hw;
   }
@@ -52,11 +61,11 @@ class TeeOffers {
   /**
    * Function for fetching list of all TEE offers addresses
    */
-  public static async getAll(): Promise<bigint[]> {
+  public static async getAll(): Promise<BlockchainId[]> {
     const contract = BlockchainConnector.getInstance().getContract();
 
     const count = Number(await contract.methods.getOffersTotalCount().call());
-    this.teeOffers = this.teeOffers || [];
+
     const teeOfffersSet = new Set(this.teeOffers);
 
     for (let offerId = teeOfffersSet.size + 1; offerId <= count; ++offerId) {
@@ -65,7 +74,7 @@ class TeeOffers {
         teeOfffersSet.add(BigInt(offerId));
       }
     }
-    this.teeOffers = Array.from(teeOfffersSet);
+    this.teeOffers = Array.from((teeOfffersSet));
 
     return this.teeOffers;
   }
@@ -141,7 +150,7 @@ class TeeOffers {
    * Function for fetching whether tee offer option exists or not
    * @param optionId - Option ID
    */
-  public static isOptionExists(optionId: bigint): Promise<boolean> {
+  public static isOptionExists(optionId: BlockchainId): Promise<boolean> {
     const contract = BlockchainConnector.getInstance().getContract();
 
     return contract.methods.isOptionExists(optionId).call();
@@ -160,14 +169,17 @@ class TeeOffers {
    * Function for fetching tee offer option by id
    * @param optionId - Option ID
    */
-  public static async getOptionById(optionId: bigint): Promise<TeeOfferOption> {
+  public static async getOptionById(optionId: BlockchainId): Promise<TeeOfferOption> {
     const contract = BlockchainConnector.getInstance().getContract();
 
-    return await contract.methods.getOptionById(optionId).call();
+    return await contract.methods
+      .getOptionById(optionId)
+      .call()
+      .then((option) => formatTeeOfferOption(option as TeeOfferOption));
   }
 
   public static async getSlotByExternalId(
-    filter: { externalId: string; creator?: string; offerId?: bigint },
+    filter: { externalId: string; creator?: string; offerId?: BlockchainId },
     fromBlock?: number | string,
     toBlock?: number | string,
   ): Promise<TeeSlotAddedEvent | null> {
@@ -182,7 +194,7 @@ class TeeOffers {
     filter: {
       externalId: string;
       creator?: string;
-      teeOfferId?: bigint;
+      teeOfferId?: BlockchainId;
     },
     fromBlock?: number | string,
     toBlock?: number | string,
@@ -211,8 +223,8 @@ class TeeOffers {
       }
       callback(
         <string>event.returnValues.creator,
-        <bigint>event.returnValues.offerId,
-        <bigint>event.returnValues.slotId,
+        <BlockchainId>event.returnValues.offerId,
+        <BlockchainId>event.returnValues.slotId,
         parseBytes32String(<BytesLike>event.returnValues.externalId),
         <BlockInfo>{
           index: <bigint>event.blockNumber,
@@ -239,8 +251,8 @@ class TeeOffers {
     const subscription = contract.events.TeeSlotUpdated();
     subscription.on('data', (event: EventLog): void => {
       callback(
-        <bigint>event.returnValues.offerId,
-        <bigint>event.returnValues.slotId,
+        <BlockchainId>event.returnValues.offerId,
+        <BlockchainId>event.returnValues.slotId,
         <BlockInfo>{
           index: <bigint>event.blockNumber,
           hash: <string>event.blockHash,
@@ -266,8 +278,8 @@ class TeeOffers {
     const subscription = contract.events.TeeSlotDeleted();
     subscription.on('data', (event: EventLog): void => {
       callback(
-        <bigint>event.returnValues.offerId,
-        <bigint>event.returnValues.slotId,
+        <BlockchainId>event.returnValues.offerId,
+        <BlockchainId>event.returnValues.slotId,
         <BlockInfo>{
           index: <bigint>event.blockNumber,
           hash: <string>event.blockHash,
@@ -298,8 +310,8 @@ class TeeOffers {
       }
       callback(
         <string>event.returnValues.creator,
-        <bigint>event.returnValues.teeOfferId,
-        <bigint>event.returnValues.optionId,
+        <BlockchainId>event.returnValues.teeOfferId,
+        <BlockchainId>event.returnValues.optionId,
         parseBytes32String(<BytesLike>event.returnValues.externalId),
         <BlockInfo>{
           index: <bigint>event.blockNumber,
@@ -322,7 +334,7 @@ class TeeOffers {
    */
   public static onOptionUpdated(
     callback: onTeeOptionUpdatedCallback,
-    teeOfferId?: bigint,
+    teeOfferId?: BlockchainId,
   ): () => void {
     const contract = BlockchainEventsListener.getInstance().getContract();
     const logger = this.logger.child({ method: 'onTeeOptionUpdatedCallback' });
@@ -333,8 +345,8 @@ class TeeOffers {
         return;
       }
       callback(
-        <bigint>event.returnValues.teeOfferId,
-        <bigint>event.returnValues.optionId,
+        <BlockchainId>event.returnValues.teeOfferId,
+        <BlockchainId>event.returnValues.optionId,
         <BlockInfo>{
           index: <bigint>event.blockNumber,
           hash: <string>event.blockHash,
@@ -356,7 +368,7 @@ class TeeOffers {
    */
   public static onOptionDeleted(
     callback: onTeeOptionDeletedCallback,
-    teeOfferId?: bigint,
+    teeOfferId?: BlockchainId,
   ): () => void {
     const contract = BlockchainEventsListener.getInstance().getContract();
     const logger = this.logger.child({ method: 'onTeeOptionDeletedCallback' });
@@ -367,8 +379,8 @@ class TeeOffers {
         return;
       }
       callback(
-        <bigint>event.returnValues.teeOfferId,
-        <bigint>event.returnValues.optionId,
+        <BlockchainId>event.returnValues.teeOfferId,
+        <BlockchainId>event.returnValues.optionId,
         <BlockInfo>{
           index: <bigint>event.blockNumber,
           hash: <string>event.blockHash,
@@ -394,7 +406,7 @@ class TeeOffers {
     const subscription = contract.events.TeeOfferCreated();
     subscription.on('data', (event: EventLog): void => {
       callback(
-        <bigint>event.returnValues.offerId,
+        <BlockchainId>event.returnValues.offerId,
         <string>event.returnValues.creator,
         parseBytes32String(<BytesLike>event.returnValues.externalId),
         <BlockInfo>{
@@ -417,7 +429,7 @@ class TeeOffers {
     const subscription = contract.events.TeeOfferViolationRateChanged();
     subscription.on('data', (event: EventLog): void => {
       callback(
-        <bigint>event.returnValues.offerId,
+        <BlockchainId>event.returnValues.offerId,
         <string>event.returnValues.providerAuth,
         <bigint>event.returnValues.violationRate,
         <BlockInfo>{
@@ -435,42 +447,42 @@ class TeeOffers {
 }
 
 export type onTeeOfferCreatedCallback = (
-  offerId: bigint,
+  offerId: BlockchainId,
   creator: string,
   externalId: string,
   block?: BlockInfo,
 ) => void;
 export type onTeeViolationRateChangedCallback = (
-  offerId: bigint,
+  offerId: BlockchainId,
   providerAuth: string,
   violationRate: bigint,
   block?: BlockInfo,
 ) => void;
 export type onTeeOptionAddedCallback = (
   creator: string,
-  teeOfferId: bigint,
-  optionId: bigint,
+  teeOfferId: BlockchainId,
+  optionId: BlockchainId,
   externalId: string,
   block?: BlockInfo,
 ) => void;
 export type onTeeOptionUpdatedCallback = (
-  teeOfferId: bigint,
-  optionId: bigint,
+  teeOfferId: BlockchainId,
+  optionId: BlockchainId,
   block?: BlockInfo,
 ) => void;
 export type onTeeOptionDeletedCallback = (
-  teeOfferId: bigint,
-  optionId: bigint,
+  teeOfferId: BlockchainId,
+  optionId: BlockchainId,
   block?: BlockInfo,
 ) => void;
 export type onTeeSlotAddedCallback = (
   creator: string,
-  offerId: bigint,
-  slotId: bigint,
+  offerId: BlockchainId,
+  slotId: BlockchainId,
   externalId: string,
   block?: BlockInfo,
 ) => void;
-export type onTeeSlotUpdatedCallback = (offerId: bigint, slotId: bigint, block?: BlockInfo) => void;
-export type onTeeSlotDeletedCallback = (offerId: bigint, slotId: bigint, block?: BlockInfo) => void;
+export type onTeeSlotUpdatedCallback = (offerId: BlockchainId, slotId: BlockchainId, block?: BlockInfo) => void;
+export type onTeeSlotDeletedCallback = (offerId: BlockchainId, slotId: BlockchainId, block?: BlockInfo) => void;
 
 export default TeeOffers;

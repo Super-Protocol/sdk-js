@@ -8,7 +8,7 @@ import Offer from './models/Offer';
 import Order from './models/Order';
 import TeeOffer from './models/TeeOffer';
 import { TeeOfferInfo } from './types/TeeOfferInfo';
-import { OrderInfo } from './types/Order';
+import { BlockchainId, OrderInfo } from './types/Order';
 import { OfferInfo } from './types/Offer';
 import {
   Cipher,
@@ -27,7 +27,7 @@ import { TLBlockSerializerV1, TLBlockUnserializeResultType } from '@super-protoc
 
 class TIIGenerator {
   public static async generateByOffer(
-    offerId: bigint,
+    offerId: BlockchainId,
     solutionHashes: Hash[],
     linkageString: string | undefined,
     resource: Resource,
@@ -90,14 +90,14 @@ class TIIGenerator {
   }
 
   public static async generate(
-    orderId: bigint,
+    orderId: BlockchainId,
     resource: Resource,
     args: any,
     encryption: Encryption,
   ): Promise<string> {
     const order: Order = new Order(orderId);
 
-    const parentOrderId: bigint = await order.getParentOrder();
+    const parentOrderId = await order.getParentOrder();
     const parentOrder: Order = new Order(parentOrderId);
     const parentOrderInfo: OrderInfo = await parentOrder.getOrderInfo();
 
@@ -116,13 +116,13 @@ class TIIGenerator {
   }
 
   public static async getSolutionHashesAndLinkage(
-    inputOffers: bigint[],
+    inputOffers: (BlockchainId)[],
   ): Promise<{ hashes: Hash[]; linkage?: string }> {
     const solutionHashes: Hash[] = [];
     let solutionLinkage: string | undefined;
     let anyLinkage: string | undefined;
     await Promise.all(
-      inputOffers.map(async (offerId: bigint): Promise<void> => {
+      inputOffers.map(async (offerId): Promise<void> => {
         const offer: Offer = new Offer(offerId);
         const offerInfo: OfferInfo = await offer.getInfo();
 

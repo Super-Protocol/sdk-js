@@ -2,6 +2,8 @@ import { SlotUsage } from './SlotUsage';
 import { SlotInfo } from './SlotInfo';
 import { OptionInfo } from './OptionInfo';
 
+export type BlockchainId = bigint | string;
+
 export enum OrderStatus {
   New = '0',
   Processing = '1',
@@ -14,19 +16,19 @@ export enum OrderStatus {
 }
 
 export type OrderArgs = {
-  inputOffers: bigint[];
-  outputOffer: bigint;
+  inputOffers: BlockchainId[];
+  outputOffer: BlockchainId;
 };
 
 export type OrderSlots = {
-  slotId: bigint;
+  slotId: BlockchainId;
   slotCount: number;
-  optionsIds: bigint[];
+  optionsIds: BlockchainId[];
   optionsCount: number[];
 };
 
 export type OrderInfo = {
-  offerId: bigint;
+  offerId: BlockchainId;
   resultPublicKey: string;
   encryptedRequirements: string;
   encryptedArgs: string;

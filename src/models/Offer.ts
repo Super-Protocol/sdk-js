@@ -4,8 +4,9 @@ import rootLogger from '../logger';
 import {
   checkIfActionAccountInitialized,
   incrementMethodCall,
-  unpackSlotInfo,
   packSlotInfo,
+  formatOfferSlot,
+  convertBigIntToString,
 } from '../utils/helper';
 import { BlockchainConnector } from '../connectors';
 import {
@@ -17,6 +18,7 @@ import {
   OfferType,
   ValueOfferSlot,
   TransactionOptions,
+  BlockchainId,
 } from '../types';
 import { formatBytes32String } from 'ethers/lib/utils';
 import TeeOffers from '../staticModels/TeeOffers';
@@ -33,11 +35,11 @@ class Offer {
   public type?: OfferType;
   public providerAuthority?: string;
   public origins?: Origins;
-  public id: bigint;
+  public id: BlockchainId;
   public enabled?: boolean;
   public minDeposit?: bigint;
 
-  constructor(offerId: bigint) {
+  constructor(offerId: BlockchainId) {
     this.id = offerId;
     if (!Offer.contract) {
       Offer.contract = BlockchainConnector.getInstance().getContract();
@@ -111,7 +113,7 @@ class Offer {
     }
     const { info } = await Offer.contract.methods.getValueOffer(this.id).call();
 
-    this.offerInfo = info as OfferInfo;
+    this.offerInfo = convertBigIntToString(info) as OfferInfo;
 
     return this.offerInfo;
   }
@@ -133,7 +135,7 @@ class Offer {
   public async getOfferType(): Promise<OfferType> {
     this.type = await Offer.contract.methods.getOfferType(this.id).call();
 
-    return this.type!;
+    return this.type!.toString() as OfferType;
   }
 
   /**
@@ -164,7 +166,7 @@ class Offer {
    * Function for fetching offer hold deposit
    */
   @incrementMethodCall()
-  public async getMinDeposit(slotId: bigint): Promise<bigint> {
+  public async getMinDeposit(slotId: BlockchainId): Promise<bigint> {
     this.minDeposit = await Offer.contract.methods
       .getOfferMinDeposit(this.id, slotId, '0', [], [])
       .call();
@@ -204,7 +206,7 @@ class Offer {
    * Function for fetching whether offer slot exists or not
    * @param slotId - Slot ID
    */
-  public isSlotExists(slotId: bigint): Promise<boolean> {
+  public isSlotExists(slotId: BlockchainId): Promise<boolean> {
     return Offer.contract.methods.isValueOfferSlotExists(this.id, slotId).call();
   }
 
@@ -212,13 +214,14 @@ class Offer {
    * Function for fetching offer slot by id
    * @param slotId - Slot ID
    */
-  public async getSlotById(slotId: bigint): Promise<ValueOfferSlot> {
+  public async getSlotById(slotId: BlockchainId): Promise<ValueOfferSlot> {
     const slot: ValueOfferSlot = await Offer.contract.methods
       .getValueOfferSlotById(this.id, slotId)
       .call();
-    slot.info = unpackSlotInfo(slot.info, await TeeOffers.getDenominator());
 
-    return slot;
+    const cpuDenominator = await TeeOffers.getDenominator();
+
+    return formatOfferSlot(slot, cpuDenominator);
   }
 
   /**
@@ -243,11 +246,12 @@ class Offer {
     const slots: ValueOfferSlot[] = await Offer.contract.methods
       .getValueOfferSlots(this.id, begin, end)
       .call();
-    for (const slot of slots) {
-      slot.info = unpackSlotInfo(slot.info, await TeeOffers.getDenominator());
-    }
 
-    return slots;
+    const cpuDenominator = await TeeOffers.getDenominator();
+
+    const slotsResult = slots.map((slot) => formatOfferSlot(slot, cpuDenominator));
+
+    return slotsResult;
   }
 
   /**
@@ -288,7 +292,7 @@ class Offer {
    */
   @incrementMethodCall()
   public async updateSlot(
-    slotId: bigint,
+    slotId: BlockchainId,
     newSlotInfo: SlotInfo,
     newOptionInfo: OptionInfo,
     newUsage: SlotUsage,
@@ -315,7 +319,7 @@ class Offer {
    * @param transactionOptions - object what contains alternative action account or gas limit (optional)
    */
   @incrementMethodCall()
-  public async deleteSlot(slotId: bigint, transactionOptions?: TransactionOptions): Promise<void> {
+  public async deleteSlot(slotId: BlockchainId, transactionOptions?: TransactionOptions): Promise<void> {
     checkIfActionAccountInitialized(transactionOptions);
 
     await TxManager.execute(
@@ -349,7 +353,7 @@ class Offer {
    * @param offerId - id of offer what needs to be checked
    */
   @incrementMethodCall()
-  public isRestrictionsPermitThatOffer(offerId: bigint): Promise<boolean> {
+  public isRestrictionsPermitThatOffer(offerId: BlockchainId): Promise<boolean> {
     return Offer.contract.methods.isOfferRestrictionsPermitOtherOffer(this.id, offerId).call();
   }
 

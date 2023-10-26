@@ -4,6 +4,14 @@ import Web3, { DecodedParams, JsonRpcError } from 'web3';
 import { Web3BatchRequest } from 'web3-core';
 import { Monitoring } from './Monitoring';
 import { SlotInfo } from '../types/SlotInfo';
+import {
+  OptionInfo,
+  PriceType,
+  SlotUsage,
+  TeeOfferOption,
+  TeeOfferSlot,
+  ValueOfferSlot,
+} from '../types';
 
 /**
  * Function for checking if provider action account initialized (required for set methods)
@@ -113,11 +121,75 @@ export function unpackDeviceId(bytes32: string): string {
   return bytes32.slice(2, 66);
 }
 
+export function convertBigIntToString(obj: any): any {
+  if (typeof obj === 'bigint') {
+    return obj.toString(); // Convert BigInt to string
+  } else if (typeof obj === 'object') {
+    if (Array.isArray(obj)) {
+      // If it's an array, map each element
+      return obj.map((item) => convertBigIntToString(item));
+    } else {
+      // If it's an object, recursively convert its properties
+      const convertedObj: Record<string, any> = {};
+      for (const key in obj) {
+        if (obj.hasOwnProperty(key)) {
+          convertedObj[key] = convertBigIntToString(obj[key]);
+        }
+      }
+      return convertedObj;
+    }
+  } else {
+    return obj; // Leave other types unchanged
+  }
+}
+
+export function formatTeeOfferOption(option: TeeOfferOption): TeeOfferOption {
+  return {
+    ...option,
+    info: formatOptionInfo(option.info),
+    usage: formatUsage(option.usage),
+  };
+}
+
+export function formatTeeOfferSlot(slot: TeeOfferSlot, cpuDenominator: number): TeeOfferSlot {
+  return {
+    ...slot,
+    info: unpackSlotInfo(slot.info, cpuDenominator),
+    usage: formatUsage(slot.usage),
+  };
+}
+
+export function formatOfferSlot(slot: ValueOfferSlot, cpuDenominator: number): ValueOfferSlot {
+  return {
+    ...slot,
+    option: formatOptionInfo(slot.option),
+    info: unpackSlotInfo(slot.info, cpuDenominator),
+    usage: formatUsage(slot.usage),
+  };
+}
+
+export function formatUsage(usage: SlotUsage): SlotUsage {
+  return {
+    priceType: usage.priceType.toString() as PriceType,
+    price: usage.price,
+    minTimeMinutes: Number(usage.minTimeMinutes),
+    maxTimeMinutes: Number(usage.maxTimeMinutes),
+  };
+}
+
+export function formatOptionInfo(optionInfo: OptionInfo): OptionInfo {
+  return {
+    bandwidth: Number(optionInfo.bandwidth),
+    traffic: Number(optionInfo.traffic),
+    externalPort: Number(optionInfo.externalPort),
+  };
+}
+
 export function unpackSlotInfo(slotInfo: SlotInfo, cpuDenominator: number): SlotInfo {
   return {
-    cpuCores: slotInfo.cpuCores / cpuDenominator,
-    ram: slotInfo.ram,
-    diskUsage: slotInfo.diskUsage,
+    cpuCores: Number(slotInfo.cpuCores) / cpuDenominator,
+    ram: Number(slotInfo.ram),
+    diskUsage: Number(slotInfo.diskUsage),
   };
 }
 
@@ -134,10 +206,20 @@ export function isValidBytes32Hex(data: string): boolean {
   return regex.test(data);
 }
 
-export const cleanEventData = (data: DecodedParams): { [key: string]: unknown } => {
-  const result = { ...data };
-  delete (result as any).__length__;
+export const cleanEventData = (data: any): { [key: string]: unknown } => {
+  const result: { [key: string]: unknown } = {};
 
+  for (const key in data) {
+    // If the value of the current key is an object (but not an array or null), recursively clean it
+    if (typeof data[key] === 'object' && data[key] !== null && !Array.isArray(data[key])) {
+      result[key] = cleanEventData(data[key] as DecodedParams);
+    } else {
+      result[key] = data[key];
+    }
+  }
+
+  // Remove __length__ and numbered properties
+  delete (result as any).__length__;
   for (let i = 0; i < (data.__length__ ?? 0); i++) {
     delete result[i.toString()];
   }

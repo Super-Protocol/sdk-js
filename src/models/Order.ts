@@ -7,6 +7,7 @@ import {
   OrderUsage,
   Origins,
   TransactionOptions,
+  BlockchainId,
 } from '../types';
 import { Contract, TransactionReceipt } from 'web3';
 import { EventLog } from 'web3-eth-contract';
@@ -14,6 +15,9 @@ import rootLogger from '../logger';
 import { abi } from '../contracts/abi';
 import {
   checkIfActionAccountInitialized,
+  cleanEventData,
+  formatOptionInfo,
+  formatUsage,
   incrementMethodCall,
   unpackSlotInfo,
 } from '../utils/helper';
@@ -31,14 +35,14 @@ class Order {
   public selectedUsage?: OrderUsage;
   public orderInfo?: OrderInfo;
   public orderResult?: OrderResult;
-  public subOrders?: bigint[];
-  public parentOrder?: bigint;
+  public subOrders?: BlockchainId[];
+  public parentOrder?: BlockchainId;
   public consumer?: string;
   public origins?: Origins;
   public startDate?: number;
-  public id: bigint;
+  public id: BlockchainId;
 
-  constructor(orderId: bigint) {
+  constructor(orderId: BlockchainId) {
     this.id = orderId;
     if (!Order.contract) {
       Order.contract = BlockchainConnector.getInstance().getContract();
@@ -65,9 +69,9 @@ class Order {
    * Function for fetching avaliable for unlock order profit.
    */
   public async isOrderProfitAvailable(): Promise<bigint> {
-    const [, profit] = await Order.contract.methods.isOrderProfitAvailable(this.id).call();
+    const profit = await Order.contract.methods.isOrderProfitAvailable(this.id).call();
 
-    return BigInt(profit);
+    return BigInt(profit[1]);
   }
 
   /**
@@ -85,9 +89,15 @@ class Order {
     if (!(await this.checkIfOrderExistsWithInterval())) {
       throw Error(`Order ${this.id} does not exist`);
     }
-    const [, orderInfoParams] = await Order.contract.methods.getOrder(this.id).call();
+    const orderInfoParams = await Order.contract.methods.getOrder(this.id).call();
+    const orderInfo: OrderInfo = {
+      ...(cleanEventData(orderInfoParams[1]) as OrderInfo),
+      status: orderInfoParams[1].status.toString() as OrderStatus,
+    };
+    orderInfo.slots.optionsCount = orderInfo.slots.optionsCount.map((count) => Number(count));
+    orderInfo.slots.slotCount = Number(orderInfo.slots.slotCount);
 
-    return (this.orderInfo = orderInfoParams as OrderInfo);
+    return (this.orderInfo = orderInfo);
   }
 
   private async checkIfOrderExistsWithInterval(): Promise<boolean> {
@@ -107,8 +117,8 @@ class Order {
 
   @incrementMethodCall()
   public async getConsumer(): Promise<string> {
-    const [consumer, ,] = await Order.contract.methods.getOrder(this.id).call();
-    this.consumer = consumer;
+    const consumer = await Order.contract.methods.getOrder(this.id).call();
+    this.consumer = consumer[0];
 
     return this.consumer!;
   }
@@ -118,16 +128,16 @@ class Order {
    */
   @incrementMethodCall()
   public async getOrderResult(): Promise<OrderResult> {
-    const [, , orderResults] = await Order.contract.methods.getOrder(this.id).call();
+    const orderResults = await Order.contract.methods.getOrder(this.id).call();
 
-    return (this.orderResult = orderResults as OrderResult);
+    return (this.orderResult = orderResults[2] as OrderResult);
   }
 
   /**
    * Function for fetching sub orders from blockchain
    */
   @incrementMethodCall()
-  public async getSubOrders(): Promise<bigint[]> {
+  public async getSubOrders(): Promise<BlockchainId[]> {
     this.subOrders = await Order.contract.methods.getOrderSubOrders(this.id).call();
 
     return this.subOrders;
@@ -137,7 +147,7 @@ class Order {
    * Function for fetching parent order from blockchain
    */
   @incrementMethodCall()
-  public async getParentOrder(): Promise<bigint> {
+  public async getParentOrder(): Promise<BlockchainId> {
     this.parentOrder = await Order.contract.methods.getOrderParentOrder(this.id).call();
 
     return this.parentOrder;
@@ -157,10 +167,18 @@ class Order {
   @incrementMethodCall()
   public async getSelectedUsage(): Promise<OrderUsage> {
     this.selectedUsage = await Order.contract.methods.getOrderSelectedUsage(this.id).call();
-    this.selectedUsage.optionsCount = this.selectedUsage.optionsCount.map((item) => +item);
-    this.selectedUsage.slotInfo = unpackSlotInfo(
-      this.selectedUsage.slotInfo,
-      await TeeOffers.getDenominator(),
+
+    const cpuDenominator = await TeeOffers.getDenominator();
+
+    this.selectedUsage.slotInfo = unpackSlotInfo(this.selectedUsage.slotInfo, cpuDenominator);
+    this.selectedUsage.slotUsage = formatUsage(this.selectedUsage.slotUsage);
+
+    this.selectedUsage.optionsCount = this.selectedUsage.optionsCount.map((item) => Number(item));
+    this.selectedUsage.optionInfo = this.selectedUsage.optionInfo.map((optionInfo) =>
+      formatOptionInfo(optionInfo),
+    );
+    this.selectedUsage.optionUsage = this.selectedUsage.optionUsage.map((usage) =>
+      formatUsage(usage),
     );
 
     return this.selectedUsage;
@@ -206,8 +224,8 @@ class Order {
     const origins: Origins = await Order.contract.methods.getOrderOrigins(this.id).call();
 
     // Convert blockchain time seconds to js time milliseconds
-    origins.createdDate = origins.createdDate * 1000;
-    origins.modifiedDate = origins.modifiedDate * 1000;
+    origins.createdDate = Number(origins.createdDate) * 1000;
+    origins.modifiedDate = Number(origins.modifiedDate) * 1000;
 
     return (this.origins = origins);
   }
@@ -434,8 +452,9 @@ class Order {
       if (event.returnValues.orderId != this.id) {
         return;
       }
-      if (this.orderInfo) this.orderInfo.status = <OrderStatus>event.returnValues.status;
-      callback(<OrderStatus>event.returnValues.status);
+      const newStatus = <OrderStatus>event.returnValues.status?.toString();
+      if (this.orderInfo) this.orderInfo.status = newStatus;
+      callback(newStatus);
     });
     subscription.on('error', (error: Error) => {
       logger.warn(error);

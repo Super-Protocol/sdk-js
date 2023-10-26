@@ -1,6 +1,7 @@
 import Superpro from './Superpro';
 import { BlockchainConnector } from '../connectors';
 import { incrementMethodCall } from '../utils/helper';
+import { BlockchainId } from '../types';
 
 class ActiveOrders {
   public static get address(): string {
@@ -38,7 +39,7 @@ class ActiveOrders {
    */
   @incrementMethodCall()
   public static async getActiveOrdersRangeByOffers(
-    offerIds: bigint[],
+    offerIds: BlockchainId[],
     begin?: bigint,
     end?: bigint,
   ): Promise<bigint[]> {

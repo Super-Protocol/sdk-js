@@ -130,7 +130,7 @@ class Order {
   public async getOrderResult(): Promise<OrderResult> {
     const orderResults = await Order.contract.methods.getOrder(this.id).call();
 
-    return (this.orderResult = orderResults[2] as OrderResult);
+    return (this.orderResult = cleanEventData(orderResults[2]) as OrderResult);
   }
 
   /**
@@ -166,7 +166,10 @@ class Order {
    */
   @incrementMethodCall()
   public async getSelectedUsage(): Promise<OrderUsage> {
-    this.selectedUsage = await Order.contract.methods.getOrderSelectedUsage(this.id).call();
+    this.selectedUsage = await Order.contract.methods
+      .getOrderSelectedUsage(this.id)
+      .call()
+      .then((selectedUsage) => cleanEventData(selectedUsage) as OrderUsage);
 
     const cpuDenominator = await TeeOffers.getDenominator();
 
@@ -221,7 +224,10 @@ class Order {
    */
   @incrementMethodCall()
   public async getOrigins(): Promise<Origins> {
-    const origins: Origins = await Order.contract.methods.getOrderOrigins(this.id).call();
+    const origins: Origins = await Order.contract.methods
+      .getOrderOrigins(this.id)
+      .call()
+      .then((origins) => cleanEventData(origins) as Origins);
 
     // Convert blockchain time seconds to js time milliseconds
     origins.createdDate = Number(origins.createdDate) * 1000;

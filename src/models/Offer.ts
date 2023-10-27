@@ -7,6 +7,7 @@ import {
   packSlotInfo,
   formatOfferSlot,
   convertBigIntToString,
+  cleanEventData,
 } from '../utils/helper';
 import { BlockchainConnector } from '../connectors';
 import {
@@ -113,7 +114,7 @@ class Offer {
     }
     const { info } = await Offer.contract.methods.getValueOffer(this.id).call();
 
-    this.offerInfo = convertBigIntToString(info) as OfferInfo;
+    this.offerInfo = convertBigIntToString(cleanEventData(info)) as OfferInfo;
 
     return this.offerInfo;
   }
@@ -153,11 +154,14 @@ class Offer {
    */
   @incrementMethodCall()
   public async getOrigins(): Promise<Origins> {
-    const origins: Origins = await Offer.contract.methods.getOfferOrigins(this.id).call();
+    const origins: Origins = await Offer.contract.methods
+      .getOfferOrigins(this.id)
+      .call()
+      .then((origins) => cleanEventData(origins) as Origins);
 
     // Convert blockchain time seconds to js time milliseconds
-    origins.createdDate = +origins.createdDate * 1000;
-    origins.modifiedDate = +origins.modifiedDate * 1000;
+    origins.createdDate = Number(origins.createdDate) * 1000;
+    origins.modifiedDate = Number(origins.modifiedDate) * 1000;
 
     return (this.origins = origins);
   }
@@ -221,7 +225,7 @@ class Offer {
 
     const cpuDenominator = await TeeOffers.getDenominator();
 
-    return formatOfferSlot(slot, cpuDenominator);
+    return formatOfferSlot(cleanEventData(slot), cpuDenominator);
   }
 
   /**
@@ -249,7 +253,7 @@ class Offer {
 
     const cpuDenominator = await TeeOffers.getDenominator();
 
-    const slotsResult = slots.map((slot) => formatOfferSlot(slot, cpuDenominator));
+    const slotsResult = slots.map((slot) => formatOfferSlot(cleanEventData(slot), cpuDenominator));
 
     return slotsResult;
   }

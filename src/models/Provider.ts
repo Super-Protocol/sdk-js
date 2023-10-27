@@ -1,6 +1,6 @@
 import { Contract } from 'web3';
 import { abi } from '../contracts/abi';
-import { checkIfActionAccountInitialized } from '../utils/helper';
+import { checkIfActionAccountInitialized, cleanEventData } from '../utils/helper';
 import { ProviderInfo, Origins, TransactionOptions } from '../types';
 import { BlockchainConnector } from '../connectors';
 import TxManager from '../utils/TxManager';
@@ -42,7 +42,8 @@ class Provider {
   public async getInfo(): Promise<ProviderInfo> {
     const providerInfoParams = await Provider.contract.methods
       .getProviderInfo(this.providerId)
-      .call();
+      .call()
+      .then((providerInfo) => cleanEventData(providerInfo) as ProviderInfo);
 
     return (this.providerInfo = providerInfoParams);
   }
@@ -89,13 +90,14 @@ class Provider {
    * Fetch new Origins (createdDate, createdBy, modifiedDate and modifiedBy)
    */
   public async getOrigins(): Promise<Origins> {
-    const origins: Origins = await Provider.contract.methods
+    const origins = await Provider.contract.methods
       .getProviderOrigins(this.providerId)
-      .call();
+      .call()
+      .then((origins) => cleanEventData(origins) as Origins);
 
     // Convert blockchain time seconds to js time milliseconds
-    origins.createdDate = +origins.createdDate * 1000;
-    origins.modifiedDate = +origins.modifiedDate * 1000;
+    origins.createdDate = Number(origins.createdDate) * 1000;
+    origins.modifiedDate = Number(origins.modifiedDate) * 1000;
 
     return (this.origins = origins);
   }

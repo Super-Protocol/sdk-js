@@ -206,7 +206,7 @@ export function isValidBytes32Hex(data: string): boolean {
   return regex.test(data);
 }
 
-export const cleanEventData = (data: any): { [key: string]: unknown } => {
+export const cleanEventData = <T>(data: T): T => {
   const result: { [key: string]: unknown } = {};
 
   for (const key in data) {
@@ -220,11 +220,11 @@ export const cleanEventData = (data: any): { [key: string]: unknown } => {
 
   // Remove __length__ and numbered properties
   delete (result as any).__length__;
-  for (let i = 0; i < (data.__length__ ?? 0); i++) {
+  for (let i = 0; i < ((data as any).__length__ ?? 0); i++) {
     delete result[i.toString()];
   }
 
-  return result;
+  return result as T;
 };
 
 export const executeBatchAsync = async <BatchResponse = unknown>(

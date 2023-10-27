@@ -6,6 +6,7 @@ import {
   packSlotInfo,
   formatTeeOfferOption,
   formatTeeOfferSlot,
+  cleanEventData,
 } from '../utils/helper';
 import { TeeOfferInfo, TransactionOptions, OfferType, Origins, BlockchainId } from '../types';
 import { BlockchainConnector } from '../connectors';
@@ -78,8 +79,8 @@ class TeeOffer {
   /**
    * @returns this TEE offer slots count
    */
-  public getSlotsCount(): Promise<number> {
-    return TeeOffer.contract.methods.getTeeOfferSlotsCount(this.id).call();
+  public async getSlotsCount(): Promise<number> {
+    return Number(await TeeOffer.contract.methods.getTeeOfferSlotsCount(this.id).call());
   }
 
   /**
@@ -99,7 +100,7 @@ class TeeOffer {
   public async getInfo(): Promise<TeeOfferInfo> {
     const { info } = await TeeOffer.contract.methods.getTeeOffer(this.id).call();
 
-    this.offerInfo = info as TeeOfferInfo;
+    this.offerInfo = cleanEventData(info) as TeeOfferInfo;
     this.offerInfo.hardwareInfo = await TeeOffers.unpackHardwareInfo(this.offerInfo.hardwareInfo);
 
     return this.offerInfo;
@@ -114,7 +115,7 @@ class TeeOffer {
       .getTeeOfferHardwareInfo(this.id)
       .call();
 
-    return TeeOffers.unpackHardwareInfo(hardwareInfo);
+    return TeeOffers.unpackHardwareInfo(cleanEventData(hardwareInfo));
   }
 
   /**
@@ -125,7 +126,7 @@ class TeeOffer {
     return TeeOffer.contract.methods
       .getOptionById(optionId)
       .call()
-      .then((option) => formatTeeOfferOption(option as TeeOfferOption));
+      .then((option) => formatTeeOfferOption(cleanEventData(option) as TeeOfferOption));
   }
 
   public async getOptions(begin = 0, end = 999999): Promise<TeeOfferOption[]> {
@@ -140,7 +141,7 @@ class TeeOffer {
       .getTeeOfferOptions(this.id, begin, end)
       .call();
 
-    return teeOfferOption.map(formatTeeOfferOption);
+    return teeOfferOption.map((option) => formatTeeOfferOption(cleanEventData(option)));
   }
 
   /**
@@ -291,7 +292,7 @@ class TeeOffer {
 
     const cpuDenominator = await TeeOffers.getDenominator();
 
-    return formatTeeOfferSlot(slot, cpuDenominator);
+    return formatTeeOfferSlot(cleanEventData(slot), cpuDenominator);
   }
 
   /**
@@ -371,7 +372,10 @@ class TeeOffer {
    * @param transactionOptions - object what contains alternative action account or gas limit (optional)
    */
   @incrementMethodCall()
-  public async deleteSlot(slotId: BlockchainId, transactionOptions?: TransactionOptions): Promise<void> {
+  public async deleteSlot(
+    slotId: BlockchainId,
+    transactionOptions?: TransactionOptions,
+  ): Promise<void> {
     checkIfActionAccountInitialized(transactionOptions);
 
     await TxManager.execute(
@@ -454,7 +458,10 @@ class TeeOffer {
    */
   @incrementMethodCall()
   public async getOrigins(): Promise<Origins> {
-    const origins: Origins = await TeeOffer.contract.methods.getOfferOrigins(this.id).call();
+    const origins: Origins = await TeeOffer.contract.methods
+      .getOfferOrigins(this.id)
+      .call()
+      .then((origins) => cleanEventData(origins) as Origins);
 
     // Convert blockchain time seconds to js time milliseconds
     origins.createdDate = origins.createdDate * 1000;

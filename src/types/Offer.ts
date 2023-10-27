@@ -1,3 +1,5 @@
+import { BlockchainId } from './Order';
+
 export enum OfferType {
   TeeOffer = '0',
   Storage = '1',
@@ -12,7 +14,7 @@ export enum OfferGroup {
 }
 
 export type OfferRestrictions = {
-  offers: bigint[];
+  offers: BlockchainId[];
   types: OfferType[];
 };
 

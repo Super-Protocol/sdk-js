@@ -1,3 +1,5 @@
+import { TokenAmount } from './Web3';
+
 export enum PriceType {
   PerHour = '0',
   Fixed = '1',
@@ -5,7 +7,7 @@ export enum PriceType {
 
 export type SlotUsage = {
   priceType: PriceType;
-  price: bigint;
+  price: TokenAmount;
   minTimeMinutes: number;
   maxTimeMinutes: number;
 };

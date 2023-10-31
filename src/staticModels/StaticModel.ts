@@ -3,7 +3,7 @@ import { ContractEvents, DecodedParams } from 'web3';
 import BlockchainConnector from '../connectors/BlockchainConnector';
 import { EventOptions, FilterWithExternalId } from '../types';
 import rootLogger from '../logger';
-import { cleanEventData, isValidBytes32Hex } from '../utils/helper';
+import { cleanWeb3Data, isValidBytes32Hex } from '../utils/helper';
 import { EventLog } from 'web3-eth-contract';
 import abi from '../contracts/abi';
 
@@ -35,7 +35,7 @@ class StaticModel {
       );
     }
 
-    return cleanEventData((foundIds[0] as EventLog).returnValues as DecodedParams);
+    return cleanWeb3Data((foundIds[0] as EventLog).returnValues as DecodedParams);
   }
 }
 

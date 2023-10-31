@@ -6,8 +6,8 @@ import {
   incrementMethodCall,
   packSlotInfo,
   formatOfferSlot,
+  cleanWeb3Data,
   convertBigIntToString,
-  cleanEventData,
 } from '../utils/helper';
 import { BlockchainConnector } from '../connectors';
 import {
@@ -20,6 +20,7 @@ import {
   ValueOfferSlot,
   TransactionOptions,
   BlockchainId,
+  TokenAmount,
 } from '../types';
 import { formatBytes32String } from 'ethers/lib/utils';
 import TeeOffers from '../staticModels/TeeOffers';
@@ -38,7 +39,7 @@ class Offer {
   public origins?: Origins;
   public id: BlockchainId;
   public enabled?: boolean;
-  public minDeposit?: bigint;
+  public minDeposit?: TokenAmount;
 
   constructor(offerId: BlockchainId) {
     this.id = offerId;
@@ -113,8 +114,7 @@ class Offer {
       throw Error(`Offer ${this.id} does not exist`);
     }
     const { info } = await Offer.contract.methods.getValueOffer(this.id).call();
-
-    this.offerInfo = convertBigIntToString(cleanEventData(info)) as OfferInfo;
+    this.offerInfo = cleanWeb3Data(info) as OfferInfo;
 
     return this.offerInfo;
   }
@@ -157,7 +157,7 @@ class Offer {
     const origins: Origins = await Offer.contract.methods
       .getOfferOrigins(this.id)
       .call()
-      .then((origins) => cleanEventData(origins) as Origins);
+      .then((origins) => cleanWeb3Data(origins) as Origins);
 
     // Convert blockchain time seconds to js time milliseconds
     origins.createdDate = Number(origins.createdDate) * 1000;
@@ -170,10 +170,11 @@ class Offer {
    * Function for fetching offer hold deposit
    */
   @incrementMethodCall()
-  public async getMinDeposit(slotId: BlockchainId): Promise<bigint> {
+  public async getMinDeposit(slotId: BlockchainId): Promise<TokenAmount> {
     this.minDeposit = await Offer.contract.methods
       .getOfferMinDeposit(this.id, slotId, '0', [], [])
-      .call();
+      .call()
+      .then((price) => convertBigIntToString(price) as TokenAmount);
 
     return this.minDeposit!;
   }
@@ -182,8 +183,11 @@ class Offer {
    * Function for fetching cheapest value offer from blockchain
    */
   @incrementMethodCall()
-  public getCheapestPrice(): Promise<bigint> {
-    return Offer.contract.methods.getCheapestValueOffersPrice(this.id).call();
+  public getCheapestPrice(): Promise<TokenAmount> {
+    return Offer.contract.methods
+      .getCheapestValueOffersPrice(this.id)
+      .call()
+      .then((price) => convertBigIntToString(price) as TokenAmount);
   }
 
   @incrementMethodCall()
@@ -225,14 +229,14 @@ class Offer {
 
     const cpuDenominator = await TeeOffers.getDenominator();
 
-    return formatOfferSlot(cleanEventData(slot), cpuDenominator);
+    return formatOfferSlot(cleanWeb3Data(slot), cpuDenominator);
   }
 
   /**
    * @returns this TEE offer slots count
    */
-  public getSlotsCount(): Promise<number> {
-    return Offer.contract.methods.getValueOfferSlotsCount(this.id).call();
+  public async getSlotsCount(): Promise<number> {
+    return Number(await Offer.contract.methods.getValueOfferSlotsCount(this.id).call());
   }
 
   /**
@@ -253,7 +257,7 @@ class Offer {
 
     const cpuDenominator = await TeeOffers.getDenominator();
 
-    const slotsResult = slots.map((slot) => formatOfferSlot(cleanEventData(slot), cpuDenominator));
+    const slotsResult = slots.map((slot) => formatOfferSlot(cleanWeb3Data(slot), cpuDenominator));
 
     return slotsResult;
   }
@@ -323,7 +327,10 @@ class Offer {
    * @param transactionOptions - object what contains alternative action account or gas limit (optional)
    */
   @incrementMethodCall()
-  public async deleteSlot(slotId: BlockchainId, transactionOptions?: TransactionOptions): Promise<void> {
+  public async deleteSlot(
+    slotId: BlockchainId,
+    transactionOptions?: TransactionOptions,
+  ): Promise<void> {
     checkIfActionAccountInitialized(transactionOptions);
 
     await TxManager.execute(

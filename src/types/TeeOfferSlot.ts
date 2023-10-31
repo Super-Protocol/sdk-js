@@ -1,4 +1,4 @@
-import { BlockchainId } from './Order';
+import { BlockchainId } from './Web3';
 import { SlotInfo } from './SlotInfo';
 import { SlotUsage } from './SlotUsage';
 

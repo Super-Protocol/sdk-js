@@ -1,5 +1,5 @@
 import { OptionInfo } from './OptionInfo';
-import { BlockchainId } from './Order';
+import { BlockchainId } from './Web3';
 import { SlotUsage } from './SlotUsage';
 
 export type TeeOfferOption = {

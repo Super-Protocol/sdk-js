@@ -1,9 +1,13 @@
-import { Contract, ContractAbi, Transaction } from 'web3';
+import { Contract, Transaction } from 'web3';
 import rootLogger from '../logger';
 import { abi } from '../contracts/abi';
 import store from '../store';
-import { checkIfActionAccountInitialized } from '../utils/helper';
-import { TransactionOptions, BlockInfo } from '../types';
+import {
+  checkIfActionAccountInitialized,
+  cleanWeb3Data,
+  convertBigIntToString,
+} from '../utils/helper';
+import { TransactionOptions, BlockInfo, TokenAmount } from '../types';
 import { EventLog } from 'web3-eth-contract';
 import TxManager from '../utils/TxManager';
 
@@ -52,26 +56,26 @@ class SuperproToken {
   /**
    * Checks if contract has been initialized with socket support
    */
-  private static checkWssInit(): Contract<ContractAbi> {
+  private static checkWssInit(): Contract<typeof abi> {
     return SuperproToken.contractWss!;
   }
 
   /**
    * Fetching balance of SuperProtocol tokens on address
    */
-  public static balanceOf(address: string): Promise<bigint> {
+  public static async balanceOf(address: string): Promise<TokenAmount> {
     this.checkInit();
 
-    return this.contractHttps!.methods.balanceOf(address).call();
+    return convertBigIntToString(await this.contractHttps!.methods.balanceOf(address).call());
   }
 
   /**
    * Fetching allowance of SuperProtocol tokens on address
    */
-  public static allowance(from: string, to: string): Promise<bigint> {
+  public static async allowance(from: string, to: string): Promise<TokenAmount> {
     this.checkInit();
 
-    return this.contractHttps!.methods.allowance(from, to).call();
+    return convertBigIntToString(await this.contractHttps!.methods.allowance(from, to).call());
   }
 
   /**
@@ -82,7 +86,7 @@ class SuperproToken {
    */
   public static async transfer(
     to: string,
-    amount: bigint,
+    amount: TokenAmount,
     transactionOptions?: TransactionOptions,
     checkTxBeforeSend = false,
   ): Promise<Transaction> {
@@ -110,7 +114,7 @@ class SuperproToken {
    */
   public static async approve(
     address: string,
-    amount: bigint,
+    amount: TokenAmount,
     transactionOptions?: TransactionOptions,
     checkTxBeforeSend = false,
   ): Promise<void> {
@@ -138,18 +142,19 @@ class SuperproToken {
 
     const subscription = contract.events.Approval();
     subscription.on('data', (event: EventLog): void => {
-      if (owner && event.returnValues.owner != owner) {
+      const parsedEvent = cleanWeb3Data(event.returnValues);
+      if (owner && parsedEvent.owner != owner) {
         return;
       }
-      if (spender && event.returnValues.spender != spender) {
+      if (spender && parsedEvent.spender != spender) {
         return;
       }
       callback(
-        <string>event.returnValues.owner,
-        <string>event.returnValues.spender,
-        <bigint>event.returnValues.value,
+        <string>parsedEvent.owner,
+        <string>parsedEvent.spender,
+        <TokenAmount>parsedEvent.value,
         {
-          index: <bigint>event.blockNumber,
+          index: Number(event.blockNumber),
           hash: <string>event.blockHash,
         },
       );
@@ -171,21 +176,17 @@ class SuperproToken {
 
     const subscription = contract.events.Approval();
     subscription.on('data', (event: EventLog): void => {
-      if (from && event.returnValues.from != from) {
+      const parsedEvent = cleanWeb3Data(event.returnValues);
+      if (from && parsedEvent.from != from) {
         return;
       }
-      if (to && event.returnValues.to != to) {
+      if (to && parsedEvent.to != to) {
         return;
       }
-      callback(
-        <string>event.returnValues.from,
-        <string>event.returnValues.to,
-        <bigint>event.returnValues.value,
-        {
-          index: <bigint>event.blockNumber,
-          hash: <string>event.blockHash,
-        },
-      );
+      callback(<string>parsedEvent.from, <string>parsedEvent.to, <TokenAmount>parsedEvent.value, {
+        index: Number(event.blockNumber),
+        hash: <string>event.blockHash,
+      });
     });
     subscription.on('error', (error: Error) => {
       logger.warn(error);
@@ -198,13 +199,13 @@ class SuperproToken {
 export type onTokenApproveCallback = (
   owner: string,
   spender: string,
-  value: bigint,
+  value: TokenAmount,
   block?: BlockInfo,
 ) => void;
 export type onTokenTransferCallback = (
   from: string,
   to: string,
-  value: bigint,
+  value: TokenAmount,
   block?: BlockInfo,
 ) => void;
 

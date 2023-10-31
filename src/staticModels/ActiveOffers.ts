@@ -1,21 +1,22 @@
 import Superpro from './Superpro';
 import { BlockchainConnector } from '../connectors';
+import { BlockchainId } from '../types';
 
 class ActiveOffers {
   public static get address(): string {
     return Superpro.address;
   }
 
-  public static getListOfActiveOffersSize(): Promise<bigint> {
+  public static async getListOfActiveOffersSize(): Promise<number> {
     const contract = BlockchainConnector.getInstance().getContract();
 
-    return contract.methods.getListOfActiveOffersSize().call();
+    return Number(await contract.methods.getListOfActiveOffersSize().call());
   }
 
-  public static getActiveOffersEventsQueueLength(): Promise<bigint> {
+  public static async getActiveOffersEventsQueueLength(): Promise<number> {
     const contract = BlockchainConnector.getInstance().getContract();
 
-    return contract.methods.getActiveOffersEventsQueueLength().call();
+    return Number(await contract.methods.getActiveOffersEventsQueueLength().call());
   }
 
   /**
@@ -23,15 +24,17 @@ class ActiveOffers {
    * Attention! Check active offers events queue length before calling this function, for actualy status it should be equal to 0.
    * @param begin The first element of range.
    * @param end One past the final element in the range.
-   * @returns {Promise<bigint[]>}
+   * @returns {Promise<BlockchainId[]>}
    */
-  public static async getListOfActiveOffersRange(begin?: bigint, end?: bigint): Promise<bigint[]> {
+  public static async getListOfActiveOffersRange(begin = 0, end = 0): Promise<BlockchainId[]> {
     const contract = BlockchainConnector.getInstance().getContract();
 
-    begin = begin ?? BigInt(0);
-    end = end ?? BigInt(await contract.methods.getListOfActiveOffersSize().call()) ?? BigInt(0);
+    end = Number(await contract.methods.getListOfActiveOffersSize().call());
 
-    return contract.methods.getListOfActiveOffersRange(begin, end).call();
+    return contract.methods
+      .getListOfActiveOffersRange(begin, end)
+      .call()
+      .then((ids) => ids.map((id) => id.toString()));
   }
 }
 

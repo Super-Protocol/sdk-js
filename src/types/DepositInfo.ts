@@ -1,5 +1,7 @@
+import { TokenAmount } from './Web3';
+
 export type DepositInfo = {
-  amount: bigint;
-  totalLocked: bigint;
-  profit: bigint;
+  amount: TokenAmount;
+  totalLocked: TokenAmount;
+  profit: TokenAmount;
 };

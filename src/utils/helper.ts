@@ -144,6 +144,8 @@ export function convertBigIntToString(obj: any): any {
 }
 
 export function formatTeeOfferOption(option: TeeOfferOption): TeeOfferOption {
+  option = cleanWeb3Data(option);
+
   return {
     ...option,
     info: formatOptionInfo(option.info),
@@ -178,6 +180,8 @@ export function formatUsage(usage: SlotUsage): SlotUsage {
 }
 
 export function formatOptionInfo(optionInfo: OptionInfo): OptionInfo {
+  optionInfo = cleanWeb3Data(optionInfo);
+
   return {
     bandwidth: Number(optionInfo.bandwidth),
     traffic: Number(optionInfo.traffic),
@@ -206,13 +210,20 @@ export function isValidBytes32Hex(data: string): boolean {
   return regex.test(data);
 }
 
-export const cleanEventData = <T>(data: T): T => {
+export const cleanWeb3Data = <T>(data: T): T => {
   const result: { [key: string]: unknown } = {};
 
   for (const key in data) {
     // If the value of the current key is an object (but not an array or null), recursively clean it
     if (typeof data[key] === 'object' && data[key] !== null && !Array.isArray(data[key])) {
-      result[key] = cleanEventData(data[key] as DecodedParams);
+      result[key] = cleanWeb3Data(data[key] as DecodedParams);
+      result[key] = convertBigIntToString(result[key]);
+    } else if (Array.isArray(data[key])) {
+      result[key] = (data[key] as Array<any>).map((item) =>
+        typeof item === 'bigint' ? item.toString() : item,
+      );
+    } else if (typeof data[key] === 'bigint') {
+      result[key] = (data[key] as bigint).toString();
     } else {
       result[key] = data[key];
     }

@@ -1,6 +1,10 @@
 import rootLogger from '../logger';
-import { checkIfActionAccountInitialized } from '../utils/helper';
-import { ProviderInfo, BlockInfo, TransactionOptions } from '../types';
+import {
+  checkIfActionAccountInitialized,
+  cleanWeb3Data,
+  convertBigIntToString,
+} from '../utils/helper';
+import { ProviderInfo, BlockInfo, TransactionOptions, TokenAmount } from '../types';
 import { EventLog } from 'web3-eth-contract';
 import { BlockchainConnector, BlockchainEventsListener } from '../connectors';
 import TxManager from '../utils/TxManager';
@@ -23,10 +27,12 @@ class ProviderRegistry {
   /**
    * Fetch provider security deposit by provider authority account
    */
-  public static getSecurityDeposit(providerAuthority: string): Promise<bigint> {
+  public static async getSecurityDeposit(providerAuthority: string): Promise<TokenAmount> {
     const contract = BlockchainConnector.getInstance().getContract();
 
-    return contract.methods.getProviderSecurityDeposit(providerAuthority).call();
+    return convertBigIntToString(
+      await contract.methods.getProviderSecurityDeposit(providerAuthority).call(),
+    );
   }
 
   public static isProviderRegistered(providerAuthority: string): Promise<boolean> {
@@ -43,7 +49,7 @@ class ProviderRegistry {
    * @param transactionOptions - object what contains alternative action account or gas limit (optional)
    */
   public static async refillSecurityDepositFor(
-    amount: bigint,
+    amount: TokenAmount,
     recipient: string,
     transactionOptions?: TransactionOptions,
   ): Promise<void> {
@@ -78,7 +84,7 @@ class ProviderRegistry {
    * @param transactionOptions - object what contains alternative action account or gas limit (optional)
    */
   public static async refillSecurityDeposit(
-    amount: bigint,
+    amount: TokenAmount,
     transactionOptions?: TransactionOptions,
   ): Promise<void> {
     const contract = BlockchainConnector.getInstance().getContract();
@@ -97,7 +103,7 @@ class ProviderRegistry {
    * @param transactionOptions - object what contains alternative action account or gas limit (optional)
    */
   public static async returnSecurityDeposit(
-    amount: bigint,
+    amount: TokenAmount,
     transactionOptions?: TransactionOptions,
   ): Promise<void> {
     const contract = BlockchainConnector.getInstance().getContract();
@@ -123,7 +129,7 @@ class ProviderRegistry {
       callback(
         <string>event.returnValues.auth,
         <BlockInfo>{
-          index: <bigint>event.blockNumber,
+          index: Number(event.blockNumber),
           hash: <string>event.blockHash,
         },
       );
@@ -149,7 +155,7 @@ class ProviderRegistry {
       callback(
         <string>event.returnValues.auth,
         <BlockInfo>{
-          index: <bigint>event.blockNumber,
+          index: Number(event.blockNumber),
           hash: <string>event.blockHash,
         },
       );
@@ -174,11 +180,12 @@ class ProviderRegistry {
 
     const subscription = contract.events.ProviderViolationRateIncremented();
     subscription.on('data', (event: EventLog): void => {
+      const parsedEvent = cleanWeb3Data(event.returnValues);
       callback(
-        <string>event.returnValues.auth,
-        <bigint>event.returnValues.newViolationRate,
+        <string>parsedEvent.auth,
+        <string>parsedEvent.newViolationRate,
         <BlockInfo>{
-          index: <bigint>event.blockNumber,
+          index: Number(event.blockNumber),
           hash: <string>event.blockHash,
         },
       );
@@ -203,11 +210,12 @@ class ProviderRegistry {
 
     const subscription = contract.events.ProviderSecurityDepoRefilled();
     subscription.on('data', (event: EventLog): void => {
+      const parsedEvent = cleanWeb3Data(event.returnValues);
       callback(
-        <string>event.returnValues.auth,
-        <bigint>event.returnValues.amount,
+        <string>parsedEvent.auth,
+        <TokenAmount>parsedEvent.amount,
         <BlockInfo>{
-          index: <bigint>event.blockNumber,
+          index: Number(event.blockNumber),
           hash: <string>event.blockHash,
         },
       );
@@ -232,12 +240,13 @@ class ProviderRegistry {
 
     const subscription = contract.events.ProviderSecurityDepoUnlocked();
     subscription.on('data', (event: EventLog): void => {
+      const parsedEvent = cleanWeb3Data(event.returnValues);
       callback(
-        <string>event.returnValues.auth,
-        <bigint>event.returnValues.amount,
+        <string>parsedEvent.auth,
+        <TokenAmount>parsedEvent.amount,
         <BlockInfo>{
-          index: <bigint>event.blockNumber,
-          hash: <string>event.blockHash,
+          index: Number(event.blockNumber),
+          hash: <string>parsedEvent.blockHash,
         },
       );
     });
@@ -254,17 +263,17 @@ export type onProviderRegisteredCallback = (address: string, block?: BlockInfo) 
 export type onProviderModifiedCallback = (address: string, block?: BlockInfo) => void;
 export type onProviderSecurityDepoRefilledCallback = (
   address: string,
-  amount: bigint,
+  amount: TokenAmount,
   block?: BlockInfo,
 ) => void;
 export type onProviderSecurityDepoUnlockedCallback = (
   address: string,
-  amount: bigint,
+  amount: TokenAmount,
   block?: BlockInfo,
 ) => void;
 export type onProviderViolationRateIncrementedCallback = (
   address: string,
-  newViolationRate: bigint,
+  newViolationRate: bigint | string,
   block?: BlockInfo,
 ) => void;
 

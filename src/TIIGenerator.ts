@@ -4,12 +4,8 @@ import _ from 'lodash';
 import { Compression, Compression_TYPE } from './proto/Compression';
 import { TRI } from './proto/TRI';
 import Crypto from './crypto';
-import Offer from './models/Offer';
-import Order from './models/Order';
-import TeeOffer from './models/TeeOffer';
-import { TeeOfferInfo } from './types/TeeOfferInfo';
-import { BlockchainId, OrderInfo } from './types/Order';
-import { OfferInfo } from './types/Offer';
+import { Offer, Order, TeeOffer } from './models';
+import { BlockchainId, OrderInfo, OfferInfo, TeeOfferInfo } from './types';
 import {
   Cipher,
   CryptoAlgorithm,
@@ -116,7 +112,7 @@ class TIIGenerator {
   }
 
   public static async getSolutionHashesAndLinkage(
-    inputOffers: (BlockchainId)[],
+    inputOffers: BlockchainId[],
   ): Promise<{ hashes: Hash[]; linkage?: string }> {
     const solutionHashes: Hash[] = [];
     let solutionLinkage: string | undefined;

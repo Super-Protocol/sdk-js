@@ -1,15 +1,22 @@
 import rootLogger from '../logger';
 import TCB from '../models/TCB';
 import Superpro from './Superpro';
-import { EpochInfo, ConsensusConstants, TransactionOptions, BlockInfo } from '../types';
-import { checkIfActionAccountInitialized } from '../utils/helper';
+import {
+  EpochInfo,
+  ConsensusConstants,
+  TransactionOptions,
+  BlockInfo,
+  BlockchainId,
+  TokenAmount,
+} from '../types';
+import { checkIfActionAccountInitialized, cleanWeb3Data } from '../utils/helper';
 import TxManager from '../utils/TxManager';
 import { BlockchainConnector, BlockchainEventsListener } from '../connectors';
 import { EventLog } from 'web3-eth-contract';
 
 class Consensus {
   private static readonly logger = rootLogger.child({ className: 'Consensus' });
-  private static tcbIds?: bigint[];
+  private static tcbIds?: BlockchainId[];
 
   public static get address(): string {
     return Superpro.address;
@@ -19,13 +26,13 @@ class Consensus {
    * Function for fetching list of all tcb ids
    * @returns list of tcb ids
    */
-  public static async getAllTcbs(): Promise<bigint[]> {
+  public static async getAllTcbs(): Promise<BlockchainId[]> {
     const contract = BlockchainConnector.getInstance().getContract();
     const tcbSet = new Set(this.tcbIds ?? []);
 
-    const tcbsCount = BigInt(await contract.methods.getTcbsCount().call());
+    const tcbsCount = Number(await contract.methods.getTcbsCount().call());
     for (let tcbId = tcbSet.size + 1; tcbId <= tcbsCount; tcbId++) {
-      tcbSet.add(BigInt(tcbId));
+      tcbSet.add(tcbId.toString());
     }
     this.tcbIds = Array.from(tcbSet);
 
@@ -48,7 +55,10 @@ class Consensus {
   public static getEpoch(epochIndex: number): Promise<EpochInfo> {
     const contract = BlockchainConnector.getInstance().getContract();
 
-    return contract.methods.getEpoch(epochIndex).call();
+    return contract.methods
+      .getEpoch(epochIndex)
+      .call()
+      .then((epoch) => cleanWeb3Data(epoch) as EpochInfo);
   }
 
   public static getSuspiciousBlockTable(): Promise<string[]> {
@@ -58,7 +68,7 @@ class Consensus {
   }
 
   public static async unlockProfitByTcbList(
-    tcbIds: bigint[],
+    tcbIds: BlockchainId[],
     transactionOptions?: TransactionOptions,
   ): Promise<void> {
     const contract = BlockchainConnector.getInstance().getContract();
@@ -85,22 +95,31 @@ class Consensus {
     }
   }
 
-  public static getSuspiciousBlockTableSize(): Promise<string[]> {
+  public static getSuspiciousBlockTableSize(): Promise<string> {
     const contract = BlockchainConnector.getInstance().getContract();
 
-    return contract.methods.getSuspiciousBlockTableSize().call();
+    return contract.methods
+      .getSuspiciousBlockTableSize()
+      .call()
+      .then((size) => size.toString());
   }
 
-  public static getLastBlockTable(): Promise<string[]> {
+  public static getLastBlockTable(): Promise<BlockchainId[]> {
     const contract = BlockchainConnector.getInstance().getContract();
 
-    return contract.methods.getLastBlockTable().call();
+    return contract.methods
+      .getLastBlockTable()
+      .call()
+      .then((ids) => ids.map((id) => id.toString()));
   }
 
-  public static getLastBlockTableSize(): Promise<string[]> {
+  public static getLastBlockTableSize(): Promise<string> {
     const contract = BlockchainConnector.getInstance().getContract();
 
-    return contract.methods.getLastBlockTableSize().call();
+    return contract.methods
+      .getLastBlockTableSize()
+      .call()
+      .then((size) => size.toString());
   }
 
   public static async getConstants(): Promise<ConsensusConstants> {
@@ -116,11 +135,12 @@ class Consensus {
 
     const subscription = contract.events.TcbBanned();
     subscription.on('data', (event: EventLog): void => {
+      const parsedEvent = cleanWeb3Data(event.returnValues);
       callback(
-        <string>event.returnValues.tcbId,
-        <string>event.returnValues.provider,
+        <string>parsedEvent.tcbId,
+        <string>parsedEvent.provider,
         <BlockInfo>{
-          index: <bigint>event.blockNumber,
+          index: Number(event.blockNumber),
           hash: <string>event.blockHash,
         },
       );
@@ -138,11 +158,12 @@ class Consensus {
 
     const subscription = contract.events.TcbCompleted();
     subscription.on('data', (event: EventLog): void => {
+      const parsedEvent = cleanWeb3Data(event.returnValues);
       callback(
-        <string>event.returnValues.tcbId,
-        <string>event.returnValues.provider,
+        <string>parsedEvent.tcbId,
+        <string>parsedEvent.provider,
         <BlockInfo>{
-          index: <bigint>event.blockNumber,
+          index: Number(event.blockNumber),
           hash: <string>event.blockHash,
         },
       );
@@ -160,11 +181,12 @@ class Consensus {
 
     const subscription = contract.events.TcbInitialized();
     subscription.on('data', (event: EventLog): void => {
+      const parsedEvent = cleanWeb3Data(event.returnValues);
       callback(
-        <string>event.returnValues.tcbId,
-        <string>event.returnValues.provider,
+        <string>parsedEvent.tcbId,
+        <string>parsedEvent.provider,
         <BlockInfo>{
-          index: <bigint>event.blockNumber,
+          index: Number(event.blockNumber),
           hash: <string>event.blockHash,
         },
       );
@@ -182,11 +204,12 @@ class Consensus {
 
     const subscription = contract.events.TcbBenchmarkChanged();
     subscription.on('data', (event: EventLog) => {
+      const parsedEvent = cleanWeb3Data(event.returnValues);
       callback(
-        <string>event.returnValues.tcbId,
-        <string>event.returnValues.provider,
+        <string>parsedEvent.tcbId,
+        <string>parsedEvent.provider,
         <BlockInfo>{
-          index: <bigint>event.blockNumber,
+          index: Number(event.blockNumber),
           hash: <string>event.blockHash,
         },
       );
@@ -204,12 +227,13 @@ class Consensus {
 
     const subscription = contract.events.RewardsClaimed();
     subscription.on('data', (event: EventLog) => {
+      const parsedEvent = cleanWeb3Data(event.returnValues);
       callback(
-        <string>event.returnValues.tcbId,
-        <string>event.returnValues.amount,
-        <string>event.returnValues.claimer,
+        <BlockchainId>parsedEvent.tcbId,
+        <TokenAmount>parsedEvent.amount,
+        <string>parsedEvent.claimer,
         <BlockInfo>{
-          index: <bigint>event.blockNumber,
+          index: Number(event.blockNumber),
           hash: <string>event.blockHash,
         },
       );
@@ -227,11 +251,12 @@ class Consensus {
 
     const subscription = contract.events.TcbRewardUnlocked();
     subscription.on('data', (event: EventLog) => {
+      const parsedEvent = cleanWeb3Data(event.returnValues);
       callback(
-        <string>event.returnValues.tcbId,
-        <string>event.returnValues.rewards,
+        <BlockchainId>parsedEvent.tcbId,
+        <TokenAmount>parsedEvent.rewards,
         <BlockInfo>{
-          index: <bigint>event.blockNumber,
+          index: Number(event.blockNumber),
           hash: <string>event.blockHash,
         },
       );
@@ -245,22 +270,34 @@ class Consensus {
 }
 
 export type onRewardsClaimedCallback = (
-  tcbId: string,
-  amount: string,
+  tcbId: BlockchainId,
+  amount: TokenAmount,
   claimer: string,
   block?: BlockInfo,
 ) => void;
 export type onTcbRewardUnlockedCallback = (
-  tcbId: string,
-  rewards: string,
+  tcbId: BlockchainId,
+  rewards: TokenAmount,
   block?: BlockInfo,
 ) => void;
 export type onTcbBenchmarkChangedCallback = (
-  tcbId: string,
+  tcbId: BlockchainId,
   provider: string,
   block?: BlockInfo,
 ) => void;
-export type onTcbInitializedCallback = (tcbId: string, provider: string, block?: BlockInfo) => void;
-export type onTcbCompletedCallback = (tcbId: string, provider: string, block?: BlockInfo) => void;
-export type onTcbBannedCallback = (tcbId: string, provider: string, block?: BlockInfo) => void;
+export type onTcbInitializedCallback = (
+  tcbId: BlockchainId,
+  provider: string,
+  block?: BlockInfo,
+) => void;
+export type onTcbCompletedCallback = (
+  tcbId: BlockchainId,
+  provider: string,
+  block?: BlockInfo,
+) => void;
+export type onTcbBannedCallback = (
+  tcbId: BlockchainId,
+  provider: string,
+  block?: BlockInfo,
+) => void;
 export default Consensus;

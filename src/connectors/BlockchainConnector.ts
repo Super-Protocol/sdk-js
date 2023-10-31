@@ -16,11 +16,17 @@ import {
 } from '../constants';
 import {
   checkIfActionAccountInitialized,
-  cleanEventData,
+  cleanWeb3Data,
   incrementMethodCall,
   executeBatchAsync,
 } from '../utils/helper';
-import { TransactionOptions, EventData, BlockInfo, ExtendedTransactionInfo } from '../types/Web3';
+import {
+  TransactionOptions,
+  EventData,
+  BlockInfo,
+  ExtendedTransactionInfo,
+  TokenAmount,
+} from '../types/Web3';
 import BlockchainTransaction from '../types/blockchainConnector/StorageAccess';
 import TxManager from '../utils/TxManager';
 import { abi } from '../contracts/abi';
@@ -156,7 +162,7 @@ class BlockchainConnector extends BaseConnector {
         eventData.push({
           contract: log.address,
           name: descriptor.name || 'UknownEvenet',
-          data: cleanEventData(decodedParams),
+          data: cleanWeb3Data(decodedParams),
         });
       }
     }
@@ -172,7 +178,7 @@ class BlockchainConnector extends BaseConnector {
   public async getLastBlockInfo(): Promise<BlockInfo> {
     this.checkIfInitialized();
 
-    const index = await store.web3Https!.eth.getBlockNumber();
+    const index = Number(await store.web3Https!.eth.getBlockNumber());
     const hash = (await store.web3Https!.eth.getBlock(index)).hash;
 
     return {
@@ -198,7 +204,7 @@ class BlockchainConnector extends BaseConnector {
   @incrementMethodCall()
   public transfer(
     to: string,
-    amount: bigint,
+    amount: TokenAmount,
     transactionOptions?: TransactionOptions,
   ): Promise<TransactionReceipt> {
     this.checkIfInitialized();
@@ -217,12 +223,12 @@ class BlockchainConnector extends BaseConnector {
    * @param address - wallet address
    * @returns {Promise<number>} - Transactions count
    */
-  public getTransactionCount(address: string, status?: string): Promise<bigint> {
+  public async getTransactionCount(address: string, status?: string): Promise<number> {
     this.checkIfInitialized();
     if (status) {
-      return store.web3Https!.eth.getTransactionCount(address, status);
+      return Number(await store.web3Https!.eth.getTransactionCount(address, status));
     } else {
-      return store.web3Https!.eth.getTransactionCount(address);
+      return Number(await store.web3Https!.eth.getTransactionCount(address));
     }
   }
 

@@ -1,7 +1,11 @@
 import Web3, { Numbers, TransactionInfo } from 'web3';
 
+export type BlockchainId = string;
+export type TokenAmount = string;
+export type BlockIndex = number;
+
 export type BlockInfo = {
-  index: bigint;
+  index: BlockIndex;
   hash: string | undefined;
 };
 
@@ -35,7 +39,7 @@ export type TransactionDataOptions = TransactionOptions & {
   to: string;
   nonce?: bigint;
   data?: string;
-  value?: bigint;
+  value?: TokenAmount;
 };
 
 export type TransactionOptions = {

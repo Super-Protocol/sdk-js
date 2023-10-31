@@ -1,3 +1,5 @@
+import { BlockchainId, TokenAmount } from './Web3';
+
 export enum TcbVerifiedStatus {
   Valid = 0,
   InvalidQuote = 1,
@@ -6,20 +8,20 @@ export enum TcbVerifiedStatus {
 }
 
 export type TcbPublicData = {
-  teeOffer?: bigint;
+  teeOffer?: BlockchainId;
   deviceID: string;
   benchmark: number;
   properties: string;
 };
 
 export type TcbUtilityData = {
-  checkingBlocks: [bigint];
+  checkingBlocks: [BlockchainId];
   checkingBlockMarks: [TcbVerifiedStatus];
   lastBlocksTakenAmount: number;
   suspiciousBlocksTakenAmount: number;
   negative: number;
   positive: number;
-  previousTcb: bigint;
+  previousTcb: BlockchainId;
   lastBlocksTaken: boolean;
   suspiciousBlocksTaken: boolean;
   assignedToEpoch: boolean;
@@ -50,9 +52,9 @@ export type TcbData = {
 };
 
 export type EpochInfo = {
-  reward: bigint;
-  benchmark: bigint;
-  penaltyBenchmark: bigint;
+  reward: TokenAmount;
+  benchmark: bigint | string;
+  penaltyBenchmark: bigint | string;
 };
 
 export type ConsensusConstants = {

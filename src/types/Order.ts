@@ -1,8 +1,7 @@
 import { SlotUsage } from './SlotUsage';
 import { SlotInfo } from './SlotInfo';
 import { OptionInfo } from './OptionInfo';
-
-export type BlockchainId = bigint | string;
+import { TokenAmount, BlockchainId } from './Web3';
 
 export enum OrderStatus {
   New = '0',
@@ -40,17 +39,17 @@ export type OrderInfo = {
 
 export type ExtendedOrderInfo = OrderInfo & {
   blocking: boolean;
-  deposit: bigint;
+  deposit: TokenAmount;
 };
 
 export type OrderResult = {
   encryptedResult: string;
-  orderPrice: bigint;
+  orderPrice: TokenAmount;
 };
 
 export type SubOrderParams = {
   blockParentOrder: boolean;
-  deposit: bigint;
+  deposit: TokenAmount;
 };
 
 export type OrderUsage = {

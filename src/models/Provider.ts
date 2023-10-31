@@ -1,7 +1,11 @@
 import { Contract } from 'web3';
 import { abi } from '../contracts/abi';
-import { checkIfActionAccountInitialized, cleanEventData } from '../utils/helper';
-import { ProviderInfo, Origins, TransactionOptions } from '../types';
+import {
+  checkIfActionAccountInitialized,
+  cleanWeb3Data,
+  convertBigIntToString,
+} from '../utils/helper';
+import { ProviderInfo, Origins, TransactionOptions, BlockchainId } from '../types';
 import { BlockchainConnector } from '../connectors';
 import TxManager from '../utils/TxManager';
 import Consensus from '../staticModels/Consensus';
@@ -10,10 +14,10 @@ class Provider {
   private static contract: Contract<typeof abi>;
 
   public providerInfo?: ProviderInfo;
-  public violationRate?: number;
+  public violationRate?: bigint | string;
   public authority?: string;
-  public valueOffers?: bigint[];
-  public teeOffers?: bigint[];
+  public valueOffers?: BlockchainId[];
+  public teeOffers?: BlockchainId[];
   public origins?: Origins;
   public providerId: string;
 
@@ -43,7 +47,7 @@ class Provider {
     const providerInfoParams = await Provider.contract.methods
       .getProviderInfo(this.providerId)
       .call()
-      .then((providerInfo) => cleanEventData(providerInfo) as ProviderInfo);
+      .then((providerInfo) => cleanWeb3Data(providerInfo) as ProviderInfo);
 
     return (this.providerInfo = providerInfoParams);
   }
@@ -58,10 +62,11 @@ class Provider {
   /**
    * Function for fetching all value offers for this provider
    */
-  public async getValueOffers(): Promise<bigint[]> {
+  public async getValueOffers(): Promise<BlockchainId[]> {
     this.valueOffers = await Provider.contract.methods
       .getProviderValueOffers(this.providerId)
-      .call();
+      .call()
+      .then((offers) => offers.map((offer) => offer.toString()));
 
     return this.valueOffers;
   }
@@ -69,8 +74,11 @@ class Provider {
   /**
    * Function for fetching all TEE offers for this provider
    */
-  public async getTeeOffers(): Promise<bigint[]> {
-    this.teeOffers = await Provider.contract.methods.getProviderTeeOffers(this.providerId).call();
+  public async getTeeOffers(): Promise<BlockchainId[]> {
+    this.teeOffers = await Provider.contract.methods
+      .getProviderTeeOffers(this.providerId)
+      .call()
+      .then((offers) => offers.map((offer) => offer.toString()));
 
     return this.teeOffers;
   }
@@ -78,12 +86,10 @@ class Provider {
   /**
    * Function for fetching violationRate for this provider
    */
-  public async getViolationRate(): Promise<number> {
-    this.violationRate = Number(
+  public async getViolationRate(): Promise<bigint | string> {
+    return convertBigIntToString(
       await Provider.contract.methods.getProviderViolationRate(this.providerId).call(),
     );
-
-    return this.violationRate;
   }
 
   /**
@@ -93,7 +99,7 @@ class Provider {
     const origins = await Provider.contract.methods
       .getProviderOrigins(this.providerId)
       .call()
-      .then((origins) => cleanEventData(origins) as Origins);
+      .then((origins) => cleanWeb3Data(origins) as Origins);
 
     // Convert blockchain time seconds to js time milliseconds
     origins.createdDate = Number(origins.createdDate) * 1000;
@@ -106,15 +112,21 @@ class Provider {
     const violationRate = await this.getViolationRate();
     const { CONSENSUS_MAX_PENALTIES } = await Consensus.getConstants();
 
-    return violationRate >= CONSENSUS_MAX_PENALTIES;
+    return Number(violationRate) >= Number(CONSENSUS_MAX_PENALTIES);
   }
 
-  public getOrdersLockedProfitList(): Promise<bigint[]> {
-    return Provider.contract.methods.getOrdersLockedProfitList(this.providerId).call();
+  public getOrdersLockedProfitList(): Promise<BlockchainId[]> {
+    return Provider.contract.methods
+      .getOrdersLockedProfitList(this.providerId)
+      .call()
+      .then((orders) => orders.map((order) => order.toString()));
   }
 
-  public getTcbLockedProfitList(): Promise<bigint[]> {
-    return Provider.contract.methods.getTcbLockedProfitList(this.providerId).call();
+  public getTcbLockedProfitList(): Promise<BlockchainId[]> {
+    return Provider.contract.methods
+      .getTcbLockedProfitList(this.providerId)
+      .call()
+      .then((tcbIds) => tcbIds.map((tcbId) => tcbId.toString()));
   }
 }
 

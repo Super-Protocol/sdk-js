@@ -2,14 +2,20 @@ import { Contract } from 'web3';
 import { abi } from '../contracts/abi';
 import TxManager from '../utils/TxManager';
 import { BlockchainConnector } from '../connectors';
-import { TcbData, TcbPublicData, TcbVerifiedStatus, TransactionOptions } from '../types';
+import {
+  BlockchainId,
+  TcbData,
+  TcbPublicData,
+  TcbVerifiedStatus,
+  TransactionOptions,
+} from '../types';
 import { checkIfActionAccountInitialized, packDeviceId, unpackDeviceId } from '../utils/helper';
 
 class TCB {
-  public tcbId: bigint;
+  public tcbId: BlockchainId;
   private static contract: Contract<typeof abi>;
 
-  constructor(tcbId: bigint) {
+  constructor(tcbId: BlockchainId) {
     this.tcbId = tcbId;
     if (!TCB.contract) {
       TCB.contract = BlockchainConnector.getInstance().getContract();
@@ -127,7 +133,7 @@ class TCB {
    * Function for fetching the given marks for recruited TCBs from the Tables of Consensus
    */
   public async getCheckingBlocksMarks(): Promise<{
-    blocksIds: bigint[];
+    blocksIds: BlockchainId[];
     marks: TcbVerifiedStatus[];
   }> {
     const tcb: TcbData = await TCB.contract.methods.getTcbById(this.tcbId).call();

@@ -1,6 +1,6 @@
 import rootLogger from '../logger';
 import StaticModel from './StaticModel';
-import { checkIfActionAccountInitialized } from '../utils/helper';
+import { checkIfActionAccountInitialized, cleanWeb3Data } from '../utils/helper';
 import { BytesLike, formatBytes32String, parseBytes32String } from 'ethers/lib/utils';
 import {
   OfferCreatedEvent,
@@ -38,7 +38,7 @@ class Offers implements StaticModel {
     for (let offerId = offersSet.size + 1; offerId <= count; ++offerId) {
       const offerType = (await contract.methods.getOfferType(offerId).call()) as OfferType;
       if (offerType !== OfferType.TeeOffer) {
-        offersSet.add(BigInt(offerId));
+        offersSet.add(offerId.toString());
       }
     }
     this.offers = Array.from(offersSet);
@@ -52,7 +52,7 @@ class Offers implements StaticModel {
   public static async getSlotsCount(): Promise<number> {
     const contract = BlockchainConnector.getInstance().getContract();
 
-    return +(await contract.methods.getValueOffersSlotsCount().call());
+    return Number(await contract.methods.getValueOffersSlotsCount().call());
   }
 
   /**
@@ -126,16 +126,17 @@ class Offers implements StaticModel {
 
     const subscription = contract.events.ValueSlotAdded();
     subscription.on('data', (event: EventLog): void => {
-      if (creator && event.returnValues.creator != creator) {
+      const parsedEvent = cleanWeb3Data(event.returnValues);
+      if (creator && parsedEvent.creator != creator) {
         return;
       }
       callback(
-        <string>event.returnValues.creator,
-        <BlockchainId>event.returnValues.offerId,
-        <BlockchainId>event.returnValues.slotId,
-        parseBytes32String(<BytesLike>event.returnValues.externalId),
+        <string>parsedEvent.creator,
+        <BlockchainId>parsedEvent.offerId,
+        <BlockchainId>parsedEvent.slotId,
+        parseBytes32String(<BytesLike>parsedEvent.externalId),
         <BlockInfo>{
-          index: <bigint>event.blockNumber,
+          index: Number(event.blockNumber),
           hash: <string>event.blockHash,
         },
       );
@@ -158,11 +159,12 @@ class Offers implements StaticModel {
 
     const subscription = contract.events.ValueSlotUpdated();
     subscription.on('data', (event: EventLog): void => {
+      const parsedEvent = cleanWeb3Data(event.returnValues);
       callback(
-        <BlockchainId>event.returnValues.offerId,
-        <BlockchainId>event.returnValues.slotId,
+        <BlockchainId>parsedEvent.offerId,
+        <BlockchainId>parsedEvent.slotId,
         <BlockInfo>{
-          index: <bigint>event.blockNumber,
+          index: Number(event.blockNumber),
           hash: <string>event.blockHash,
         },
       );
@@ -185,11 +187,12 @@ class Offers implements StaticModel {
 
     const subscription = contract.events.ValueSlotDeleted();
     subscription.on('data', (event: EventLog): void => {
+      const parsedEvent = cleanWeb3Data(event.returnValues);
       callback(
-        <BlockchainId>event.returnValues.offerId,
-        <BlockchainId>event.returnValues.slotId,
+        <BlockchainId>parsedEvent.offerId,
+        <BlockchainId>parsedEvent.slotId,
         <BlockInfo>{
-          index: <bigint>event.blockNumber,
+          index: Number(event.blockNumber),
           hash: <string>event.blockHash,
         },
       );
@@ -212,12 +215,13 @@ class Offers implements StaticModel {
 
     const subscription = contract.events.OfferCreated();
     subscription.on('data', (event: EventLog): void => {
+      const parsedEvent = cleanWeb3Data(event.returnValues);
       callback(
-        <BlockchainId>event.returnValues.offerId,
-        <string>event.returnValues.creator,
-        parseBytes32String(<BytesLike>event.returnValues.externalId),
+        <BlockchainId>parsedEvent.offerId,
+        <string>parsedEvent.creator,
+        parseBytes32String(<BytesLike>parsedEvent.externalId),
         <BlockInfo>{
-          index: <bigint>event.blockNumber,
+          index: Number(event.blockNumber),
           hash: <string>event.blockHash,
         },
       );
@@ -240,7 +244,7 @@ class Offers implements StaticModel {
         <BlockchainId>event.returnValues.offerId,
         <OfferType>event.returnValues.offerType,
         <BlockInfo>{
-          index: <bigint>event.blockNumber,
+          index: Number(event.blockNumber),
           hash: <string>event.blockHash,
         },
       );
@@ -258,12 +262,13 @@ class Offers implements StaticModel {
 
     const subscription = contract.events.OfferDisabled();
     subscription.on('data', (event: EventLog): void => {
+      const parsedEvent = cleanWeb3Data(event.returnValues);
       callback(
-        <string>event.returnValues.providerAuth,
-        <BlockchainId>event.returnValues.offerId,
-        <OfferType>event.returnValues.offerType,
+        <string>parsedEvent.providerAuth,
+        <BlockchainId>parsedEvent.offerId,
+        <OfferType>parsedEvent.offerType,
         <BlockInfo>{
-          index: <bigint>event.blockNumber,
+          index: Number(event.blockNumber),
           hash: <string>event.blockHash,
         },
       );
@@ -302,7 +307,15 @@ export type onSlotAddedCallback = (
   externalId: string,
   block?: BlockInfo,
 ) => void;
-export type onSlotUpdatedCallback = (offerId: BlockchainId, slotId: BlockchainId, block?: BlockInfo) => void;
-export type onSlotDeletedCallback = (offerId: BlockchainId, slotId: BlockchainId, block?: BlockInfo) => void;
+export type onSlotUpdatedCallback = (
+  offerId: BlockchainId,
+  slotId: BlockchainId,
+  block?: BlockInfo,
+) => void;
+export type onSlotDeletedCallback = (
+  offerId: BlockchainId,
+  slotId: BlockchainId,
+  block?: BlockInfo,
+) => void;
 
 export default Offers;

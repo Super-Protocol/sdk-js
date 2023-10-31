@@ -8,6 +8,7 @@ import {
   Origins,
   TransactionOptions,
   BlockchainId,
+  TokenAmount,
 } from '../types';
 import { Contract, TransactionReceipt } from 'web3';
 import { EventLog } from 'web3-eth-contract';
@@ -15,7 +16,7 @@ import rootLogger from '../logger';
 import { abi } from '../contracts/abi';
 import {
   checkIfActionAccountInitialized,
-  cleanEventData,
+  cleanWeb3Data,
   formatOptionInfo,
   formatUsage,
   incrementMethodCall,
@@ -68,17 +69,23 @@ class Order {
   /**
    * Function for fetching avaliable for unlock order profit.
    */
-  public async isOrderProfitAvailable(): Promise<bigint> {
-    const profit = await Order.contract.methods.isOrderProfitAvailable(this.id).call();
+  public async isOrderProfitAvailable(): Promise<TokenAmount> {
+    const parsedResponse = await Order.contract.methods
+      .isOrderProfitAvailable(this.id)
+      .call()
+      .then((response) => cleanWeb3Data(response) as { profit: TokenAmount });
 
-    return BigInt(profit[1]);
+    return parsedResponse.profit;
   }
 
   /**
    * Function for fetching order price
    */
-  public calculateCurrentPrice(): Promise<bigint> {
-    return Order.contract.methods.calculateOrderCurrentPrice(this.id).call();
+  public calculateCurrentPrice(): Promise<TokenAmount> {
+    return Order.contract.methods
+      .calculateOrderCurrentPrice(this.id)
+      .call()
+      .then((price) => price.toString());
   }
 
   /**
@@ -91,7 +98,7 @@ class Order {
     }
     const orderInfoParams = await Order.contract.methods.getOrder(this.id).call();
     const orderInfo: OrderInfo = {
-      ...(cleanEventData(orderInfoParams[1]) as OrderInfo),
+      ...(cleanWeb3Data(orderInfoParams[1]) as OrderInfo),
       status: orderInfoParams[1].status.toString() as OrderStatus,
     };
     orderInfo.slots.optionsCount = orderInfo.slots.optionsCount.map((count) => Number(count));
@@ -130,7 +137,7 @@ class Order {
   public async getOrderResult(): Promise<OrderResult> {
     const orderResults = await Order.contract.methods.getOrder(this.id).call();
 
-    return (this.orderResult = cleanEventData(orderResults[2]) as OrderResult);
+    return (this.orderResult = cleanWeb3Data(orderResults[2]) as OrderResult);
   }
 
   /**
@@ -138,7 +145,10 @@ class Order {
    */
   @incrementMethodCall()
   public async getSubOrders(): Promise<BlockchainId[]> {
-    this.subOrders = await Order.contract.methods.getOrderSubOrders(this.id).call();
+    this.subOrders = await Order.contract.methods
+      .getOrderSubOrders(this.id)
+      .call()
+      .then((ids) => ids.map((id) => id.toString()));
 
     return this.subOrders;
   }
@@ -148,7 +158,10 @@ class Order {
    */
   @incrementMethodCall()
   public async getParentOrder(): Promise<BlockchainId> {
-    this.parentOrder = await Order.contract.methods.getOrderParentOrder(this.id).call();
+    this.parentOrder = await Order.contract.methods
+      .getOrderParentOrder(this.id)
+      .call()
+      .then((id) => id.toString());
 
     return this.parentOrder;
   }
@@ -157,8 +170,11 @@ class Order {
    * Function for fetching order options deposit spent from blockchain
    */
   @incrementMethodCall()
-  public getOptionsDepositSpent(): Promise<bigint> {
-    return Order.contract.methods.getOptionsDepositSpent(this.id).call();
+  public getOptionsDepositSpent(): Promise<TokenAmount> {
+    return Order.contract.methods
+      .getOptionsDepositSpent(this.id)
+      .call()
+      .then((price) => price.toString());
   }
 
   /**
@@ -169,7 +185,7 @@ class Order {
     this.selectedUsage = await Order.contract.methods
       .getOrderSelectedUsage(this.id)
       .call()
-      .then((selectedUsage) => cleanEventData(selectedUsage) as OrderUsage);
+      .then((selectedUsage) => cleanWeb3Data(selectedUsage) as OrderUsage);
 
     const cpuDenominator = await TeeOffers.getDenominator();
 
@@ -191,32 +207,44 @@ class Order {
    * Function for fetching hold deposits sum of the order and its suborders
    */
   @incrementMethodCall()
-  public calculateTotalOrderDeposit(): Promise<bigint> {
-    return Order.contract.methods.calculateTotalOrderDeposit(this.id).call();
+  public calculateTotalOrderDeposit(): Promise<TokenAmount> {
+    return Order.contract.methods
+      .calculateTotalOrderDeposit(this.id)
+      .call()
+      .then((price) => price.toString());
   }
 
   /**
    * Function for fetching reserve for output order
    */
   @incrementMethodCall()
-  public calculateOrderOutputReserve(): Promise<bigint> {
-    return Order.contract.methods.calculateOrderOutputReserve(this.id).call();
+  public calculateOrderOutputReserve(): Promise<TokenAmount> {
+    return Order.contract.methods
+      .calculateOrderOutputReserve(this.id)
+      .call()
+      .then((price) => price.toString());
   }
 
   /**
    * Function for fetching spent deposits sum of the order and its suborders
    */
   @incrementMethodCall()
-  public calculateTotalDepositSpent(): Promise<bigint> {
-    return Order.contract.methods.calculateTotalDepositSpent(this.id).call();
+  public calculateTotalDepositSpent(): Promise<TokenAmount> {
+    return Order.contract.methods
+      .calculateTotalDepositSpent(this.id)
+      .call()
+      .then((price) => price.toString());
   }
 
   /**
    * Function for fetching unspent deposits sum of the order and its suborders
    */
   @incrementMethodCall()
-  public calculateTotalDepositUnspent(): Promise<bigint> {
-    return Order.contract.methods.calculateTotalDepositUnspent(this.id).call();
+  public calculateTotalDepositUnspent(): Promise<TokenAmount> {
+    return Order.contract.methods
+      .calculateTotalDepositUnspent(this.id)
+      .call()
+      .then((price) => price.toString());
   }
 
   /**
@@ -227,7 +255,7 @@ class Order {
     const origins: Origins = await Order.contract.methods
       .getOrderOrigins(this.id)
       .call()
-      .then((origins) => cleanEventData(origins) as Origins);
+      .then((origins) => cleanWeb3Data(origins) as Origins);
 
     // Convert blockchain time seconds to js time milliseconds
     origins.createdDate = Number(origins.createdDate) * 1000;
@@ -248,8 +276,11 @@ class Order {
    * Function for fetching deposit of order from blockchain
    */
   @incrementMethodCall()
-  public getDeposit(): Promise<bigint> {
-    return Order.contract.methods.getOrderDeposit(this.id).call();
+  public getDeposit(): Promise<TokenAmount> {
+    return Order.contract.methods
+      .getOrderDeposit(this.id)
+      .call()
+      .then((price) => price.toString());
   }
 
   /**
@@ -281,7 +312,7 @@ class Order {
    */
   @incrementMethodCall()
   public async setOptionsDepositSpent(
-    value: bigint,
+    value: TokenAmount,
     transactionOptions?: TransactionOptions,
   ): Promise<void> {
     checkIfActionAccountInitialized(transactionOptions);
@@ -383,12 +414,12 @@ class Order {
   public async createSubOrder(
     subOrderInfo: OrderInfo,
     blockParentOrder: boolean,
-    deposit = BigInt(0),
+    deposit?: TokenAmount,
     transactionOptions?: TransactionOptions,
     checkTxBeforeSend = false,
   ): Promise<void> {
     checkIfActionAccountInitialized(transactionOptions);
-
+    deposit = deposit ?? '0';
     const preparedInfo = {
       ...subOrderInfo,
       externalId: formatBytes32String(subOrderInfo.externalId),

@@ -1,22 +1,25 @@
 import { BlockchainConnector } from '../connectors';
 import Superpro from './Superpro';
-import { BlockchainId, Mark } from '../types';
+import { BlockchainId, Mark, ProviderMarksCount } from '../types';
+import { cleanWeb3Data } from '../utils/helper';
 
 class Marks {
   public static get address(): string {
     return Superpro.address;
   }
 
-  static getProviderMarks(providerId: string): Promise<bigint> {
+  static getProviderMarks(providerId: string): Promise<ProviderMarksCount> {
     const contract = BlockchainConnector.getInstance().getContract();
-
-    return contract.methods.getProviderMarks(providerId).call();
+    return contract.methods
+      .getProviderMarks(providerId)
+      .call()
+      .then((marks) => cleanWeb3Data(marks) as ProviderMarksCount);
   }
 
-  static getOrderMark(orderId: BlockchainId): Promise<bigint> {
+  static async getOrderMark(orderId: BlockchainId): Promise<Mark> {
     const contract = BlockchainConnector.getInstance().getContract();
 
-    return contract.methods.getOrderMark(orderId).call();
+    return (await contract.methods.getOrderMark(orderId).call()) as Mark;
   }
 
   static async setOrderMark(orderId: BlockchainId, mark: Mark): Promise<void> {

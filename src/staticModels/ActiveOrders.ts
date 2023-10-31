@@ -1,6 +1,6 @@
 import Superpro from './Superpro';
 import { BlockchainConnector } from '../connectors';
-import { incrementMethodCall } from '../utils/helper';
+import { convertBigIntToString, incrementMethodCall } from '../utils/helper';
 import { BlockchainId } from '../types';
 
 class ActiveOrders {
@@ -10,47 +10,50 @@ class ActiveOrders {
 
   /**
    * Function returns amount of active orders
-   * @returns {Promise<bigint>}
+   * @returns {Promise<number>}
    */
   @incrementMethodCall()
-  public static async getListOfActiveOrdersSize(): Promise<bigint> {
+  public static async getListOfActiveOrdersSize(): Promise<number> {
     const contract = BlockchainConnector.getInstance().getContract();
 
-    return await contract.methods.getListOfActiveOrdersSize().call();
+    return Number(await contract.methods.getListOfActiveOrdersSize().call());
   }
 
   /**
    * Function returns ids of active orders
-   * @returns {Promise<bigint[]>}
+   * @returns {Promise<BlockchainId[]>}
    */
   @incrementMethodCall()
-  public static async getListOfActiveOrdersRange(begin?: bigint, end?: bigint): Promise<bigint[]> {
+  public static async getListOfActiveOrdersRange(
+    begin?: number,
+    end?: number,
+  ): Promise<BlockchainId[]> {
     const contract = BlockchainConnector.getInstance().getContract();
 
-    begin = begin ?? BigInt(0);
-    end = end ?? BigInt(await contract.methods.getListOfActiveOrdersSize().call());
+    begin = begin ?? 0;
+    end = end ?? (await ActiveOrders.getListOfActiveOrdersSize());
 
-    return contract.methods.getListOfActiveOrdersRange(begin, end).call();
+    return contract.methods
+      .getListOfActiveOrdersRange(begin, end)
+      .call()
+      .then((ids) => ids.map((id) => id.toString()));
   }
 
   /**
    * Function returns ids of active orders by offers
-   * @returns {Promise<bigint[]>}
+   * @returns {Promise<BlockchainId[]>}
    */
   @incrementMethodCall()
   public static async getActiveOrdersRangeByOffers(
     offerIds: BlockchainId[],
-    begin?: bigint,
-    end?: bigint,
-  ): Promise<bigint[]> {
+    begin = 0,
+    end = 999,
+  ): Promise<BlockchainId[]> {
     const contract = BlockchainConnector.getInstance().getContract();
-    const response: bigint[] = [];
-
-    begin = begin ?? BigInt(0);
-    end = end ?? BigInt(999); // max active orders for one offer
+    const response: BlockchainId[] = [];
 
     for (const offerId in offerIds) {
-      const activeOrders = BigInt(
+      const activeOrders = convertBigIntToString(
         await contract.methods.getOfferActiveOrdersRange(offerId, begin, end).call(),
       );
       response.push(activeOrders);

@@ -1,9 +1,14 @@
 import rootLogger from '../logger';
 import Superpro from './Superpro';
 import TxManager from '../utils/TxManager';
-import { checkIfActionAccountInitialized, incrementMethodCall } from '../utils/helper';
+import {
+  checkIfActionAccountInitialized,
+  cleanWeb3Data,
+  convertBigIntToString,
+  incrementMethodCall,
+} from '../utils/helper';
 import { BlockchainConnector, BlockchainEventsListener } from '../connectors';
-import { DepositInfo, BlockInfo, TransactionOptions } from '../types';
+import { DepositInfo, BlockInfo, TransactionOptions, TokenAmount } from '../types';
 import { EventLog } from 'web3-eth-contract';
 
 class Deposits {
@@ -20,17 +25,17 @@ class Deposits {
   public static getDepositInfo(depositOwner: string): Promise<DepositInfo> {
     const contract = BlockchainConnector.getInstance().getContract();
 
-    return contract.methods.getDepositInfo(depositOwner).call();
+    return cleanWeb3Data(contract.methods.getDepositInfo(depositOwner).call());
   }
 
   /**
    * Function for fetching amount of locked tokens
    * @param depositOwner - Deposit owner
    */
-  public static getLockedTokensAmount(depositOwner: string): Promise<bigint> {
+  public static async getLockedTokensAmount(depositOwner: string): Promise<TokenAmount> {
     const contract = BlockchainConnector.getInstance().getContract();
 
-    return contract.methods.getLockedTokensAmount(depositOwner).call();
+    return convertBigIntToString(await contract.methods.getLockedTokensAmount(depositOwner).call());
   }
 
   /**
@@ -41,7 +46,7 @@ class Deposits {
    */
   @incrementMethodCall()
   public static async replenish(
-    amount: bigint,
+    amount: TokenAmount,
     transactionOptions?: TransactionOptions,
   ): Promise<void> {
     const contract = BlockchainConnector.getInstance().getContract();
@@ -60,7 +65,7 @@ class Deposits {
   @incrementMethodCall()
   public static async replenishFor(
     beneficiary: string,
-    amount: bigint,
+    amount: TokenAmount,
     transactionOptions?: TransactionOptions,
   ): Promise<void> {
     const contract = BlockchainConnector.getInstance().getContract();
@@ -77,7 +82,7 @@ class Deposits {
    */
   @incrementMethodCall()
   public static async withdraw(
-    amount: bigint,
+    amount: TokenAmount,
     transactionOptions?: TransactionOptions,
   ): Promise<void> {
     const contract = BlockchainConnector.getInstance().getContract();
@@ -101,15 +106,16 @@ class Deposits {
 
     const subscription = contract.events.DepositReplenished();
     subscription.on('data', (event: EventLog): void => {
+      const parsedEvent = cleanWeb3Data(event.returnValues);
       if (owner && event.returnValues.owner != owner) {
         return;
       }
       callback(
-        <string>event.returnValues.owner,
-        <bigint>event.returnValues.amount,
-        <bigint>event.returnValues.totalLocked,
+        <string>parsedEvent.owner,
+        <TokenAmount>parsedEvent.amount,
+        <TokenAmount>parsedEvent.totalLocked,
         <BlockInfo>{
-          index: <bigint>event.blockNumber,
+          index: Number(event.blockNumber),
           hash: <string>event.blockHash,
         },
       );
@@ -136,15 +142,16 @@ class Deposits {
 
     const subscription = contract.events.DepositWithdrawn();
     subscription.on('data', (event: EventLog): void => {
-      if (owner && event.returnValues.owner != owner) {
+      const parsedEvent = cleanWeb3Data(event.returnValues);
+      if (owner && parsedEvent.owner != owner) {
         return;
       }
       callback(
-        <string>event.returnValues.owner,
-        <bigint>event.returnValues.amount,
-        <bigint>event.returnValues.totalLocked,
+        <string>parsedEvent.owner,
+        <TokenAmount>parsedEvent.amount,
+        <TokenAmount>parsedEvent.totalLocked,
         <BlockInfo>{
-          index: <bigint>event.blockNumber,
+          index: Number(event.blockNumber),
           hash: <string>event.blockHash,
         },
       );
@@ -171,15 +178,16 @@ class Deposits {
 
     const subscription = contract.events.DepositPartLocked();
     subscription.on('data', (event: EventLog): void => {
-      if (owner && event.returnValues.owner != owner) {
+      const parsedEvent = cleanWeb3Data(event.returnValues);
+      if (owner && parsedEvent.owner != owner) {
         return;
       }
       callback(
-        <string>event.returnValues.owner,
-        <bigint>event.returnValues.amount,
-        <bigint>event.returnValues.totalLocked,
+        <string>parsedEvent.owner,
+        <TokenAmount>parsedEvent.amount,
+        <TokenAmount>parsedEvent.totalLocked,
         <BlockInfo>{
-          index: <bigint>event.blockNumber,
+          index: Number(event.blockNumber),
           hash: <string>event.blockHash,
         },
       );
@@ -206,15 +214,16 @@ class Deposits {
 
     const subscription = contract.events.DepositPartUnlocked();
     subscription.on('data', (event: EventLog): void => {
-      if (owner && event.returnValues.owner != owner) {
+      const parsedEvent = cleanWeb3Data(event.returnValues);
+      if (owner && parsedEvent.owner != owner) {
         return;
       }
       callback(
-        <string>event.returnValues.owner,
-        <bigint>event.returnValues.amount,
-        <bigint>event.returnValues.totalLocked,
+        <string>parsedEvent.owner,
+        <TokenAmount>parsedEvent.amount,
+        <TokenAmount>parsedEvent.totalLocked,
         <BlockInfo>{
-          index: <bigint>event.blockNumber,
+          index: Number(event.blockNumber),
           hash: <string>event.blockHash,
         },
       );
@@ -229,26 +238,26 @@ class Deposits {
 
 export type onDepositReplenishedCallback = (
   owner: string,
-  amount: bigint,
-  totalLocked: bigint,
+  amount: TokenAmount,
+  totalLocked: TokenAmount,
   block?: BlockInfo,
 ) => void;
 export type onDepositWithdrawnCallback = (
   owner: string,
-  amount: bigint,
-  totalLocked: bigint,
+  amount: TokenAmount,
+  totalLocked: TokenAmount,
   block?: BlockInfo,
 ) => void;
 export type onDepositPartLockedCallback = (
   owner: string,
-  amount: bigint,
-  totalLocked: bigint,
+  amount: TokenAmount,
+  totalLocked: TokenAmount,
   block?: BlockInfo,
 ) => void;
 export type onDepositPartUnlockedCallback = (
   owner: string,
-  amount: bigint,
-  totalLocked: bigint,
+  amount: TokenAmount,
+  totalLocked: TokenAmount,
   block?: BlockInfo,
 ) => void;
 

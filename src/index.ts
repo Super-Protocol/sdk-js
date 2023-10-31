@@ -76,6 +76,7 @@ export * from './types/Provider';
 export * from './types/Superpro';
 export * from './types/Consensus';
 export * from './types/Origins';
+export * from './types/Web3';
 
 export * as ChunkedStorageProvider from './providers/storage/ChunksDownloadDecorator';
 export { default as StorjAdapter, StorjConfig } from './providers/storage/StorjAdapter';
@@ -102,12 +103,7 @@ export { default as getStorageProvider } from './providers/storage/getStoragePro
 export { default as IStorageProvider } from './providers/storage/IStorageProvider';
 
 export * as helpers from './utils/helpers';
-export { convertBigIntToString } from './utils/helper';
 
 export { Web3TransactionRevertedByEvmError } from './utils/TxManager';
 
-if (!(BigInt.prototype as any).toJSON) {
-  (BigInt.prototype as any).toJSON = function () {
-    return this.toString();
-  };
-}
+import './polyfills';

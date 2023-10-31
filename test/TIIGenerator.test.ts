@@ -1,4 +1,4 @@
-import { OfferInfo, OfferType, TeeOfferInfo } from '../src';
+import { BlockchainId, OfferInfo, OfferType, TeeOfferInfo } from '../src';
 import TIIGenerator from '../src/TIIGenerator';
 import {
   CryptoAlgorithm,
@@ -45,19 +45,19 @@ const tii = JSON.stringify({
 
 jest.mock('../src/models/Order', () => {
   return jest.fn().mockImplementation((id) => {
-    if (id !== BigInt(100) && id !== BigInt(101) && id !== BigInt(102)) {
+    if (id !== '100' && id !== '101' && id !== '102') {
       throw new Error('Order doesnot exists');
     }
 
     return {
-      getParentOrder(): bigint | null {
-        return id === BigInt(102) ? null : BigInt(101);
+      getParentOrder(): BlockchainId | null {
+        return id === '102' ? null : '101';
       },
       getOrderInfo(): object {
         return {
           offer: '',
           args: {
-            inputOffers: [BigInt(10)],
+            inputOffers: ['10'],
           },
         };
       },
@@ -75,7 +75,7 @@ jest.mock('../src/models/Offer', () => {
             mrenclave: '',
           }),
           restrictions: {
-            offers: [BigInt(10)],
+            offers: ['10'],
             types: [OfferType.Storage],
           },
           hash: JSON.stringify({
@@ -125,7 +125,7 @@ describe('TIIGenerator', () => {
   describe('generateByOffer', () => {
     test('generate TII', async () => {
       const tii = await TIIGenerator.generateByOffer(
-        BigInt(10),
+        '10',
         [],
         JSON.stringify({
           encoding: Encoding.base64,
@@ -153,7 +153,7 @@ describe('TIIGenerator', () => {
   describe('generate', () => {
     test('generate TII', async () => {
       const tii = await TIIGenerator.generate(
-        BigInt(100),
+        '100',
         resource,
         {},
         {
@@ -175,7 +175,7 @@ describe('TIIGenerator', () => {
     test('fail for no Order', () => {
       void expect(
         TIIGenerator.generate(
-          BigInt(1000),
+          '1000',
           resource,
           {},
           {
@@ -191,7 +191,7 @@ describe('TIIGenerator', () => {
     test('fail for no parent Order', () => {
       void expect(
         TIIGenerator.generate(
-          BigInt(102),
+          '102',
           resource,
           {},
           {

@@ -6,9 +6,17 @@ import {
   packSlotInfo,
   formatTeeOfferOption,
   formatTeeOfferSlot,
-  cleanEventData,
+  cleanWeb3Data,
+  convertBigIntToString,
 } from '../utils/helper';
-import { TeeOfferInfo, TransactionOptions, OfferType, Origins, BlockchainId } from '../types';
+import {
+  TeeOfferInfo,
+  TransactionOptions,
+  OfferType,
+  Origins,
+  BlockchainId,
+  TokenAmount,
+} from '../types';
 import { BlockchainConnector } from '../connectors';
 import TxManager from '../utils/TxManager';
 import {
@@ -29,8 +37,8 @@ class TeeOffer {
 
   public id: BlockchainId;
 
-  public violationRate?: number;
-  public totalLocked?: number;
+  public violationRate?: bigint | string;
+  public totalLocked?: TokenAmount;
   public offerInfo?: TeeOfferInfo;
 
   public type?: OfferType;
@@ -42,7 +50,7 @@ class TeeOffer {
   public tcbAddedTime?: number;
   public origins?: Origins;
   public isCancelable?: boolean;
-  public minDeposit?: bigint;
+  public minDeposit?: TokenAmount;
 
   constructor(offerId: BlockchainId) {
     this.id = offerId;
@@ -68,10 +76,11 @@ class TeeOffer {
     slotCount: number,
     optionsIds: BlockchainId[],
     optionsCount: number[],
-  ): Promise<bigint> {
+  ): Promise<TokenAmount> {
     this.minDeposit = await TeeOffer.contract.methods
       .getOfferMinDeposit(this.id, slotId, slotCount, optionsIds, optionsCount)
-      .call();
+      .call()
+      .then((deposit) => deposit.toString());
 
     return this.minDeposit;
   }
@@ -100,7 +109,7 @@ class TeeOffer {
   public async getInfo(): Promise<TeeOfferInfo> {
     const { info } = await TeeOffer.contract.methods.getTeeOffer(this.id).call();
 
-    this.offerInfo = cleanEventData(info) as TeeOfferInfo;
+    this.offerInfo = cleanWeb3Data(info) as TeeOfferInfo;
     this.offerInfo.hardwareInfo = await TeeOffers.unpackHardwareInfo(this.offerInfo.hardwareInfo);
 
     return this.offerInfo;
@@ -113,9 +122,10 @@ class TeeOffer {
   public async getHardwareInfo(): Promise<HardwareInfo> {
     const hardwareInfo: HardwareInfo = await TeeOffer.contract.methods
       .getTeeOfferHardwareInfo(this.id)
-      .call();
+      .call()
+      .then((response) => cleanWeb3Data(response) as HardwareInfo);
 
-    return TeeOffers.unpackHardwareInfo(cleanEventData(hardwareInfo));
+    return TeeOffers.unpackHardwareInfo(hardwareInfo);
   }
 
   /**
@@ -126,7 +136,7 @@ class TeeOffer {
     return TeeOffer.contract.methods
       .getOptionById(optionId)
       .call()
-      .then((option) => formatTeeOfferOption(cleanEventData(option) as TeeOfferOption));
+      .then((option) => formatTeeOfferOption(cleanWeb3Data(option) as TeeOfferOption));
   }
 
   public async getOptions(begin = 0, end = 999999): Promise<TeeOfferOption[]> {
@@ -141,7 +151,7 @@ class TeeOffer {
       .getTeeOfferOptions(this.id, begin, end)
       .call();
 
-    return teeOfferOption.map((option) => formatTeeOfferOption(cleanEventData(option)));
+    return teeOfferOption.map((option) => formatTeeOfferOption(cleanWeb3Data(option)));
   }
 
   /**
@@ -228,7 +238,7 @@ class TeeOffer {
     transactionOptions?: TransactionOptions,
   ): Promise<TCB> {
     await this.initializeTcb(transactionOptions);
-    const tcbId = BigInt(await this.getInitializedTcbId());
+    const tcbId = await this.getInitializedTcbId();
     const tcb = new TCB(tcbId);
 
     await tcb.assignLastBlocksToCheck(transactionOptions);
@@ -277,7 +287,7 @@ class TeeOffer {
    * Function for fetching whether tee offer slot exists or not
    * @param slotId - Slot ID
    */
-  public isSlotExists(slotId: bigint): Promise<boolean> {
+  public isSlotExists(slotId: BlockchainId): Promise<boolean> {
     return TeeOffer.contract.methods.isTeeOfferSlotExists(this.id, slotId).call();
   }
 
@@ -292,7 +302,7 @@ class TeeOffer {
 
     const cpuDenominator = await TeeOffers.getDenominator();
 
-    return formatTeeOfferSlot(cleanEventData(slot), cpuDenominator);
+    return formatTeeOfferSlot(cleanWeb3Data(slot), cpuDenominator);
   }
 
   /**
@@ -352,7 +362,7 @@ class TeeOffer {
    */
   @incrementMethodCall()
   public async updateSlot(
-    slotId: bigint,
+    slotId: BlockchainId,
     newInfo: SlotInfo,
     newUsage: SlotUsage,
     transactionOptions?: TransactionOptions,
@@ -388,7 +398,7 @@ class TeeOffer {
    * @param teeOfferId - TEE offer ID
    * @returns {Promise<string>} - Actual TCB ID
    */
-  public getActualTcbId(): Promise<bigint> {
+  public getActualTcbId(): Promise<BlockchainId> {
     return TeeOffer.contract.methods.getActualTcbId(this.id).call();
   }
 
@@ -396,7 +406,7 @@ class TeeOffer {
    * Function return last inited TCB of TEE offer
    * @param teeOfferId - id of TEE offer
    * */
-  public getInitializedTcbId(): Promise<bigint> {
+  public getInitializedTcbId(): Promise<BlockchainId> {
     return TeeOffer.contract.methods.getInitializedTcbId(this.id).call();
   }
 
@@ -447,8 +457,10 @@ class TeeOffer {
   /**
    * Function for fetching violationRate for this TEE offer
    */
-  public async getViolationRate(): Promise<number> {
-    this.violationRate = await TeeOffer.contract.methods.getTeeOfferViolationRate(this.id).call();
+  public async getViolationRate(): Promise<bigint | string> {
+    this.violationRate = convertBigIntToString(
+      await TeeOffer.contract.methods.getTeeOfferViolationRate(this.id).call(),
+    );
 
     return this.violationRate!;
   }
@@ -461,7 +473,7 @@ class TeeOffer {
     const origins: Origins = await TeeOffer.contract.methods
       .getOfferOrigins(this.id)
       .call()
-      .then((origins) => cleanEventData(origins) as Origins);
+      .then((origins) => cleanWeb3Data(origins) as Origins);
 
     // Convert blockchain time seconds to js time milliseconds
     origins.createdDate = origins.createdDate * 1000;

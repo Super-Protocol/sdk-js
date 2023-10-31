@@ -1,6 +1,8 @@
 import rootLogger from '../logger';
 import {
   checkIfActionAccountInitialized,
+  cleanWeb3Data,
+  convertBigIntToString,
   formatOptionInfo,
   formatTeeOfferOption,
   packDeviceId,
@@ -58,6 +60,7 @@ class TeeOffers {
 
     return this.cpuDenominator;
   }
+
   /**
    * Function for fetching list of all TEE offers addresses
    */
@@ -71,10 +74,10 @@ class TeeOffers {
     for (let offerId = teeOfffersSet.size + 1; offerId <= count; ++offerId) {
       const offerType = (await contract.methods.getOfferType(offerId).call()) as OfferType;
       if (offerType === OfferType.TeeOffer) {
-        teeOfffersSet.add(BigInt(offerId));
+        teeOfffersSet.add(offerId.toString());
       }
     }
-    this.teeOffers = Array.from((teeOfffersSet));
+    this.teeOffers = Array.from(teeOfffersSet);
 
     return this.teeOffers;
   }
@@ -129,7 +132,7 @@ class TeeOffers {
    * @param deviceId - unque TEE device id (unparsed, from blockchain)
    * @returns TEE offer id
    */
-  public static getByDeviceId(deviceId: string): Promise<string> {
+  public static getByDeviceId(deviceId: string): Promise<BlockchainId> {
     const contract = BlockchainConnector.getInstance().getContract();
 
     const fromattedDeviceId = packDeviceId(deviceId);
@@ -143,7 +146,7 @@ class TeeOffers {
   public static async getSlotsCount(): Promise<number> {
     const contract = BlockchainConnector.getInstance().getContract();
 
-    return Number(await contract.methods.getTeeOffersSlotsCount().call());
+    return Number(await contract.methods.getTeeOffersSlotsCountTotal().call());
   }
 
   /**
@@ -159,10 +162,10 @@ class TeeOffers {
   /**
    * Function for fetching total count of options
    */
-  public static getOptionsCount(): Promise<bigint> {
+  public static async getOptionsCount(): Promise<number> {
     const contract = BlockchainConnector.getInstance().getContract();
 
-    return contract.methods.getOptionsCount().call();
+    return Number(await contract.methods.getOptionsCount().call());
   }
 
   /**
@@ -218,16 +221,17 @@ class TeeOffers {
 
     const subscription = contract.events.TeeSlotAdded();
     subscription.on('data', (event: EventLog): void => {
-      if (creator && event.returnValues.creator != creator) {
+      const parsedEvent = cleanWeb3Data(event.returnValues);
+      if (creator && parsedEvent.creator != creator) {
         return;
       }
       callback(
-        <string>event.returnValues.creator,
-        <BlockchainId>event.returnValues.offerId,
-        <BlockchainId>event.returnValues.slotId,
-        parseBytes32String(<BytesLike>event.returnValues.externalId),
+        <string>parsedEvent.creator,
+        <BlockchainId>parsedEvent.offerId,
+        <BlockchainId>parsedEvent.slotId,
+        parseBytes32String(<BytesLike>parsedEvent.externalId),
         <BlockInfo>{
-          index: <bigint>event.blockNumber,
+          index: Number(event.blockNumber),
           hash: <string>event.blockHash,
         },
       );
@@ -250,11 +254,12 @@ class TeeOffers {
 
     const subscription = contract.events.TeeSlotUpdated();
     subscription.on('data', (event: EventLog): void => {
+      const parsedEvent = cleanWeb3Data(event.returnValues);
       callback(
-        <BlockchainId>event.returnValues.offerId,
-        <BlockchainId>event.returnValues.slotId,
+        <BlockchainId>parsedEvent.offerId,
+        <BlockchainId>parsedEvent.slotId,
         <BlockInfo>{
-          index: <bigint>event.blockNumber,
+          index: Number(event.blockNumber),
           hash: <string>event.blockHash,
         },
       );
@@ -277,11 +282,12 @@ class TeeOffers {
 
     const subscription = contract.events.TeeSlotDeleted();
     subscription.on('data', (event: EventLog): void => {
+      const parsedEvent = cleanWeb3Data(event.returnValues);
       callback(
-        <BlockchainId>event.returnValues.offerId,
-        <BlockchainId>event.returnValues.slotId,
+        <BlockchainId>parsedEvent.offerId,
+        <BlockchainId>parsedEvent.slotId,
         <BlockInfo>{
-          index: <bigint>event.blockNumber,
+          index: Number(event.blockNumber),
           hash: <string>event.blockHash,
         },
       );
@@ -305,16 +311,17 @@ class TeeOffers {
 
     const subscription = contract.events.OptionAdded();
     subscription.on('data', (event: EventLog): void => {
-      if (creator && event.returnValues.creator != creator) {
+      const parsedEvent = cleanWeb3Data(event.returnValues);
+      if (creator && parsedEvent.creator != creator) {
         return;
       }
       callback(
-        <string>event.returnValues.creator,
-        <BlockchainId>event.returnValues.teeOfferId,
-        <BlockchainId>event.returnValues.optionId,
-        parseBytes32String(<BytesLike>event.returnValues.externalId),
+        <string>parsedEvent.creator,
+        <BlockchainId>parsedEvent.teeOfferId,
+        <BlockchainId>parsedEvent.optionId,
+        parseBytes32String(<BytesLike>parsedEvent.externalId),
         <BlockInfo>{
-          index: <bigint>event.blockNumber,
+          index: Number(event.blockNumber),
           hash: <string>event.blockHash,
         },
       );
@@ -341,14 +348,15 @@ class TeeOffers {
 
     const subscription = contract.events.OptionUpdated();
     subscription.on('data', (event: EventLog): void => {
-      if (teeOfferId && event.returnValues.teeOfferId != teeOfferId) {
+      const parsedEvent = cleanWeb3Data(event.returnValues);
+      if (teeOfferId && event.returnValues.teeOfferId != convertBigIntToString(teeOfferId)) {
         return;
       }
       callback(
-        <BlockchainId>event.returnValues.teeOfferId,
-        <BlockchainId>event.returnValues.optionId,
+        <BlockchainId>parsedEvent.teeOfferId,
+        <BlockchainId>parsedEvent.optionId,
         <BlockInfo>{
-          index: <bigint>event.blockNumber,
+          index: Number(event.blockNumber),
           hash: <string>event.blockHash,
         },
       );
@@ -375,14 +383,15 @@ class TeeOffers {
 
     const subscription = contract.events.OptionDeleted();
     subscription.on('data', (event: EventLog): void => {
-      if (teeOfferId && event.returnValues.teeOfferId != teeOfferId) {
+      const parsedEvent = cleanWeb3Data(event.returnValues);
+      if (teeOfferId && parsedEvent.teeOfferId != convertBigIntToString(teeOfferId)) {
         return;
       }
       callback(
-        <BlockchainId>event.returnValues.teeOfferId,
-        <BlockchainId>event.returnValues.optionId,
+        <BlockchainId>parsedEvent.teeOfferId,
+        <BlockchainId>parsedEvent.optionId,
         <BlockInfo>{
-          index: <bigint>event.blockNumber,
+          index: Number(event.blockNumber),
           hash: <string>event.blockHash,
         },
       );
@@ -405,12 +414,13 @@ class TeeOffers {
 
     const subscription = contract.events.TeeOfferCreated();
     subscription.on('data', (event: EventLog): void => {
+      const parsedEvent = cleanWeb3Data(event.returnValues);
       callback(
-        <BlockchainId>event.returnValues.offerId,
-        <string>event.returnValues.creator,
-        parseBytes32String(<BytesLike>event.returnValues.externalId),
+        <BlockchainId>parsedEvent.offerId,
+        <string>parsedEvent.creator,
+        parseBytes32String(<BytesLike>parsedEvent.externalId),
         <BlockInfo>{
-          index: <bigint>event.blockNumber,
+          index: Number(event.blockNumber),
           hash: <string>event.blockHash,
         },
       );
@@ -428,12 +438,13 @@ class TeeOffers {
 
     const subscription = contract.events.TeeOfferViolationRateChanged();
     subscription.on('data', (event: EventLog): void => {
+      const parsedEvent = cleanWeb3Data(event.returnValues);
       callback(
-        <BlockchainId>event.returnValues.offerId,
-        <string>event.returnValues.providerAuth,
-        <bigint>event.returnValues.violationRate,
+        <BlockchainId>parsedEvent.offerId,
+        <string>parsedEvent.providerAuth,
+        <string>parsedEvent.violationRate,
         <BlockInfo>{
-          index: <bigint>event.blockNumber,
+          index: Number(event.blockNumber),
           hash: <string>event.blockHash,
         },
       );
@@ -455,7 +466,7 @@ export type onTeeOfferCreatedCallback = (
 export type onTeeViolationRateChangedCallback = (
   offerId: BlockchainId,
   providerAuth: string,
-  violationRate: bigint,
+  violationRate: bigint | string,
   block?: BlockInfo,
 ) => void;
 export type onTeeOptionAddedCallback = (
@@ -482,7 +493,15 @@ export type onTeeSlotAddedCallback = (
   externalId: string,
   block?: BlockInfo,
 ) => void;
-export type onTeeSlotUpdatedCallback = (offerId: BlockchainId, slotId: BlockchainId, block?: BlockInfo) => void;
-export type onTeeSlotDeletedCallback = (offerId: BlockchainId, slotId: BlockchainId, block?: BlockInfo) => void;
+export type onTeeSlotUpdatedCallback = (
+  offerId: BlockchainId,
+  slotId: BlockchainId,
+  block?: BlockInfo,
+) => void;
+export type onTeeSlotDeletedCallback = (
+  offerId: BlockchainId,
+  slotId: BlockchainId,
+  block?: BlockInfo,
+) => void;
 
 export default TeeOffers;

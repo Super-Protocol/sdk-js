@@ -1,7 +1,20 @@
 import { formatBytes32String, parseBytes32String } from 'ethers/lib/utils';
 import rootLogger from '../logger';
-import { checkIfActionAccountInitialized, incrementMethodCall } from '../utils/helper';
-import { OrderInfo, OrderStatus, BlockInfo, TransactionOptions, OrderCreatedEvent, BlockchainId } from '../types';
+import {
+  checkIfActionAccountInitialized,
+  cleanWeb3Data,
+  convertBigIntToString,
+  incrementMethodCall,
+} from '../utils/helper';
+import {
+  OrderInfo,
+  OrderStatus,
+  BlockInfo,
+  TransactionOptions,
+  OrderCreatedEvent,
+  BlockchainId,
+  TokenAmount,
+} from '../types';
 import Superpro from './Superpro';
 import TxManager from '../utils/TxManager';
 import { BlockchainConnector, BlockchainEventsListener } from '../connectors';
@@ -28,8 +41,8 @@ class Orders implements StaticModel {
     const ordersSet = new Set(this.orders);
 
     const ordersCount = Number(await contract.methods.getOrdersCount().call());
-    for (let orderId = BigInt(ordersSet.size + 1); orderId <= ordersCount; orderId++) {
-      ordersSet.add(orderId);
+    for (let orderId = ordersSet.size + 1; orderId <= ordersCount; orderId++) {
+      ordersSet.add(orderId.toString());
     }
     this.orders = Array.from(ordersSet);
 
@@ -55,13 +68,14 @@ class Orders implements StaticModel {
   @incrementMethodCall()
   public static async createOrder(
     orderInfo: OrderInfo,
-    deposit = BigInt('0'),
+    deposit?: TokenAmount,
     suspended = false,
     transactionOptions?: TransactionOptions,
     checkTxBeforeSend = false,
   ): Promise<void> {
     const contract = BlockchainConnector.getInstance().getContract();
     checkIfActionAccountInitialized(transactionOptions);
+    deposit = deposit ?? '0';
     const orderInfoArguments = {
       ...orderInfo,
       externalId: formatBytes32String(orderInfo.externalId),
@@ -108,13 +122,13 @@ class Orders implements StaticModel {
   public static async createWorkflow(
     parentOrderInfo: OrderInfo,
     subOrdersInfo: OrderInfo[],
-    workflowDeposit = '0',
+    workflowDeposit: TokenAmount,
     transactionOptions?: TransactionOptions,
     checkTxBeforeSend = false,
   ): Promise<void> {
     const contract = BlockchainConnector.getInstance().getContract();
     checkIfActionAccountInitialized(transactionOptions);
-
+    workflowDeposit = workflowDeposit ?? '0';
     const parentOrderInfoArgs = {
       ...parentOrderInfo,
       externalId: formatBytes32String(parentOrderInfo.externalId),
@@ -161,7 +175,7 @@ class Orders implements StaticModel {
    */
   public static async refillOrderDeposit(
     orderId: BlockchainId,
-    amount: bigint,
+    amount: TokenAmount,
     transactionOptions?: TransactionOptions,
   ): Promise<void> {
     const contract = BlockchainConnector.getInstance().getContract();
@@ -209,14 +223,15 @@ class Orders implements StaticModel {
 
     const subscription = contract.events.OrderCreated();
     subscription.on('data', (event: EventLog): void => {
+      const parsedEvent = cleanWeb3Data(event.returnValues);
       callback(
-        <string>event.returnValues.consumer,
-        parseBytes32String(<string>event.returnValues.externalId),
-        <BlockchainId>event.returnValues.offerId,
-        <BlockchainId>event.returnValues.parentOrderId,
-        <BlockchainId>event.returnValues.orderId,
+        <string>parsedEvent.consumer,
+        parseBytes32String(<string>parsedEvent.externalId),
+        <BlockchainId>parsedEvent.offerId,
+        <BlockchainId>parsedEvent.parentOrderId,
+        <BlockchainId>parsedEvent.orderId,
         <BlockInfo>{
-          index: <bigint>event.blockNumber,
+          index: Number(event.blockNumber),
           hash: <string>event.blockHash,
         },
       );
@@ -240,14 +255,15 @@ class Orders implements StaticModel {
 
     const subscription = contract.events.OrderStarted();
     subscription.on('data', (event: EventLog): void => {
-      if (orderId && event.returnValues.orderId != orderId) {
+      const parsedEvent = cleanWeb3Data(event.returnValues);
+      if (orderId && parsedEvent.orderId != convertBigIntToString(orderId)) {
         return;
       }
       callback(
-        <BlockchainId>event.returnValues.orderId,
-        <string>event.returnValues.consumer,
+        <BlockchainId>parsedEvent.orderId,
+        <string>parsedEvent.consumer,
         <BlockInfo>{
-          index: <bigint>event.blockNumber,
+          index: Number(event.blockNumber),
           hash: <string>event.blockHash,
         },
       );
@@ -274,14 +290,15 @@ class Orders implements StaticModel {
 
     const subscription = contract.events.OrderStatusUpdated();
     subscription.on('data', (event: EventLog): void => {
-      if (orderId && event.returnValues.orderId != BigInt(orderId)) {
+      const parsedEvent = cleanWeb3Data(event.returnValues);
+      if (orderId && parsedEvent.orderId != convertBigIntToString(orderId)) {
         return;
       }
       callback(
-        <BlockchainId>event.returnValues.orderId,
-        <OrderStatus>event.returnValues.status?.toString(),
+        <BlockchainId>parsedEvent.orderId,
+        <OrderStatus>parsedEvent.status,
         <BlockInfo>{
-          index: <bigint>event.blockNumber,
+          index: Number(event.blockNumber),
           hash: <string>event.blockHash,
         },
       );
@@ -310,18 +327,19 @@ class Orders implements StaticModel {
 
     const subscription = contract.events.OrderDepositRefilled();
     subscription.on('data', (event: EventLog): void => {
-      if (orderId && event.returnValues.orderId != orderId) {
+      const parsedEvent = cleanWeb3Data(event.returnValues);
+      if (orderId && parsedEvent.orderId != convertBigIntToString(orderId)) {
         return;
       }
-      if (consumer && event.returnValues.consumer != consumer) {
+      if (consumer && parsedEvent.consumer != consumer) {
         return;
       }
       callback(
-        <BlockchainId>event.returnValues.orderId,
-        <string>event.returnValues.consumer,
-        <bigint>event.returnValues.amount,
+        <BlockchainId>parsedEvent.orderId,
+        <string>parsedEvent.consumer,
+        <TokenAmount>parsedEvent.amount,
         <BlockInfo>{
-          index: <bigint>event.blockNumber,
+          index: Number(event.blockNumber),
           hash: <string>event.blockHash,
         },
       );
@@ -348,15 +366,16 @@ class Orders implements StaticModel {
 
     const subscription = contract.events.OrderChangedWithdrawn();
     subscription.on('data', (event: EventLog): void => {
-      if (orderId && event.returnValues.orderId != orderId) {
+      const parsedEvent = cleanWeb3Data(event.returnValues);
+      if (orderId && parsedEvent.orderId != convertBigIntToString(orderId)) {
         return;
       }
       callback(
-        <BlockchainId>event.returnValues.orderId,
-        <string>event.returnValues.consumer,
-        <bigint>event.returnValues.change,
+        <BlockchainId>parsedEvent.orderId,
+        <string>parsedEvent.consumer,
+        <TokenAmount>parsedEvent.change,
         <BlockInfo>{
-          index: <bigint>event.blockNumber,
+          index: Number(event.blockNumber),
           hash: <string>event.blockHash,
         },
       );
@@ -385,18 +404,19 @@ class Orders implements StaticModel {
 
     const subscription = contract.events.OrderProfitWithdrawn();
     subscription.on('data', (event: EventLog): void => {
-      if (orderId && event.returnValues.orderId != orderId) {
+      const parsedEvent = cleanWeb3Data(event.returnValues);
+      if (orderId && parsedEvent.orderId != convertBigIntToString(orderId)) {
         return;
       }
-      if (tokenReceiver && event.returnValues.tokenReceiver != tokenReceiver) {
+      if (tokenReceiver && parsedEvent.tokenReceiver != tokenReceiver) {
         return;
       }
       callback(
-        <BlockchainId>event.returnValues.orderId,
-        <string>event.returnValues.tokenReceiver,
-        <bigint>event.returnValues.profit,
+        <BlockchainId>parsedEvent.orderId,
+        <string>parsedEvent.tokenReceiver,
+        <TokenAmount>parsedEvent.profit,
         <BlockInfo>{
-          index: <bigint>event.blockNumber,
+          index: Number(event.blockNumber),
           hash: <string>event.blockHash,
         },
       );
@@ -425,18 +445,19 @@ class Orders implements StaticModel {
 
     const subscription = contract.events.OrderAwaitingPaymentChanged();
     subscription.on('data', (event: EventLog): void => {
-      if (orderId && event.returnValues.orderId != orderId) {
+      const parsedEvent = cleanWeb3Data(event.returnValues);
+      if (orderId && parsedEvent.orderId != convertBigIntToString(orderId)) {
         return;
       }
-      if (consumer && event.returnValues.consumer != consumer) {
+      if (consumer && parsedEvent.consumer != consumer) {
         return;
       }
       callback(
-        <BlockchainId>event.returnValues.orderId,
-        <string>event.returnValues.consumer,
-        <boolean>event.returnValues.awaitingPayment,
+        <BlockchainId>parsedEvent.orderId,
+        <string>parsedEvent.consumer,
+        <boolean>parsedEvent.awaitingPayment,
         <BlockInfo>{
-          index: <bigint>event.blockNumber,
+          index: Number(event.blockNumber),
           hash: <string>event.blockHash,
         },
       );
@@ -465,18 +486,19 @@ class Orders implements StaticModel {
 
     const subscription = contract.events.OrderEncryptedResultUpdated();
     subscription.on('data', (event: EventLog): void => {
-      if (orderId && event.returnValues.orderId != orderId) {
+      const parsedEvent = cleanWeb3Data(event.returnValues);
+      if (orderId && parsedEvent.orderId != convertBigIntToString(orderId)) {
         return;
       }
-      if (consumer && event.returnValues.consumer != consumer) {
+      if (consumer && parsedEvent.consumer != consumer) {
         return;
       }
       callback(
-        <BlockchainId>event.returnValues.orderId,
-        <string>event.returnValues.consumer,
-        <string>event.returnValues.encryptedResult,
+        <BlockchainId>parsedEvent.orderId,
+        <string>parsedEvent.consumer,
+        <string>parsedEvent.encryptedResult,
         <BlockInfo>{
-          index: <bigint>event.blockNumber,
+          index: Number(event.blockNumber),
           hash: <string>event.blockHash,
         },
       );
@@ -505,18 +527,19 @@ class Orders implements StaticModel {
 
     const subscription = contract.events.OrderOptionsDepositSpentChanged();
     subscription.on('data', (event: EventLog): void => {
-      if (orderId && event.returnValues.orderId != orderId) {
+      const parsedEvent = cleanWeb3Data(event.returnValues);
+      if (orderId && parsedEvent.orderId != convertBigIntToString(orderId)) {
         return;
       }
-      if (consumer && event.returnValues.consumer != consumer) {
+      if (consumer && parsedEvent.consumer != consumer) {
         return;
       }
       callback(
-        <string>event.returnValues.consumer,
-        <BlockchainId>event.returnValues.orderId,
-        <bigint>event.returnValues.value,
+        <string>parsedEvent.consumer,
+        <BlockchainId>parsedEvent.orderId,
+        <TokenAmount>parsedEvent.value,
         <BlockInfo>{
-          index: <bigint>event.blockNumber,
+          index: Number(event.blockNumber),
           hash: <string>event.blockHash,
         },
       );
@@ -545,18 +568,19 @@ class Orders implements StaticModel {
 
     const subscription = contract.events.OrderProfitUnlocked();
     subscription.on('data', (event: EventLog): void => {
-      if (orderId && event.returnValues.orderId != orderId) {
+      const parsedEvent = cleanWeb3Data(event.returnValues);
+      if (orderId && parsedEvent.orderId != convertBigIntToString(orderId)) {
         return;
       }
-      if (tokenReceiver && event.returnValues.tokenReceiver != tokenReceiver) {
+      if (tokenReceiver && parsedEvent.tokenReceiver != tokenReceiver) {
         return;
       }
       callback(
-        <string>event.returnValues.tokenReceiver,
-        <BlockchainId>event.returnValues.orderId,
-        <bigint>event.returnValues.profit,
+        <string>parsedEvent.tokenReceiver,
+        <BlockchainId>parsedEvent.orderId,
+        <TokenAmount>parsedEvent.profit,
         <BlockInfo>{
-          index: <bigint>event.blockNumber,
+          index: Number(event.blockNumber),
           hash: <string>event.blockHash,
         },
       );
@@ -569,7 +593,11 @@ class Orders implements StaticModel {
   }
 }
 
-export type onOrderStartedCallback = (orderId: BlockchainId, consumer: string, block?: BlockInfo) => void;
+export type onOrderStartedCallback = (
+  orderId: BlockchainId,
+  consumer: string,
+  block?: BlockInfo,
+) => void;
 export type onOrdersStatusUpdatedCallback = (
   orderId: BlockchainId,
   status: OrderStatus,
@@ -586,19 +614,19 @@ export type onOrderCreatedCallback = (
 export type onOrderDepositRefilledCallback = (
   orderId: BlockchainId,
   consumer: string,
-  amount: bigint,
+  amount: TokenAmount,
   block?: BlockInfo,
 ) => void;
 export type onOrderChangedWithdrawnCallback = (
   orderId: BlockchainId,
   consumer: string,
-  change: bigint,
+  change: TokenAmount,
   block?: BlockInfo,
 ) => void;
 export type onOrderProfitWithdrawnCallback = (
   orderId: BlockchainId,
   tokenReceiver: string,
-  profit: bigint,
+  profit: TokenAmount,
   block?: BlockInfo,
 ) => void;
 export type onOrderAwaitingPaymentChangedCallback = (
@@ -616,13 +644,13 @@ export type onOrderEncryptedResultUpdatedCallback = (
 export type onOrderOptionsDepositSpentChangedCallback = (
   consumer: string,
   orderId: BlockchainId,
-  value: bigint,
+  value: TokenAmount,
   block?: BlockInfo,
 ) => void;
 export type onOrderProfitUnlockedCallback = (
   tokenReceiver: string,
   orderId: BlockchainId,
-  profit: bigint,
+  profit: TokenAmount,
   block?: BlockInfo,
 ) => void;
 

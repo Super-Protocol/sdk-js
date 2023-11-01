@@ -36,7 +36,9 @@ class Offers implements StaticModel {
     const offersSet = new Set(this.offers);
 
     for (let offerId = offersSet.size + 1; offerId <= count; ++offerId) {
-      const offerType = (await contract.methods.getOfferType(offerId).call()) as OfferType;
+      const offerType = (
+        await contract.methods.getOfferType(offerId).call()
+      ).toString() as OfferType;
       if (offerType !== OfferType.TeeOffer) {
         offersSet.add(offerId.toString());
       }

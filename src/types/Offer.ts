@@ -24,7 +24,6 @@ export type OfferInfo = {
   offerType: OfferType;
   cancelable: boolean;
   description: string;
-  restrictions: OfferRestrictions;
   input: string;
   output: string;
   allowedArgs: string;

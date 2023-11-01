@@ -21,6 +21,7 @@ import {
   ValueOfferSlot,
   TransactionOptions,
   BlockchainId,
+  OfferRestrictions,
   TokenAmount,
 } from '../types';
 import { formatBytes32String } from 'ethers/lib/utils';
@@ -34,6 +35,7 @@ class Offer {
   private logger: typeof rootLogger;
 
   public offerInfo?: OfferInfo;
+  public offerRestrictions?: OfferRestrictions;
   public provider?: string;
   public type?: OfferType;
   public providerAuthority?: string;
@@ -96,11 +98,11 @@ class Offer {
    * @param newInfo - new offer info
    * @param transactionOptions - object what contains alternative action account or gas limit (optional)
    */
-  public async setInfo(newInfo: OfferInfo, transactionOptions?: TransactionOptions): Promise<void> {
+  public async setInfo(newInfo: OfferInfo, newRestrictions: OfferRestrictions, transactionOptions?: TransactionOptions): Promise<void> {
     checkIfActionAccountInitialized(transactionOptions);
 
     await TxManager.execute(
-      Offer.contract.methods.setValueOfferInfo(this.id, newInfo),
+      Offer.contract.methods.setValueOfferInfo(this.id, newInfo, newRestrictions),
       transactionOptions,
     );
     if (this.offerInfo) this.offerInfo = newInfo;
@@ -118,6 +120,21 @@ class Offer {
     this.offerInfo = cleanWeb3Data(info) as OfferInfo;
 
     return this.offerInfo;
+  }
+
+  /**
+   * Function for fetching offer initial restrictions from blockchain
+   */
+  @incrementMethodCall()
+  public async getOfferRestrictions(): Promise<OfferRestrictions> {
+    if (!(await this.checkIfOfferExistsWithInterval())) {
+      throw Error(`Offer ${this.id} does not exist`);
+    }
+    const offerRestrictions = await Offer.contract.methods.getOfferInitialRestrictions(this.id).call();
+
+    this.offerRestrictions = offerRestrictions as OfferRestrictions;
+
+    return this.offerRestrictions;
   }
 
   /**

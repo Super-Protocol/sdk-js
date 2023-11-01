@@ -20,6 +20,8 @@ import {
   TeeSlotAddedEvent,
   TeeOfferOption,
   BlockchainId,
+  OptionInfo,
+  SlotInfo,
 } from '../types';
 import { BlockchainConnector, BlockchainEventsListener } from '../connectors';
 import Superpro from './Superpro';
@@ -93,6 +95,8 @@ class TeeOffers {
   public static async create(
     providerAuthorityAccount: string,
     teeOfferInfo: TeeOfferInfo,
+    slotInfo: SlotInfo,
+    optionInfo: OptionInfo,
     externalId = 'default',
     enabled = true,
     transactionOptions?: TransactionOptions,
@@ -107,6 +111,8 @@ class TeeOffers {
       contract.methods.createTeeOffer(
         providerAuthorityAccount,
         teeOfferInfo,
+        slotInfo,
+        optionInfo,
         formattedExternalId,
         enabled,
       ),

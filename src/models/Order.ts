@@ -8,7 +8,11 @@ import {
   Origins,
   TransactionOptions,
   BlockchainId,
+  OrderSlots,
+  OrderArgs,
   TokenAmount,
+  SlotInfo,
+  SlotUsage,
 } from '../types';
 import { Contract, TransactionReceipt } from 'web3';
 import { EventLog } from 'web3-eth-contract';
@@ -34,7 +38,10 @@ class Order {
   private logger: typeof rootLogger;
 
   public selectedUsage?: OrderUsage;
+  public selectedUsageSlotInfo?: SlotInfo;
+  public selectedUsageSlotUsage?: SlotUsage;
   public orderInfo?: OrderInfo;
+  public orderArgs?: OrderArgs;
   public orderResult?: OrderResult;
   public subOrders?: BlockchainId[];
   public parentOrder?: BlockchainId;
@@ -105,6 +112,21 @@ class Order {
     orderInfo.slots.slotCount = Number(orderInfo.slots.slotCount);
 
     return (this.orderInfo = orderInfo);
+  }
+
+  /**
+   * Function for fetching order info from blockchain
+   */
+  @incrementMethodCall()
+  public async getOrderArgs(): Promise<OrderArgs> {
+    if (!(await this.checkIfOrderExistsWithInterval())) {
+      throw Error(`Order ${this.id} does not exist`);
+    }
+    const orderArgsParams = await Order.contract.methods.getOrderArgs(this.id).call();
+    const orderArgs: OrderArgs = {
+      ...(cleanWeb3Data(orderArgsParams) as OrderArgs),
+    };
+    return (this.orderArgs = orderArgs);
   }
 
   private async checkIfOrderExistsWithInterval(): Promise<boolean> {
@@ -189,8 +211,17 @@ class Order {
 
     const cpuDenominator = await TeeOffers.getDenominator();
 
-    this.selectedUsage.slotInfo = unpackSlotInfo(this.selectedUsage.slotInfo, cpuDenominator);
-    this.selectedUsage.slotUsage = formatUsage(this.selectedUsage.slotUsage);
+    const slotInfo = await Order.contract.methods
+      .getOrderSelectedUsageSlotInfo(this.id)
+      .call()
+      .then((slotInfo) => cleanWeb3Data(slotInfo) as SlotInfo);
+    this.selectedUsageSlotInfo = unpackSlotInfo(slotInfo, cpuDenominator);
+
+    const slotUsage = await Order.contract.methods
+      .getOrderSelectedUsageSlotUsage(this.id)
+      .call()
+      .then((slotUsage) => cleanWeb3Data(slotUsage) as SlotUsage);
+    this.selectedUsageSlotUsage = formatUsage(slotUsage);
 
     this.selectedUsage.optionsCount = this.selectedUsage.optionsCount.map((item) => Number(item));
     this.selectedUsage.optionInfo = this.selectedUsage.optionInfo.map((optionInfo) =>
@@ -421,6 +452,8 @@ class Order {
   @incrementMethodCall()
   public async createSubOrder(
     subOrderInfo: OrderInfo,
+    subOrderSlots: OrderSlots,
+    subOrderArgs: OrderArgs,
     blockParentOrder: boolean,
     deposit?: TokenAmount,
     transactionOptions?: TransactionOptions,
@@ -439,13 +472,13 @@ class Order {
 
     if (checkTxBeforeSend) {
       await TxManager.dryRun(
-        Order.contract.methods.createSubOrder(this.id, preparedInfo, params),
+        Order.contract.methods.createSubOrder(this.id, preparedInfo, subOrderSlots, subOrderArgs, params),
         transactionOptions,
       );
     }
 
     await TxManager.execute(
-      Order.contract.methods.createSubOrder(this.id, preparedInfo, params),
+      Order.contract.methods.createSubOrder(this.id, preparedInfo, subOrderSlots, subOrderArgs, params),
       transactionOptions,
     );
   }
@@ -459,12 +492,14 @@ class Order {
   @incrementMethodCall()
   public async createSubOrders(
     subOrdersInfo: ExtendedOrderInfo[],
+    subOrdersSlots: OrderSlots[],
+    subOrdersArgs: OrderArgs[],
     transactionOptions: TransactionOptions,
   ): Promise<string[]> {
     checkIfActionAccountInitialized(transactionOptions);
 
     const promises: Promise<TransactionReceipt>[] = [];
-    subOrdersInfo.map((subOrderInfo) => {
+    subOrdersInfo.map((subOrderInfo, idx: number) => {
       const preparedInfo = {
         ...subOrderInfo,
         externalId: formatBytes32String(subOrderInfo.externalId),
@@ -473,8 +508,10 @@ class Order {
         blockParentOrder: subOrderInfo.blocking,
         deposit: subOrderInfo.deposit,
       };
+      const subOrderSlots = subOrdersSlots[idx];
+      const subOrderArgs = subOrdersArgs[idx];
 
-      const transactionCall = Order.contract.methods.createSubOrder(this.id, preparedInfo, params);
+      const transactionCall = Order.contract.methods.createSubOrder(this.id, preparedInfo, subOrderSlots, subOrderArgs, params);
 
       promises.push(TxManager.execute(transactionCall, transactionOptions));
     });

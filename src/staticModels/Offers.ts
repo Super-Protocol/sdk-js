@@ -10,6 +10,7 @@ import {
   OfferInfo,
   OfferType,
   BlockchainId,
+  OfferRestrictions,
 } from '../types';
 import Superpro from './Superpro';
 import TxManager from '../utils/TxManager';
@@ -66,6 +67,7 @@ class Offers implements StaticModel {
   public static async create(
     providerAuthorityAccount: string,
     offerInfo: OfferInfo,
+    restrictions: OfferRestrictions,
     externalId = 'default',
     enabled = true,
     transactionOptions?: TransactionOptions,
@@ -78,6 +80,7 @@ class Offers implements StaticModel {
       contract.methods.createValueOffer(
         providerAuthorityAccount,
         offerInfo,
+        restrictions,
         formattedExternalId,
         enabled,
       ),

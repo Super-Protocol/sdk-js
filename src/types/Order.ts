@@ -32,9 +32,10 @@ export type OrderInfo = {
   encryptedRequirements: string;
   encryptedArgs: string;
   status: OrderStatus;
-  args: OrderArgs;
   slots: OrderSlots;
   externalId: string;
+  expectedPrice: bigint;
+  maxPriceSlippage: bigint;
 };
 
 export type ExtendedOrderInfo = OrderInfo & {
@@ -53,9 +54,9 @@ export type SubOrderParams = {
 };
 
 export type OrderUsage = {
-  slotInfo: SlotInfo;
-  slotUsage: SlotUsage;
+  slotCount: number;
   optionInfo: OptionInfo[];
   optionUsage: SlotUsage[];
+  optionIds: BlockchainId[];
   optionsCount: number[];
 };

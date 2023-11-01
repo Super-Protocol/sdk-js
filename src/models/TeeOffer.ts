@@ -124,7 +124,12 @@ class TeeOffer {
     const hardwareInfo: HardwareInfo = await TeeOffer.contract.methods
       .getTeeOfferHardwareInfo(this.id)
       .call()
-      .then((response) => cleanWeb3Data(response) as HardwareInfo);
+      .then((response) => {
+        return {
+          slotInfo: cleanWeb3Data(response[0]) as SlotInfo,
+          optionInfo: cleanWeb3Data(response[1]) as OptionInfo
+        } as HardwareInfo
+      });
 
     return TeeOffers.unpackHardwareInfo(hardwareInfo);
   }
@@ -551,7 +556,7 @@ class TeeOffer {
     newHardwareInfo = await TeeOffers.packHardwareInfo(newHardwareInfo);
 
     await TxManager.execute(
-      TeeOffer.contract.methods.setTeeOfferHardwareInfo(this.id, newHardwareInfo),
+      TeeOffer.contract.methods.setTeeOfferHardwareInfo(this.id, newHardwareInfo.slotInfo, newHardwareInfo.optionInfo),
       transactionOptions,
     );
   }

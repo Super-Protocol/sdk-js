@@ -8,6 +8,7 @@ import {
   formatOfferSlot,
   cleanWeb3Data,
   convertBigIntToString,
+  transformComplexObject,
 } from '../utils/helper';
 import { BlockchainConnector } from '../connectors';
 import {
@@ -229,7 +230,7 @@ class Offer {
 
     const cpuDenominator = await TeeOffers.getDenominator();
 
-    return formatOfferSlot(cleanWeb3Data(slot), cpuDenominator);
+    return formatOfferSlot(slot, cpuDenominator);
   }
 
   /**
@@ -253,11 +254,12 @@ class Offer {
 
     const slots: ValueOfferSlot[] = await Offer.contract.methods
       .getValueOfferSlots(this.id, begin, end)
-      .call();
+      .call()
+      .then((slots) => slots.map((slot) => transformComplexObject(slot)));
 
     const cpuDenominator = await TeeOffers.getDenominator();
 
-    const slotsResult = slots.map((slot) => formatOfferSlot(cleanWeb3Data(slot), cpuDenominator));
+    const slotsResult = slots.map((slot) => formatOfferSlot(slot, cpuDenominator));
 
     return slotsResult;
   }

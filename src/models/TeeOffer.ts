@@ -8,6 +8,7 @@ import {
   formatTeeOfferSlot,
   cleanWeb3Data,
   convertBigIntToString,
+  transformComplexObject,
 } from '../utils/helper';
 import {
   TeeOfferInfo,
@@ -136,7 +137,7 @@ class TeeOffer {
     return TeeOffer.contract.methods
       .getOptionById(optionId)
       .call()
-      .then((option) => formatTeeOfferOption(cleanWeb3Data(option) as TeeOfferOption));
+      .then((option) => formatTeeOfferOption(option as TeeOfferOption));
   }
 
   public async getOptions(begin = 0, end = 999999): Promise<TeeOfferOption[]> {
@@ -151,7 +152,7 @@ class TeeOffer {
       .getTeeOfferOptions(this.id, begin, end)
       .call();
 
-    return teeOfferOption.map((option) => formatTeeOfferOption(cleanWeb3Data(option)));
+    return teeOfferOption.map((option) => formatTeeOfferOption(option));
   }
 
   /**
@@ -302,7 +303,7 @@ class TeeOffer {
 
     const cpuDenominator = await TeeOffers.getDenominator();
 
-    return formatTeeOfferSlot(cleanWeb3Data(slot), cpuDenominator);
+    return formatTeeOfferSlot(slot, cpuDenominator);
   }
 
   /**
@@ -321,11 +322,13 @@ class TeeOffer {
 
     const slots: TeeOfferSlot[] = await TeeOffer.contract.methods
       .getTeeOfferSlots(this.id, begin, end)
-      .call();
-
+      .call()
+      .then((slots) => slots.map((slot) => transformComplexObject(slot)));
     const cpuDenominator = await TeeOffers.getDenominator();
 
-    const slotsResult = slots.map((slot) => formatTeeOfferSlot(slot, cpuDenominator));
+    const slotsResult = slots.map((slot) =>
+      formatTeeOfferSlot(slot as TeeOfferSlot, cpuDenominator),
+    );
 
     return slotsResult;
   }

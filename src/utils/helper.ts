@@ -154,6 +154,8 @@ export function formatTeeOfferOption(option: TeeOfferOption): TeeOfferOption {
 }
 
 export function formatTeeOfferSlot(slot: TeeOfferSlot, cpuDenominator: number): TeeOfferSlot {
+  slot = cleanWeb3Data(slot);
+
   return {
     ...slot,
     info: unpackSlotInfo(slot.info, cpuDenominator),
@@ -162,6 +164,8 @@ export function formatTeeOfferSlot(slot: TeeOfferSlot, cpuDenominator: number): 
 }
 
 export function formatOfferSlot(slot: ValueOfferSlot, cpuDenominator: number): ValueOfferSlot {
+  slot = cleanWeb3Data(slot);
+  
   return {
     ...slot,
     option: formatOptionInfo(slot.option),
@@ -237,6 +241,30 @@ export const cleanWeb3Data = <T>(data: T): T => {
 
   return result as T;
 };
+
+export const transformComplexObject = (obj: any): any => {
+  const result: any = {};
+
+  for (const [key, value] of Object.entries(obj)) {
+      if (!isNaN(Number(key))) {
+          continue;
+      }
+
+      if (Array.isArray(value)) {
+          result[key] = {};
+          for (const [innerKey, innerValue] of Object.entries(value)) {
+              if (!isNaN(Number(innerKey))) {
+                  continue;
+              }
+              result[key][innerKey] = innerValue;
+          }
+      } else {
+          result[key] = value;
+      }
+  }
+
+  return result;
+}
 
 export const executeBatchAsync = async <BatchResponse = unknown>(
   batch: Web3BatchRequest,

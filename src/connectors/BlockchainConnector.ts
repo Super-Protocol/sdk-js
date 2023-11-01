@@ -116,10 +116,10 @@ class BlockchainConnector extends BaseConnector {
    * Returns balance of blockchain platform tokens in wei
    */
   @incrementMethodCall()
-  public getBalance(address: string): Promise<bigint> {
+  public getBalance(address: string): Promise<string> {
     this.checkIfInitialized();
 
-    return store.web3Https!.eth.getBalance(address);
+    return store.web3Https!.eth.getBalance(address).then((balance) => balance.toString());
   }
 
   public async getTimestamp(): Promise<bigint> {

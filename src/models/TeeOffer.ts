@@ -150,7 +150,8 @@ class TeeOffer {
 
     const teeOfferOption: TeeOfferOption[] = await TeeOffer.contract.methods
       .getTeeOfferOptions(this.id, begin, end)
-      .call();
+      .call()
+      .then((options) => options.map((option) => transformComplexObject(option)));
 
     return teeOfferOption.map((option) => formatTeeOfferOption(option));
   }

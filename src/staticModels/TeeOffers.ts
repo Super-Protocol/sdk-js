@@ -72,7 +72,9 @@ class TeeOffers {
     const teeOfffersSet = new Set(this.teeOffers);
 
     for (let offerId = teeOfffersSet.size + 1; offerId <= count; ++offerId) {
-      const offerType = (await contract.methods.getOfferType(offerId).call()) as OfferType;
+      const offerType = (
+        await contract.methods.getOfferType(offerId).call()
+      ).toString() as OfferType;
       if (offerType === OfferType.TeeOffer) {
         teeOfffersSet.add(offerId.toString());
       }

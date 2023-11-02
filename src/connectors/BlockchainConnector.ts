@@ -248,12 +248,19 @@ class BlockchainConnector extends BaseConnector {
    * }>}
    */
   @incrementMethodCall()
-  public async getTransactions(
-    addresses: string[],
-    startBlock?: number,
-    lastBlock?: number,
-    batchSize: number = BLOCK_SIZE_TO_FETCH_TRANSACTION,
-  ): Promise<BlockchainTransaction> {
+  public async getTransactions({
+    addresses,
+    startBlock,
+    lastBlock,
+    batchSize = BLOCK_SIZE_TO_FETCH_TRANSACTION,
+    timeout,
+  }: {
+    addresses: string[];
+    startBlock?: number;
+    lastBlock?: number;
+    batchSize?: number;
+    timeout?: number;
+  }): Promise<BlockchainTransaction> {
     this.checkIfInitialized();
 
     const blockchainLastBlock = Number(await store.web3Https!.eth.getBlockNumber());
@@ -305,7 +312,7 @@ class BlockchainConnector extends BaseConnector {
           })
           .catch((err) => this.logger.error(err));
       }
-      const blocks: Block[] = await executeBatchAsync<Block>(batch);
+      const blocks: Block[] = await executeBatchAsync<Block>(batch, timeout);
 
       blocks.forEach((block: Block) => {
         if (!block?.transactions) return;

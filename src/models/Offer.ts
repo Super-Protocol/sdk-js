@@ -127,14 +127,8 @@ class Offer {
    */
   @incrementMethodCall()
   public async getOfferRestrictions(): Promise<OfferRestrictions> {
-    if (!(await this.checkIfOfferExistsWithInterval())) {
-      throw Error(`Offer ${this.id} does not exist`);
-    }
     const offerRestrictions = await Offer.contract.methods.getOfferInitialRestrictions(this.id).call();
-
-    this.offerRestrictions = offerRestrictions as OfferRestrictions;
-
-    return this.offerRestrictions;
+    return (this.offerRestrictions = cleanWeb3Data(offerRestrictions) as OfferRestrictions);
   }
 
   /**

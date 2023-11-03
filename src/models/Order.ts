@@ -119,14 +119,8 @@ class Order {
    */
   @incrementMethodCall()
   public async getOrderArgs(): Promise<OrderArgs> {
-    if (!(await this.checkIfOrderExistsWithInterval())) {
-      throw Error(`Order ${this.id} does not exist`);
-    }
-    const orderArgsParams = await Order.contract.methods.getOrderArgs(this.id).call();
-    const orderArgs: OrderArgs = {
-      ...(cleanWeb3Data(orderArgsParams) as OrderArgs),
-    };
-    return (this.orderArgs = orderArgs);
+    const orderArgs = await Order.contract.methods.getOrderArgs(this.id).call();
+    return (this.orderArgs = cleanWeb3Data(orderArgs) as OrderArgs);
   }
 
   private async checkIfOrderExistsWithInterval(): Promise<boolean> {

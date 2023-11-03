@@ -34,8 +34,8 @@ export type OrderInfo = {
   status: OrderStatus;
   slots: OrderSlots;
   externalId: string;
-  expectedPrice: bigint;
-  maxPriceSlippage: bigint;
+  expectedPrice: TokenAmount;
+  maxPriceSlippage: TokenAmount;
 };
 
 export type ExtendedOrderInfo = OrderInfo & {

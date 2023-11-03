@@ -12,6 +12,7 @@ import {
   TeeOfferSlot,
   ValueOfferSlot,
 } from '../types';
+import { BLOCKCHAIN_BATCH_REQUEST_TIMEOUT } from '../constants';
 
 /**
  * Function for checking if provider action account initialized (required for set methods)
@@ -268,9 +269,10 @@ export const transformComplexObject = (obj: any): any => {
 
 export const executeBatchAsync = async <BatchResponse = unknown>(
   batch: Web3BatchRequest,
+  timeout = BLOCKCHAIN_BATCH_REQUEST_TIMEOUT,
 ): Promise<BatchResponse[]> => {
   const result: BatchResponse[] = [];
-  const responses = await batch.execute();
+  const responses = await batch.execute({ timeout });
   for (const response of responses) {
     if ('error' in response) {
       throw new Error((response.error as JsonRpcError).message);

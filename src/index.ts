@@ -107,3 +107,6 @@ export * as helpers from './utils/helpers';
 export { Web3TransactionRevertedByEvmError } from './utils/TxManager';
 
 import './polyfills';
+
+export { TeeSgxParser } from './tee/QuoteParser';
+export { QuoteValidator } from './tee/QuoteValidator';

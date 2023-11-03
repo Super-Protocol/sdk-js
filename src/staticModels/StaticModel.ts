@@ -1,4 +1,4 @@
-import { formatBytes32String } from 'ethers/lib/utils';
+import { formatBytes32String, parseBytes32String } from 'ethers/lib/utils';
 import { ContractEvents, DecodedParams } from 'web3';
 import BlockchainConnector from '../connectors/BlockchainConnector';
 import { EventOptions, FilterWithExternalId } from '../types';
@@ -6,6 +6,10 @@ import rootLogger from '../logger';
 import { cleanWeb3Data, isValidBytes32Hex } from '../utils/helper';
 import { EventLog } from 'web3-eth-contract';
 import abi from '../contracts/abi';
+
+interface IObjectWithExternalId {
+  externalId: string
+}
 
 class StaticModel {
   private static readonly logger = rootLogger.child({ className: 'Offers' });
@@ -35,7 +39,12 @@ class StaticModel {
       );
     }
 
-    return cleanWeb3Data((foundIds[0] as EventLog).returnValues as DecodedParams);
+    const parsedEvent = cleanWeb3Data(
+      (foundIds[0] as EventLog).returnValues as DecodedParams,
+    ) as unknown as IObjectWithExternalId;
+    parsedEvent.externalId = parseBytes32String(parsedEvent.externalId);
+
+    return parsedEvent;
   }
 }
 

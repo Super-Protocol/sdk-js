@@ -37,14 +37,21 @@ class BlockchainEventsListener extends BaseConnector {
     const reconnectOptions = Object.assign(
       {
         auto: true,
-        delay: 5000, // ms
-        maxAttempts: 5,
+        delay: 20000, // ms
+        maxAttempts: 5000,
         onTimeout: false,
-      },
+},
       config.reconnect,
     );
 
-    const provider = new WebSocketProvider(config.blockchainUrl!, {}, reconnectOptions);
+    this.logger.info(`Initializing events listener with reconnect options: ${JSON.stringify(reconnectOptions)}`);
+
+    const provider = new WebSocketProvider(config.blockchainUrl!, {
+        reconnect: reconnectOptions,
+        timeout: 100000,
+        reconnectDelay: 20000
+    });
+
     store.web3Wss = new Web3(provider);
     const web3Context = new Web3Context({
       provider: store.web3Wss.currentProvider,
@@ -56,7 +63,6 @@ class BlockchainEventsListener extends BaseConnector {
     SuperproToken.addressWss = await Superpro.getTokenAddress(this.contract);
 
     this.initialized = true;
-
     this.logger.trace('Initialized');
   }
 

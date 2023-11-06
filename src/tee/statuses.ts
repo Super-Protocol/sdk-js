@@ -15,7 +15,7 @@ export enum TCBStatuses {
 }
 
 export enum QuoteValidationStatuses {
-  UpToDate = 'UpTodate',
+  UpToDate = 'UpToDate',
   ConfigurationNeeded = 'ConfigurationNeeded',
   SecurityPatchNeeded = 'SecurityPatchNeeded',
   SoftwareUpdateNeeded = 'SoftwareUpdateNeeded',

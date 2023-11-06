@@ -46,11 +46,7 @@ class BlockchainEventsListener extends BaseConnector {
 
     this.logger.info(`Initializing events listener with reconnect options: ${JSON.stringify(reconnectOptions)}`);
 
-    const provider = new WebSocketProvider(config.blockchainUrl!, {
-        reconnect: reconnectOptions,
-        timeout: 100000,
-        reconnectDelay: 20000
-    });
+    const provider = new WebSocketProvider(config.blockchainUrl!, {} /* ClientOptions */, reconnectOptions);
 
     store.web3Wss = new Web3(provider);
     const web3Context = new Web3Context({

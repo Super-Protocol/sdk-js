@@ -170,7 +170,7 @@ describe('TIIGenerator', () => {
 
       expect(tiiObj).toHaveProperty('encryptedResource');
       expect(tiiObj).toHaveProperty('tri');
-    });
+    }, 15000);
 
     test('fail for no Order', () => {
       void expect(

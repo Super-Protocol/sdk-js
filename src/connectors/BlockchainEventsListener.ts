@@ -43,16 +43,21 @@ class BlockchainEventsListener extends BaseConnector {
         const reconnectOptions = Object.assign(
             {
                 auto: true,
-                delay: 5000, // ms
-                maxAttempts: 5,
+                delay: 20000, // ms
+                maxAttempts: 5000,
                 onTimeout: false,
             },
             config.reconnect,
         );
 
+        this.logger.info(`Initializing events listener with reconnect options: ${JSON.stringify(reconnectOptions)}`);
+
         this.provider = new Web3.providers.WebsocketProvider(config.blockchainUrl!, {
             reconnect: reconnectOptions,
+            timeout: 100000,
+            reconnectDelay: 20000
         });
+
         store.web3Wss = new Web3(this.provider);
 
         this.contract = new store.web3Wss!.eth.Contract(<AbiItem[]>appJSON.abi, config.contractAddress);

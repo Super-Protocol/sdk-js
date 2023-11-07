@@ -174,7 +174,7 @@ class SuperproToken {
     const contract = this.checkWssInit();
     const logger = this.logger.child({ method: 'onTokenTransfer' });
 
-    const subscription = contract.events.Approval();
+    const subscription = contract.events.Transfer();
     subscription.on('data', (event: EventLog): void => {
       const parsedEvent = cleanWeb3Data(event.returnValues);
       if (from && parsedEvent.from != from) {

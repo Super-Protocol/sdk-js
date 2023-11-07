@@ -1,5 +1,6 @@
 import { BaseConnector, Config } from './BaseConnector';
 import Web3, { Web3Context, WebSocketProvider } from 'web3';
+import { ReconnectOptions } from 'web3-utils';
 import { abi } from '../contracts/abi';
 
 // TODO: remove this dependencies
@@ -34,17 +35,19 @@ class BlockchainEventsListener extends BaseConnector {
   public async initialize(config: Config): Promise<void> {
     this.logger.trace(config, 'Initializing');
 
-    const reconnectOptions = Object.assign(
+    const reconnectOptions: ReconnectOptions = Object.assign(
       {
-        auto: true,
-        delay: 5000, // ms
-        maxAttempts: 5,
-        onTimeout: false,
+        autoReconnect: true,
+        delay: 20000, // ms
+        maxAttempts: 5000,
       },
       config.reconnect,
     );
 
-    const provider = new WebSocketProvider(config.blockchainUrl!, {}, reconnectOptions);
+    this.logger.info(`Initializing events listener with reconnect options: ${JSON.stringify(reconnectOptions)}`);
+
+    const provider = new WebSocketProvider(config.blockchainUrl!, {} /* ClientOptions */, reconnectOptions);
+
     store.web3Wss = new Web3(provider);
     const web3Context = new Web3Context({
       provider: store.web3Wss.currentProvider,
@@ -62,7 +65,7 @@ class BlockchainEventsListener extends BaseConnector {
 
   public shutdown(): void {
     super.shutdown();
-    store.web3Wss?.provider?.disconnect(0, '');
+    store.web3Wss?.provider?.disconnect();
     store.web3Wss = undefined;
   }
 }

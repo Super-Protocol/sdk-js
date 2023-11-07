@@ -1,6 +1,7 @@
 import abi from '../contracts/abi';
 import rootLogger from '../logger';
 import { Contract } from 'web3';
+import { ReconnectOptions } from 'web3-utils';
 
 export type Config = {
   contractAddress: string;
@@ -11,12 +12,7 @@ export type Config = {
   gasPriceMultiplier?: number;
   txConcurrency?: number;
   txIntervalMs?: number;
-  reconnect?: {
-    auto?: boolean;
-    delay?: number;
-    maxAttempts?: number;
-    onTimeout?: boolean;
-  };
+  reconnect?: Partial<ReconnectOptions>;
 };
 
 export class BaseConnector {

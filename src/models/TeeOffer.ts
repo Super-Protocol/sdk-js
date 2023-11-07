@@ -528,6 +528,8 @@ class TeeOffer {
   ): Promise<void> {
     checkIfActionAccountInitialized(transactionOptions);
 
+    newInfo.hardwareInfo = await TeeOffers.packHardwareInfo(newInfo.hardwareInfo);
+
     await TxManager.execute(
       TeeOffer.contract.methods.setTeeOfferInfo(this.id, newInfo),
       transactionOptions,

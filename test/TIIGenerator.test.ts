@@ -76,10 +76,6 @@ jest.mock('../src/models/Offer', () => {
             encoding: Encoding.base64,
             mrenclave: '',
           }),
-          restrictions: {
-            offers: ['10'],
-            types: [OfferType.Storage],
-          },
           hash: JSON.stringify({
             encoding: 'hex',
             algo: 'md5',

@@ -185,13 +185,7 @@ export function formatUsage(usage: SlotUsage): SlotUsage {
 }
 
 export function formatOptionInfo(optionInfo: OptionInfo): OptionInfo {
-  optionInfo = cleanWeb3Data(optionInfo);
-
-  return {
-    bandwidth: Number(optionInfo.bandwidth),
-    traffic: Number(optionInfo.traffic),
-    externalPort: Number(optionInfo.externalPort),
-  };
+  return cleanWeb3Data(optionInfo);
 }
 
 export function unpackSlotInfo(slotInfo: SlotInfo, cpuDenominator: number): SlotInfo {

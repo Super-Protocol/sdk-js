@@ -2536,19 +2536,9 @@ export const abi = [
             {
                 "components": [
                     {
-                        "internalType": "uint64",
-                        "name": "bandwidth",
-                        "type": "uint64"
-                    },
-                    {
-                        "internalType": "uint64",
-                        "name": "traffic",
-                        "type": "uint64"
-                    },
-                    {
-                        "internalType": "uint64",
-                        "name": "externalPort",
-                        "type": "uint64"
+                        "internalType": "string",
+                        "name": "data",
+                        "type": "string"
                     }
                 ],
                 "internalType": "struct OptionInfo",
@@ -2800,19 +2790,9 @@ export const abi = [
             {
                 "components": [
                     {
-                        "internalType": "uint64",
-                        "name": "bandwidth",
-                        "type": "uint64"
-                    },
-                    {
-                        "internalType": "uint64",
-                        "name": "traffic",
-                        "type": "uint64"
-                    },
-                    {
-                        "internalType": "uint64",
-                        "name": "externalPort",
-                        "type": "uint64"
+                        "internalType": "string",
+                        "name": "data",
+                        "type": "string"
                     }
                 ],
                 "internalType": "struct OptionInfo",
@@ -3528,19 +3508,9 @@ export const abi = [
             {
                 "components": [
                     {
-                        "internalType": "uint64",
-                        "name": "bandwidth",
-                        "type": "uint64"
-                    },
-                    {
-                        "internalType": "uint64",
-                        "name": "traffic",
-                        "type": "uint64"
-                    },
-                    {
-                        "internalType": "uint64",
-                        "name": "externalPort",
-                        "type": "uint64"
+                        "internalType": "string",
+                        "name": "data",
+                        "type": "string"
                     }
                 ],
                 "internalType": "struct OptionInfo",
@@ -5194,19 +5164,9 @@ export const abi = [
             {
                 "components": [
                     {
-                        "internalType": "uint64",
-                        "name": "bandwidth",
-                        "type": "uint64"
-                    },
-                    {
-                        "internalType": "uint64",
-                        "name": "traffic",
-                        "type": "uint64"
-                    },
-                    {
-                        "internalType": "uint64",
-                        "name": "externalPort",
-                        "type": "uint64"
+                        "internalType": "string",
+                        "name": "data",
+                        "type": "string"
                     }
                 ],
                 "internalType": "struct OptionInfo",
@@ -5548,19 +5508,9 @@ export const abi = [
             {
                 "components": [
                     {
-                        "internalType": "uint64",
-                        "name": "bandwidth",
-                        "type": "uint64"
-                    },
-                    {
-                        "internalType": "uint64",
-                        "name": "traffic",
-                        "type": "uint64"
-                    },
-                    {
-                        "internalType": "uint64",
-                        "name": "externalPort",
-                        "type": "uint64"
+                        "internalType": "string",
+                        "name": "data",
+                        "type": "string"
                     }
                 ],
                 "internalType": "struct OptionInfo",
@@ -5803,19 +5753,9 @@ export const abi = [
                     {
                         "components": [
                             {
-                                "internalType": "uint64",
-                                "name": "bandwidth",
-                                "type": "uint64"
-                            },
-                            {
-                                "internalType": "uint64",
-                                "name": "traffic",
-                                "type": "uint64"
-                            },
-                            {
-                                "internalType": "uint64",
-                                "name": "externalPort",
-                                "type": "uint64"
+                                "internalType": "string",
+                                "name": "data",
+                                "type": "string"
                             }
                         ],
                         "internalType": "struct OptionInfo[]",
@@ -7185,19 +7125,9 @@ export const abi = [
             {
                 "components": [
                     {
-                        "internalType": "uint64",
-                        "name": "bandwidth",
-                        "type": "uint64"
-                    },
-                    {
-                        "internalType": "uint64",
-                        "name": "traffic",
-                        "type": "uint64"
-                    },
-                    {
-                        "internalType": "uint64",
-                        "name": "externalPort",
-                        "type": "uint64"
+                        "internalType": "string",
+                        "name": "data",
+                        "type": "string"
                     }
                 ],
                 "internalType": "struct OptionInfo",
@@ -7275,19 +7205,9 @@ export const abi = [
                     {
                         "components": [
                             {
-                                "internalType": "uint64",
-                                "name": "bandwidth",
-                                "type": "uint64"
-                            },
-                            {
-                                "internalType": "uint64",
-                                "name": "traffic",
-                                "type": "uint64"
-                            },
-                            {
-                                "internalType": "uint64",
-                                "name": "externalPort",
-                                "type": "uint64"
+                                "internalType": "string",
+                                "name": "data",
+                                "type": "string"
                             }
                         ],
                         "internalType": "struct OptionInfo",
@@ -7373,19 +7293,9 @@ export const abi = [
                     {
                         "components": [
                             {
-                                "internalType": "uint64",
-                                "name": "bandwidth",
-                                "type": "uint64"
-                            },
-                            {
-                                "internalType": "uint64",
-                                "name": "traffic",
-                                "type": "uint64"
-                            },
-                            {
-                                "internalType": "uint64",
-                                "name": "externalPort",
-                                "type": "uint64"
+                                "internalType": "string",
+                                "name": "data",
+                                "type": "string"
                             }
                         ],
                         "internalType": "struct OptionInfo",
@@ -7481,19 +7391,9 @@ export const abi = [
             {
                 "components": [
                     {
-                        "internalType": "uint64",
-                        "name": "bandwidth",
-                        "type": "uint64"
-                    },
-                    {
-                        "internalType": "uint64",
-                        "name": "traffic",
-                        "type": "uint64"
-                    },
-                    {
-                        "internalType": "uint64",
-                        "name": "externalPort",
-                        "type": "uint64"
+                        "internalType": "string",
+                        "name": "data",
+                        "type": "string"
                     }
                 ],
                 "internalType": "struct OptionInfo",
@@ -8423,19 +8323,9 @@ export const abi = [
             {
                 "components": [
                     {
-                        "internalType": "uint64",
-                        "name": "bandwidth",
-                        "type": "uint64"
-                    },
-                    {
-                        "internalType": "uint64",
-                        "name": "traffic",
-                        "type": "uint64"
-                    },
-                    {
-                        "internalType": "uint64",
-                        "name": "externalPort",
-                        "type": "uint64"
+                        "internalType": "string",
+                        "name": "data",
+                        "type": "string"
                     }
                 ],
                 "internalType": "struct OptionInfo",
@@ -8559,19 +8449,9 @@ export const abi = [
                     {
                         "components": [
                             {
-                                "internalType": "uint64",
-                                "name": "bandwidth",
-                                "type": "uint64"
-                            },
-                            {
-                                "internalType": "uint64",
-                                "name": "traffic",
-                                "type": "uint64"
-                            },
-                            {
-                                "internalType": "uint64",
-                                "name": "externalPort",
-                                "type": "uint64"
+                                "internalType": "string",
+                                "name": "data",
+                                "type": "string"
                             }
                         ],
                         "internalType": "struct OptionInfo",
@@ -8666,19 +8546,9 @@ export const abi = [
                     {
                         "components": [
                             {
-                                "internalType": "uint64",
-                                "name": "bandwidth",
-                                "type": "uint64"
-                            },
-                            {
-                                "internalType": "uint64",
-                                "name": "traffic",
-                                "type": "uint64"
-                            },
-                            {
-                                "internalType": "uint64",
-                                "name": "externalPort",
-                                "type": "uint64"
+                                "internalType": "string",
+                                "name": "data",
+                                "type": "string"
                             }
                         ],
                         "internalType": "struct OptionInfo",
@@ -8814,19 +8684,9 @@ export const abi = [
             {
                 "components": [
                     {
-                        "internalType": "uint64",
-                        "name": "bandwidth",
-                        "type": "uint64"
-                    },
-                    {
-                        "internalType": "uint64",
-                        "name": "traffic",
-                        "type": "uint64"
-                    },
-                    {
-                        "internalType": "uint64",
-                        "name": "externalPort",
-                        "type": "uint64"
+                        "internalType": "string",
+                        "name": "data",
+                        "type": "string"
                     }
                 ],
                 "internalType": "struct OptionInfo",
@@ -10556,19 +10416,9 @@ export const abi = [
             {
                 "components": [
                     {
-                        "internalType": "uint64",
-                        "name": "bandwidth",
-                        "type": "uint64"
-                    },
-                    {
-                        "internalType": "uint64",
-                        "name": "traffic",
-                        "type": "uint64"
-                    },
-                    {
-                        "internalType": "uint64",
-                        "name": "externalPort",
-                        "type": "uint64"
+                        "internalType": "string",
+                        "name": "data",
+                        "type": "string"
                     }
                 ],
                 "internalType": "struct OptionInfo",
@@ -12110,19 +11960,9 @@ export const abi = [
                     {
                         "components": [
                             {
-                                "internalType": "uint64",
-                                "name": "bandwidth",
-                                "type": "uint64"
-                            },
-                            {
-                                "internalType": "uint64",
-                                "name": "traffic",
-                                "type": "uint64"
-                            },
-                            {
-                                "internalType": "uint64",
-                                "name": "externalPort",
-                                "type": "uint64"
+                                "internalType": "string",
+                                "name": "data",
+                                "type": "string"
                             }
                         ],
                         "internalType": "struct OptionInfo",
@@ -12292,19 +12132,9 @@ export const abi = [
                     {
                         "components": [
                             {
-                                "internalType": "uint64",
-                                "name": "bandwidth",
-                                "type": "uint64"
-                            },
-                            {
-                                "internalType": "uint64",
-                                "name": "traffic",
-                                "type": "uint64"
-                            },
-                            {
-                                "internalType": "uint64",
-                                "name": "externalPort",
-                                "type": "uint64"
+                                "internalType": "string",
+                                "name": "data",
+                                "type": "string"
                             }
                         ],
                         "internalType": "struct OptionInfo",

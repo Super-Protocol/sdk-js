@@ -27,34 +27,34 @@ jest.mock('axios', () => ({
 describe('Quote validator', () => {
   const validator = new QuoteValidator('https://pccs.superprotocol.io');
 
-  describe('Validation tests with Intel SGX API', () => {
+  describe('Validation tests with mocked Intel SGX API', () => {
     test('test quote', async () => {
       const quoteBuffer = Buffer.from(testQuotes.testQuote, 'base64');
       const res = await validator.validate(quoteBuffer);
       expect(res).toBeDefined();
       expect(res.quoteValidationStatus).toEqual(QuoteValidationStatuses.SecurityPatchNeeded);
-    }, 15000);
+    });
 
     test('provisioner quote', async () => {
       const quoteBuffer = Buffer.from(testQuotes.provisionerQuote, 'base64');
       const res = await validator.validate(quoteBuffer);
       expect(res).toBeDefined();
       expect(res.quoteValidationStatus).toEqual(QuoteValidationStatuses.SecurityPatchNeeded);
-    }, 15000);
+    });
 
     test('tunnel quote', async () => {
       const quoteBuffer = Buffer.from(testQuotes.tunnelQuote, 'base64');
       const res = await validator.validate(quoteBuffer);
       expect(res).toBeDefined();
       expect(res.quoteValidationStatus).toEqual(QuoteValidationStatuses.SecurityPatchNeeded);
-    }, 15000);
+    });
 
     test('invalid quote', async () => {
       const quoteBuffer = Buffer.from(testQuotes.invalidQuote, 'base64');
       const res = await validator.validate(quoteBuffer);
       expect(res).toBeDefined();
       expect(res.quoteValidationStatus).toEqual(QuoteValidationStatuses.Error);
-    }, 15000);
+    });
   });
 
   describe('Validation tests with mocks', () => {
@@ -67,7 +67,7 @@ describe('Quote validator', () => {
       const res = await validator.validate(quoteBuffer);
       expect(res).toBeDefined();
       expect(res.quoteValidationStatus).toEqual(QuoteValidationStatuses.UpToDate);
-    }, 15000);
+    });
 
     test('up to date status', async () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -80,7 +80,7 @@ describe('Quote validator', () => {
       const res = await validator.validate(quoteBuffer);
       expect(res).toBeDefined();
       expect(res.quoteValidationStatus).toEqual(QuoteValidationStatuses.SoftwareUpdateNeeded);
-    }, 15000);
+    });
 
     test('up to date status', async () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -91,49 +91,44 @@ describe('Quote validator', () => {
       const res = await validator.validate(quoteBuffer);
       expect(res).toBeDefined();
       expect(res.quoteValidationStatus).toEqual(QuoteValidationStatuses.ConfigurationNeeded);
-    }, 15000);
+    });
   });
 
   describe('User data tests', () => {
-    test('test quote and user data', () => {
-      const quoteBuffer = Buffer.from(testQuotes.testQuote, 'base64');
-      const res = validator.isQuoteHasUserData(quoteBuffer, quotesUserDatas.testUserData);
+    test('tee1 quote and user data', async () => {
+      const quoteBuffer = Buffer.from(testQuotes.tee1Quote, 'base64');
+      const dataBuffer = Buffer.from(quotesUserDatas.tee1);
+      const res = await validator.isQuoteHasUserData(quoteBuffer, dataBuffer);
       expect(res).toBeDefined();
       expect(res).toEqual(true);
-    }, 15000);
+    });
 
-    test('provisioner quote and user data', () => {
-      const quoteBuffer = Buffer.from(testQuotes.provisionerQuote, 'base64');
-      const res = validator.isQuoteHasUserData(quoteBuffer, quotesUserDatas.provisionerUserData);
+    test('tee23 quote and user data', async () => {
+      const quoteBuffer = Buffer.from(testQuotes.tee23Quote, 'base64');
+      const dataBuffer = Buffer.from(quotesUserDatas.tee23);
+      const res = await validator.isQuoteHasUserData(quoteBuffer, dataBuffer);
       expect(res).toBeDefined();
       expect(res).toEqual(true);
-    }, 15000);
+    });
 
-    test('tunnel quote and user data', () => {
-      const quoteBuffer = Buffer.from(testQuotes.tunnelQuote, 'base64');
-      const res = validator.isQuoteHasUserData(quoteBuffer, quotesUserDatas.tunnelUserData);
-      expect(res).toBeDefined();
-      expect(res).toEqual(true);
-    }, 15000);
-
-    test('tunnel quote and provisioner user data', () => {
-      const quoteBuffer = Buffer.from(testQuotes.tunnelQuote, 'base64');
-      const res = validator.isQuoteHasUserData(
+    test('tee1 quote and tee23 user data', async () => {
+      const quoteBuffer = Buffer.from(testQuotes.tee1Quote, 'base64');
+      const res = await validator.isQuoteHasUserData(
         quoteBuffer,
-        Buffer.from(quotesUserDatas.provisionerUserData),
-      );
-      expect(res).toBeDefined();
-      expect(res).toEqual(true);
-    }, 15000);
-
-    test('tunnel quote and test user data', () => {
-      const quoteBuffer = Buffer.from(testQuotes.tunnelQuote, 'base64');
-      const res = validator.isQuoteHasUserData(
-        quoteBuffer,
-        Buffer.from(quotesUserDatas.testUserData),
+        Buffer.from(quotesUserDatas.tee23),
       );
       expect(res).toBeDefined();
       expect(res).toEqual(false);
-    }, 15000);
+    });
+
+    test('tee23 quote and tee1 user data', async () => {
+      const quoteBuffer = Buffer.from(testQuotes.tee23Quote, 'base64');
+      const res = await validator.isQuoteHasUserData(
+        quoteBuffer,
+        Buffer.from(quotesUserDatas.tee1),
+      );
+      expect(res).toBeDefined();
+      expect(res).toEqual(false);
+    });
   });
 });

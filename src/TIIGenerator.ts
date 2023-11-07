@@ -43,18 +43,23 @@ class TIIGenerator {
           mrenclave: '',
         };
 
-    const tlb: TLBlockUnserializeResultType = new TLBlockSerializerV1().unserializeTlb(
+    const serializer = new TLBlockSerializerV1();
+    const tlb: TLBlockUnserializeResultType = serializer.unserializeTlb(
       Buffer.from(teeOfferInfo.tlb, 'base64'),
     );
     const validator = new QuoteValidator('https://pccs.superprotocol.io');
     const quoteBuffer = Buffer.from(tlb.quote);
     const quoteStatus = await validator.validate(quoteBuffer);
     if (quoteStatus.quoteValidationStatus !== QuoteValidationStatuses.UpToDate) {
-      logger.warn(quoteStatus, 'Quote validation status is not UpToDate');
+      if (quoteStatus.quoteValidationStatus === QuoteValidationStatuses.Error) {
+        throw new Error('Quote in TLB is invalid');
+      } else {
+        logger.warn(quoteStatus, 'Quote validation status is not UpToDate');
+      }
     }
-    const checkData = validator.isQuoteHasUserData(quoteBuffer, tlb.data.teePubKeyData);
+    const checkData = await validator.isQuoteHasUserData(quoteBuffer, Buffer.from(tlb.dataBlob));
     if (!checkData) {
-      logger.error('Quote in TLB has invalid user data');
+      throw new Error('Quote in TLB has invalid user data');
     }
 
     // TODO: check env with SP-149

@@ -29,7 +29,7 @@ const INTEL_ROOT_PUB_KEY = new Uint8Array([
   148,
 ]);
 
-interface ValidationResult {
+export interface ValidationResult {
   quoteValidationStatus: QuoteValidationStatuses;
   description: string;
   error?: unknown;
@@ -506,10 +506,12 @@ export class QuoteValidator {
     }
   }
 
-  public isQuoteHasUserData(quoteBuffer: Buffer, userDataBuffer: Uint8Array): boolean {
+  public async isQuoteHasUserData(quoteBuffer: Buffer, userDataBuffer: Buffer): Promise<boolean> {
     const quote: TeeSgxQuoteDataType = this.teeSgxParser.parseQuote(quoteBuffer);
-    const report: TeeSgxReportDataType = this.teeSgxParser.parseReport(quote.qeReport);
-    const compareResult = Buffer.compare(report.userData, userDataBuffer);
+    const report: TeeSgxReportDataType = this.teeSgxParser.parseReport(quote.report);
+    const userDataHash = await this.getSha256Hash(userDataBuffer);
+    const slicedQuoteData = report.userData.slice(0, userDataHash.length);
+    const compareResult = Buffer.compare(slicedQuoteData, userDataHash);
 
     return compareResult === 0;
   }

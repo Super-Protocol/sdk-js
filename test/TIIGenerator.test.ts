@@ -1,4 +1,4 @@
-import { BlockchainId, OfferInfo, OfferType, TeeOfferInfo } from '../src';
+import { BlockchainId, OfferInfo, OfferRestrictions, OfferType, OrderArgs, OrderInfo, TeeOfferInfo } from '../src';
 import TIIGenerator from '../src/TIIGenerator';
 import {
   CryptoAlgorithm,
@@ -58,10 +58,12 @@ jest.mock('../src/models/Order', () => {
       getOrderInfo(): object {
         return {
           offer: '',
-          args: {
-            inputOffers: ['10'],
-          },
         };
+      },
+      getOrderArgs(): object {
+        return {
+          inputOffers: ['10'],
+        } as OrderArgs;
       },
     };
   });
@@ -82,6 +84,10 @@ jest.mock('../src/models/Offer', () => {
             hash: '875e64e17e414b21b4a029bf88ff2ba0',
           }),
         } as OfferInfo;
+      },
+      getOfferRestrictions(): object {
+        return {
+        } as OfferRestrictions;
       },
     };
   });

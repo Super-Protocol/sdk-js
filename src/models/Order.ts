@@ -115,7 +115,7 @@ class Order {
   }
 
   /**
-   * Function for fetching order info from blockchain
+   * Function for fetching order args from blockchain
    */
   @incrementMethodCall()
   public async getOrderArgs(): Promise<OrderArgs> {

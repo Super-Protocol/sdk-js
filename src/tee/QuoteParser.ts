@@ -1,6 +1,10 @@
+import { Certificate } from '@fidm/x509';
+import * as asn1js from 'asn1js';
+import * as pkijs from 'pkijs';
 import { Buffer as Blob } from 'buffer/';
 import { TeeQuoteParserError } from './errors';
-import { BinaryType, TeeSgxQuoteDataType, TeeSgxReportDataType } from './types';
+import { BinaryType, TeeSgxQuoteDataType, TeeSgxReportDataType, ChunkedX509Cert } from './types';
+import { splitChain, Signature } from './helpers';
 
 export class TeeSgxParser {
   static readonly quoteHeaderSize = 48;
@@ -32,6 +36,39 @@ export class TeeSgxParser {
     blob.data = Blob.from(blob.data.subarray(size));
 
     return buf;
+  }
+
+  private extractRS(cert: pkijs.Certificate): { r: string; s: string; derSignature: string } {
+    const derSignature = Buffer.from(cert.signatureValue.valueBlock.valueHexView).toString('hex');
+    const parsedSignature = Signature.importFromDER(derSignature);
+
+    return {
+      r: parsedSignature.r,
+      s: parsedSignature.s,
+      derSignature,
+    };
+  }
+
+  private parsePem(pem: string): ChunkedX509Cert {
+    const cert = Certificate.fromPEM(Buffer.from(pem));
+    const asn1Certificate = asn1js.fromBER(cert.raw);
+    const certificate = new pkijs.Certificate({ schema: asn1Certificate.result });
+
+    const tbs = certificate.tbsView;
+
+    const { r, s } = this.extractRS(certificate);
+
+    const publicKey = cert.publicKey.keyRaw.toString('hex').slice(2);
+    const splitedTbs = Buffer.from(tbs).toString('hex').split(publicKey);
+    const x509PublicKey = '0x' + publicKey;
+    const x509Signature = '0x' + r + s;
+
+    return {
+      bodyPartOne: '0x' + splitedTbs[0],
+      publicKey: x509PublicKey,
+      bodyPartTwo: '0x' + splitedTbs[1],
+      signature: x509Signature,
+    };
   }
 
   parseQuote(data: BinaryType): TeeSgxQuoteDataType {
@@ -122,6 +159,9 @@ export class TeeSgxParser {
       );
     }
 
+    const certsPems = splitChain(qeCertificationData.toString()); // [device, platform, root]
+    const certsData = certsPems.map((pem) => this.parsePem(pem));
+
     return {
       rawHeader: quoteHeader,
       header: {
@@ -138,6 +178,20 @@ export class TeeSgxParser {
       qeAuthenticationData,
       qeCertificationDataType,
       qeCertificationData,
+      certificates: {
+        device: {
+          pem: certsPems[0],
+          x509Data: certsData[0],
+        },
+        platform: {
+          pem: certsPems[1],
+          x509Data: certsData[1],
+        },
+        root: {
+          pem: certsPems[2],
+          x509Data: certsData[2],
+        },
+      },
     };
   }
 

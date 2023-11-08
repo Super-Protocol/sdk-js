@@ -54,6 +54,11 @@ export type TeeSgxQuoteDataType = {
   qeAuthenticationData: BinaryType;
   qeCertificationDataType: number;
   qeCertificationData: BinaryType;
+  certificates: {
+    device: CertificateData;
+    platform: CertificateData;
+    root: CertificateData;
+  };
 };
 
 export type TeeSgxReportDataType = {
@@ -64,4 +69,16 @@ export type TeeSgxReportDataType = {
   isvSvn: number;
   userData: BinaryType;
   dataHash: BinaryType; //first 32-bytes of userData, deprecated, use <userData> field.
+};
+
+export type ChunkedX509Cert = {
+  bodyPartOne: string;
+  publicKey: string;
+  bodyPartTwo: string;
+  signature: string;
+};
+
+export type CertificateData = {
+  pem: string;
+  x509Data: ChunkedX509Cert;
 };

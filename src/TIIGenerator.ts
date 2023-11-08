@@ -51,7 +51,7 @@ class TIIGenerator {
     const tlb: TLBlockUnserializeResultType = serializer.unserializeTlb(
       Buffer.from(teeOfferInfo.tlb, 'base64'),
     );
-    const validator = new QuoteValidator('https://pccs.superprotocol.io');
+    const validator = new QuoteValidator(process.env['INTEL_SGX_API_URL']);
     const quoteBuffer = Buffer.from(tlb.quote);
     const quoteStatus = await validator.validate(quoteBuffer);
     if (quoteStatus.quoteValidationStatus !== QuoteValidationStatuses.UpToDate) {

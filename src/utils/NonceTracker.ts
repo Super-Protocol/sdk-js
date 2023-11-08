@@ -43,10 +43,12 @@ class NonceTracker {
     this.countOfPendingTransactions++;
   }
 
-  public onTransactionPublished(): void {
+  public onTransactionPublished(nonce: bigint): void {
     this.countOfPendingTransactions--;
 
     if (this.countOfPendingTransactions === 0) {
+      this.logger.trace(`last tx published with nonce: ${nonce}. State nonce ${this.txCount}`);
+
       void this.sendHoldTransactions();
     }
   }

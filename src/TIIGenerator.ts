@@ -25,7 +25,7 @@ import { QuoteValidationStatuses } from './tee/statuses';
 import { TeeSgxParser } from './tee/QuoteParser';
 import logger from './logger';
 
-const MRSIGNER = '4a5cb479b8a30fa3821b88aa29bad04788ea006a9e09925bf3ec36398fc9d64b';
+const MRSIGNER = '8c4f5775d796503e96137f77c68a829a0056ac8ded70140b081b094490c57bff';
 
 class TIIGenerator {
   public static async generateByOffer(

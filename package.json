@@ -65,6 +65,7 @@
     "aws-sdk": "^2.1418.0",
     "axios": "^1.5.1",
     "bottleneck": "^2.19.5",
+    "dotenv": "^16.3.1",
     "ethers": "^5.5.3",
     "hybrid-crypto-js": "^0.2.4",
     "js-encoding-utils": "^0.7.3",
@@ -78,8 +79,8 @@
     "protobufjs": "^6.11.2",
     "web3": "^4.1.2",
     "web3-core-requestmanager": "^1.10.0",
-    "web3-eth-contract": "^4.0.4",
     "web3-eth-abi": "^4.1.2",
+    "web3-eth-contract": "^4.0.4",
     "web3-types": "^1.1.0"
   },
   "repository": "git://github.com/Super-Protocol/sdk-js.git",

@@ -1,5 +1,6 @@
 import { gzip, ungzip } from 'node-gzip';
 import _ from 'lodash';
+import * as dotenv from 'dotenv';
 
 import { Compression, Compression_TYPE } from './proto/Compression';
 import { TRI } from './proto/TRI';
@@ -25,7 +26,7 @@ import { QuoteValidationStatuses } from './tee/statuses';
 import { TeeSgxParser } from './tee/QuoteParser';
 import logger from './logger';
 
-const MRSIGNER = '4a5cb479b8a30fa3821b88aa29bad04788ea006a9e09925bf3ec36398fc9d64b';
+dotenv.config();
 
 class TIIGenerator {
   public static async generateByOffer(
@@ -67,7 +68,8 @@ class TIIGenerator {
     const parser = new TeeSgxParser();
     const parsedQuote = parser.parseQuote(tlb.quote);
     const report = parser.parseReport(parsedQuote.report);
-    if (report.mrSigner.toString('hex') !== MRSIGNER) {
+    const mrsigner = process.env['MRSIGNER'];
+    if (report.mrSigner.toString('hex') !== mrsigner) {
       throw new Error('Quote in TLB has invalid MR signer');
     }
 

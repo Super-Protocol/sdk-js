@@ -216,7 +216,7 @@ class TxManager {
         transactionResultData = await web3!.eth.sendTransaction(txData);
       }
 
-      if (nonceTracker) nonceTracker.onTransactionPublished();
+      if (nonceTracker) nonceTracker.onTransactionPublished(txData.nonce!);
 
       return transactionResultData;
     } catch (e: unknown) {

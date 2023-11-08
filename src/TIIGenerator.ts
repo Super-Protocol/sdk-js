@@ -22,7 +22,10 @@ import {
 import { TLBlockSerializerV1, TLBlockUnserializeResultType } from '@super-protocol/tee-lib';
 import { QuoteValidator } from './tee/QuoteValidator';
 import { QuoteValidationStatuses } from './tee/statuses';
+import { TeeSgxParser } from './tee/QuoteParser';
 import logger from './logger';
+
+const MRSIGNER = '4a5cb479b8a30fa3821b88aa29bad04788ea006a9e09925bf3ec36398fc9d64b';
 
 class TIIGenerator {
   public static async generateByOffer(
@@ -60,6 +63,12 @@ class TIIGenerator {
     const checkData = await validator.isQuoteHasUserData(quoteBuffer, Buffer.from(tlb.dataBlob));
     if (!checkData) {
       throw new Error('Quote in TLB has invalid user data');
+    }
+    const parser = new TeeSgxParser();
+    const parsedQuote = parser.parseQuote(tlb.quote);
+    const report = parser.parseReport(parsedQuote.report);
+    if (report.mrSigner.toString('hex') !== MRSIGNER) {
+      throw new Error('Quote in TLB has invalid MR signer');
     }
 
     // TODO: check env with SP-149

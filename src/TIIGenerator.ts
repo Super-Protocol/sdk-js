@@ -20,6 +20,9 @@ import {
   UrlResource,
 } from '@super-protocol/dto-js';
 import { TLBlockSerializerV1, TLBlockUnserializeResultType } from '@super-protocol/tee-lib';
+import { QuoteValidator } from './tee/QuoteValidator';
+import { QuoteValidationStatuses } from './tee/statuses';
+import logger from './logger';
 
 class TIIGenerator {
   public static async generateByOffer(
@@ -40,9 +43,24 @@ class TIIGenerator {
           mrenclave: '',
         };
 
-    const tlb: TLBlockUnserializeResultType = new TLBlockSerializerV1().unserializeTlb(
+    const serializer = new TLBlockSerializerV1();
+    const tlb: TLBlockUnserializeResultType = serializer.unserializeTlb(
       Buffer.from(teeOfferInfo.tlb, 'base64'),
     );
+    const validator = new QuoteValidator('https://pccs.superprotocol.io');
+    const quoteBuffer = Buffer.from(tlb.quote);
+    const quoteStatus = await validator.validate(quoteBuffer);
+    if (quoteStatus.quoteValidationStatus !== QuoteValidationStatuses.UpToDate) {
+      if (quoteStatus.quoteValidationStatus === QuoteValidationStatuses.Error) {
+        throw new Error('Quote in TLB is invalid');
+      } else {
+        logger.warn(quoteStatus, 'Quote validation status is not UpToDate');
+      }
+    }
+    const checkData = await validator.isQuoteHasUserData(quoteBuffer, Buffer.from(tlb.dataBlob));
+    if (!checkData) {
+      throw new Error('Quote in TLB has invalid user data');
+    }
 
     // TODO: check env with SP-149
     const mac = (encryption as any).authTag || (encryption as EncryptionWithMacIV).mac;

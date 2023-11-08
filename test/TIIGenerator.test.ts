@@ -8,6 +8,8 @@ import {
   StorageProviderResource,
   StorageType,
 } from '@super-protocol/dto-js';
+import { ValidationResult } from '../src/tee/QuoteValidator';
+import { QuoteValidationStatuses } from '../src/tee/statuses';
 
 const fileEncryptionAlgo = CryptoAlgorithm.AES;
 const key = '12345789';
@@ -100,6 +102,22 @@ jest.mock('../src/models/TeeOffer', () => {
       },
     };
   });
+});
+
+jest.mock('../src/tee/QuoteValidator', () => {
+  return {
+    QuoteValidator: jest.fn().mockImplementation(() => {
+      return {
+        isDefault: false,
+        baseUrl: 'https://pccs.superprotocol.io',
+        validate: (): ValidationResult => ({
+          quoteValidationStatus: QuoteValidationStatuses.UpToDate,
+          description: 'The Quote verification passed and is at the latest TCB level.',
+        }),
+        isQuoteHasUserData: (): boolean => true,
+      };
+    }),
+  };
 });
 
 describe('TIIGenerator', () => {

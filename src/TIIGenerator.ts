@@ -27,6 +27,8 @@ import { TeeSgxParser } from './tee/QuoteParser';
 import logger from './logger';
 
 class TIIGenerator {
+  static verifiedTlb: string[] = [];
+
   public static async generateByOffer(
     offerId: BlockchainId,
     solutionHashes: Hash[],
@@ -34,6 +36,7 @@ class TIIGenerator {
     resource: Resource,
     args: any,
     encryption: Encryption,
+    sgxApiUrl: string,
   ): Promise<string> {
     const teeOffer: TeeOffer = new TeeOffer(offerId);
     const teeOfferInfo: TeeOfferInfo = await teeOffer.getInfo();
@@ -49,25 +52,28 @@ class TIIGenerator {
     const tlb: TLBlockUnserializeResultType = serializer.unserializeTlb(
       Buffer.from(teeOfferInfo.tlb, 'base64'),
     );
-    const validator = new QuoteValidator(config.INTEL_SGX_API_URL);
-    const quoteBuffer = Buffer.from(tlb.quote);
-    const quoteStatus = await validator.validate(quoteBuffer);
-    if (quoteStatus.quoteValidationStatus !== QuoteValidationStatuses.UpToDate) {
-      if (quoteStatus.quoteValidationStatus === QuoteValidationStatuses.Error) {
-        throw new Error('Quote in TLB is invalid');
-      } else {
-        logger.warn(quoteStatus, 'Quote validation status is not UpToDate');
+    if (!this.verifiedTlb.includes(teeOfferInfo.tlb)) {
+      const validator = new QuoteValidator(sgxApiUrl);
+      const quoteBuffer = Buffer.from(tlb.quote);
+      const quoteStatus = await validator.validate(quoteBuffer);
+      if (quoteStatus.quoteValidationStatus !== QuoteValidationStatuses.UpToDate) {
+        if (quoteStatus.quoteValidationStatus === QuoteValidationStatuses.Error) {
+          throw new Error('Quote in TLB is invalid');
+        } else {
+          logger.warn(quoteStatus, 'Quote validation status is not UpToDate');
+        }
       }
-    }
-    const checkData = await validator.isQuoteHasUserData(quoteBuffer, Buffer.from(tlb.dataBlob));
-    if (!checkData) {
-      throw new Error('Quote in TLB has invalid user data');
-    }
-    const parser = new TeeSgxParser();
-    const parsedQuote = parser.parseQuote(tlb.quote);
-    const report = parser.parseReport(parsedQuote.report);
-    if (report.mrSigner.toString('hex') !== config.MRSIGNER) {
-      throw new Error('Quote in TLB has invalid MR signer');
+      const checkData = await validator.isQuoteHasUserData(quoteBuffer, Buffer.from(tlb.dataBlob));
+      if (!checkData) {
+        throw new Error('Quote in TLB has invalid user data');
+      }
+      const parser = new TeeSgxParser();
+      const parsedQuote = parser.parseQuote(tlb.quote);
+      const report = parser.parseReport(parsedQuote.report);
+      if (report.mrSigner.toString('hex') !== config.MRSIGNER) {
+        throw new Error('Quote in TLB has invalid MR signer');
+      }
+      this.verifiedTlb.push(teeOfferInfo.tlb);
     }
 
     // TODO: check env with SP-149
@@ -116,6 +122,7 @@ class TIIGenerator {
     resource: Resource,
     args: any,
     encryption: Encryption,
+    sgxApiUrl: string,
   ): Promise<string> {
     const order: Order = new Order(orderId);
 
@@ -134,6 +141,7 @@ class TIIGenerator {
       resource,
       args,
       encryption,
+      sgxApiUrl,
     );
   }
 

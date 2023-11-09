@@ -15,7 +15,7 @@ import { QEIdentityStatuses, TCBStatuses, QuoteValidationStatuses } from './stat
 import { Encoding, HashAlgorithm } from '@super-protocol/dto-js';
 import Crypto from '../crypto';
 
-const DEFAULT_BASE_SGX_URL = 'https://api.trustedservices.intel.com';
+const INTEL_BASE_SGX_URL = 'https://api.trustedservices.intel.com';
 const INTEL_SGX_ROOT_CA_URL = 'https://certificates.trustedservices.intel.com/IntelSGXRootCA.der';
 const SGX_OID = '1.2.840.113741.1.13.1';
 const FMSPC_OID = `${SGX_OID}.4`;
@@ -41,9 +41,9 @@ export class QuoteValidator {
   private readonly teeSgxParser: TeeSgxParser;
   private logger: typeof rootLogger;
 
-  constructor(baseUrl?: string) {
-    this.isDefault = !baseUrl;
-    this.baseUrl = `${this.isDefault ? DEFAULT_BASE_SGX_URL : baseUrl}/sgx/certification/v4`;
+  constructor(baseUrl: string) {
+    this.isDefault = baseUrl === INTEL_BASE_SGX_URL;
+    this.baseUrl = `${baseUrl}/sgx/certification/v4`;
     this.teeSgxParser = new TeeSgxParser();
     this.logger = rootLogger.child({ className: QuoteValidator.name });
   }

@@ -65,7 +65,6 @@
     "aws-sdk": "^2.1418.0",
     "axios": "^1.5.1",
     "bottleneck": "^2.19.5",
-    "dotenv": "^16.3.1",
     "ethers": "^5.5.3",
     "hybrid-crypto-js": "^0.2.4",
     "js-encoding-utils": "^0.7.3",

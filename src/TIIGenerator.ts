@@ -63,14 +63,17 @@ class TIIGenerator {
           logger.warn(quoteStatus, 'Quote validation status is not UpToDate');
         }
       }
-      const checkData = await validator.isQuoteHasUserData(quoteBuffer, Buffer.from(tlb.dataBlob));
-      if (!checkData) {
+      const userDataCheckResult = await validator.isQuoteHasUserData(
+        quoteBuffer,
+        Buffer.from(tlb.dataBlob),
+      );
+      if (!userDataCheckResult) {
         throw new Error('Quote in TLB has invalid user data');
       }
       const parser = new TeeSgxParser();
       const parsedQuote = parser.parseQuote(tlb.quote);
       const report = parser.parseReport(parsedQuote.report);
-      if (report.mrSigner.toString('hex') !== config.MRSIGNER) {
+      if (report.mrSigner.toString('hex') !== config.TEE_LOADER_TRUSTED_MRSIGNER) {
         throw new Error('Quote in TLB has invalid MR signer');
       }
       this.verifiedTlb.push(teeOfferInfo.tlb);

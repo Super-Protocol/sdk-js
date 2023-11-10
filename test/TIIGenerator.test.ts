@@ -157,6 +157,7 @@ describe('TIIGenerator', () => {
           key: key,
           ...fileEncryptoAlgoDeps,
         },
+        'https://pccs.superprotocol.io',
       );
 
       expect(typeof tii).toBe('string');
@@ -180,6 +181,7 @@ describe('TIIGenerator', () => {
           key: key,
           ...fileEncryptoAlgoDeps,
         },
+        'https://pccs.superprotocol.io',
       );
 
       expect(typeof tii).toBe('string');
@@ -202,6 +204,7 @@ describe('TIIGenerator', () => {
             key,
             ...fileEncryptoAlgoDeps,
           },
+          'https://pccs.superprotocol.io',
         ),
       ).rejects.toThrowError();
     });
@@ -218,6 +221,7 @@ describe('TIIGenerator', () => {
             key: key,
             ...fileEncryptoAlgoDeps,
           },
+          'https://pccs.superprotocol.io',
         ),
       ).rejects.toThrowError();
     });

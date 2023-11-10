@@ -37,10 +37,9 @@ class BlockchainEventsListener extends BaseConnector {
 
     const reconnectOptions: ReconnectOptions = Object.assign(
       {
-        auto: true,
-        maxAttempts: 200000,
-        delay: 10000,
-        onTimeout: false,
+        autoReconnect: true,
+        delay: 20000,
+        maxAttempts: 5000,
       },
       config.reconnect,
     );

@@ -292,6 +292,14 @@ class Order {
   }
 
   /**
+   * Function for fetching start of processing date
+   */
+  @incrementMethodCall()
+  public async calculateOrderTime(): Promise<number> {
+    return Number(await Order.contract.methods.calculateOrderTime(this.id).call());
+  }
+
+  /**
    * Function for fetching parent order from blockchain
    */
   @incrementMethodCall()

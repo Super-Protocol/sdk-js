@@ -27,7 +27,7 @@ import { TeeSgxParser } from './tee/QuoteParser';
 import logger from './logger';
 
 class TIIGenerator {
-  static verifiedTlb: string[] = [];
+  static verifiedTlbHashes: Map<string, string> = new Map();
 
   public static async generateByOffer(
     offerId: BlockchainId,
@@ -52,7 +52,11 @@ class TIIGenerator {
     const tlb: TLBlockUnserializeResultType = serializer.unserializeTlb(
       Buffer.from(teeOfferInfo.tlb, 'base64'),
     );
-    if (!this.verifiedTlb.includes(teeOfferInfo.tlb)) {
+    const tlbHash = await Crypto.createHash(Buffer.from(teeOfferInfo.tlb), {
+      algo: HashAlgorithm.SHA256,
+      encoding: Encoding.base64,
+    });
+    if (!this.verifiedTlbHashes.has(tlbHash.hash)) {
       const validator = new QuoteValidator(sgxApiUrl);
       const quoteBuffer = Buffer.from(tlb.quote);
       const quoteStatus = await validator.validate(quoteBuffer);
@@ -76,7 +80,11 @@ class TIIGenerator {
       if (report.mrSigner.toString('hex') !== config.TEE_LOADER_TRUSTED_MRSIGNER) {
         throw new Error('Quote in TLB has invalid MR signer');
       }
-      this.verifiedTlb.push(teeOfferInfo.tlb);
+      this.verifiedTlbHashes.set(tlbHash.hash, '');
+      if (this.verifiedTlbHashes.size > config.TLB_CACHE_SIZE) {
+        const oldest = this.verifiedTlbHashes.keys().next().value;
+        this.verifiedTlbHashes.delete(oldest);
+      }
     }
 
     // TODO: check env with SP-149

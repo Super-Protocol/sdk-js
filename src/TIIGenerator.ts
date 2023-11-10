@@ -80,11 +80,26 @@ class TIIGenerator {
       if (report.mrSigner.toString('hex') !== config.TEE_LOADER_TRUSTED_MRSIGNER) {
         throw new Error('Quote in TLB has invalid MR signer');
       }
-      this.verifiedTlbHashes.set(tlbHash.hash, '');
+      this.verifiedTlbHashes.set(tlbHash.hash, offerId);
       if (this.verifiedTlbHashes.size > config.TLB_CACHE_SIZE) {
-        const oldest = this.verifiedTlbHashes.keys().next().value;
-        this.verifiedTlbHashes.delete(oldest);
+        const [key, value] = this.verifiedTlbHashes.entries().next().value;
+        this.verifiedTlbHashes.delete(key);
+        logger.trace(
+          key,
+          `TLB hash of offer ${value} removed from cache. Cache size: ${this.verifiedTlbHashes.size}`,
+        );
       }
+      logger.trace(
+        tlbHash.hash,
+        `TLB hash of offer ${offerId} added to cache. Cache size: ${this.verifiedTlbHashes.size}`,
+      );
+    } else {
+      logger.trace(
+        tlbHash.hash,
+        `TLB hash of offer ${this.verifiedTlbHashes.get(
+          tlbHash.hash,
+        )} loaded from cache. Cache size: ${this.verifiedTlbHashes.size}`,
+      );
     }
 
     // TODO: check env with SP-149

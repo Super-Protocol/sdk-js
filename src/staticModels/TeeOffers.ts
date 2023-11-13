@@ -3,7 +3,7 @@ import {
   checkIfActionAccountInitialized,
   cleanWeb3Data,
   convertBigIntToString,
-  convertTeeOfferOption,
+  convertTeeOfferOptionFromRaw,
   packDeviceId,
   unpackSlotInfo,
   convertOptionInfoToRaw,
@@ -185,7 +185,7 @@ class TeeOffers {
     return await contract.methods
       .getOptionById(optionId)
       .call()
-      .then((option) => convertTeeOfferOption(option as TeeOfferOptionRaw));
+      .then((option) => convertTeeOfferOptionFromRaw(option as TeeOfferOptionRaw));
   }
 
   public static async getSlotByExternalId(

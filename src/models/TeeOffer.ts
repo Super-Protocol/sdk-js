@@ -4,7 +4,7 @@ import {
   checkIfActionAccountInitialized,
   incrementMethodCall,
   packSlotInfo,
-  convertTeeOfferOption,
+  convertTeeOfferOptionFromRaw,
   formatTeeOfferSlot,
   cleanWeb3Data,
   convertBigIntToString,
@@ -146,7 +146,7 @@ class TeeOffer {
     return TeeOffer.contract.methods
       .getOptionById(optionId)
       .call()
-      .then((option) => convertTeeOfferOption(option as TeeOfferOptionRaw));
+      .then((option) => convertTeeOfferOptionFromRaw(option as TeeOfferOptionRaw));
   }
 
   public async getOptions(begin = 0, end = 999999): Promise<TeeOfferOption[]> {
@@ -162,7 +162,7 @@ class TeeOffer {
       .call()
       .then((options) => options.map((option) => transformComplexObject(option)));
 
-    return teeOfferOption.map((option) => convertTeeOfferOption(option));
+    return teeOfferOption.map((option) => convertTeeOfferOptionFromRaw(option));
   }
 
   /**

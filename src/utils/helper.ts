@@ -149,7 +149,7 @@ export function convertBigIntToString(obj: any): any {
   }
 }
 
-export function convertTeeOfferOption(option: TeeOfferOptionRaw): TeeOfferOption {
+export function convertTeeOfferOptionFromRaw(option: TeeOfferOptionRaw): TeeOfferOption {
   option = cleanWeb3Data(option);
 
   return {

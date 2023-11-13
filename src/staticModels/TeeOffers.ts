@@ -4,9 +4,10 @@ import {
   cleanWeb3Data,
   convertBigIntToString,
   formatOptionInfo,
-  formatTeeOfferOption,
+  convertTeeOfferOption,
   packDeviceId,
   unpackSlotInfo,
+  convertOptionInfoToRaw,
 } from '../utils/helper';
 import { BytesLike, formatBytes32String, parseBytes32String } from 'ethers/lib/utils';
 import {
@@ -22,6 +23,7 @@ import {
   BlockchainId,
   OptionInfo,
   SlotInfo,
+  TeeOfferOptionRaw,
 } from '../types';
 import { BlockchainConnector, BlockchainEventsListener } from '../connectors';
 import Superpro from './Superpro';
@@ -112,7 +114,7 @@ class TeeOffers {
         providerAuthorityAccount,
         teeOfferInfo,
         slotInfo,
-        optionInfo,
+        convertOptionInfoToRaw(optionInfo),
         formattedExternalId,
         enabled,
       ),
@@ -186,7 +188,7 @@ class TeeOffers {
     return await contract.methods
       .getOptionById(optionId)
       .call()
-      .then((option) => formatTeeOfferOption(option as TeeOfferOption));
+      .then((option) => convertTeeOfferOption(option as TeeOfferOptionRaw));
   }
 
   public static async getSlotByExternalId(

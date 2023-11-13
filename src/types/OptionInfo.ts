@@ -1,3 +1,10 @@
+
 export type OptionInfo = {
-  data: string;
+  bandwidth: number;
+  traffic: number;
+  externalPort: number;
 };
+
+export type OptionInfoRaw = {
+  data: string;
+}

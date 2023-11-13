@@ -69,7 +69,6 @@ class Orders implements StaticModel {
   public static async createOrder(
     orderInfo: OrderInfo,
     orderSlots: OrderSlots,
-    orderArgs: OrderArgs,
     deposit?: TokenAmount,
     suspended = false,
     transactionOptions?: TransactionOptions,
@@ -85,13 +84,13 @@ class Orders implements StaticModel {
 
     if (checkTxBeforeSend) {
       await TxManager.dryRun(
-        contract.methods.createOrder(orderInfoArguments, orderSlots, orderArgs, deposit, suspended),
+        contract.methods.createOrder(orderInfoArguments, orderSlots, orderInfo.args, deposit, suspended),
         transactionOptions,
       );
     }
 
     await TxManager.execute(
-      contract.methods.createOrder(orderInfoArguments, orderSlots, orderArgs, deposit, suspended),
+      contract.methods.createOrder(orderInfoArguments, orderSlots, orderInfo.args, deposit, suspended),
       transactionOptions,
     );
   }
@@ -124,10 +123,8 @@ class Orders implements StaticModel {
   public static async createWorkflow(
     parentOrderInfo: OrderInfo,
     parentOrderSlots: OrderSlots,
-    parentOrderArgs: OrderArgs,
     subOrdersInfo: OrderInfo[],
     subOrdersSlots: OrderSlots[],
-    subOrdersArgs: OrderArgs[],
     workflowDeposit: TokenAmount,
     transactionOptions?: TransactionOptions,
     checkTxBeforeSend = false,
@@ -145,15 +142,15 @@ class Orders implements StaticModel {
       externalId: formatBytes32String(o.externalId),
     }));
 
+    const subOrdersArgs = subOrdersInfo.map(i => i.args);
     if (checkTxBeforeSend) {
       await TxManager.dryRun(
-        contract.methods.createWorkflow(parentOrderInfoArgs, parentOrderSlots, parentOrderArgs, workflowDeposit, subOrdersInfoArgs, subOrdersSlots, subOrdersArgs),
+        contract.methods.createWorkflow(parentOrderInfoArgs, parentOrderSlots, parentOrderInfo.args, workflowDeposit, subOrdersInfoArgs, subOrdersSlots, subOrdersArgs),
         transactionOptions,
       );
     }
-
     await TxManager.execute(
-      contract.methods.createWorkflow(parentOrderInfoArgs, parentOrderSlots, parentOrderArgs, workflowDeposit, subOrdersInfoArgs, subOrdersSlots, subOrdersArgs),
+      contract.methods.createWorkflow(parentOrderInfoArgs, parentOrderSlots, parentOrderInfo.args, workflowDeposit, subOrdersInfoArgs, subOrdersSlots, subOrdersArgs),
       transactionOptions,
     );
   }

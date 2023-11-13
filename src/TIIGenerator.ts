@@ -6,7 +6,7 @@ import { Compression, Compression_TYPE } from './proto/Compression';
 import { TRI } from './proto/TRI';
 import Crypto from './crypto';
 import { Offer, Order, TeeOffer } from './models';
-import { BlockchainId, OrderArgs, OrderInfo, OfferInfo, OfferRestrictions, TeeOfferInfo } from './types';
+import { BlockchainId, OrderInfo, OfferInfo, TeeOfferInfo } from './types';
 import {
   Cipher,
   CryptoAlgorithm,
@@ -166,10 +166,9 @@ class TIIGenerator {
     const parentOrderId = await order.getParentOrder();
     const parentOrder: Order = new Order(parentOrderId);
     const parentOrderInfo: OrderInfo = await parentOrder.getOrderInfo();
-    const parentOrderArgs: OrderArgs = await parentOrder.getOrderArgs();
 
     const { hashes, linkage } = await this.getSolutionHashesAndLinkage(
-      parentOrderArgs.inputOffers,
+      parentOrderInfo.args.inputOffers,
     );
 
     return this.generateByOffer(
@@ -193,13 +192,12 @@ class TIIGenerator {
       inputOffers.map(async (offerId): Promise<void> => {
         const offer: Offer = new Offer(offerId);
         const offerInfo: OfferInfo = await offer.getInfo();
-        const offerRestrictions: OfferRestrictions = await offer.getOfferRestrictions();
 
         if (offerInfo.hash) {
           solutionHashes.push(JSON.parse(offerInfo.hash));
         }
 
-        const restrictions = _.intersection(offerRestrictions.offers, inputOffers).filter(
+        const restrictions = _.intersection(offerInfo.restrictions.offers, inputOffers).filter(
           (restrictedOfferId) => restrictedOfferId !== offer.id,
         );
         if (restrictions.length) {

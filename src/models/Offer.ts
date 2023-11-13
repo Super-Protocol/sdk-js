@@ -9,6 +9,7 @@ import {
   cleanWeb3Data,
   convertBigIntToString,
   transformComplexObject,
+  convertOptionInfoToRaw,
 } from '../utils/helper';
 import { BlockchainConnector } from '../connectors';
 import {
@@ -23,6 +24,7 @@ import {
   BlockchainId,
   OfferRestrictions,
   TokenAmount,
+  ValueOfferSlotRaw,
 } from '../types';
 import { formatBytes32String } from 'ethers/lib/utils';
 import TeeOffers from '../staticModels/TeeOffers';
@@ -35,7 +37,6 @@ class Offer {
   private logger: typeof rootLogger;
 
   public offerInfo?: OfferInfo;
-  public offerRestrictions?: OfferRestrictions;
   public provider?: string;
   public type?: OfferType;
   public providerAuthority?: string;
@@ -98,11 +99,11 @@ class Offer {
    * @param newInfo - new offer info
    * @param transactionOptions - object what contains alternative action account or gas limit (optional)
    */
-  public async setInfo(newInfo: OfferInfo, newRestrictions: OfferRestrictions, transactionOptions?: TransactionOptions): Promise<void> {
+  public async setInfo(newInfo: OfferInfo, transactionOptions?: TransactionOptions): Promise<void> {
     checkIfActionAccountInitialized(transactionOptions);
 
     await TxManager.execute(
-      Offer.contract.methods.setValueOfferInfo(this.id, newInfo, newRestrictions),
+      Offer.contract.methods.setValueOfferInfo(this.id, newInfo, newInfo.restrictions),
       transactionOptions,
     );
     if (this.offerInfo) this.offerInfo = newInfo;
@@ -117,18 +118,11 @@ class Offer {
       throw Error(`Offer ${this.id} does not exist`);
     }
     const { info } = await Offer.contract.methods.getValueOffer(this.id).call();
+    const offerRestrictions = await Offer.contract.methods.getOfferInitialRestrictions(this.id).call();
     this.offerInfo = cleanWeb3Data(info) as OfferInfo;
+    this.offerInfo.restrictions = cleanWeb3Data(offerRestrictions) as OfferRestrictions;
 
     return this.offerInfo;
-  }
-
-  /**
-   * Function for fetching offer initial restrictions from blockchain
-   */
-  @incrementMethodCall()
-  public async getOfferRestrictions(): Promise<OfferRestrictions> {
-    const offerRestrictions = await Offer.contract.methods.getOfferInitialRestrictions(this.id).call();
-    return (this.offerRestrictions = cleanWeb3Data(offerRestrictions) as OfferRestrictions);
   }
 
   /**
@@ -235,7 +229,7 @@ class Offer {
    * @param slotId - Slot ID
    */
   public async getSlotById(slotId: BlockchainId): Promise<ValueOfferSlot> {
-    const slot: ValueOfferSlot = await Offer.contract.methods
+    const slot: ValueOfferSlotRaw = await Offer.contract.methods
       .getValueOfferSlotById(this.id, slotId)
       .call();
 
@@ -263,7 +257,7 @@ class Offer {
       return [];
     }
 
-    const slots: ValueOfferSlot[] = await Offer.contract.methods
+    const slots: ValueOfferSlotRaw[] = await Offer.contract.methods
       .getValueOfferSlots(this.id, begin, end)
       .call()
       .then((slots) => slots.map((slot) => transformComplexObject(slot)));
@@ -298,7 +292,7 @@ class Offer {
       this.id,
       formattedExternalId,
       slotInfo,
-      optionInfo,
+      convertOptionInfoToRaw(optionInfo),
       slotUsage,
     );
     await TxManager.execute(transactionCall, transactionOptions);
@@ -327,7 +321,7 @@ class Offer {
         this.id,
         slotId,
         newSlotInfo,
-        newOptionInfo,
+        convertOptionInfoToRaw(newOptionInfo),
         newUsage,
       ),
       transactionOptions,

@@ -6,11 +6,16 @@ import { Monitoring } from './Monitoring';
 import { SlotInfo } from '../types/SlotInfo';
 import {
   OptionInfo,
+  OptionInfoRaw,
+  OrderUsage,
+  OrderUsageRaw,
   PriceType,
   SlotUsage,
   TeeOfferOption,
+  TeeOfferOptionRaw,
   TeeOfferSlot,
   ValueOfferSlot,
+  ValueOfferSlotRaw,
 } from '../types';
 import { BLOCKCHAIN_BATCH_REQUEST_TIMEOUT } from '../constants';
 
@@ -144,12 +149,12 @@ export function convertBigIntToString(obj: any): any {
   }
 }
 
-export function formatTeeOfferOption(option: TeeOfferOption): TeeOfferOption {
+export function convertTeeOfferOption(option: TeeOfferOptionRaw): TeeOfferOption {
   option = cleanWeb3Data(option);
 
   return {
     ...option,
-    info: formatOptionInfo(option.info),
+    info: convertOptionInfoFromRaw(option.info),
     usage: formatUsage(option.usage),
   };
 }
@@ -164,12 +169,12 @@ export function formatTeeOfferSlot(slot: TeeOfferSlot, cpuDenominator: number): 
   };
 }
 
-export function formatOfferSlot(slot: ValueOfferSlot, cpuDenominator: number): ValueOfferSlot {
+export function formatOfferSlot(slot: ValueOfferSlotRaw, cpuDenominator: number): ValueOfferSlot {
   slot = cleanWeb3Data(slot);
 
   return {
     ...slot,
-    option: formatOptionInfo(slot.option),
+    option: convertOptionInfoFromRaw(slot.option),
     info: unpackSlotInfo(slot.info, cpuDenominator),
     usage: formatUsage(slot.usage),
   };
@@ -184,8 +189,26 @@ export function formatUsage(usage: SlotUsage): SlotUsage {
   };
 }
 
+export function convertOrderUsage(usage: OrderUsageRaw): OrderUsage {
+  return {
+    slotCount: usage.slotCount,
+    optionInfo: usage.optionInfo.map(oi => convertOptionInfoFromRaw(oi)),
+    optionUsage: usage.optionUsage,
+    optionIds: usage.optionIds,
+    optionsCount: usage.optionsCount,
+  };
+}
+
 export function formatOptionInfo(optionInfo: OptionInfo): OptionInfo {
   return cleanWeb3Data(optionInfo);
+}
+
+export function convertOptionInfoFromRaw(optionInfo: OptionInfoRaw): OptionInfo {
+  return formatOptionInfo(JSON.parse(optionInfo.data) as OptionInfo);
+}
+
+export function convertOptionInfoToRaw(optionInfoRaw: OptionInfo): OptionInfoRaw {
+  return { data: JSON.stringify(optionInfoRaw) };
 }
 
 export function unpackSlotInfo(slotInfo: SlotInfo, cpuDenominator: number): SlotInfo {

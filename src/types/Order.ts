@@ -1,6 +1,3 @@
-import { SlotUsage } from './SlotUsage';
-import { SlotInfo } from './SlotInfo';
-import { OptionInfo } from './OptionInfo';
 import { TokenAmount, BlockchainId } from './Web3';
 
 export enum OrderStatus {
@@ -32,10 +29,11 @@ export type OrderInfo = {
   encryptedRequirements: string;
   encryptedArgs: string;
   status: OrderStatus;
-  slots: OrderSlots;
   externalId: string;
   expectedPrice: TokenAmount;
   maxPriceSlippage: TokenAmount;
+  // SDK only:
+  args: OrderArgs;
 };
 
 export type ExtendedOrderInfo = OrderInfo & {
@@ -51,12 +49,4 @@ export type OrderResult = {
 export type SubOrderParams = {
   blockParentOrder: boolean;
   deposit: TokenAmount;
-};
-
-export type OrderUsage = {
-  slotCount: number;
-  optionInfo: OptionInfo[];
-  optionUsage: SlotUsage[];
-  optionIds: BlockchainId[];
-  optionsCount: number[];
 };

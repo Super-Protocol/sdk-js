@@ -13,6 +13,7 @@ import {
   TokenAmount,
   SlotInfo,
   SlotUsage,
+  OrderUsageRaw,
 } from '../types';
 import { Contract, TransactionReceipt } from 'web3';
 import { EventLog } from 'web3-eth-contract';
@@ -21,6 +22,7 @@ import { abi } from '../contracts/abi';
 import {
   checkIfActionAccountInitialized,
   cleanWeb3Data,
+  convertOrderUsage,
   formatOptionInfo,
   formatUsage,
   incrementMethodCall,
@@ -38,10 +40,7 @@ class Order {
   private logger: typeof rootLogger;
 
   public selectedUsage?: OrderUsage;
-  public selectedUsageSlotInfo?: SlotInfo;
-  public selectedUsageSlotUsage?: SlotUsage;
   public orderInfo?: OrderInfo;
-  public orderArgs?: OrderArgs;
   public orderResult?: OrderResult;
   public subOrders?: BlockchainId[];
   public parentOrder?: BlockchainId;
@@ -104,23 +103,15 @@ class Order {
       throw Error(`Order ${this.id} does not exist`);
     }
     const orderInfoParams = await Order.contract.methods.getOrder(this.id).call();
+    const orderArgs = await Order.contract.methods.getOrderArgs(this.id).call();
+
     const orderInfo: OrderInfo = {
       ...(cleanWeb3Data(orderInfoParams[1]) as OrderInfo),
+      args: cleanWeb3Data(orderArgs) as OrderArgs,
       status: orderInfoParams[1].status.toString() as OrderStatus,
     };
-    orderInfo.slots.optionsCount = orderInfo.slots.optionsCount.map((count) => Number(count));
-    orderInfo.slots.slotCount = Number(orderInfo.slots.slotCount);
 
     return (this.orderInfo = orderInfo);
-  }
-
-  /**
-   * Function for fetching order args from blockchain
-   */
-  @incrementMethodCall()
-  public async getOrderArgs(): Promise<OrderArgs> {
-    const orderArgs = await Order.contract.methods.getOrderArgs(this.id).call();
-    return (this.orderArgs = cleanWeb3Data(orderArgs) as OrderArgs);
   }
 
   private async checkIfOrderExistsWithInterval(): Promise<boolean> {
@@ -201,7 +192,7 @@ class Order {
     this.selectedUsage = await Order.contract.methods
       .getOrderSelectedUsage(this.id)
       .call()
-      .then((selectedUsage) => cleanWeb3Data(selectedUsage) as OrderUsage);
+      .then((selectedUsage) => convertOrderUsage(cleanWeb3Data(selectedUsage) as OrderUsageRaw));
 
     const cpuDenominator = await TeeOffers.getDenominator();
 
@@ -209,13 +200,13 @@ class Order {
       .getOrderSelectedUsageSlotInfo(this.id)
       .call()
       .then((slotInfo) => cleanWeb3Data(slotInfo) as SlotInfo);
-    this.selectedUsageSlotInfo = unpackSlotInfo(slotInfo, cpuDenominator);
+    this.selectedUsage.slotInfo = unpackSlotInfo(slotInfo, cpuDenominator);
 
     const slotUsage = await Order.contract.methods
       .getOrderSelectedUsageSlotUsage(this.id)
       .call()
       .then((slotUsage) => cleanWeb3Data(slotUsage) as SlotUsage);
-    this.selectedUsageSlotUsage = formatUsage(slotUsage);
+    this.selectedUsage.slotUsage = formatUsage(slotUsage);
 
     this.selectedUsage.optionsCount = this.selectedUsage.optionsCount.map((item) => Number(item));
     this.selectedUsage.optionInfo = this.selectedUsage.optionInfo.map((optionInfo) =>
@@ -447,7 +438,6 @@ class Order {
   public async createSubOrder(
     subOrderInfo: OrderInfo,
     subOrderSlots: OrderSlots,
-    subOrderArgs: OrderArgs,
     blockParentOrder: boolean,
     deposit?: TokenAmount,
     transactionOptions?: TransactionOptions,
@@ -466,13 +456,13 @@ class Order {
 
     if (checkTxBeforeSend) {
       await TxManager.dryRun(
-        Order.contract.methods.createSubOrder(this.id, preparedInfo, subOrderSlots, subOrderArgs, params),
+        Order.contract.methods.createSubOrder(this.id, preparedInfo, subOrderSlots, subOrderInfo.args, params),
         transactionOptions,
       );
     }
 
     await TxManager.execute(
-      Order.contract.methods.createSubOrder(this.id, preparedInfo, subOrderSlots, subOrderArgs, params),
+      Order.contract.methods.createSubOrder(this.id, preparedInfo, subOrderSlots, subOrderInfo.args, params),
       transactionOptions,
     );
   }

@@ -8,6 +8,7 @@ export * from './Marks';
 export * from './Offer';
 export * from './OptionInfo';
 export * from './Order';
+export * from './OrderUsage';
 export * from './Origins';
 export * from './Provider';
 export * from './ResourceLoader';

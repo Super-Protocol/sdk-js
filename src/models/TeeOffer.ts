@@ -4,11 +4,13 @@ import {
   checkIfActionAccountInitialized,
   incrementMethodCall,
   packSlotInfo,
-  formatTeeOfferOption,
+  convertTeeOfferOption,
   formatTeeOfferSlot,
   cleanWeb3Data,
   convertBigIntToString,
   transformComplexObject,
+  convertOptionInfoFromRaw,
+  convertOptionInfoToRaw,
 } from '../utils/helper';
 import {
   TeeOfferInfo,
@@ -17,6 +19,8 @@ import {
   Origins,
   BlockchainId,
   TokenAmount,
+  OptionInfoRaw,
+  TeeOfferOptionRaw,
 } from '../types';
 import { BlockchainConnector } from '../connectors';
 import TxManager from '../utils/TxManager';
@@ -127,7 +131,7 @@ class TeeOffer {
       .then((response) => {
         return {
           slotInfo: cleanWeb3Data(response[0]) as SlotInfo,
-          optionInfo: cleanWeb3Data(response[1]) as OptionInfo
+          optionInfo: convertOptionInfoFromRaw(cleanWeb3Data(response[1]) as OptionInfoRaw)
         } as HardwareInfo
       });
 
@@ -142,7 +146,7 @@ class TeeOffer {
     return TeeOffer.contract.methods
       .getOptionById(optionId)
       .call()
-      .then((option) => formatTeeOfferOption(option as TeeOfferOption));
+      .then((option) => convertTeeOfferOption(option as TeeOfferOptionRaw));
   }
 
   public async getOptions(begin = 0, end = 999999): Promise<TeeOfferOption[]> {
@@ -153,12 +157,12 @@ class TeeOffer {
       return [];
     }
 
-    const teeOfferOption: TeeOfferOption[] = await TeeOffer.contract.methods
+    const teeOfferOption: TeeOfferOptionRaw[] = await TeeOffer.contract.methods
       .getTeeOfferOptions(this.id, begin, end)
       .call()
       .then((options) => options.map((option) => transformComplexObject(option)));
 
-    return teeOfferOption.map((option) => formatTeeOfferOption(option));
+    return teeOfferOption.map((option) => convertTeeOfferOption(option));
   }
 
   /**
@@ -188,7 +192,7 @@ class TeeOffer {
 
     const formattedExternalId = formatBytes32String(externalId);
     await TxManager.execute(
-      contract.methods.addOption(this.id, formattedExternalId, info, usage),
+      contract.methods.addOption(this.id, formattedExternalId, convertOptionInfoToRaw(info), usage),
       transactionOptions,
     );
   }
@@ -210,7 +214,7 @@ class TeeOffer {
     checkIfActionAccountInitialized(transactionOptions);
 
     await TxManager.execute(
-      TeeOffer.contract.methods.updateOption(this.id, optionId, newInfo, newUsage),
+      TeeOffer.contract.methods.updateOption(this.id, optionId, convertOptionInfoToRaw(newInfo), newUsage),
       transactionOptions,
     );
   }
@@ -556,7 +560,7 @@ class TeeOffer {
     newHardwareInfo = await TeeOffers.packHardwareInfo(newHardwareInfo);
 
     await TxManager.execute(
-      TeeOffer.contract.methods.setTeeOfferHardwareInfo(this.id, newHardwareInfo.slotInfo, newHardwareInfo.optionInfo),
+      TeeOffer.contract.methods.setTeeOfferHardwareInfo(this.id, newHardwareInfo.slotInfo, convertOptionInfoToRaw(newHardwareInfo.optionInfo)),
       transactionOptions,
     );
   }

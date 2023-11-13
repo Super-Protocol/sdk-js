@@ -199,12 +199,8 @@ export function convertOrderUsage(usage: OrderUsageRaw): OrderUsage {
   };
 }
 
-export function formatOptionInfo(optionInfo: OptionInfo): OptionInfo {
-  return cleanWeb3Data(optionInfo);
-}
-
 export function convertOptionInfoFromRaw(optionInfo: OptionInfoRaw): OptionInfo {
-  return formatOptionInfo(JSON.parse(optionInfo.data) as OptionInfo);
+  return JSON.parse(optionInfo.data) as OptionInfo;
 }
 
 export function convertOptionInfoToRaw(optionInfoRaw: OptionInfo): OptionInfoRaw {

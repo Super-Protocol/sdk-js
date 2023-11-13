@@ -23,7 +23,6 @@ import {
   checkIfActionAccountInitialized,
   cleanWeb3Data,
   convertOrderUsage,
-  formatOptionInfo,
   formatUsage,
   incrementMethodCall,
   unpackSlotInfo,
@@ -209,9 +208,6 @@ class Order {
     this.selectedUsage.slotUsage = formatUsage(slotUsage);
 
     this.selectedUsage.optionsCount = this.selectedUsage.optionsCount.map((item) => Number(item));
-    this.selectedUsage.optionInfo = this.selectedUsage.optionInfo.map((optionInfo) =>
-      formatOptionInfo(optionInfo),
-    );
     this.selectedUsage.optionUsage = this.selectedUsage.optionUsage.map((usage) =>
       formatUsage(usage),
     );

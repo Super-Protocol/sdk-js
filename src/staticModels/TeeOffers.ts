@@ -3,7 +3,6 @@ import {
   checkIfActionAccountInitialized,
   cleanWeb3Data,
   convertBigIntToString,
-  formatOptionInfo,
   convertTeeOfferOption,
   packDeviceId,
   unpackSlotInfo,
@@ -51,8 +50,6 @@ class TeeOffers {
   public static async unpackHardwareInfo(hw: HardwareInfo): Promise<HardwareInfo> {
     const cpuDenominator = await TeeOffers.getDenominator();
     hw.slotInfo = unpackSlotInfo(hw.slotInfo, cpuDenominator);
-    hw.optionInfo = formatOptionInfo(hw.optionInfo);
-
     return hw;
   }
 

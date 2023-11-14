@@ -27,7 +27,66 @@ import { TeeSgxParser } from './tee/QuoteParser';
 import logger from './logger';
 
 class TIIGenerator {
-  static verifiedTlb: string[] = [];
+  static verifiedTlbHashes: Map<string, string> = new Map();
+
+  private static async verifyTlb(
+    tlb: TLBlockUnserializeResultType,
+    tlbString: string,
+    offerId: string,
+    sgxApiUrl: string,
+  ): Promise<void> {
+    const tlbHash = await Crypto.createHash(Buffer.from(tlbString), {
+      algo: HashAlgorithm.SHA256,
+      encoding: Encoding.base64,
+    });
+    if (this.verifiedTlbHashes.has(tlbHash.hash)) {
+      logger.trace(
+        tlbHash,
+        `TLB hash of offer ${this.verifiedTlbHashes.get(
+          tlbHash.hash,
+        )} loaded from the cache. Cache size: ${this.verifiedTlbHashes.size}, cache limit: ${
+          config.TLB_CACHE_SIZE
+        }`,
+      );
+      return;
+    }
+    const validator = new QuoteValidator(sgxApiUrl);
+    const quoteBuffer = Buffer.from(tlb.quote);
+    const quoteStatus = await validator.validate(quoteBuffer);
+    if (quoteStatus.quoteValidationStatus !== QuoteValidationStatuses.UpToDate) {
+      if (quoteStatus.quoteValidationStatus === QuoteValidationStatuses.Error) {
+        throw new Error('Quote in TLB is invalid');
+      } else {
+        logger.warn(quoteStatus, 'Quote validation status is not UpToDate');
+      }
+    }
+    const userDataCheckResult = await validator.isQuoteHasUserData(
+      quoteBuffer,
+      Buffer.from(tlb.dataBlob),
+    );
+    if (!userDataCheckResult) {
+      throw new Error('Quote in TLB has invalid user data');
+    }
+    const parser = new TeeSgxParser();
+    const parsedQuote = parser.parseQuote(tlb.quote);
+    const report = parser.parseReport(parsedQuote.report);
+    if (report.mrSigner.toString('hex') !== config.TEE_LOADER_TRUSTED_MRSIGNER) {
+      throw new Error('Quote in TLB has invalid MR signer');
+    }
+    this.verifiedTlbHashes.set(tlbHash.hash, offerId);
+    if (this.verifiedTlbHashes.size > config.TLB_CACHE_SIZE) {
+      const [key, value] = this.verifiedTlbHashes.entries().next().value;
+      this.verifiedTlbHashes.delete(key);
+      logger.trace(
+        key,
+        `TLB hash of offer ${value} removed from the cache. Cache size: ${this.verifiedTlbHashes.size}, cache limit: ${config.TLB_CACHE_SIZE}`,
+      );
+    }
+    logger.trace(
+      tlbHash.hash,
+      `TLB hash of offer ${offerId} added to the cache. Cache size: ${this.verifiedTlbHashes.size}, cache limit: ${config.TLB_CACHE_SIZE}`,
+    );
+  }
 
   public static async generateByOffer(
     offerId: BlockchainId,
@@ -52,32 +111,7 @@ class TIIGenerator {
     const tlb: TLBlockUnserializeResultType = serializer.unserializeTlb(
       Buffer.from(teeOfferInfo.tlb, 'base64'),
     );
-    if (!this.verifiedTlb.includes(teeOfferInfo.tlb)) {
-      const validator = new QuoteValidator(sgxApiUrl);
-      const quoteBuffer = Buffer.from(tlb.quote);
-      const quoteStatus = await validator.validate(quoteBuffer);
-      if (quoteStatus.quoteValidationStatus !== QuoteValidationStatuses.UpToDate) {
-        if (quoteStatus.quoteValidationStatus === QuoteValidationStatuses.Error) {
-          throw new Error('Quote in TLB is invalid');
-        } else {
-          logger.warn(quoteStatus, 'Quote validation status is not UpToDate');
-        }
-      }
-      const userDataCheckResult = await validator.isQuoteHasUserData(
-        quoteBuffer,
-        Buffer.from(tlb.dataBlob),
-      );
-      if (!userDataCheckResult) {
-        throw new Error('Quote in TLB has invalid user data');
-      }
-      const parser = new TeeSgxParser();
-      const parsedQuote = parser.parseQuote(tlb.quote);
-      const report = parser.parseReport(parsedQuote.report);
-      if (report.mrSigner.toString('hex') !== config.TEE_LOADER_TRUSTED_MRSIGNER) {
-        throw new Error('Quote in TLB has invalid MR signer');
-      }
-      this.verifiedTlb.push(teeOfferInfo.tlb);
-    }
+    await this.verifyTlb(tlb, teeOfferInfo.tlb, offerId, sgxApiUrl);
 
     // TODO: check env with SP-149
     const mac = (encryption as any).authTag || (encryption as EncryptionWithMacIV).mac;

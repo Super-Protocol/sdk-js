@@ -12,7 +12,8 @@ import {
   BlockInfo,
   TransactionOptions,
   OrderCreatedEvent,
-  BlockchainId, OrderSlots, OrderArgs,
+  BlockchainId,
+  OrderSlots,
   TokenAmount,
 } from '../types';
 import Superpro from './Superpro';

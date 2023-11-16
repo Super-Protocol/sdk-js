@@ -188,24 +188,26 @@ class Order {
    */
   @incrementMethodCall()
   public async getSelectedUsage(): Promise<OrderUsage> {
-    this.selectedUsage = await Order.contract.methods
-      .getOrderSelectedUsage(this.id)
-      .call()
-      .then((selectedUsage) => convertOrderUsage(cleanWeb3Data(selectedUsage) as OrderUsageRaw));
-
     const cpuDenominator = await TeeOffers.getDenominator();
 
-    const slotInfo = await Order.contract.methods
+    const selectedUsageSlotInfo = await Order.contract.methods
       .getOrderSelectedUsageSlotInfo(this.id)
       .call()
       .then((slotInfo) => cleanWeb3Data(slotInfo) as SlotInfo);
-    this.selectedUsage.slotInfo = unpackSlotInfo(slotInfo, cpuDenominator);
 
-    const slotUsage = await Order.contract.methods
+    const selectedUsageSlotUsage = await Order.contract.methods
       .getOrderSelectedUsageSlotUsage(this.id)
       .call()
       .then((slotUsage) => cleanWeb3Data(slotUsage) as SlotUsage);
-    this.selectedUsage.slotUsage = formatUsage(slotUsage);
+
+    this.selectedUsage = await Order.contract.methods
+      .getOrderSelectedUsage(this.id)
+      .call()
+      .then((selectedUsage) => convertOrderUsage(
+        cleanWeb3Data(selectedUsage) as OrderUsageRaw,
+        unpackSlotInfo(selectedUsageSlotInfo, cpuDenominator),
+        formatUsage(selectedUsageSlotUsage)
+      ));
 
     this.selectedUsage.optionsCount = this.selectedUsage.optionsCount.map((item) => Number(item));
     this.selectedUsage.optionUsage = this.selectedUsage.optionUsage.map((usage) =>

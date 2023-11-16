@@ -189,13 +189,15 @@ export function formatUsage(usage: SlotUsage): SlotUsage {
   };
 }
 
-export function convertOrderUsage(usage: OrderUsageRaw): OrderUsage {
+export function convertOrderUsage(usage: OrderUsageRaw, slotInfo: SlotInfo, slotUsage: SlotUsage): OrderUsage {
   return {
     slotCount: usage.slotCount,
     optionInfo: usage.optionInfo.map(oi => convertOptionInfoFromRaw(oi)),
     optionUsage: usage.optionUsage,
     optionIds: usage.optionIds,
     optionsCount: usage.optionsCount,
+    slotInfo,
+    slotUsage
   };
 }
 

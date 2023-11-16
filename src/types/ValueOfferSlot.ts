@@ -10,10 +10,10 @@ type ValueOfferSlotBase= {
   usage: SlotUsage;
 };
 
-export type ValueOfferSlotRaw = ValueOfferSlotBase & {
-  option: OptionInfoRaw;
-};
-
 export type ValueOfferSlot = ValueOfferSlotBase & {
   option: OptionInfo;
+};
+
+export type ValueOfferSlotRaw = ValueOfferSlotBase & {
+  option: OptionInfoRaw;
 };

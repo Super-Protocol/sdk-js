@@ -119,8 +119,9 @@ class Offer {
       throw Error(`Offer ${this.id} does not exist`);
     }
     const { info } = await Offer.contract.methods.getValueOffer(this.id).call();
-    const offerRestrictions = await Offer.contract.methods.getOfferInitialRestrictions(this.id).call();
     this.offerInfo = cleanWeb3Data(info) as OfferInfo;
+
+    const offerRestrictions = await Offer.contract.methods.getOfferInitialRestrictions(this.id).call();
     this.offerInfo.restrictions = cleanWeb3Data(offerRestrictions) as OfferRestrictions;
 
     return this.offerInfo;

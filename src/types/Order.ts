@@ -32,7 +32,6 @@ export type OrderInfo = {
   externalId: string;
   expectedPrice: TokenAmount;
   maxPriceSlippage: TokenAmount;
-  // SDK only:
   args: OrderArgs;
 };
 

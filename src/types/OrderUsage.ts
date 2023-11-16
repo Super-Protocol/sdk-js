@@ -17,7 +17,6 @@ export type OrderUsage = OrderUsageBase & {
   optionUsage: SlotUsage[];
   optionIds: BlockchainId[];
   optionsCount: number[];
-  // SDK only:
   slotInfo?: SlotInfo;
   slotUsage?: SlotUsage;
 };

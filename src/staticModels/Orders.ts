@@ -83,14 +83,16 @@ class Orders implements StaticModel {
     };
 
     if (checkTxBeforeSend) {
+      const { args, ...restOrderInfoArguments } = orderInfoArguments;
       await TxManager.dryRun(
-        contract.methods.createOrder(orderInfoArguments, orderSlots, orderInfo.args, deposit, suspended),
+        contract.methods.createOrder(restOrderInfoArguments, orderSlots, args, deposit, suspended),
         transactionOptions,
       );
     }
 
+    const { args, ...restOrderInfoArguments } = orderInfoArguments;
     await TxManager.execute(
-      contract.methods.createOrder(orderInfoArguments, orderSlots, orderInfo.args, deposit, suspended),
+      contract.methods.createOrder(restOrderInfoArguments, orderSlots, args, deposit, suspended),
       transactionOptions,
     );
   }
@@ -144,13 +146,15 @@ class Orders implements StaticModel {
 
     const subOrdersArgs = subOrdersInfo.map(i => i.args);
     if (checkTxBeforeSend) {
+      const { args, ...restParentOrderInfoArgs } = parentOrderInfoArgs;
       await TxManager.dryRun(
-        contract.methods.createWorkflow(parentOrderInfoArgs, parentOrderSlots, parentOrderInfo.args, workflowDeposit, subOrdersInfoArgs, subOrdersSlots, subOrdersArgs),
+        contract.methods.createWorkflow(restParentOrderInfoArgs, parentOrderSlots, args, workflowDeposit, subOrdersInfoArgs, subOrdersSlots, subOrdersArgs),
         transactionOptions,
       );
     }
+    const { args, ...restParentOrderInfoArgs } = parentOrderInfoArgs;
     await TxManager.execute(
-      contract.methods.createWorkflow(parentOrderInfoArgs, parentOrderSlots, parentOrderInfo.args, workflowDeposit, subOrdersInfoArgs, subOrdersSlots, subOrdersArgs),
+      contract.methods.createWorkflow(restParentOrderInfoArgs, parentOrderSlots, args, workflowDeposit, subOrdersInfoArgs, subOrdersSlots, subOrdersArgs),
       transactionOptions,
     );
   }

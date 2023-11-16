@@ -33,6 +33,5 @@ export type OfferInfo = {
   linkage: string;
   hash: string;
   metadata: string;
-  // SDK only:
   restrictions: OfferRestrictions;
 };

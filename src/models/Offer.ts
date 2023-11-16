@@ -102,8 +102,9 @@ class Offer {
   public async setInfo(newInfo: OfferInfo, transactionOptions?: TransactionOptions): Promise<void> {
     checkIfActionAccountInitialized(transactionOptions);
 
+    const { restrictions, ...restInfo } = newInfo;
     await TxManager.execute(
-      Offer.contract.methods.setValueOfferInfo(this.id, newInfo, newInfo.restrictions),
+      Offer.contract.methods.setValueOfferInfo(this.id, restInfo, restrictions),
       transactionOptions,
     );
     if (this.offerInfo) this.offerInfo = newInfo;

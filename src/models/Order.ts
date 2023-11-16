@@ -451,14 +451,16 @@ class Order {
     };
 
     if (checkTxBeforeSend) {
+      const { args, ...restPreparedInfo } = preparedInfo;
       await TxManager.dryRun(
-        Order.contract.methods.createSubOrder(this.id, preparedInfo, subOrderSlots, subOrderInfo.args, params),
+        Order.contract.methods.createSubOrder(this.id, restPreparedInfo, subOrderSlots, args, params),
         transactionOptions,
       );
     }
 
+    const { args, ...restPreparedInfo } = preparedInfo;
     await TxManager.execute(
-      Order.contract.methods.createSubOrder(this.id, preparedInfo, subOrderSlots, subOrderInfo.args, params),
+      Order.contract.methods.createSubOrder(this.id, restPreparedInfo, subOrderSlots, args, params),
       transactionOptions,
     );
   }

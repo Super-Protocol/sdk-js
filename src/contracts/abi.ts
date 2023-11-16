@@ -5036,157 +5036,6 @@ export const abi = [
                 "type": "uint256"
             },
             {
-                "internalType": "uint256[]",
-                "name": "optionsIds",
-                "type": "uint256[]"
-            },
-            {
-                "internalType": "uint32[]",
-                "name": "optionsCount",
-                "type": "uint32[]"
-            }
-        ],
-        "name": "addOrderOptions",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
-            },
-            {
-                "components": [
-                    {
-                        "components": [
-                            {
-                                "internalType": "uint256[]",
-                                "name": "optionsIds",
-                                "type": "uint256[]"
-                            }
-                        ],
-                        "internalType": "struct RemoveOptionsRequest",
-                        "name": "remove",
-                        "type": "tuple"
-                    },
-                    {
-                        "components": [
-                            {
-                                "internalType": "uint256[]",
-                                "name": "optionsIds",
-                                "type": "uint256[]"
-                            },
-                            {
-                                "internalType": "uint32[]",
-                                "name": "optionsCount",
-                                "type": "uint32[]"
-                            }
-                        ],
-                        "internalType": "struct AddOptionsRequest",
-                        "name": "add",
-                        "type": "tuple"
-                    }
-                ],
-                "internalType": "struct OrderOptionsChangeRequest",
-                "name": "request",
-                "type": "tuple"
-            }
-        ],
-        "name": "confirmOrderOptionsChanges",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint32",
-                "name": "newSlotCount",
-                "type": "uint32"
-            }
-        ],
-        "name": "confirmOrderSlotCountUpdate",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint256[]",
-                "name": "optionsIds",
-                "type": "uint256[]"
-            }
-        ],
-        "name": "removeOrderOptions",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint32",
-                "name": "newSlotCount",
-                "type": "uint32"
-            }
-        ],
-        "name": "requestOrderSlotCountUpdate",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
-            },
-            {
-                "components": [
-                    {
-                        "internalType": "string",
-                        "name": "data",
-                        "type": "string"
-                    }
-                ],
-                "internalType": "struct OptionInfo",
-                "name": "optionsUsage",
-                "type": "tuple"
-            }
-        ],
-        "name": "setOrderOptionsUsage",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
-            },
-            {
                 "internalType": "uint256",
                 "name": "offerId",
                 "type": "uint256"
@@ -5434,88 +5283,12 @@ export const abi = [
                 "type": "uint256"
             }
         ],
-        "name": "getOptionsChangeRequest",
-        "outputs": [
-            {
-                "components": [
-                    {
-                        "components": [
-                            {
-                                "internalType": "uint256[]",
-                                "name": "optionsIds",
-                                "type": "uint256[]"
-                            }
-                        ],
-                        "internalType": "struct RemoveOptionsRequest",
-                        "name": "remove",
-                        "type": "tuple"
-                    },
-                    {
-                        "components": [
-                            {
-                                "internalType": "uint256[]",
-                                "name": "optionsIds",
-                                "type": "uint256[]"
-                            },
-                            {
-                                "internalType": "uint32[]",
-                                "name": "optionsCount",
-                                "type": "uint32[]"
-                            }
-                        ],
-                        "internalType": "struct AddOptionsRequest",
-                        "name": "add",
-                        "type": "tuple"
-                    }
-                ],
-                "internalType": "struct OrderOptionsChangeRequest",
-                "name": "",
-                "type": "tuple"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
-            }
-        ],
         "name": "getOptionsDepositSpent",
         "outputs": [
             {
                 "internalType": "uint256",
                 "name": "",
                 "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
-            }
-        ],
-        "name": "getOptionsUsage",
-        "outputs": [
-            {
-                "components": [
-                    {
-                        "internalType": "string",
-                        "name": "data",
-                        "type": "string"
-                    }
-                ],
-                "internalType": "struct OptionInfo",
-                "name": "",
-                "type": "tuple"
             }
         ],
         "stateMutability": "view",
@@ -5878,51 +5651,6 @@ export const abi = [
                     }
                 ],
                 "internalType": "struct SlotUsage",
-                "name": "",
-                "type": "tuple"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
-            }
-        ],
-        "name": "getOrderSlotCount",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
-            }
-        ],
-        "name": "getOrderSlotCountChangeRequest",
-        "outputs": [
-            {
-                "components": [
-                    {
-                        "internalType": "uint256",
-                        "name": "newSlotCount",
-                        "type": "uint256"
-                    }
-                ],
-                "internalType": "struct SlotCountChangeRequest",
                 "name": "",
                 "type": "tuple"
             }
@@ -11464,6 +11192,83 @@ export const abi = [
                 "internalType": "uint256",
                 "name": "",
                 "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "orderId",
+                "type": "uint256"
+            }
+        ],
+        "name": "getOrderSelectedUsageSlotInfo",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "uint64",
+                        "name": "cpuCores",
+                        "type": "uint64"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "ram",
+                        "type": "uint64"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "diskUsage",
+                        "type": "uint64"
+                    }
+                ],
+                "internalType": "struct SlotInfo",
+                "name": "",
+                "type": "tuple"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "orderId",
+                "type": "uint256"
+            }
+        ],
+        "name": "getOrderSelectedUsageSlotUsage",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "enum PriceType",
+                        "name": "priceType",
+                        "type": "uint8"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "price",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "minTimeMinutes",
+                        "type": "uint64"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "maxTimeMinutes",
+                        "type": "uint64"
+                    }
+                ],
+                "internalType": "struct SlotUsage",
+                "name": "",
+                "type": "tuple"
             }
         ],
         "stateMutability": "view",

@@ -8,7 +8,6 @@ import {
   Origins,
   TransactionOptions,
   BlockchainId,
-  OrderSlots,
   OrderArgs,
   TokenAmount,
   SlotInfo,

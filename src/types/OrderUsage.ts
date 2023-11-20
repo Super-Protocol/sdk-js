@@ -21,7 +21,6 @@ export type OrderUsage = OrderUsageBase & {
   slotUsage: SlotUsage;
 };
 
-
 export type OrderUsageRaw = OrderUsageBase & {
   slotCount: number;
   optionInfo: OptionInfoRaw[];
@@ -29,5 +28,3 @@ export type OrderUsageRaw = OrderUsageBase & {
   optionIds: BlockchainId[];
   optionsCount: number[];
 };
-
-

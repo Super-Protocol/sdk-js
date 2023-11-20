@@ -30,9 +30,10 @@ export type OrderInfo = {
   encryptedArgs: string;
   status: OrderStatus;
   externalId: string;
-  expectedPrice: TokenAmount;
-  maxPriceSlippage: TokenAmount;
+  expectedPrice?: TokenAmount;
+  maxPriceSlippage?: TokenAmount;
   args: OrderArgs;
+  slots: OrderSlots;
 };
 
 export type ExtendedOrderInfo = OrderInfo & {

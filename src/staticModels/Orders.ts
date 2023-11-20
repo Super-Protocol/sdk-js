@@ -13,7 +13,6 @@ import {
   TransactionOptions,
   OrderCreatedEvent,
   BlockchainId,
-  OrderSlots,
   TokenAmount,
 } from '../types';
 import Superpro from './Superpro';
@@ -69,7 +68,6 @@ class Orders implements StaticModel {
   @incrementMethodCall()
   public static async createOrder(
     orderInfo: OrderInfo,
-    orderSlots: OrderSlots,
     deposit?: TokenAmount,
     suspended = false,
     transactionOptions?: TransactionOptions,
@@ -82,18 +80,37 @@ class Orders implements StaticModel {
       ...orderInfo,
       externalId: formatBytes32String(orderInfo.externalId),
     };
+    const { args, slots, ...restOrderInfoArguments } = orderInfoArguments;
 
     if (checkTxBeforeSend) {
-      const { args, ...restOrderInfoArguments } = orderInfoArguments;
       await TxManager.dryRun(
-        contract.methods.createOrder(restOrderInfoArguments, orderSlots, args, deposit, suspended),
+        contract.methods.createOrder(
+          {
+            ...restOrderInfoArguments,
+            expectedPrice: restOrderInfoArguments.expectedPrice ?? '0',
+            maxPriceSlippage: restOrderInfoArguments.maxPriceSlippage ?? '0',
+          },
+          slots,
+          args,
+          deposit,
+          suspended,
+        ),
         transactionOptions,
       );
     }
 
-    const { args, ...restOrderInfoArguments } = orderInfoArguments;
     await TxManager.execute(
-      contract.methods.createOrder(restOrderInfoArguments, orderSlots, args, deposit, suspended),
+      contract.methods.createOrder(
+        {
+          ...restOrderInfoArguments,
+          expectedPrice: restOrderInfoArguments.expectedPrice ?? '0',
+          maxPriceSlippage: restOrderInfoArguments.maxPriceSlippage ?? '0',
+        },
+        slots,
+        args,
+        deposit,
+        suspended,
+      ),
       transactionOptions,
     );
   }
@@ -125,9 +142,7 @@ class Orders implements StaticModel {
   @incrementMethodCall()
   public static async createWorkflow(
     parentOrderInfo: OrderInfo,
-    parentOrderSlots: OrderSlots,
     subOrdersInfo: OrderInfo[],
-    subOrdersSlots: OrderSlots[],
     workflowDeposit: TokenAmount,
     transactionOptions?: TransactionOptions,
     checkTxBeforeSend = false,
@@ -143,19 +158,46 @@ class Orders implements StaticModel {
     const subOrdersInfoArgs = subOrdersInfo.map((o) => ({
       ...o,
       externalId: formatBytes32String(o.externalId),
+      expectedPrice: o.expectedPrice ?? '0',
+      maxPriceSlippage: o.maxPriceSlippage ?? '0',
     }));
 
-    const subOrdersArgs = subOrdersInfo.map(i => i.args);
+    const subOrdersArgs = subOrdersInfo.map((i) => i.args);
+    const subOrdersSlots = subOrdersInfo.map((i) => i.slots);
     if (checkTxBeforeSend) {
       const { args, ...restParentOrderInfoArgs } = parentOrderInfoArgs;
       await TxManager.dryRun(
-        contract.methods.createWorkflow(restParentOrderInfoArgs, parentOrderSlots, args, workflowDeposit, subOrdersInfoArgs, subOrdersSlots, subOrdersArgs),
+        contract.methods.createWorkflow(
+          {
+            ...restParentOrderInfoArgs,
+            expectedPrice: restParentOrderInfoArgs.expectedPrice ?? '0',
+            maxPriceSlippage: restParentOrderInfoArgs.maxPriceSlippage ?? '0',
+          },
+          restParentOrderInfoArgs.slots,
+          args,
+          workflowDeposit,
+          subOrdersInfoArgs,
+          subOrdersSlots,
+          subOrdersArgs,
+        ),
         transactionOptions,
       );
     }
     const { args, ...restParentOrderInfoArgs } = parentOrderInfoArgs;
     await TxManager.execute(
-      contract.methods.createWorkflow(restParentOrderInfoArgs, parentOrderSlots, args, workflowDeposit, subOrdersInfoArgs, subOrdersSlots, subOrdersArgs),
+      contract.methods.createWorkflow(
+        {
+          ...restParentOrderInfoArgs,
+          expectedPrice: restParentOrderInfoArgs.expectedPrice ?? '0',
+          maxPriceSlippage: restParentOrderInfoArgs.maxPriceSlippage ?? '0',
+        },
+        restParentOrderInfoArgs.slots,
+        args,
+        workflowDeposit,
+        subOrdersInfoArgs,
+        subOrdersSlots,
+        subOrdersArgs,
+      ),
       transactionOptions,
     );
   }

@@ -20,8 +20,6 @@ import {
   TeeSlotAddedEvent,
   TeeOfferOption,
   BlockchainId,
-  OptionInfo,
-  SlotInfo,
   TeeOfferOptionRaw,
 } from '../types';
 import { BlockchainConnector, BlockchainEventsListener } from '../connectors';
@@ -94,8 +92,8 @@ class TeeOffers {
   public static async create(
     providerAuthorityAccount: string,
     teeOfferInfo: TeeOfferInfo,
-    slotInfo: SlotInfo,
-    optionInfo: OptionInfo,
+    // slotInfo: SlotInfo,
+    // optionInfo: OptionInfo,
     externalId = 'default',
     enabled = true,
     transactionOptions?: TransactionOptions,
@@ -110,8 +108,8 @@ class TeeOffers {
       contract.methods.createTeeOffer(
         providerAuthorityAccount,
         teeOfferInfo,
-        slotInfo,
-        convertOptionInfoToRaw(optionInfo),
+        teeOfferInfo.hardwareInfo.slotInfo,
+        convertOptionInfoToRaw(teeOfferInfo.hardwareInfo.optionInfo),
         formattedExternalId,
         enabled,
       ),

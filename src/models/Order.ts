@@ -203,11 +203,13 @@ class Order {
     this.selectedUsage = await Order.contract.methods
       .getOrderSelectedUsage(this.id)
       .call()
-      .then((selectedUsage) => convertOrderUsage(
-        cleanWeb3Data(selectedUsage) as OrderUsageRaw,
-        unpackSlotInfo(selectedUsageSlotInfo, cpuDenominator),
-        formatUsage(selectedUsageSlotUsage)
-      ));
+      .then((selectedUsage) =>
+        convertOrderUsage(
+          cleanWeb3Data(selectedUsage) as OrderUsageRaw,
+          unpackSlotInfo(selectedUsageSlotInfo, cpuDenominator),
+          formatUsage(selectedUsageSlotUsage),
+        ),
+      );
 
     this.selectedUsage.optionsCount = this.selectedUsage.optionsCount.map((item) => Number(item));
     this.selectedUsage.optionUsage = this.selectedUsage.optionUsage.map((usage) =>
@@ -435,7 +437,6 @@ class Order {
   @incrementMethodCall()
   public async createSubOrder(
     subOrderInfo: OrderInfo,
-    subOrderSlots: OrderSlots,
     blockParentOrder: boolean,
     deposit?: TokenAmount,
     transactionOptions?: TransactionOptions,
@@ -443,7 +444,7 @@ class Order {
   ): Promise<void> {
     checkIfActionAccountInitialized(transactionOptions);
     deposit = deposit ?? '0';
-    const preparedInfo = {
+    const preparedInfo: OrderInfo = {
       ...subOrderInfo,
       externalId: formatBytes32String(subOrderInfo.externalId),
     };
@@ -452,17 +453,37 @@ class Order {
       deposit,
     };
 
+    const { args, slots, ...restPreparedInfo } = preparedInfo;
+
     if (checkTxBeforeSend) {
-      const { args, ...restPreparedInfo } = preparedInfo;
       await TxManager.dryRun(
-        Order.contract.methods.createSubOrder(this.id, restPreparedInfo, subOrderSlots, args, params),
+        Order.contract.methods.createSubOrder(
+          this.id,
+          {
+            ...restPreparedInfo,
+            expectedPrice: restPreparedInfo.expectedPrice ?? '0',
+            maxPriceSlippage: restPreparedInfo.maxPriceSlippage ?? '0',
+          },
+          slots,
+          args,
+          params,
+        ),
         transactionOptions,
       );
     }
 
-    const { args, ...restPreparedInfo } = preparedInfo;
     await TxManager.execute(
-      Order.contract.methods.createSubOrder(this.id, restPreparedInfo, subOrderSlots, args, params),
+      Order.contract.methods.createSubOrder(
+        this.id,
+        {
+          ...restPreparedInfo,
+          expectedPrice: restPreparedInfo.expectedPrice ?? '0',
+          maxPriceSlippage: restPreparedInfo.maxPriceSlippage ?? '0',
+        },
+        slots,
+        args,
+        params,
+      ),
       transactionOptions,
     );
   }
@@ -476,26 +497,30 @@ class Order {
   @incrementMethodCall()
   public async createSubOrders(
     subOrdersInfo: ExtendedOrderInfo[],
-    subOrdersSlots: OrderSlots[],
-    subOrdersArgs: OrderArgs[],
     transactionOptions: TransactionOptions,
   ): Promise<string[]> {
     checkIfActionAccountInitialized(transactionOptions);
 
     const promises: Promise<TransactionReceipt>[] = [];
-    subOrdersInfo.map((subOrderInfo, idx: number) => {
+    subOrdersInfo.map((subOrderInfo) => {
       const preparedInfo = {
         ...subOrderInfo,
         externalId: formatBytes32String(subOrderInfo.externalId),
+        expectedPrice: subOrderInfo.expectedPrice ?? '0',
+        maxPriceSlippage: subOrderInfo.maxPriceSlippage ?? '0',
       };
       const params: SubOrderParams = {
         blockParentOrder: subOrderInfo.blocking,
         deposit: subOrderInfo.deposit,
       };
-      const subOrderSlots = subOrdersSlots[idx];
-      const subOrderArgs = subOrdersArgs[idx];
 
-      const transactionCall = Order.contract.methods.createSubOrder(this.id, preparedInfo, subOrderSlots, subOrderArgs, params);
+      const transactionCall = Order.contract.methods.createSubOrder(
+        this.id,
+        preparedInfo,
+        preparedInfo.slots,
+        preparedInfo.args,
+        params,
+      );
 
       promises.push(TxManager.execute(transactionCall, transactionOptions));
     });

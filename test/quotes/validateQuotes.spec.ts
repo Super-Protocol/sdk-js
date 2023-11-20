@@ -26,6 +26,10 @@ jest.mock('axios', () => ({
 
 describe('Quote validator', () => {
   const validator = new QuoteValidator('https://pccs.superprotocol.io');
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  jest.spyOn(validator as any, 'checkValidDate').mockImplementation(() => true);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  jest.spyOn(validator as any, 'checkCertificatesInCrl').mockImplementation(() => true);
 
   describe('Validation tests with mocked Intel SGX API', () => {
     test('test quote', async () => {
@@ -69,7 +73,7 @@ describe('Quote validator', () => {
       expect(res.quoteValidationStatus).toEqual(QuoteValidationStatuses.UpToDate);
     });
 
-    test('up to date status', async () => {
+    test('configuration and SW hardening needed status', async () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       jest
         .spyOn(validator as any, 'getTcbStatus')
@@ -82,7 +86,7 @@ describe('Quote validator', () => {
       expect(res.quoteValidationStatus).toEqual(QuoteValidationStatuses.SoftwareUpdateNeeded);
     });
 
-    test('up to date status', async () => {
+    test('configuration needed status', async () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       jest.spyOn(validator as any, 'getTcbStatus').mockImplementation(() => 'ConfigurationNeeded');
       // eslint-disable-next-line @typescript-eslint/no-explicit-any

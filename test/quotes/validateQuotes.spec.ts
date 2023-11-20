@@ -26,6 +26,10 @@ jest.mock('axios', () => ({
 
 describe('Quote validator', () => {
   const validator = new QuoteValidator('https://pccs.superprotocol.io');
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  jest.spyOn(validator as any, 'checkValidDate').mockImplementation(() => true);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  jest.spyOn(validator as any, 'checkCertificatesInCrl').mockImplementation(() => true);
 
   describe('Validation tests with mocked Intel SGX API', () => {
     test('test quote', async () => {

@@ -115,7 +115,7 @@ class TeeOffer {
     const { info } = await TeeOffer.contract.methods.getTeeOffer(this.id).call();
 
     this.offerInfo = cleanWeb3Data(info) as TeeOfferInfo;
-    this.offerInfo.hardwareInfo = await TeeOffers.unpackHardwareInfo(this.offerInfo.hardwareInfo);
+    this.offerInfo.hardwareInfo = cleanWeb3Data(await this.getHardwareInfo()) as HardwareInfo;
 
     return this.offerInfo;
   }
@@ -132,7 +132,7 @@ class TeeOffer {
         return {
           slotInfo: cleanWeb3Data(response[0]) as SlotInfo,
           optionInfo: convertOptionInfoFromRaw(cleanWeb3Data(response[1]) as OptionInfoRaw)
-        } as HardwareInfo
+        } as HardwareInfo;
       });
 
     return TeeOffers.unpackHardwareInfo(hardwareInfo);

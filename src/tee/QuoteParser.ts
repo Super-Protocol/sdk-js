@@ -1,7 +1,7 @@
 import { Certificate } from '@fidm/x509';
 import * as asn1js from 'asn1js';
 import * as pkijs from 'pkijs';
-import { Buffer as Blob } from 'buffer/';
+import { Buffer as Blob } from 'buffer';
 import { TeeQuoteParserError } from './errors';
 import { BinaryType, TeeSgxQuoteDataType, TeeSgxReportDataType, ChunkedX509Cert } from './types';
 import { splitChain, Signature } from './helpers';

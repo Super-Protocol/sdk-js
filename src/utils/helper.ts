@@ -298,3 +298,7 @@ export const executeBatchAsync = async <BatchResponse = unknown>(
 
   return result;
 };
+
+export const preparePrivateKey = (pk: string): string => {
+  return pk.startsWith('0x') ? pk : '0x' + pk;
+};

@@ -19,6 +19,7 @@ import {
   cleanWeb3Data,
   incrementMethodCall,
   executeBatchAsync,
+  preparePrivateKey,
 } from '../utils/helper';
 import {
   TransactionOptions,
@@ -98,12 +99,13 @@ class BlockchainConnector extends BaseConnector {
     manageNonce = true,
   ): Promise<string> {
     this.checkIfInitialized();
+    const preparedActionAccountKey = preparePrivateKey(actionAccountKey);
 
-    store.web3Https!.eth.accounts.wallet.add(actionAccountKey);
+    store.web3Https!.eth.accounts.wallet.add(preparedActionAccountKey);
     const actionAccount =
-      store.web3Https!.eth.accounts.privateKeyToAccount(actionAccountKey).address;
+      store.web3Https!.eth.accounts.privateKeyToAccount(preparedActionAccountKey).address;
     if (!store.actionAccount) store.actionAccount = actionAccount;
-    if (!store.keys[actionAccount]) store.keys[actionAccount] = actionAccountKey;
+    if (!store.keys[actionAccount]) store.keys[actionAccount] = preparedActionAccountKey;
     if (!this.defaultActionAccount) this.defaultActionAccount = actionAccount;
     if (manageNonce) {
       await TxManager.initAccount(actionAccount);
@@ -278,16 +280,7 @@ class BlockchainConnector extends BaseConnector {
 
     const validAddresses = addresses
       .filter((address) => store.web3Https?.utils.isAddress(address))
-      .map((address) => {
-        const lowerCaseAddress = address.toLowerCase();
-        if (address !== lowerCaseAddress) {
-          this.logger.warn(
-            { address },
-            `Must use adresses in lower case fomat! ${address} -> ${lowerCaseAddress}`,
-          );
-        }
-        return lowerCaseAddress;
-      });
+      .map((address) => address.toLowerCase());
 
     if (!validAddresses.length) {
       return {

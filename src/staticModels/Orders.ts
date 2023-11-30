@@ -14,6 +14,7 @@ import {
   OrderCreatedEvent,
   BlockchainId,
   TokenAmount,
+  OrderSlots,
 } from '../types';
 import Superpro from './Superpro';
 import TxManager from '../utils/TxManager';
@@ -68,6 +69,7 @@ class Orders implements StaticModel {
   @incrementMethodCall()
   public static async createOrder(
     orderInfo: OrderInfo,
+    slots: OrderSlots,
     deposit?: TokenAmount,
     suspended = false,
     transactionOptions?: TransactionOptions,
@@ -80,7 +82,7 @@ class Orders implements StaticModel {
       ...orderInfo,
       externalId: formatBytes32String(orderInfo.externalId),
     };
-    const { args, slots, ...restOrderInfoArguments } = orderInfoArguments;
+    const { args, ...restOrderInfoArguments } = orderInfoArguments;
 
     if (checkTxBeforeSend) {
       await TxManager.dryRun(
@@ -142,7 +144,9 @@ class Orders implements StaticModel {
   @incrementMethodCall()
   public static async createWorkflow(
     parentOrderInfo: OrderInfo,
+    parentOrderSlot: OrderSlots,
     subOrdersInfo: OrderInfo[],
+    subOrdersSlots: OrderSlots[],
     workflowDeposit: TokenAmount,
     transactionOptions?: TransactionOptions,
     checkTxBeforeSend = false,
@@ -163,7 +167,6 @@ class Orders implements StaticModel {
     }));
 
     const subOrdersArgs = subOrdersInfo.map((i) => i.args);
-    const subOrdersSlots = subOrdersInfo.map((i) => i.slots);
     if (checkTxBeforeSend) {
       const { args, ...restParentOrderInfoArgs } = parentOrderInfoArgs;
       await TxManager.dryRun(
@@ -173,7 +176,7 @@ class Orders implements StaticModel {
             expectedPrice: restParentOrderInfoArgs.expectedPrice ?? '0',
             maxPriceSlippage: restParentOrderInfoArgs.maxPriceSlippage ?? '0',
           },
-          restParentOrderInfoArgs.slots,
+          parentOrderSlot,
           args,
           workflowDeposit,
           subOrdersInfoArgs,
@@ -191,7 +194,7 @@ class Orders implements StaticModel {
           expectedPrice: restParentOrderInfoArgs.expectedPrice ?? '0',
           maxPriceSlippage: restParentOrderInfoArgs.maxPriceSlippage ?? '0',
         },
-        restParentOrderInfoArgs.slots,
+        parentOrderSlot,
         args,
         workflowDeposit,
         subOrdersInfoArgs,

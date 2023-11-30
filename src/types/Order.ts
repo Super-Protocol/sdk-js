@@ -33,7 +33,6 @@ export type OrderInfo = {
   expectedPrice?: TokenAmount;
   maxPriceSlippage?: TokenAmount;
   args: OrderArgs;
-  slots: OrderSlots;
 };
 
 export type ExtendedOrderInfo = OrderInfo & {

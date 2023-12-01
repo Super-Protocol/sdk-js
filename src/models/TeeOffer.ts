@@ -4,11 +4,13 @@ import {
   checkIfActionAccountInitialized,
   incrementMethodCall,
   packSlotInfo,
-  formatTeeOfferOption,
+  convertTeeOfferOptionFromRaw,
   formatTeeOfferSlot,
   cleanWeb3Data,
   convertBigIntToString,
   transformComplexObject,
+  convertOptionInfoFromRaw,
+  convertOptionInfoToRaw,
 } from '../utils/helper';
 import {
   TeeOfferInfo,
@@ -17,6 +19,8 @@ import {
   Origins,
   BlockchainId,
   TokenAmount,
+  OptionInfoRaw,
+  TeeOfferOptionRaw,
 } from '../types';
 import { BlockchainConnector } from '../connectors';
 import TxManager from '../utils/TxManager';
@@ -111,7 +115,7 @@ class TeeOffer {
     const { info } = await TeeOffer.contract.methods.getTeeOffer(this.id).call();
 
     this.offerInfo = cleanWeb3Data(info) as TeeOfferInfo;
-    this.offerInfo.hardwareInfo = await TeeOffers.unpackHardwareInfo(this.offerInfo.hardwareInfo);
+    this.offerInfo.hardwareInfo = cleanWeb3Data(await this.getHardwareInfo()) as HardwareInfo;
 
     return this.offerInfo;
   }
@@ -124,7 +128,12 @@ class TeeOffer {
     const hardwareInfo: HardwareInfo = await TeeOffer.contract.methods
       .getTeeOfferHardwareInfo(this.id)
       .call()
-      .then((response) => cleanWeb3Data(response) as HardwareInfo);
+      .then((response) => {
+        return {
+          slotInfo: cleanWeb3Data(response[0]) as SlotInfo,
+          optionInfo: convertOptionInfoFromRaw(cleanWeb3Data(response[1]) as OptionInfoRaw)
+        } as HardwareInfo;
+      });
 
     return TeeOffers.unpackHardwareInfo(hardwareInfo);
   }
@@ -137,7 +146,7 @@ class TeeOffer {
     return TeeOffer.contract.methods
       .getOptionById(optionId)
       .call()
-      .then((option) => formatTeeOfferOption(option as TeeOfferOption));
+      .then((option) => convertTeeOfferOptionFromRaw(option as TeeOfferOptionRaw));
   }
 
   public async getOptions(begin = 0, end = 999999): Promise<TeeOfferOption[]> {
@@ -148,12 +157,12 @@ class TeeOffer {
       return [];
     }
 
-    const teeOfferOption: TeeOfferOption[] = await TeeOffer.contract.methods
+    const teeOfferOption: TeeOfferOptionRaw[] = await TeeOffer.contract.methods
       .getTeeOfferOptions(this.id, begin, end)
       .call()
       .then((options) => options.map((option) => transformComplexObject(option)));
 
-    return teeOfferOption.map((option) => formatTeeOfferOption(option));
+    return teeOfferOption.map((option) => convertTeeOfferOptionFromRaw(option));
   }
 
   /**
@@ -183,7 +192,7 @@ class TeeOffer {
 
     const formattedExternalId = formatBytes32String(externalId);
     await TxManager.execute(
-      contract.methods.addOption(this.id, formattedExternalId, info, usage),
+      contract.methods.addOption(this.id, formattedExternalId, convertOptionInfoToRaw(info), usage),
       transactionOptions,
     );
   }
@@ -205,7 +214,7 @@ class TeeOffer {
     checkIfActionAccountInitialized(transactionOptions);
 
     await TxManager.execute(
-      TeeOffer.contract.methods.updateOption(this.id, optionId, newInfo, newUsage),
+      TeeOffer.contract.methods.updateOption(this.id, optionId, convertOptionInfoToRaw(newInfo), newUsage),
       transactionOptions,
     );
   }
@@ -551,7 +560,7 @@ class TeeOffer {
     newHardwareInfo = await TeeOffers.packHardwareInfo(newHardwareInfo);
 
     await TxManager.execute(
-      TeeOffer.contract.methods.setTeeOfferHardwareInfo(this.id, newHardwareInfo),
+      TeeOffer.contract.methods.setTeeOfferHardwareInfo(this.id, newHardwareInfo.slotInfo, convertOptionInfoToRaw(newHardwareInfo.optionInfo)),
       transactionOptions,
     );
   }

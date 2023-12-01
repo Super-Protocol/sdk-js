@@ -14,6 +14,7 @@ import {
   OrderCreatedEvent,
   BlockchainId,
   TokenAmount,
+  OrderSlots,
 } from '../types';
 import Superpro from './Superpro';
 import TxManager from '../utils/TxManager';
@@ -68,6 +69,7 @@ class Orders implements StaticModel {
   @incrementMethodCall()
   public static async createOrder(
     orderInfo: OrderInfo,
+    slots: OrderSlots,
     deposit?: TokenAmount,
     suspended = false,
     transactionOptions?: TransactionOptions,
@@ -80,16 +82,37 @@ class Orders implements StaticModel {
       ...orderInfo,
       externalId: formatBytes32String(orderInfo.externalId),
     };
+    const { args, ...restOrderInfoArguments } = orderInfoArguments;
 
     if (checkTxBeforeSend) {
       await TxManager.dryRun(
-        contract.methods.createOrder(orderInfoArguments, deposit, suspended),
+        contract.methods.createOrder(
+          {
+            ...restOrderInfoArguments,
+            expectedPrice: restOrderInfoArguments.expectedPrice ?? '0',
+            maxPriceSlippage: restOrderInfoArguments.maxPriceSlippage ?? '0',
+          },
+          slots,
+          args,
+          deposit,
+          suspended,
+        ),
         transactionOptions,
       );
     }
 
     await TxManager.execute(
-      contract.methods.createOrder(orderInfoArguments, deposit, suspended),
+      contract.methods.createOrder(
+        {
+          ...restOrderInfoArguments,
+          expectedPrice: restOrderInfoArguments.expectedPrice ?? '0',
+          maxPriceSlippage: restOrderInfoArguments.maxPriceSlippage ?? '0',
+        },
+        slots,
+        args,
+        deposit,
+        suspended,
+      ),
       transactionOptions,
     );
   }
@@ -121,7 +144,9 @@ class Orders implements StaticModel {
   @incrementMethodCall()
   public static async createWorkflow(
     parentOrderInfo: OrderInfo,
+    parentOrderSlot: OrderSlots,
     subOrdersInfo: OrderInfo[],
+    subOrdersSlots: OrderSlots[],
     workflowDeposit: TokenAmount,
     transactionOptions?: TransactionOptions,
     checkTxBeforeSend = false,
@@ -137,17 +162,45 @@ class Orders implements StaticModel {
     const subOrdersInfoArgs = subOrdersInfo.map((o) => ({
       ...o,
       externalId: formatBytes32String(o.externalId),
+      expectedPrice: o.expectedPrice ?? '0',
+      maxPriceSlippage: o.maxPriceSlippage ?? '0',
     }));
 
+    const subOrdersArgs = subOrdersInfo.map((i) => i.args);
     if (checkTxBeforeSend) {
+      const { args, ...restParentOrderInfoArgs } = parentOrderInfoArgs;
       await TxManager.dryRun(
-        contract.methods.createWorkflow(parentOrderInfoArgs, workflowDeposit, subOrdersInfoArgs),
+        contract.methods.createWorkflow(
+          {
+            ...restParentOrderInfoArgs,
+            expectedPrice: restParentOrderInfoArgs.expectedPrice ?? '0',
+            maxPriceSlippage: restParentOrderInfoArgs.maxPriceSlippage ?? '0',
+          },
+          parentOrderSlot,
+          args,
+          workflowDeposit,
+          subOrdersInfoArgs,
+          subOrdersSlots,
+          subOrdersArgs,
+        ),
         transactionOptions,
       );
     }
-
+    const { args, ...restParentOrderInfoArgs } = parentOrderInfoArgs;
     await TxManager.execute(
-      contract.methods.createWorkflow(parentOrderInfoArgs, workflowDeposit, subOrdersInfoArgs),
+      contract.methods.createWorkflow(
+        {
+          ...restParentOrderInfoArgs,
+          expectedPrice: restParentOrderInfoArgs.expectedPrice ?? '0',
+          maxPriceSlippage: restParentOrderInfoArgs.maxPriceSlippage ?? '0',
+        },
+        parentOrderSlot,
+        args,
+        workflowDeposit,
+        subOrdersInfoArgs,
+        subOrdersSlots,
+        subOrdersArgs,
+      ),
       transactionOptions,
     );
   }

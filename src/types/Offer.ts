@@ -24,7 +24,6 @@ export type OfferInfo = {
   offerType: OfferType;
   cancelable: boolean;
   description: string;
-  restrictions: OfferRestrictions;
   input: string;
   output: string;
   allowedArgs: string;
@@ -34,4 +33,5 @@ export type OfferInfo = {
   linkage: string;
   hash: string;
   metadata: string;
+  restrictions: OfferRestrictions;
 };

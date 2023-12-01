@@ -9,6 +9,7 @@ import {
   cleanWeb3Data,
   convertBigIntToString,
   transformComplexObject,
+  convertOptionInfoToRaw,
 } from '../utils/helper';
 import { BlockchainConnector } from '../connectors';
 import {
@@ -21,7 +22,9 @@ import {
   ValueOfferSlot,
   TransactionOptions,
   BlockchainId,
+  OfferRestrictions,
   TokenAmount,
+  ValueOfferSlotRaw,
 } from '../types';
 import { formatBytes32String } from 'ethers/lib/utils';
 import TeeOffers from '../staticModels/TeeOffers';
@@ -99,8 +102,9 @@ class Offer {
   public async setInfo(newInfo: OfferInfo, transactionOptions?: TransactionOptions): Promise<void> {
     checkIfActionAccountInitialized(transactionOptions);
 
+    const { restrictions, ...restInfo } = newInfo;
     await TxManager.execute(
-      Offer.contract.methods.setValueOfferInfo(this.id, newInfo),
+      Offer.contract.methods.setValueOfferInfo(this.id, restInfo, restrictions),
       transactionOptions,
     );
     if (this.offerInfo) this.offerInfo = newInfo;
@@ -116,6 +120,9 @@ class Offer {
     }
     const { info } = await Offer.contract.methods.getValueOffer(this.id).call();
     this.offerInfo = cleanWeb3Data(info) as OfferInfo;
+
+    const offerRestrictions = await Offer.contract.methods.getOfferInitialRestrictions(this.id).call();
+    this.offerInfo.restrictions = cleanWeb3Data(offerRestrictions) as OfferRestrictions;
 
     return this.offerInfo;
   }
@@ -224,7 +231,7 @@ class Offer {
    * @param slotId - Slot ID
    */
   public async getSlotById(slotId: BlockchainId): Promise<ValueOfferSlot> {
-    const slot: ValueOfferSlot = await Offer.contract.methods
+    const slot: ValueOfferSlotRaw = await Offer.contract.methods
       .getValueOfferSlotById(this.id, slotId)
       .call();
 
@@ -252,7 +259,7 @@ class Offer {
       return [];
     }
 
-    const slots: ValueOfferSlot[] = await Offer.contract.methods
+    const slots: ValueOfferSlotRaw[] = await Offer.contract.methods
       .getValueOfferSlots(this.id, begin, end)
       .call()
       .then((slots) => slots.map((slot) => transformComplexObject(slot)));
@@ -287,7 +294,7 @@ class Offer {
       this.id,
       formattedExternalId,
       slotInfo,
-      optionInfo,
+      convertOptionInfoToRaw(optionInfo),
       slotUsage,
     );
     await TxManager.execute(transactionCall, transactionOptions);
@@ -316,7 +323,7 @@ class Offer {
         this.id,
         slotId,
         newSlotInfo,
-        newOptionInfo,
+        convertOptionInfoToRaw(newOptionInfo),
         newUsage,
       ),
       transactionOptions,

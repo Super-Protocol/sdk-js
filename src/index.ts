@@ -68,6 +68,7 @@ export * from './types/HardwareInfo';
 export * from './types/SlotInfo';
 export * from './types/SlotUsage';
 export * from './types/OptionInfo';
+export * from './types/OrderUsage';
 export * from './types/TeeOfferInfo';
 export * from './types/TeeOfferOption';
 export * from './types/TeeOfferSlot';

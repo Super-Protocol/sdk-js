@@ -1,9 +1,16 @@
-import { OptionInfo } from './OptionInfo';
+import { OptionInfo, OptionInfoRaw } from './OptionInfo';
 import { BlockchainId } from './Web3';
 import { SlotUsage } from './SlotUsage';
 
-export type TeeOfferOption = {
+export type TeeOfferOptionBase = {
   id: BlockchainId;
-  info: OptionInfo;
   usage: SlotUsage;
+};
+
+export type TeeOfferOption = TeeOfferOptionBase & {
+  info: OptionInfo;
+};
+
+export type TeeOfferOptionRaw = TeeOfferOptionBase & {
+  info: OptionInfoRaw;
 };

@@ -8,7 +8,12 @@ import {
   Origins,
   TransactionOptions,
   BlockchainId,
+  OrderArgs,
   TokenAmount,
+  SlotInfo,
+  SlotUsage,
+  OrderUsageRaw,
+  OrderSlots,
 } from '../types';
 import { Contract, TransactionReceipt } from 'web3';
 import { EventLog } from 'web3-eth-contract';
@@ -17,7 +22,7 @@ import { abi } from '../contracts/abi';
 import {
   checkIfActionAccountInitialized,
   cleanWeb3Data,
-  formatOptionInfo,
+  convertOrderUsage,
   formatUsage,
   incrementMethodCall,
   unpackSlotInfo,
@@ -97,12 +102,13 @@ class Order {
       throw Error(`Order ${this.id} does not exist`);
     }
     const orderInfoParams = await Order.contract.methods.getOrder(this.id).call();
+    const orderArgs = await Order.contract.methods.getOrderArgs(this.id).call();
+
     const orderInfo: OrderInfo = {
       ...(cleanWeb3Data(orderInfoParams[1]) as OrderInfo),
+      args: cleanWeb3Data(orderArgs) as OrderArgs,
       status: orderInfoParams[1].status.toString() as OrderStatus,
     };
-    orderInfo.slots.optionsCount = orderInfo.slots.optionsCount.map((count) => Number(count));
-    orderInfo.slots.slotCount = Number(orderInfo.slots.slotCount);
 
     return (this.orderInfo = orderInfo);
   }
@@ -182,20 +188,30 @@ class Order {
    */
   @incrementMethodCall()
   public async getSelectedUsage(): Promise<OrderUsage> {
+    const cpuDenominator = await TeeOffers.getDenominator();
+
+    const selectedUsageSlotInfo = await Order.contract.methods
+      .getOrderSelectedUsageSlotInfo(this.id)
+      .call()
+      .then((slotInfo) => cleanWeb3Data(slotInfo) as SlotInfo);
+
+    const selectedUsageSlotUsage = await Order.contract.methods
+      .getOrderSelectedUsageSlotUsage(this.id)
+      .call()
+      .then((slotUsage) => cleanWeb3Data(slotUsage) as SlotUsage);
+
     this.selectedUsage = await Order.contract.methods
       .getOrderSelectedUsage(this.id)
       .call()
-      .then((selectedUsage) => cleanWeb3Data(selectedUsage) as OrderUsage);
-
-    const cpuDenominator = await TeeOffers.getDenominator();
-
-    this.selectedUsage.slotInfo = unpackSlotInfo(this.selectedUsage.slotInfo, cpuDenominator);
-    this.selectedUsage.slotUsage = formatUsage(this.selectedUsage.slotUsage);
+      .then((selectedUsage) =>
+        convertOrderUsage(
+          cleanWeb3Data(selectedUsage) as OrderUsageRaw,
+          unpackSlotInfo(selectedUsageSlotInfo, cpuDenominator),
+          formatUsage(selectedUsageSlotUsage),
+        ),
+      );
 
     this.selectedUsage.optionsCount = this.selectedUsage.optionsCount.map((item) => Number(item));
-    this.selectedUsage.optionInfo = this.selectedUsage.optionInfo.map((optionInfo) =>
-      formatOptionInfo(optionInfo),
-    );
     this.selectedUsage.optionUsage = this.selectedUsage.optionUsage.map((usage) =>
       formatUsage(usage),
     );
@@ -421,6 +437,7 @@ class Order {
   @incrementMethodCall()
   public async createSubOrder(
     subOrderInfo: OrderInfo,
+    slots: OrderSlots,
     blockParentOrder: boolean,
     deposit?: TokenAmount,
     transactionOptions?: TransactionOptions,
@@ -428,7 +445,7 @@ class Order {
   ): Promise<void> {
     checkIfActionAccountInitialized(transactionOptions);
     deposit = deposit ?? '0';
-    const preparedInfo = {
+    const preparedInfo: OrderInfo = {
       ...subOrderInfo,
       externalId: formatBytes32String(subOrderInfo.externalId),
     };
@@ -437,15 +454,37 @@ class Order {
       deposit,
     };
 
+    const { args, ...restPreparedInfo } = preparedInfo;
+
     if (checkTxBeforeSend) {
       await TxManager.dryRun(
-        Order.contract.methods.createSubOrder(this.id, preparedInfo, params),
+        Order.contract.methods.createSubOrder(
+          this.id,
+          {
+            ...restPreparedInfo,
+            expectedPrice: restPreparedInfo.expectedPrice ?? '0',
+            maxPriceSlippage: restPreparedInfo.maxPriceSlippage ?? '0',
+          },
+          slots,
+          args,
+          params,
+        ),
         transactionOptions,
       );
     }
 
     await TxManager.execute(
-      Order.contract.methods.createSubOrder(this.id, preparedInfo, params),
+      Order.contract.methods.createSubOrder(
+        this.id,
+        {
+          ...restPreparedInfo,
+          expectedPrice: restPreparedInfo.expectedPrice ?? '0',
+          maxPriceSlippage: restPreparedInfo.maxPriceSlippage ?? '0',
+        },
+        slots,
+        args,
+        params,
+      ),
       transactionOptions,
     );
   }
@@ -459,25 +498,39 @@ class Order {
   @incrementMethodCall()
   public async createSubOrders(
     subOrdersInfo: ExtendedOrderInfo[],
+    subOrdersSlots: OrderSlots[],
     transactionOptions: TransactionOptions,
   ): Promise<string[]> {
     checkIfActionAccountInitialized(transactionOptions);
+    if (subOrdersInfo.length !== subOrdersSlots.length) {
+      throw Error(
+        'SDK: Invalid arguments, subOrdersSlots should be the same size as subOrdersInfo.',
+      );
+    }
 
     const promises: Promise<TransactionReceipt>[] = [];
-    subOrdersInfo.map((subOrderInfo) => {
+    for (let orderInfoIndex = 0; orderInfoIndex < subOrdersInfo.length; orderInfoIndex++) {
       const preparedInfo = {
-        ...subOrderInfo,
-        externalId: formatBytes32String(subOrderInfo.externalId),
+        ...subOrdersInfo[orderInfoIndex],
+        externalId: formatBytes32String(subOrdersInfo[orderInfoIndex].externalId),
+        expectedPrice: subOrdersInfo[orderInfoIndex].expectedPrice ?? '0',
+        maxPriceSlippage: subOrdersInfo[orderInfoIndex].maxPriceSlippage ?? '0',
       };
       const params: SubOrderParams = {
-        blockParentOrder: subOrderInfo.blocking,
-        deposit: subOrderInfo.deposit,
+        blockParentOrder: subOrdersInfo[orderInfoIndex].blocking,
+        deposit: subOrdersInfo[orderInfoIndex].deposit,
       };
 
-      const transactionCall = Order.contract.methods.createSubOrder(this.id, preparedInfo, params);
+      const transactionCall = Order.contract.methods.createSubOrder(
+        this.id,
+        preparedInfo,
+        subOrdersSlots[orderInfoIndex],
+        preparedInfo.args,
+        params,
+      );
 
       promises.push(TxManager.execute(transactionCall, transactionOptions));
-    });
+    }
 
     return (await Promise.all(promises)).map((tx) => tx.transactionHash as string);
   }

@@ -3,10 +3,10 @@ import {
   checkIfActionAccountInitialized,
   cleanWeb3Data,
   convertBigIntToString,
-  formatOptionInfo,
-  formatTeeOfferOption,
+  convertTeeOfferOptionFromRaw,
   packDeviceId,
   unpackSlotInfo,
+  convertOptionInfoToRaw,
 } from '../utils/helper';
 import { BytesLike, formatBytes32String, parseBytes32String } from 'ethers/lib/utils';
 import {
@@ -20,6 +20,7 @@ import {
   TeeSlotAddedEvent,
   TeeOfferOption,
   BlockchainId,
+  TeeOfferOptionRaw,
 } from '../types';
 import { BlockchainConnector, BlockchainEventsListener } from '../connectors';
 import Superpro from './Superpro';
@@ -47,8 +48,6 @@ class TeeOffers {
   public static async unpackHardwareInfo(hw: HardwareInfo): Promise<HardwareInfo> {
     const cpuDenominator = await TeeOffers.getDenominator();
     hw.slotInfo = unpackSlotInfo(hw.slotInfo, cpuDenominator);
-    hw.optionInfo = formatOptionInfo(hw.optionInfo);
-
     return hw;
   }
 
@@ -93,6 +92,8 @@ class TeeOffers {
   public static async create(
     providerAuthorityAccount: string,
     teeOfferInfo: TeeOfferInfo,
+    // slotInfo: SlotInfo,
+    // optionInfo: OptionInfo,
     externalId = 'default',
     enabled = true,
     transactionOptions?: TransactionOptions,
@@ -107,6 +108,8 @@ class TeeOffers {
       contract.methods.createTeeOffer(
         providerAuthorityAccount,
         teeOfferInfo,
+        teeOfferInfo.hardwareInfo.slotInfo,
+        convertOptionInfoToRaw(teeOfferInfo.hardwareInfo.optionInfo),
         formattedExternalId,
         enabled,
       ),
@@ -180,7 +183,7 @@ class TeeOffers {
     return await contract.methods
       .getOptionById(optionId)
       .call()
-      .then((option) => formatTeeOfferOption(option as TeeOfferOption));
+      .then((option) => convertTeeOfferOptionFromRaw(option as TeeOfferOptionRaw));
   }
 
   public static async getSlotByExternalId(

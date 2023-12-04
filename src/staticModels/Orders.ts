@@ -15,6 +15,9 @@ import {
   BlockchainId,
   TokenAmount,
   OrderSlots,
+  OrderUsage,
+  SlotInfo,
+  SlotUsage,
 } from '../types';
 import Superpro from './Superpro';
 import TxManager from '../utils/TxManager';
@@ -643,6 +646,41 @@ class Orders implements StaticModel {
     });
 
     return () => subscription.unsubscribe();
+  }
+
+  /**
+   * Function that calculates resource needed for order
+   * @param selectedUsage - structure that order.getSelectedUsage() method returns
+   * @returns calculated resources
+   */
+  public static accumulatedSlotInfo(selectedUsage: OrderUsage): SlotInfo {
+    const slotCount = selectedUsage.slotCount;
+    const { cpuCores, ram, diskUsage } = selectedUsage.slotInfo;
+
+    return {
+      cpuCores: cpuCores * slotCount,
+      ram: ram * slotCount,
+      diskUsage: diskUsage * slotCount,
+    };
+  }
+
+  /**
+   * Function that calculates total price for slot usage
+   * @param selectedUsage - structure that order.getSelectedUsage() method returns
+   * @returns slotUsage with totalPrices
+   */
+  public static accumulatedSlotUsage(selectedUsage: OrderUsage): SlotUsage {
+    const slotCount = selectedUsage.slotCount;
+    const slotUsage = selectedUsage.slotUsage;
+
+    const totalPrice = BigInt(slotUsage.price) * BigInt(slotCount);
+
+    return {
+      priceType: slotUsage.priceType,
+      price: totalPrice.toString(),
+      minTimeMinutes: slotUsage.minTimeMinutes,
+      maxTimeMinutes: slotUsage.maxTimeMinutes,
+    };
   }
 }
 

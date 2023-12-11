@@ -58,7 +58,7 @@
   },
   "dependencies": {
     "@fidm/x509": "^1.2.1",
-    "@super-protocol/dto-js": "0.0.28",
+    "@super-protocol/dto-js": "0.0.29",
     "@super-protocol/tee-lib": "^0.1.2",
     "@super-protocol/uplink-nodejs": "1.2.16",
     "asn1js": "^3.0.5",

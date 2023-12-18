@@ -8,8 +8,10 @@ import {
   BlockInfo,
   BlockchainId,
   TokenAmount,
+  TcbPublicData,
+  TcbUtilityData,
 } from '../types';
-import { checkIfActionAccountInitialized, cleanWeb3Data } from '../utils/helper';
+import { checkIfActionAccountInitialized, cleanWeb3Data, unpackDeviceId } from '../utils/helper';
 import TxManager from '../utils/TxManager';
 import { BlockchainConnector, BlockchainEventsListener } from '../connectors';
 import { EventLog } from 'web3-eth-contract';
@@ -65,6 +67,44 @@ class Consensus {
     const contract = BlockchainConnector.getInstance().getContract();
 
     return contract.methods.getSuspiciousBlockTable().call();
+  }
+
+  public static async getTcbsPublicData(
+    tcbIds: BlockchainId[],
+  ): Promise<{ [tcbId: BlockchainId]: TcbPublicData }> {
+    const contract = BlockchainConnector.getInstance().getContract();
+
+    const response: { [tcbId: BlockchainId]: TcbPublicData } = {};
+    const tcbsPublicData: TcbPublicData[] = await contract.methods
+      .getTcbsPublicData(tcbIds)
+      .call()
+      .then((array) => array.map((item) => cleanWeb3Data(item) as TcbPublicData));
+    for (let tcbIndex = 0; tcbIndex < tcbsPublicData.length; tcbIndex++) {
+      tcbsPublicData[tcbIndex].deviceId = unpackDeviceId(tcbsPublicData[tcbIndex].deviceId);
+      tcbsPublicData[tcbIndex].checkingTcbIds = tcbsPublicData[tcbIndex].checkingTcbIds.map((id) =>
+        id.toString(),
+      );
+      response[tcbIndex] = tcbsPublicData[tcbIndex];
+    }
+
+    return response;
+  }
+
+  public static async getTcbsUtilityData(
+    tcbIds: BlockchainId[],
+  ): Promise<{ [tcbId: BlockchainId]: TcbUtilityData }> {
+    const contract = BlockchainConnector.getInstance().getContract();
+
+    const response: { [tcbId: BlockchainId]: TcbUtilityData } = {};
+    const tcbUtilityData: TcbUtilityData[] = await contract.methods
+      .getTcbsUtilityData(tcbIds)
+      .call()
+      .then((array) => array.map((item) => cleanWeb3Data(item) as TcbUtilityData));
+    for (let tcbIndex = 0; tcbIndex < tcbUtilityData.length; tcbIndex++) {
+      response[tcbIndex] = tcbUtilityData[tcbIndex];
+    }
+
+    return response;
   }
 
   public static async unlockProfitByTcbList(

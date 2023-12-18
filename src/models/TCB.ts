@@ -1,4 +1,4 @@
-import { Contract } from 'web3';
+import { Contract, TransactionReceipt } from 'web3';
 import { abi } from '../contracts/abi';
 import TxManager from '../utils/TxManager';
 import { BlockchainConnector } from '../connectors';
@@ -9,7 +9,12 @@ import {
   TcbVerifiedStatus,
   TransactionOptions,
 } from '../types';
-import { checkIfActionAccountInitialized, packDeviceId, unpackDeviceId } from '../utils/helper';
+import {
+  checkIfActionAccountInitialized,
+  cleanWeb3Data,
+  packDeviceId,
+  unpackDeviceId,
+} from '../utils/helper';
 
 class TCB {
   public tcbId: BlockchainId;
@@ -22,31 +27,33 @@ class TCB {
     }
   }
 
-  private async applyTcbMarks(
+  private applyTcbMarks(
     marks: TcbVerifiedStatus[],
     transactionOptions?: TransactionOptions,
-  ): Promise<void> {
-    await TxManager.execute(
+  ): Promise<TransactionReceipt> {
+    return TxManager.execute(
       TCB.contract.methods.applyTcbMarks(marks, this.tcbId),
       transactionOptions,
     );
   }
 
-  private async setTcbData(
-    pb: TcbPublicData,
+  private setTcbData(
+    publicData: TcbPublicData,
     quote: string,
+    publicKey: string,
     transactionOptions?: TransactionOptions,
-  ): Promise<void> {
+  ): Promise<TransactionReceipt> {
     checkIfActionAccountInitialized(transactionOptions);
 
-    const fromattedDeviceId = packDeviceId(pb.deviceID);
-    await TxManager.execute(
+    const fromattedDeviceId = packDeviceId(publicData.deviceId);
+    return TxManager.execute(
       TCB.contract.methods.setTcbData(
         this.tcbId,
-        pb.benchmark,
-        pb.properties,
+        publicData.benchmark,
+        publicData.properties,
         fromattedDeviceId,
         quote,
+        publicKey,
       ),
       transactionOptions,
     );
@@ -59,17 +66,26 @@ class TCB {
    * @param marks - list of marks
    * @param transactionOptions - object what contains alternative action account or gas limit (optional)
    */
-  public async addToSupply(
-    pb: TcbPublicData,
-    quote: string,
-    marks: TcbVerifiedStatus[],
-    transactionOptions?: TransactionOptions,
-  ): Promise<void> {
+  private addToSupply(transactionOptions?: TransactionOptions): Promise<TransactionReceipt> {
     checkIfActionAccountInitialized(transactionOptions);
 
-    await this.setTcbData(pb, quote, transactionOptions);
-    await this.applyTcbMarks(marks, transactionOptions);
-    await TxManager.execute(TCB.contract.methods.addTcbToSupply(this.tcbId), transactionOptions);
+    return TxManager.execute(TCB.contract.methods.addTcbToSupply(this.tcbId), transactionOptions);
+  }
+
+  public async apply(
+    publicData: TcbPublicData,
+    quote: string,
+    publicKey: string,
+    transactionOptions?: TransactionOptions,
+  ): Promise<string[]> {
+    const promises: Promise<TransactionReceipt>[] = [];
+    promises.push(
+      this.applyTcbMarks(publicData.checkingTcbMarks, transactionOptions),
+      this.setTcbData(publicData, quote, publicKey, transactionOptions),
+      this.addToSupply(transactionOptions),
+    );
+
+    return (await Promise.all(promises)).map((tx) => tx.transactionHash as string);
   }
 
   /**
@@ -124,24 +140,23 @@ class TCB {
    */
   public async get(): Promise<TcbData> {
     const tcb: TcbData = await TCB.contract.methods.getTcbById(this.tcbId).call();
-    tcb.publicData.deviceID = unpackDeviceId(tcb.publicData.deviceID);
 
     return tcb;
   }
 
   /**
-   * Function for fetching the given marks for recruited TCBs from the Tables of Consensus
+   * Function for fetching Public Data from TCB
    */
-  public async getCheckingBlocksMarks(): Promise<{
-    blocksIds: BlockchainId[];
-    marks: TcbVerifiedStatus[];
-  }> {
-    const tcb: TcbData = await TCB.contract.methods.getTcbById(this.tcbId).call();
+  public async getPublicData(): Promise<TcbPublicData> {
+    const tcbsPublicData: TcbPublicData[] = await TCB.contract.methods
+      .getTcbsPublicData([this.tcbId])
+      .call()
+      .then((array) => array.map((item) => cleanWeb3Data(item) as TcbPublicData));
+    const publicData = tcbsPublicData[0];
+    publicData.deviceId = unpackDeviceId(publicData.deviceId);
+    publicData.checkingTcbIds = publicData.checkingTcbIds.map((id) => id.toString());
 
-    return {
-      blocksIds: tcb.utilData.checkingBlocks,
-      marks: tcb.utilData.checkingBlockMarks,
-    };
+    return publicData;
   }
 
   /**

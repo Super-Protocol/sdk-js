@@ -1554,9 +1554,24 @@ export const abi = [
             {
                 "components": [
                     {
-                        "internalType": "string",
-                        "name": "quote",
-                        "type": "string"
+                        "internalType": "uint256",
+                        "name": "publicDataId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "utilityDataId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "enum TcbStatus",
+                        "name": "status",
+                        "type": "uint8"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "previousTcb",
+                        "type": "uint256"
                     },
                     {
                         "internalType": "uint256",
@@ -1569,103 +1584,44 @@ export const abi = [
                         "type": "uint256"
                     },
                     {
-                        "components": [
-                            {
-                                "internalType": "uint256",
-                                "name": "teeOfferId",
-                                "type": "uint256"
-                            },
-                            {
-                                "internalType": "bytes32",
-                                "name": "deviceID",
-                                "type": "bytes32"
-                            },
-                            {
-                                "internalType": "uint256",
-                                "name": "benchmark",
-                                "type": "uint256"
-                            },
-                            {
-                                "internalType": "string",
-                                "name": "properties",
-                                "type": "string"
-                            }
-                        ],
-                        "internalType": "struct TcbPublicData",
-                        "name": "publicData",
-                        "type": "tuple"
+                        "internalType": "uint256",
+                        "name": "lastBlocksTakenAmount",
+                        "type": "uint256"
                     },
                     {
-                        "components": [
-                            {
-                                "internalType": "uint256[]",
-                                "name": "checkingBlocks",
-                                "type": "uint256[]"
-                            },
-                            {
-                                "internalType": "enum TcbVerifiedStatus[]",
-                                "name": "checkingBlockMarks",
-                                "type": "uint8[]"
-                            },
-                            {
-                                "internalType": "uint256",
-                                "name": "lastBlocksTakenAmount",
-                                "type": "uint256"
-                            },
-                            {
-                                "internalType": "uint256",
-                                "name": "suspiciousBlocksTakenAmount",
-                                "type": "uint256"
-                            },
-                            {
-                                "internalType": "uint16",
-                                "name": "negative",
-                                "type": "uint16"
-                            },
-                            {
-                                "internalType": "uint16",
-                                "name": "positive",
-                                "type": "uint16"
-                            },
-                            {
-                                "internalType": "uint256",
-                                "name": "previousTcb",
-                                "type": "uint256"
-                            },
-                            {
-                                "internalType": "bool",
-                                "name": "lastBlocksTaken",
-                                "type": "bool"
-                            },
-                            {
-                                "internalType": "bool",
-                                "name": "suspiciousBlocksTaken",
-                                "type": "bool"
-                            },
-                            {
-                                "internalType": "bool",
-                                "name": "assignedToEpoch_DEPRECATED",
-                                "type": "bool"
-                            },
-                            {
-                                "internalType": "bool",
-                                "name": "checked",
-                                "type": "bool"
-                            },
-                            {
-                                "internalType": "bool",
-                                "name": "rewardClaimed",
-                                "type": "bool"
-                            }
-                        ],
-                        "internalType": "struct TcbUtilityData",
-                        "name": "utilData",
-                        "type": "tuple"
+                        "internalType": "uint256",
+                        "name": "suspiciousBlocksTakenAmount",
+                        "type": "uint256"
                     },
                     {
-                        "internalType": "enum TcbStatus",
-                        "name": "status",
-                        "type": "uint8"
+                        "internalType": "uint16",
+                        "name": "negative",
+                        "type": "uint16"
+                    },
+                    {
+                        "internalType": "uint16",
+                        "name": "positive",
+                        "type": "uint16"
+                    },
+                    {
+                        "internalType": "bool",
+                        "name": "lastBlocksTaken",
+                        "type": "bool"
+                    },
+                    {
+                        "internalType": "bool",
+                        "name": "suspiciousBlocksTaken",
+                        "type": "bool"
+                    },
+                    {
+                        "internalType": "bool",
+                        "name": "checked",
+                        "type": "bool"
+                    },
+                    {
+                        "internalType": "bool",
+                        "name": "rewardClaimed",
+                        "type": "bool"
                     }
                 ],
                 "internalType": "struct Tcb",
@@ -1690,6 +1646,88 @@ export const abi = [
                 "internalType": "uint256",
                 "name": "",
                 "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256[]",
+                "name": "tcbIds",
+                "type": "uint256[]"
+            }
+        ],
+        "name": "getTcbsPublicData",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "uint256[]",
+                        "name": "checkingTcbIds",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "enum TcbVerifiedStatus[]",
+                        "name": "checkingTcbMarks",
+                        "type": "uint8[]"
+                    },
+                    {
+                        "internalType": "bytes32",
+                        "name": "deviceId",
+                        "type": "bytes32"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "benchmark",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "properties",
+                        "type": "string"
+                    }
+                ],
+                "internalType": "struct TcbPublicData[]",
+                "name": "",
+                "type": "tuple[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256[]",
+                "name": "tcbIds",
+                "type": "uint256[]"
+            }
+        ],
+        "name": "getTcbsUtilityData",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "uint256",
+                        "name": "teeOfferId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "pubKey",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "quote",
+                        "type": "string"
+                    }
+                ],
+                "internalType": "struct TcbUtilityData[]",
+                "name": "",
+                "type": "tuple[]"
             }
         ],
         "stateMutability": "view",
@@ -1799,12 +1837,17 @@ export const abi = [
             },
             {
                 "internalType": "bytes32",
-                "name": "deviceID",
+                "name": "deviceId",
                 "type": "bytes32"
             },
             {
                 "internalType": "string",
                 "name": "quote",
+                "type": "string"
+            },
+            {
+                "internalType": "string",
+                "name": "pubKey",
                 "type": "string"
             }
         ],
@@ -7701,7 +7744,7 @@ export const abi = [
             },
             {
                 "internalType": "bytes32",
-                "name": "deviceID",
+                "name": "deviceId",
                 "type": "bytes32"
             }
         ],
@@ -7719,7 +7762,7 @@ export const abi = [
             },
             {
                 "internalType": "bytes32",
-                "name": "deviceID",
+                "name": "deviceId",
                 "type": "bytes32"
             }
         ],
@@ -7764,7 +7807,7 @@ export const abi = [
         "inputs": [
             {
                 "internalType": "bytes32",
-                "name": "deviceID",
+                "name": "deviceId",
                 "type": "bytes32"
             }
         ],
@@ -7886,7 +7929,7 @@ export const abi = [
             },
             {
                 "internalType": "bytes32",
-                "name": "deviceID",
+                "name": "deviceId",
                 "type": "bytes32"
             }
         ],
@@ -8700,6 +8743,32 @@ export const abi = [
         "type": "function"
     },
     {
+        "inputs": [],
+        "name": "deployer",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "deploymentBlockNumber",
+        "outputs": [
+            {
+                "internalType": "uint64",
+                "name": "",
+                "type": "uint64"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
         "anonymous": false,
         "inputs": [
             {
@@ -9396,9 +9465,24 @@ export const abi = [
             {
                 "components": [
                     {
-                        "internalType": "string",
-                        "name": "quote",
-                        "type": "string"
+                        "internalType": "uint256",
+                        "name": "publicDataId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "utilityDataId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "enum TcbStatus",
+                        "name": "status",
+                        "type": "uint8"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "previousTcb",
+                        "type": "uint256"
                     },
                     {
                         "internalType": "uint256",
@@ -9411,103 +9495,44 @@ export const abi = [
                         "type": "uint256"
                     },
                     {
-                        "components": [
-                            {
-                                "internalType": "uint256",
-                                "name": "teeOfferId",
-                                "type": "uint256"
-                            },
-                            {
-                                "internalType": "bytes32",
-                                "name": "deviceID",
-                                "type": "bytes32"
-                            },
-                            {
-                                "internalType": "uint256",
-                                "name": "benchmark",
-                                "type": "uint256"
-                            },
-                            {
-                                "internalType": "string",
-                                "name": "properties",
-                                "type": "string"
-                            }
-                        ],
-                        "internalType": "struct TcbPublicData",
-                        "name": "publicData",
-                        "type": "tuple"
+                        "internalType": "uint256",
+                        "name": "lastBlocksTakenAmount",
+                        "type": "uint256"
                     },
                     {
-                        "components": [
-                            {
-                                "internalType": "uint256[]",
-                                "name": "checkingBlocks",
-                                "type": "uint256[]"
-                            },
-                            {
-                                "internalType": "enum TcbVerifiedStatus[]",
-                                "name": "checkingBlockMarks",
-                                "type": "uint8[]"
-                            },
-                            {
-                                "internalType": "uint256",
-                                "name": "lastBlocksTakenAmount",
-                                "type": "uint256"
-                            },
-                            {
-                                "internalType": "uint256",
-                                "name": "suspiciousBlocksTakenAmount",
-                                "type": "uint256"
-                            },
-                            {
-                                "internalType": "uint16",
-                                "name": "negative",
-                                "type": "uint16"
-                            },
-                            {
-                                "internalType": "uint16",
-                                "name": "positive",
-                                "type": "uint16"
-                            },
-                            {
-                                "internalType": "uint256",
-                                "name": "previousTcb",
-                                "type": "uint256"
-                            },
-                            {
-                                "internalType": "bool",
-                                "name": "lastBlocksTaken",
-                                "type": "bool"
-                            },
-                            {
-                                "internalType": "bool",
-                                "name": "suspiciousBlocksTaken",
-                                "type": "bool"
-                            },
-                            {
-                                "internalType": "bool",
-                                "name": "assignedToEpoch_DEPRECATED",
-                                "type": "bool"
-                            },
-                            {
-                                "internalType": "bool",
-                                "name": "checked",
-                                "type": "bool"
-                            },
-                            {
-                                "internalType": "bool",
-                                "name": "rewardClaimed",
-                                "type": "bool"
-                            }
-                        ],
-                        "internalType": "struct TcbUtilityData",
-                        "name": "utilData",
-                        "type": "tuple"
+                        "internalType": "uint256",
+                        "name": "suspiciousBlocksTakenAmount",
+                        "type": "uint256"
                     },
                     {
-                        "internalType": "enum TcbStatus",
-                        "name": "status",
-                        "type": "uint8"
+                        "internalType": "uint16",
+                        "name": "negative",
+                        "type": "uint16"
+                    },
+                    {
+                        "internalType": "uint16",
+                        "name": "positive",
+                        "type": "uint16"
+                    },
+                    {
+                        "internalType": "bool",
+                        "name": "lastBlocksTaken",
+                        "type": "bool"
+                    },
+                    {
+                        "internalType": "bool",
+                        "name": "suspiciousBlocksTaken",
+                        "type": "bool"
+                    },
+                    {
+                        "internalType": "bool",
+                        "name": "checked",
+                        "type": "bool"
+                    },
+                    {
+                        "internalType": "bool",
+                        "name": "rewardClaimed",
+                        "type": "bool"
                     }
                 ],
                 "internalType": "struct Tcb",
@@ -12260,7 +12285,7 @@ export const abi = [
             },
             {
                 "internalType": "bytes32",
-                "name": "deviceID",
+                "name": "deviceId",
                 "type": "bytes32"
             }
         ],
@@ -12278,7 +12303,7 @@ export const abi = [
             },
             {
                 "internalType": "bytes32",
-                "name": "deviceID",
+                "name": "deviceId",
                 "type": "bytes32"
             }
         ],
@@ -12383,7 +12408,7 @@ export const abi = [
             },
             {
                 "internalType": "bytes32",
-                "name": "deviceID",
+                "name": "deviceId",
                 "type": "bytes32"
             }
         ],

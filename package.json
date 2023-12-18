@@ -1,6 +1,6 @@
 {
   "name": "@super-protocol/sdk-js",
-  "version": "2.0.2-beta.0",
+  "version": "2.0.2-beta.2",
   "main": "build/index.js",
   "license": "MIT",
   "files": [
@@ -47,7 +47,7 @@
     "eslint-plugin-tsdoc": "^0.2.14",
     "eslint-plugin-unused-imports": "^2.0.0",
     "jest": "^27.3.1",
-    "pandoc-bin": "^0.2.0",
+    "net": "^1.0.2",
     "prettier": "^2.4.1",
     "ts-jest": "^27.0.7",
     "ts-proto": "^1.110.4",
@@ -57,16 +57,16 @@
     "typescript": "^4.4.4"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.470.0",
+    "@aws-sdk/lib-storage": "^3.472.0",
     "@fidm/x509": "^1.2.1",
     "@super-protocol/dto-js": "0.0.29",
     "@super-protocol/tee-lib": "^0.1.2",
     "@super-protocol/uplink-nodejs": "1.2.16",
     "asn1js": "^3.0.5",
-    "aws-sdk": "^2.1418.0",
     "axios": "^1.5.1",
     "bottleneck": "^2.19.5",
     "ethers": "^5.5.3",
-    "hybrid-crypto-js": "^0.2.4",
     "js-encoding-utils": "^0.7.3",
     "lodash": "^4.17.21",
     "lru-cache": "^10.0.0",

@@ -1,11 +1,5 @@
 import { BlockchainId, TokenAmount } from './Web3';
-
-export enum TcbVerifiedStatus {
-  Valid = 0,
-  InvalidQuote = 1,
-  InvalidMrEnclave = 2,
-  InvalidBcbHash = 3,
-}
+import { TcbVerifiedStatus } from '@super-protocol/dto-js';
 
 export type TcbPublicData = {
   checkingTcbIds: BlockchainId[];

@@ -35,7 +35,7 @@ import {
 import { formatBytes32String } from 'ethers/lib/utils';
 import TeeOffers from '../staticModels/TeeOffers';
 import { TCB } from '../models';
-import { TeeConfirmationBlock, GetTcbRequest } from '@super-protocol/dto-js';
+import { TeeConfirmationBlock, GetTcbRequest, TcbVerifiedStatus } from '@super-protocol/dto-js';
 import Consensus from '../staticModels/Consensus';
 
 class TeeOffer {
@@ -283,11 +283,12 @@ class TeeOffer {
 
     const tcbsForVerification: TeeConfirmationBlock[] = [];
     for (const checkingTcbId of checkingTcbIds) {
-      const publicData = tcbsPublicData[checkingTcbId];
+      const { checkingTcbMarks, ...otherPublicData } = tcbsPublicData[checkingTcbId];
       const { quote, pubKey } = tcbsUtilityData[checkingTcbId];
       tcbsForVerification.push({
+        ...otherPublicData,
         checkingTcbId,
-        ...publicData,
+        checkingTcbMarks: checkingTcbMarks.map((mark) => mark as TcbVerifiedStatus),
         pubKey,
         quote,
       });

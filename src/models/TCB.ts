@@ -2,13 +2,8 @@ import { Contract, TransactionReceipt } from 'web3';
 import { abi } from '../contracts/abi';
 import TxManager from '../utils/TxManager';
 import { BlockchainConnector } from '../connectors';
-import {
-  BlockchainId,
-  TcbData,
-  TcbPublicData,
-  TcbVerifiedStatus,
-  TransactionOptions,
-} from '../types';
+import { BlockchainId, TcbData, TcbPublicData, TransactionOptions } from '../types';
+import { TcbVerifiedStatus } from '@super-protocol/dto-js';
 import {
   checkIfActionAccountInitialized,
   cleanWeb3Data,

@@ -11,6 +11,7 @@ import {
   OrderUsageRaw,
   PriceType,
   SlotUsage,
+  TcbPublicData,
   TeeOfferOption,
   TeeOfferOptionRaw,
   TeeOfferSlot,
@@ -157,6 +158,20 @@ export function convertTeeOfferOptionFromRaw(option: TeeOfferOptionRaw): TeeOffe
     info: convertOptionInfoFromRaw(option.info),
     usage: formatUsage(option.usage),
   };
+}
+
+export function formatTcbPublicData(unparsedPublicData: any[]): TcbPublicData[] {
+  const response: TcbPublicData[] = [];
+  for (const data of unparsedPublicData) {
+    response.push({
+      checkingTcbIds: data.checkingTcbIds,
+      checkingTcbMarks: data.checkingTcbMarks,
+      deviceId: data.deviceId,
+      benchmark: data.benchmark,
+      properties: data.properties,
+    });
+  }
+  return response;
 }
 
 export function formatTeeOfferSlot(slot: TeeOfferSlot, cpuDenominator: number): TeeOfferSlot {

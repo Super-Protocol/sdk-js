@@ -11,7 +11,13 @@ import {
   TcbPublicData,
   TcbUtilityData,
 } from '../types';
-import { checkIfActionAccountInitialized, cleanWeb3Data, unpackDeviceId } from '../utils/helper';
+import {
+  checkIfActionAccountInitialized,
+  cleanWeb3Data,
+  formatTcbPublicData,
+  transformComplexObject,
+  unpackDeviceId,
+} from '../utils/helper';
 import TxManager from '../utils/TxManager';
 import { BlockchainConnector, BlockchainEventsListener } from '../connectors';
 import { EventLog } from 'web3-eth-contract';
@@ -78,13 +84,13 @@ class Consensus {
     const tcbsPublicData: TcbPublicData[] = await contract.methods
       .getTcbsPublicData(tcbIds)
       .call()
-      .then((array) => array.map((item) => cleanWeb3Data(item) as TcbPublicData));
+      .then((array) => formatTcbPublicData(array));
+
     for (let tcbIndex = 0; tcbIndex < tcbsPublicData.length; tcbIndex++) {
       tcbsPublicData[tcbIndex].deviceId = unpackDeviceId(tcbsPublicData[tcbIndex].deviceId);
-      tcbsPublicData[tcbIndex].checkingTcbIds = tcbsPublicData[tcbIndex].checkingTcbIds.map((id) =>
-        id.toString(),
-      );
-      response[tcbIndex] = tcbsPublicData[tcbIndex];
+      tcbsPublicData[tcbIndex].checkingTcbIds =
+        tcbsPublicData[tcbIndex].checkingTcbIds?.map((id) => id.toString()) || [];
+      response[tcbIds[tcbIndex]] = tcbsPublicData[tcbIndex];
     }
 
     return response;
@@ -99,9 +105,9 @@ class Consensus {
     const tcbUtilityData: TcbUtilityData[] = await contract.methods
       .getTcbsUtilityData(tcbIds)
       .call()
-      .then((array) => array.map((item) => cleanWeb3Data(item) as TcbUtilityData));
+      .then((array) => array.map((item) => transformComplexObject(item) as TcbUtilityData));
     for (let tcbIndex = 0; tcbIndex < tcbUtilityData.length; tcbIndex++) {
-      response[tcbIndex] = tcbUtilityData[tcbIndex];
+      response[tcbIds[tcbIndex]] = tcbUtilityData[tcbIndex];
     }
 
     return response;

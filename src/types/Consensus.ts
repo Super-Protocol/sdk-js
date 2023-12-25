@@ -16,8 +16,6 @@ export type TcbUtilityData = {
 };
 
 export type TcbData = {
-  publicDataId: BlockchainId;
-  utilityDataId: BlockchainId;
   status: TcbStatus;
   previousTcb: BlockchainId;
   timeInitialized: number;

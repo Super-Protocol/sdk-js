@@ -1554,16 +1554,6 @@ export const abi = [
             {
                 "components": [
                     {
-                        "internalType": "uint256",
-                        "name": "publicDataId",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "utilityDataId",
-                        "type": "uint256"
-                    },
-                    {
                         "internalType": "enum TcbStatus",
                         "name": "status",
                         "type": "uint8"
@@ -9464,16 +9454,6 @@ export const abi = [
         "outputs": [
             {
                 "components": [
-                    {
-                        "internalType": "uint256",
-                        "name": "publicDataId",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "utilityDataId",
-                        "type": "uint256"
-                    },
                     {
                         "internalType": "enum TcbStatus",
                         "name": "status",

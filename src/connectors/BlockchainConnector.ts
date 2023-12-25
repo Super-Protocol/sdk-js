@@ -190,6 +190,34 @@ class BlockchainConnector extends BaseConnector {
   }
 
   /**
+   * Function that searches (using binary search) first block data that node has
+   * @param startIndex - start block that function needs to start search with
+   * @returns block number
+   */
+  public async searchFirstBlockInTheNode(startIndex = 0): Promise<number> {
+    this.checkIfInitialized();
+
+    let latestBlockIndex = Number(await store.web3Https!.eth.getBlockNumber());
+
+    while (startIndex <= latestBlockIndex) {
+      const mid = Math.floor((startIndex + latestBlockIndex) / 2);
+      const txReceipt = await store
+        .web3Https!.eth.getBlock(mid)
+        .then((block) =>
+          store.web3Https!.eth.getTransactionReceipt(block.transactions[0] as string),
+        )
+        .catch(/*suppress error*/ () => {});
+      if (txReceipt) {
+        latestBlockIndex = mid - 1;
+      } else {
+        startIndex = mid + 1;
+      }
+    }
+
+    return latestBlockIndex + 1;
+  }
+
+  /**
    * Returns transactions reciept
    * @param txHash - transaction hash
    * @returns {Promise<TransactionReceipt>} - Transaction reciept

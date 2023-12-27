@@ -21,6 +21,7 @@ import {
 import TxManager from '../utils/TxManager';
 import { BlockchainConnector, BlockchainEventsListener } from '../connectors';
 import { EventLog } from 'web3-eth-contract';
+import { TcbVerifiedStatus } from '@super-protocol/dto-js';
 
 class Consensus {
   private static readonly logger = rootLogger.child({ className: 'Consensus' });
@@ -90,6 +91,11 @@ class Consensus {
       tcbsPublicData[tcbIndex].deviceId = unpackDeviceId(tcbsPublicData[tcbIndex].deviceId);
       tcbsPublicData[tcbIndex].checkingTcbIds =
         tcbsPublicData[tcbIndex].checkingTcbIds?.map((id) => id.toString()) || [];
+      tcbsPublicData[tcbIndex].checkingTcbMarks =
+        tcbsPublicData[tcbIndex].checkingTcbMarks?.map(
+          (mark) => Number(mark) as TcbVerifiedStatus,
+        ) || [];
+      tcbsPublicData[tcbIndex].benchmark = Number(tcbsPublicData[tcbIndex].benchmark);
       response[tcbIds[tcbIndex]] = tcbsPublicData[tcbIndex];
     }
 

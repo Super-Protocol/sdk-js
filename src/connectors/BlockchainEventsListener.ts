@@ -1,5 +1,6 @@
 import { BaseConnector, Config } from './BaseConnector';
 import Web3, { Web3Context, WebSocketProvider } from 'web3';
+import { ProviderRpcError, ProviderConnectInfo } from 'web3-types';
 import { ReconnectOptions } from 'web3-utils';
 import { abi } from '../contracts/abi';
 
@@ -44,9 +45,25 @@ class BlockchainEventsListener extends BaseConnector {
       config.reconnect,
     );
 
-    this.logger.info(`Initializing events listener with reconnect options: ${JSON.stringify(reconnectOptions)}`);
+    this.logger.info(
+      `Initializing events listener with reconnect options: ${JSON.stringify(reconnectOptions)}`,
+    );
 
-    const provider = new WebSocketProvider(config.blockchainUrl!, {} /* ClientOptions */, reconnectOptions);
+    const provider = new WebSocketProvider(
+      config.blockchainUrl!,
+      {} /* ClientOptions */,
+      reconnectOptions,
+    );
+
+    provider.on('connect', (info: ProviderConnectInfo) => {
+      this.logger.info(info, 'Events listener connect');
+    });
+    provider.on('disconnect', (err: ProviderRpcError) => {
+      this.logger.error({ err }, 'Events listener disconnect');
+    });
+    provider.on('error', (err: unknown) => {
+      this.logger.error({ err }, 'Events listener error');
+    });
 
     store.web3Wss = new Web3(provider);
     const web3Context = new Web3Context({

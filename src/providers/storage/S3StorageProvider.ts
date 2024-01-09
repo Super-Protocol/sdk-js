@@ -3,6 +3,7 @@ import {
   CompletedPart,
   CompleteMultipartUploadCommand,
   CreateMultipartUploadCommand,
+  PutObjectCommand,
   DeleteObjectCommand,
   GetObjectCommand,
   GetObjectCommandInput,
@@ -15,7 +16,7 @@ import {
 import IStorageProvider, { DownloadConfig } from './IStorageProvider';
 import { Readable } from 'stream';
 import StorageObject from '../../types/storage/StorageObject';
-import { Upload } from '@aws-sdk/lib-storage';
+import { getStreamChunks } from '../../utils/helpers/getStreamChunks';
 
 export type S3ClientConfig = {
   accessKeyId: string;
@@ -59,27 +60,22 @@ export class S3StorageProvider implements IStorageProvider {
   ): Promise<void> {
     // For performance & cost optimization
     // https://docs.storj.io/dcs/api-reference/s3-compatible-gateway/multipart-upload/multipart-part-size
-    if (inputStream.readableHighWaterMark >= this.multipartChunkSizeInBytes) {
+    if (contentLength >= this.multipartChunkSizeInBytes) {
       return this.multipartUpload(inputStream, remotePath, contentLength, progressListener);
     }
 
-    const upload = new Upload({
-      client: this.s3Client,
-      params: {
-        Body: inputStream,
-        Bucket: this.bucket,
-        Key: remotePath,
-        ContentLength: contentLength,
-      },
+    const command = new PutObjectCommand({
+      Body: inputStream,
+      Bucket: this.bucket,
+      Key: remotePath,
+      ContentLength: contentLength,
     });
 
-    upload.on('httpUploadProgress', ({ total, loaded }) => {
-      if (!!progressListener && total !== undefined && loaded !== undefined) {
-        progressListener(total, loaded);
-      }
-    });
+    progressListener?.(contentLength, 0);
 
-    await upload.done();
+    await this.s3Client.send(command);
+
+    progressListener?.(contentLength, contentLength);
   }
 
   private async multipartUpload(
@@ -100,28 +96,26 @@ export class S3StorageProvider implements IStorageProvider {
     }
     try {
       let totalWritten = 0;
-      let partNumber = 0;
       const uploadId = multipart.UploadId;
       const parts: Array<CompletedPart> = [];
 
-      for await (const buffer of inputStream) {
-        partNumber++;
+      for await (const dataPart of getStreamChunks(inputStream, this.multipartChunkSizeInBytes)) {
         const uploadPartCommand = new UploadPartCommand({
-          Body: buffer,
+          Body: dataPart.data,
           Bucket: this.bucket,
           Key: remotePath,
           UploadId: uploadId,
-          PartNumber: partNumber,
+          PartNumber: dataPart.partNumber,
         });
 
         const response = await this.s3Client.send(uploadPartCommand);
 
         parts.push({
           ETag: response.ETag,
-          PartNumber: partNumber,
+          PartNumber: dataPart.partNumber,
         });
 
-        totalWritten += buffer.length;
+        totalWritten += dataPart.data.length;
         if (!!progressListener) {
           progressListener(contentLength, totalWritten);
         }

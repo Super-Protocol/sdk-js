@@ -64,7 +64,7 @@ export class S3StorageProvider implements IStorageProvider {
       return this.multipartUpload(inputStream, remotePath, contentLength, progressListener);
     }
 
-    const command = new PutObjectCommand({
+    const putObjectCommand = new PutObjectCommand({
       Body: inputStream,
       Bucket: this.bucket,
       Key: remotePath,
@@ -73,7 +73,7 @@ export class S3StorageProvider implements IStorageProvider {
 
     progressListener?.(contentLength, 0);
 
-    await this.s3Client.send(command);
+    await this.s3Client.send(putObjectCommand);
 
     progressListener?.(contentLength, contentLength);
   }
@@ -99,23 +99,23 @@ export class S3StorageProvider implements IStorageProvider {
       const uploadId = multipart.UploadId;
       const parts: Array<CompletedPart> = [];
 
-      for await (const dataPart of getStreamChunks(inputStream, this.multipartChunkSizeInBytes)) {
+      for await (const streamChunk of getStreamChunks(inputStream, this.multipartChunkSizeInBytes)) {
         const uploadPartCommand = new UploadPartCommand({
-          Body: dataPart.data,
+          Body: streamChunk.data,
           Bucket: this.bucket,
           Key: remotePath,
           UploadId: uploadId,
-          PartNumber: dataPart.partNumber,
+          PartNumber: streamChunk.partNumber,
         });
 
         const response = await this.s3Client.send(uploadPartCommand);
 
         parts.push({
           ETag: response.ETag,
-          PartNumber: dataPart.partNumber,
+          PartNumber: streamChunk.partNumber,
         });
 
-        totalWritten += dataPart.data.length;
+        totalWritten += streamChunk.data.length;
         if (!!progressListener) {
           progressListener(contentLength, totalWritten);
         }
@@ -143,11 +143,11 @@ export class S3StorageProvider implements IStorageProvider {
   }
 
   async deleteObject(remotePath: string): Promise<void> {
-    const command = new DeleteObjectCommand({
+    const deleteObjectCommand = new DeleteObjectCommand({
       Bucket: this.bucket,
       Key: remotePath,
     });
-    await this.s3Client.send(command);
+    await this.s3Client.send(deleteObjectCommand);
   }
 
   async downloadFile(
@@ -166,8 +166,8 @@ export class S3StorageProvider implements IStorageProvider {
       getObjectParams.Range = `bytes=${start}-${end || ''}`;
     }
 
-    const command = new GetObjectCommand(getObjectParams);
-    const getObjectResult = await this.s3Client.send(command);
+    const getObjectCommand = new GetObjectCommand(getObjectParams);
+    const getObjectResult = await this.s3Client.send(getObjectCommand);
 
     if (!getObjectResult.Body || !(getObjectResult.Body instanceof Readable)) {
       throw new Error('download Body is undefined');
@@ -190,11 +190,11 @@ export class S3StorageProvider implements IStorageProvider {
   async listObjects(remotePath: string): Promise<StorageObject[]> {
     const prefix = remotePath.endsWith('/') ? remotePath : `${remotePath}/`;
 
-    const command = new ListObjectsV2Command({
+    const listObjectsCommand = new ListObjectsV2Command({
       Bucket: this.bucket,
       Prefix: prefix,
     });
-    const listObjects = await this.s3Client.send(command);
+    const listObjects = await this.s3Client.send(listObjectsCommand);
 
     let result: StorageObject[] = [];
     if (listObjects.Contents) {
@@ -209,12 +209,12 @@ export class S3StorageProvider implements IStorageProvider {
   }
 
   private async getMetadata(remotePath: string): Promise<HeadObjectCommandOutput> {
-    const command = new HeadObjectCommand({
+    const headObjectCommand = new HeadObjectCommand({
       Bucket: this.bucket,
       Key: remotePath,
     });
 
-    return await this.s3Client.send(command);
+    return await this.s3Client.send(headObjectCommand);
   }
 
   async getObjectSize(remotePath: string): Promise<number> {

@@ -18,6 +18,7 @@ import {
   OrderUsage,
   SlotInfo,
   SlotUsage,
+  OptionInfo,
 } from '../types';
 import Superpro from './Superpro';
 import TxManager from '../utils/TxManager';
@@ -681,6 +682,30 @@ class Orders implements StaticModel {
       minTimeMinutes: slotUsage.minTimeMinutes,
       maxTimeMinutes: slotUsage.maxTimeMinutes,
     };
+  }
+
+  /**
+   * function that calculated requested options for order run
+   * @param selectedUsage - structure that order.getSelectedUsage() method returns
+   * @returns calculated options
+   */
+  public static accumulatedOptionsInfo(selectedUsage: OrderUsage): OptionInfo {
+    return selectedUsage.optionInfo.reduce(
+      (accumulatedInfo, optionInfo, optionInfoIndex) => {
+        const { bandwidth, externalPort, traffic } = optionInfo;
+        const optionCount = selectedUsage.optionsCount.at(optionInfoIndex) || 0;
+
+        accumulatedInfo.bandwidth += bandwidth * optionCount;
+        accumulatedInfo.externalPort += externalPort * optionCount;
+        accumulatedInfo.traffic += traffic * optionCount;
+        return accumulatedInfo;
+      },
+      {
+        bandwidth: 0,
+        externalPort: 0,
+        traffic: 0,
+      },
+    );
   }
 }
 

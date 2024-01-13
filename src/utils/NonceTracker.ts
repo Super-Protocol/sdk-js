@@ -31,7 +31,7 @@ class NonceTracker {
     if (this.txCount === undefined)
       throw Error(`NonceTracker for address ${this.address} is not initialized`);
 
-    this.logger.trace(`Consume nonce: ${this.txCount + BigInt(1)}`);
+    this.logger.trace(`Consume nonce: ${this.txCount}. Next nonce: ${this.txCount + BigInt(1)}`);
 
     return this.txCount++;
   }

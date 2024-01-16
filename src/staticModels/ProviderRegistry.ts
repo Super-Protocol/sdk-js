@@ -41,6 +41,15 @@ class ProviderRegistry {
     return contract.methods.isProviderRegistered(providerAuthority).call();
   }
 
+  public static getProviderRequiredSecDepo(
+    providerAuthority: string,
+    additionalAmount: TokenAmount,
+  ): Promise<TokenAmount> {
+    const contract = BlockchainConnector.getInstance().getContract();
+
+    return contract.methods.getProviderRequiredSecDepo(providerAuthority, additionalAmount).call();
+  }
+
   /**
    * Refills security provider deposit
    * Call this function with provider authority account (in transactionOptions)

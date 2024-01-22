@@ -1,9 +1,5 @@
 import rootLogger from '../logger';
-import {
-  checkIfActionAccountInitialized,
-  cleanWeb3Data,
-  convertBigIntToString,
-} from '../utils/helper';
+import { checkIfActionAccountInitialized, cleanWeb3Data } from '../utils/helper';
 import { ProviderInfo, BlockInfo, TransactionOptions, TokenAmount } from '../types';
 import { EventLog } from 'web3-eth-contract';
 import { BlockchainConnector, BlockchainEventsListener } from '../connectors';
@@ -24,30 +20,10 @@ class ProviderRegistry {
     return this.providers;
   }
 
-  /**
-   * Fetch provider security deposit by provider authority account
-   */
-  public static async getSecurityDeposit(providerAuthority: string): Promise<TokenAmount> {
-    const contract = BlockchainConnector.getInstance().getContract();
-
-    return convertBigIntToString(
-      await contract.methods.getProviderSecurityDeposit(providerAuthority).call(),
-    );
-  }
-
   public static isProviderRegistered(providerAuthority: string): Promise<boolean> {
     const contract = BlockchainConnector.getInstance().getContract();
 
     return contract.methods.isProviderRegistered(providerAuthority).call();
-  }
-
-  public static getProviderRequiredSecDepo(
-    providerAuthority: string,
-    additionalAmount: TokenAmount,
-  ): Promise<TokenAmount> {
-    const contract = BlockchainConnector.getInstance().getContract();
-
-    return contract.methods.getProviderRequiredSecDepo(providerAuthority, additionalAmount).call();
   }
 
   /**

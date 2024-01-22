@@ -5,7 +5,7 @@ import {
   cleanWeb3Data,
   convertBigIntToString,
 } from '../utils/helper';
-import { ProviderInfo, Origins, TransactionOptions, BlockchainId } from '../types';
+import { ProviderInfo, Origins, TransactionOptions, BlockchainId, TokenAmount } from '../types';
 import { BlockchainConnector } from '../connectors';
 import TxManager from '../utils/TxManager';
 import Consensus from '../staticModels/Consensus';
@@ -15,7 +15,6 @@ class Provider {
 
   public providerInfo?: ProviderInfo;
   public violationRate?: bigint | string;
-  public authority?: string;
   public valueOffers?: BlockchainId[];
   public teeOffers?: BlockchainId[];
   public origins?: Origins;
@@ -106,6 +105,29 @@ class Provider {
     origins.modifiedDate = Number(origins.modifiedDate) * 1000;
 
     return (this.origins = origins);
+  }
+
+  /**
+   * Fetch calculation of required providers security deposit for offers,
+   * if additionalAmount is equal zero then deposit will be calculated for existing offers
+   * @param additionalAmount - number of tokens planned to be added and frozen as security deposit
+   * @returns required deposit
+   */
+  public getProviderRequiredSecDepo(additionalAmount: TokenAmount = '0'): Promise<TokenAmount> {
+    const contract = BlockchainConnector.getInstance().getContract();
+
+    return contract.methods.getProviderRequiredSecDepo(this.providerId, additionalAmount).call();
+  }
+
+  /**
+   * Fetch provider security deposit by provider authority account
+   */
+  public async getSecurityDeposit(): Promise<TokenAmount> {
+    const contract = BlockchainConnector.getInstance().getContract();
+
+    return convertBigIntToString(
+      await contract.methods.getProviderSecurityDeposit(this.providerId).call(),
+    );
   }
 
   public async isProviderBanned(): Promise<boolean> {

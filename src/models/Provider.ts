@@ -113,7 +113,7 @@ class Provider {
    * @param additionalAmount - number of tokens planned to be added and frozen as security deposit
    * @returns required deposit
    */
-  public getProviderRequiredSecDepo(additionalAmount: TokenAmount = '0'): Promise<TokenAmount> {
+  public getRequiredSecurityDepo(additionalAmount: TokenAmount = '0'): Promise<TokenAmount> {
     const contract = BlockchainConnector.getInstance().getContract();
 
     return contract.methods.getProviderRequiredSecDepo(this.providerId, additionalAmount).call();

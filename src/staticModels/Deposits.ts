@@ -22,10 +22,10 @@ class Deposits {
    * Function for fetching deposit info
    * @param depositOwner - Deposit owner
    */
-  public static getDepositInfo(depositOwner: string): Promise<DepositInfo> {
+  public static async getDepositInfo(depositOwner: string): Promise<DepositInfo> {
     const contract = BlockchainConnector.getInstance().getContract();
 
-    return cleanWeb3Data(contract.methods.getDepositInfo(depositOwner).call());
+    return cleanWeb3Data(await contract.methods.getDepositInfo(depositOwner).call());
   }
 
   /**

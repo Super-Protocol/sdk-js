@@ -21,7 +21,7 @@ export default abstract class EventProvider {
   protected abstract engineVersion: string;
   protected abstract deviceId: string;
 
-  private getEventProperties(eventProperties?: string | object): string | undefined {
+  protected getEventProperties(eventProperties?: string | object): string | undefined {
     return eventProperties && typeof eventProperties !== 'string'
       ? JSON.stringify(eventProperties)
       : eventProperties;

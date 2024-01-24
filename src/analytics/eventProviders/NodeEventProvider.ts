@@ -1,20 +1,25 @@
 import { v5 as uuidv5 } from 'uuid';
-import { EventProvider, Event, NodeEventProviderProp } from '../types';
+import EventProvider from './EventProvider';
 
-export default class NodeEventProvider implements EventProvider {
-  private readonly userId: string;
-  private readonly language: string;
-  private readonly date: string;
-  private readonly osName: string;
-  private readonly engine: string;
-  private readonly engineVersion: string;
-  private readonly deviceId: string;
-  private readonly platform: string;
+export interface NodeEventProviderProp {
+  userId: string;
+  platform: string;
+  deviceId?: string;
+}
+
+export default class NodeEventProvider extends EventProvider {
+  protected readonly userId: string;
+  protected readonly language: string;
+  protected readonly date: string;
+  protected readonly platform: string;
+  protected readonly osName: string;
+  protected readonly engine: string;
+  protected readonly engineVersion: string;
+  protected readonly deviceId: string;
 
   constructor(event: NodeEventProviderProp) {
-    const {
-      userId, deviceId, platform,
-    } = event;
+    super();
+    const { userId, deviceId, platform } = event;
     this.userId = userId;
     this.language = this.getLanguage();
     this.date = this.getDate();
@@ -23,25 +28,6 @@ export default class NodeEventProvider implements EventProvider {
     this.platform = platform;
     this.engineVersion = this.getEngineVersion();
     this.deviceId = deviceId || this.getDeviceId();
-  }
-
-  public getEvent(eventName: string, eventProperties?: string | object): Event {
-    return {
-      userId: this.userId,
-      eventName,
-      language: this.language,
-      date: this.date,
-      platform: this.platform,
-      osName: this.osName,
-      engineVersion: this.engineVersion,
-      engine: this.engine,
-      deviceId: this.deviceId,
-      ...(eventProperties ? { eventProperties: this.getEventProperties(eventProperties) } : {}),
-    };
-  }
-
-  private getEventProperties(eventProperties?: string | object) {
-    return eventProperties && typeof eventProperties !== 'string' ? JSON.stringify(eventProperties) : eventProperties;
   }
 
   private getOsName(): string {
@@ -57,20 +43,20 @@ export default class NodeEventProvider implements EventProvider {
     }
   }
 
-  private getEngineVersion() {
+  private getEngineVersion(): string {
     return process.version;
   }
 
-  private getDeviceId() {
+  private getDeviceId(): string {
     const UUID_NAMESPACE = '1b671a64-40d5-491e-99b0-da01ff1f3341';
     return uuidv5(this.engineVersion + this.platform + this.osName, UUID_NAMESPACE);
   }
 
-  private getLanguage() {
+  private getLanguage(): string {
     return Intl.DateTimeFormat().resolvedOptions().locale;
   }
 
-  private getDate() {
+  private getDate(): string {
     return new Date().toISOString();
   }
 }

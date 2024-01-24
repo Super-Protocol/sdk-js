@@ -1,7 +1,7 @@
 import Analytics from '../../src/analytics/Analytics';
 import NodeEventProvider from '../../src/analytics/eventProviders/NodeEventProvider';
 import BrowserEventProvider from '../../src/analytics/eventProviders/BrowserEventProvider';
-import { AnalyticsEvent, Transport, Logger } from '../../src/analytics/types';
+import { AnalyticsEvent, Transport } from '../../src/analytics/types';
 
 const EVENT_NAME = 'test event';
 const USER_ID = '123';
@@ -22,10 +22,6 @@ class CustomTransport implements Transport<AnalyticsEvent> {
   send(_: string, payload: AnalyticsEvent): Promise<AnalyticsEvent> {
     return new Promise((res) => res(payload));
   }
-}
-
-class CustomLogger implements Logger {
-  log = jest.fn();
 }
 
 class CustomErrorTransport implements Transport<Error> {
@@ -223,27 +219,5 @@ describe('Analytics', () => {
     expect(platform).toEqual(PLATFORM_WEB);
     expect(userId).toEqual(USER_ID);
     expect(deviceId).toEqual(DEVICE_ID);
-  });
-
-  test('logger', async () => {
-    const logger = new CustomLogger();
-    const analytics = new Analytics<Error>({
-      apiUrl: API_URL,
-      apiKey: API_KEY,
-      eventProvider: nodeEventProvider,
-      transport: customErrorTransport,
-      logger,
-    });
-    await analytics.trackEventCatched({ eventName: EVENT_NAME });
-    expect(logger.log).toHaveBeenCalledTimes(1);
-    try {
-      await analytics.trackEvent({ eventName: EVENT_NAME });
-    } catch (e) {
-      expect(logger.log).toHaveBeenCalledTimes(1);
-    }
-    await analytics.trackEventCatched({ eventName: EVENT_NAME });
-    expect(logger.log).toHaveBeenCalledTimes(2);
-    await analytics.trackEventsCatched({ events: [{ eventName: EVENT_NAME }] });
-    expect(logger.log).toHaveBeenCalledTimes(3);
   });
 });

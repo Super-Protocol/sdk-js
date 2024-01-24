@@ -1,27 +1,21 @@
 import AxiosTransport from './transports/AxiosTransport';
-import {
-  Transport,
-  Config,
-  EventProvider,
-  Event,
-  TrackEventsProp,
-  TrackEventProp,
-  Logger,
-} from './types';
+import EventProvider, { Event } from './eventProviders/EventProvider';
+import { Transport, Config, TrackEventsProp, TrackEventProp } from './types';
+import logger, { Logger } from '../logger';
 
 export default class Analytics<TransportResponse> {
   private readonly transport: Transport<TransportResponse>;
   private readonly apiUrl: string;
   private readonly apiKey: string;
   private readonly eventProvider: EventProvider;
-  private readonly logger?: Logger;
+  private readonly logger?: Logger | null;
 
   constructor(config: Config<TransportResponse>) {
-    const { apiUrl, apiKey, transport, eventProvider, logger } = config || {};
+    const { apiUrl, apiKey, transport, eventProvider, showLogs } = config || {};
     this.apiUrl = apiUrl;
     this.apiKey = apiKey;
     this.eventProvider = eventProvider;
-    this.logger = logger;
+    this.logger = showLogs ? logger.child({ class: Analytics.name }) : null;
     this.transport = transport || new AxiosTransport<TransportResponse>();
   }
 
@@ -44,10 +38,8 @@ export default class Analytics<TransportResponse> {
     try {
       const result = await func();
       return result;
-    } catch (e) {
-      if (this.logger) {
-        this.logger.log(e as Error);
-      }
+    } catch (err) {
+      this.logger?.error({ err }, 'Analytics event not sent');
       return null;
     }
   }

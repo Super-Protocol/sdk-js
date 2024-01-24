@@ -1,24 +1,30 @@
 import AxiosTransport from './transports/AxiosTransport';
-import { Transport, Config, EventProvider, Event, TrackEventsProp, TrackEventProp, Logger } from './types';
+import {
+  Transport,
+  Config,
+  EventProvider,
+  Event,
+  TrackEventsProp,
+  TrackEventProp,
+  Logger,
+} from './types';
 
-export default class Analytics {
-  private readonly transport: Transport;
+export default class Analytics<TransportResponse> {
+  private readonly transport: Transport<TransportResponse>;
   private readonly apiUrl: string;
   private readonly apiKey: string;
   private readonly eventProvider: EventProvider;
   private readonly logger?: Logger;
 
-  constructor(config: Config) {
-    const {
-      apiUrl, apiKey, transport, eventProvider, logger,
-    } = config || {};
+  constructor(config: Config<TransportResponse>) {
+    const { apiUrl, apiKey, transport, eventProvider, logger } = config || {};
     this.apiUrl = apiUrl;
     this.apiKey = apiKey;
     this.eventProvider = eventProvider;
     this.logger = logger;
-    this.transport = transport || new AxiosTransport();
+    this.transport = transport || new AxiosTransport<TransportResponse>();
   }
-  
+
   private getEvent(eventName: string, eventProperties?: string | object): Event {
     if (!eventName) {
       throw new Error('eventName required');
@@ -32,7 +38,9 @@ export default class Analytics {
     return this.eventProvider.getEvent(eventName, eventProperties);
   }
 
-  private async catchEvent(func: () => Promise<any>) {
+  private async catchEvent(
+    func: () => Promise<TransportResponse | null>,
+  ): Promise<TransportResponse | null> {
     try {
       const result = await func();
       return result;
@@ -40,39 +48,34 @@ export default class Analytics {
       if (this.logger) {
         this.logger.log(e as Error);
       }
+      return null;
     }
   }
 
-  private async _trackEvent(props: Omit<TrackEventProp, 'catched'>) {
+  public trackEvent(props: TrackEventProp): Promise<TransportResponse> {
     const { eventName, eventProperties } = props;
     const event = this.getEvent(eventName, eventProperties);
-      return this.transport
-        .send(
-          this.apiUrl,
-          {
-            events: [event],
-            apiKey: this.apiKey
-          }
-        );
+    return this.transport.send(this.apiUrl, {
+      events: [event],
+      apiKey: this.apiKey,
+    });
   }
 
-  public async trackEvent(props: TrackEventProp) {
-    return props?.catched ? this.catchEvent(() => this._trackEvent(props)) : this._trackEvent(props);
+  public trackEventCatched(props: TrackEventProp): Promise<TransportResponse | null> {
+    return this.catchEvent(() => this.trackEvent(props));
   }
 
-  private async _trackEvents(props: Omit<TrackEventsProp, 'catched'>) {
+  public trackEvents(props: TrackEventsProp): Promise<TransportResponse> {
     const { events } = props;
-    return this.transport
-      .send(
-        this.apiUrl,
-        {
-          events: events.map(({ eventName, eventProperties }) => this.getEvent(eventName, eventProperties)),
-          apiKey: this.apiKey
-        }
-      );
+    return this.transport.send(this.apiUrl, {
+      events: events.map(({ eventName, eventProperties }) =>
+        this.getEvent(eventName, eventProperties),
+      ),
+      apiKey: this.apiKey,
+    });
   }
 
-  public async trackEvents(props: TrackEventsProp) {
-    return props?.catched ? this.catchEvent(() => this._trackEvents(props)) : this._trackEvents(props);
+  public trackEventsCatched(props: TrackEventsProp): Promise<TransportResponse | null> {
+    return this.catchEvent(() => this.trackEvents(props));
   }
 }

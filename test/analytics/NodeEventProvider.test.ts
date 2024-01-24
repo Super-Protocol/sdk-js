@@ -11,7 +11,7 @@ Object.defineProperties(process, {
     configurable: true,
     writable: true,
   },
-})
+});
 
 describe('NodeEventProvider', () => {
   const PLATFORM = 'spctl';
@@ -23,7 +23,8 @@ describe('NodeEventProvider', () => {
   const DEVICE_ID = '80efc2d5-a44c-5db3-901a-16c60e8e79fb';
   test('getEvent', () => {
     const provider = new NodeEventProvider({ userId: USER_ID, platform: PLATFORM });
-    const { userId, deviceId, language, platform, osName, engineVersion, engine, eventName } = provider.getEvent(EVENT_NAME);
+    const { userId, deviceId, language, platform, osName, engineVersion, engine, eventName } =
+      provider.getEvent(EVENT_NAME);
     expect(userId).toEqual(USER_ID);
     expect(eventName).toEqual(EVENT_NAME);
     expect(deviceId).toEqual(DEVICE_ID);
@@ -32,5 +33,5 @@ describe('NodeEventProvider', () => {
     expect(language).toBeDefined();
     expect(platform).toEqual(PLATFORM);
     expect(engine).toEqual(ENGINE);
-  })
-})
+  });
+});

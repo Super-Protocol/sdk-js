@@ -2,7 +2,7 @@ import axios, { AxiosRequestConfig } from 'axios';
 import { AnalyticsError } from '../AnalyticsError';
 import { Transport, AnalyticsEvent } from '../types';
 
-export default class AxiosTransport<Response = any> implements Transport {
+export default class AxiosTransport<Response> implements Transport<Response> {
   async send(serverUrl: string, payload: AnalyticsEvent): Promise<Response> {
     try {
       const config: AxiosRequestConfig = {
@@ -14,7 +14,7 @@ export default class AxiosTransport<Response = any> implements Transport {
         },
         data: payload,
       };
-      const response = await axios(config)
+      const response = await axios(config);
       if (response.status > 299) {
         throw new AnalyticsError({ code: response.status, message: response.statusText });
       }

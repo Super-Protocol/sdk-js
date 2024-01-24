@@ -1,7 +1,7 @@
 import { AnalyticsError } from '../AnalyticsError';
 import { Transport, AnalyticsEvent } from '../types';
 
-export default class FetchTransport<Response = any> implements Transport {
+export default class FetchTransport<Response> implements Transport<Response> {
   async send(serverUrl: string, payload: AnalyticsEvent): Promise<Response> {
     if (typeof fetch === 'undefined') {
       throw new AnalyticsError({ code: null, message: 'fetch is not supported' });

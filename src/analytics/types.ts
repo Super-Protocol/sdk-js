@@ -16,8 +16,8 @@ export interface AnalyticsEvent {
   apiKey: string;
 }
 
-export interface Transport {
-  send(serverUrl: string, payload: AnalyticsEvent): Promise<any>;
+export interface Transport<Response> {
+  send(serverUrl: string, payload: AnalyticsEvent): Promise<Response>;
 }
 
 export interface EventProvider {
@@ -28,10 +28,10 @@ export interface Logger {
   log: (error: Error) => void;
 }
 
-export interface Config {
+export interface Config<TransportResponse> {
   apiUrl: string;
   apiKey: string;
-  transport?: Transport;
+  transport?: Transport<TransportResponse>;
   eventProvider: EventProvider;
   logger?: Logger;
 }
@@ -48,12 +48,10 @@ export interface BrowserEventProviderProp {
 }
 
 export interface TrackEventsProp {
-  events: { eventName: string, eventProperties?: string | object }[];
-  catched?: boolean;
+  events: { eventName: string; eventProperties?: string | object }[];
 }
 
 export interface TrackEventProp {
   eventName: string;
   eventProperties?: string | object;
-  catched?: boolean;
 }

@@ -18,31 +18,33 @@ const ENGINE_VERSION_WEB = '120.0.0.0';
 const OS_NAME_WEB = 'Mac OS';
 const ENGINE_WEB = 'Chrome';
 
-class CustomTransport implements Transport {
-  async send(serverUrl: string, payload: AnalyticsEvent): Promise<AnalyticsEvent> {
+class CustomTransport implements Transport<AnalyticsEvent> {
+  send(_: string, payload: AnalyticsEvent): Promise<AnalyticsEvent> {
     return new Promise((res) => res(payload));
   }
 }
 
 class CustomLogger implements Logger {
-  log = jest.fn(() => {})
+  log = jest.fn();
 }
 
-class CustomErrorTransport implements Transport {
-  async send() {
-    throw new Error(ERROR_MESSAGE);
+class CustomErrorTransport implements Transport<Error> {
+  send(): Promise<Error> {
+    return new Promise((_, rej) => rej(new Error(ERROR_MESSAGE)));
   }
 }
 
 jest.mock(
   '../../src/analytics/transports/AxiosTransport.ts',
-  jest.fn(() => class {
-    async send(serverUrl: string, payload: AnalyticsEvent): Promise<AnalyticsEvent> {
-      return payload;
-    }
-  }),
+  jest.fn(
+    () =>
+      class {
+        send(_: string, payload: AnalyticsEvent): Promise<AnalyticsEvent> {
+          return new Promise((res) => res(payload));
+        }
+      },
+  ),
 );
-
 
 Object.defineProperty(global, 'navigator', {
   value: {
@@ -64,16 +66,20 @@ Object.defineProperties(process, {
     configurable: true,
     writable: true,
   },
-})
+});
 
-const nodeEventProvider = new NodeEventProvider({ userId: USER_ID, deviceId: DEVICE_ID, platform: PLATFORM_NODE });
+const nodeEventProvider = new NodeEventProvider({
+  userId: USER_ID,
+  deviceId: DEVICE_ID,
+  platform: PLATFORM_NODE,
+});
 const browserEventProvider = new BrowserEventProvider({ userId: USER_ID, deviceId: DEVICE_ID });
 const customTransport = new CustomTransport();
 const customErrorTransport = new CustomErrorTransport();
 
 describe('Analytics', () => {
   describe('Analytics with NodeEventProvider', () => {
-    let analytics: Analytics;
+    let analytics: Analytics<AnalyticsEvent>;
     beforeEach(() => {
       analytics = new Analytics({
         apiUrl: API_URL,
@@ -109,16 +115,18 @@ describe('Analytics', () => {
     });
 
     test('trackEvents with eventProperties', async () => {
-      const result = await analytics.trackEvents({ events: [{ eventName: EVENT_NAME, eventProperties: { test: 123 } }] });
+      const result = await analytics.trackEvents({
+        events: [{ eventName: EVENT_NAME, eventProperties: { test: 123 } }],
+      });
       const event = result.events[0];
       const { eventName, eventProperties } = event;
       expect(eventName).toEqual(EVENT_NAME);
       expect(eventProperties).toEqual(JSON.stringify({ test: 123 }));
-    })
+    });
   });
 
   describe('Analytics BrowserEventProvider', () => {
-    let analytics: Analytics;
+    let analytics: Analytics<AnalyticsEvent>;
     beforeEach(() => {
       analytics = new Analytics({
         apiUrl: API_URL,
@@ -154,106 +162,88 @@ describe('Analytics', () => {
     });
 
     test('trackEvents with eventProperties', async () => {
-      const result = await analytics.trackEvents({ events: [{ eventName: EVENT_NAME, eventProperties: { test: 123 } }] });
+      const result = await analytics.trackEvents({
+        events: [{ eventName: EVENT_NAME, eventProperties: { test: 123 } }],
+      });
       const event = result.events[0];
       const { eventName, eventProperties } = event;
       expect(eventName).toEqual(EVENT_NAME);
       expect(eventProperties).toEqual(JSON.stringify({ test: 123 }));
-    })
+    });
+  });
 
-    test('transport', async () => {
-      analytics = new Analytics({
-        apiUrl: API_URL,
-        apiKey: API_KEY,
-        eventProvider: browserEventProvider,
-        transport: customTransport,
-      });
-      const result = await analytics.trackEvent({ eventName: EVENT_NAME });
-      const event = result.events[0];
-      const { eventName, engineVersion, engine, osName, platform, userId, deviceId } = event;
-      expect(eventName).toEqual(EVENT_NAME);
-      expect(engineVersion).toEqual(ENGINE_VERSION_WEB);
-      expect(engine).toEqual(ENGINE_WEB);
-      expect(osName).toEqual(OS_NAME_WEB);
-      expect(platform).toEqual(PLATFORM_WEB);
-      expect(userId).toEqual(USER_ID);
-      expect(deviceId).toEqual(DEVICE_ID);
-    })
+  test('trackEventCatched/trackEventsCatched', async () => {
+    const analytics = new Analytics<Error>({
+      apiUrl: API_URL,
+      apiKey: API_KEY,
+      eventProvider: nodeEventProvider,
+      transport: customErrorTransport,
+    });
+    await analytics.trackEventCatched({ eventName: EVENT_NAME });
+    expect(true).toBe(true);
+    await analytics.trackEventsCatched({ events: [{ eventName: EVENT_NAME }] });
+    expect(true).toBe(true);
+  });
+
+  test('trackEvent/trackEvents no catched', async () => {
+    const analytics = new Analytics<Error>({
+      apiUrl: API_URL,
+      apiKey: API_KEY,
+      eventProvider: nodeEventProvider,
+      transport: customErrorTransport,
+    });
+    try {
+      await analytics.trackEvent({ eventName: EVENT_NAME });
+      expect(true).toBe(false);
+    } catch (e) {
+      expect(e).toEqual(new Error(ERROR_MESSAGE));
+    }
+    try {
+      await analytics.trackEvents({ events: [{ eventName: EVENT_NAME }] });
+      expect(true).toBe(false);
+    } catch (e) {
+      expect(e).toEqual(new Error(ERROR_MESSAGE));
+    }
   });
 
   test('transport', async () => {
     const analytics = new Analytics({
       apiUrl: API_URL,
       apiKey: API_KEY,
-      eventProvider: nodeEventProvider,
+      eventProvider: browserEventProvider,
       transport: customTransport,
     });
     const result = await analytics.trackEvent({ eventName: EVENT_NAME });
     const event = result.events[0];
-    const { eventName, engineVersion, engine, osName, userId, deviceId, platform } = event;
+    const { eventName, engineVersion, engine, osName, platform, userId, deviceId } = event;
     expect(eventName).toEqual(EVENT_NAME);
-    expect(engineVersion).toEqual(ENGINE_VERSION_NODE);
-    expect(platform).toEqual(PLATFORM_NODE);
-    expect(engine).toEqual(ENGINE_NODE);
-    expect(osName).toEqual(OS_NAME_NODE);
+    expect(engineVersion).toEqual(ENGINE_VERSION_WEB);
+    expect(engine).toEqual(ENGINE_WEB);
+    expect(osName).toEqual(OS_NAME_WEB);
+    expect(platform).toEqual(PLATFORM_WEB);
     expect(userId).toEqual(USER_ID);
     expect(deviceId).toEqual(DEVICE_ID);
-  })
-
-  test('catched', async () => {
-    const analytics = new Analytics({
-      apiUrl: API_URL,
-      apiKey: API_KEY,
-      eventProvider: nodeEventProvider,
-      transport: customErrorTransport,
-    });
-    await analytics.trackEvent({ eventName: EVENT_NAME, catched: true })
-    expect(true).toBe(true);
-    await analytics.trackEvents({ events: [{ eventName: EVENT_NAME }], catched: true });
-    expect(true).toBe(true);
-  })
-
-  test('no catched', async () => {
-    const analytics = new Analytics({
-      apiUrl: API_URL,
-      apiKey: API_KEY,
-      eventProvider: nodeEventProvider,
-      transport: customErrorTransport,
-    });
-    try {
-      await analytics.trackEvent({ eventName: EVENT_NAME })
-      expect(true).toBe(false);
-    } catch (e) {
-      expect(e).toEqual(new Error(ERROR_MESSAGE))
-    }
-    try {
-      await analytics.trackEvents({ events: [{ eventName: EVENT_NAME }]});
-      expect(true).toBe(false);
-    } catch (e) {
-      expect(e).toEqual(new Error(ERROR_MESSAGE))
-    }
-  })
+  });
 
   test('logger', async () => {
     const logger = new CustomLogger();
-    const analytics = new Analytics({
+    const analytics = new Analytics<Error>({
       apiUrl: API_URL,
       apiKey: API_KEY,
       eventProvider: nodeEventProvider,
       transport: customErrorTransport,
       logger,
     });
-    await analytics.trackEvent({ eventName: EVENT_NAME, catched: true });
+    await analytics.trackEventCatched({ eventName: EVENT_NAME });
     expect(logger.log).toHaveBeenCalledTimes(1);
     try {
       await analytics.trackEvent({ eventName: EVENT_NAME });
     } catch (e) {
       expect(logger.log).toHaveBeenCalledTimes(1);
     }
-    await analytics.trackEvent({ eventName: EVENT_NAME, catched: true });
+    await analytics.trackEventCatched({ eventName: EVENT_NAME });
     expect(logger.log).toHaveBeenCalledTimes(2);
-    await analytics.trackEvents({ events: [{ eventName: EVENT_NAME }], catched: true });
+    await analytics.trackEventsCatched({ events: [{ eventName: EVENT_NAME }] });
     expect(logger.log).toHaveBeenCalledTimes(3);
-  })
+  });
 });
-

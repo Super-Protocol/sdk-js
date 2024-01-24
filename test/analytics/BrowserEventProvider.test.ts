@@ -19,7 +19,8 @@ describe('BrowserEventProvider', () => {
   const DEVICE_ID = '80efc2d5-a44c-5db3-901a-16c60e8e79fb';
   test('getEvent', () => {
     const provider = new BrowserEventProvider({ userId: USER_ID, deviceId: DEVICE_ID });
-    const { userId, deviceId, language, platform, osName, engineVersion, engine, eventName } = provider.getEvent(EVENT_NAME);
+    const { userId, deviceId, language, platform, osName, engineVersion, engine, eventName } =
+      provider.getEvent(EVENT_NAME);
     expect(eventName).toEqual(EVENT_NAME);
     expect(userId).toEqual(USER_ID);
     expect(deviceId).toEqual(DEVICE_ID);
@@ -28,5 +29,5 @@ describe('BrowserEventProvider', () => {
     expect(language).toBeDefined();
     expect(platform).toEqual(PLATFORM);
     expect(engine).toEqual(ENGINE);
-  })
-})
+  });
+});

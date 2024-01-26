@@ -317,9 +317,9 @@ class TeeOffer {
       .getTeeOfferSlotById(this.id, slotId)
       .call();
 
-    const cpuDenominator = await TeeOffers.getDenominator();
+    const coresDenominator = await TeeOffers.getDenominator();
 
-    return formatTeeOfferSlot(slot, cpuDenominator);
+    return formatTeeOfferSlot(slot, coresDenominator);
   }
 
   /**
@@ -340,10 +340,10 @@ class TeeOffer {
       .getTeeOfferSlots(this.id, begin, end)
       .call()
       .then((slots) => slots.map((slot) => transformComplexObject(slot)));
-    const cpuDenominator = await TeeOffers.getDenominator();
+    const coresDenominator = await TeeOffers.getDenominator();
 
     const slotsResult = slots.map((slot) =>
-      formatTeeOfferSlot(slot as TeeOfferSlot, cpuDenominator),
+      formatTeeOfferSlot(slot as TeeOfferSlot, coresDenominator),
     );
 
     return slotsResult;

@@ -41,6 +41,7 @@ describe('Orders static model', () => {
         cpuCores: 1,
         ram: 9850475854,
         diskUsage: 14910627722,
+        gpuCores: 2,
       },
       slotUsage: {
         priceType: PriceType.PerHour,
@@ -85,6 +86,7 @@ describe('Orders static model', () => {
         cpuCores: 4,
         ram: 39401903416,
         diskUsage: 59642510888,
+        gpuCores: 8,
       });
     });
 

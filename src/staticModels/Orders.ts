@@ -656,12 +656,13 @@ class Orders implements StaticModel {
    */
   public static accumulatedSlotInfo(selectedUsage: OrderUsage): SlotInfo {
     const slotCount = selectedUsage.slotCount;
-    const { cpuCores, ram, diskUsage } = selectedUsage.slotInfo;
+    const { cpuCores, ram, diskUsage, gpuCores } = selectedUsage.slotInfo;
 
     return {
       cpuCores: cpuCores * slotCount,
       ram: ram * slotCount,
       diskUsage: diskUsage * slotCount,
+      gpuCores: gpuCores * slotCount,
     };
   }
 

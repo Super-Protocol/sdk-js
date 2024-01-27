@@ -1615,7 +1615,7 @@ export const abi = [
                     }
                 ],
                 "internalType": "struct Tcb",
-                "name": "",
+                "name": "response",
                 "type": "tuple"
             }
         ],
@@ -2560,6 +2560,11 @@ export const abi = [
                         "internalType": "uint64",
                         "name": "diskUsage",
                         "type": "uint64"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "gpuCores",
+                        "type": "uint64"
                     }
                 ],
                 "internalType": "struct SlotInfo",
@@ -2813,6 +2818,11 @@ export const abi = [
                     {
                         "internalType": "uint64",
                         "name": "diskUsage",
+                        "type": "uint64"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "gpuCores",
                         "type": "uint64"
                     }
                 ],
@@ -3531,6 +3541,11 @@ export const abi = [
                     {
                         "internalType": "uint64",
                         "name": "diskUsage",
+                        "type": "uint64"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "gpuCores",
                         "type": "uint64"
                     }
                 ],
@@ -5640,6 +5655,11 @@ export const abi = [
                         "internalType": "uint64",
                         "name": "diskUsage",
                         "type": "uint64"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "gpuCores",
+                        "type": "uint64"
                     }
                 ],
                 "internalType": "struct SlotInfo",
@@ -7291,6 +7311,11 @@ export const abi = [
                         "internalType": "uint64",
                         "name": "diskUsage",
                         "type": "uint64"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "gpuCores",
+                        "type": "uint64"
                     }
                 ],
                 "internalType": "struct SlotInfo",
@@ -7399,6 +7424,11 @@ export const abi = [
                                 "internalType": "uint64",
                                 "name": "diskUsage",
                                 "type": "uint64"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "gpuCores",
+                                "type": "uint64"
                             }
                         ],
                         "internalType": "struct SlotInfo",
@@ -7483,6 +7513,11 @@ export const abi = [
                             {
                                 "internalType": "uint64",
                                 "name": "diskUsage",
+                                "type": "uint64"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "gpuCores",
                                 "type": "uint64"
                             }
                         ],
@@ -7609,6 +7644,11 @@ export const abi = [
                     {
                         "internalType": "uint64",
                         "name": "diskUsage",
+                        "type": "uint64"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "gpuCores",
                         "type": "uint64"
                     }
                 ],
@@ -8075,6 +8115,11 @@ export const abi = [
                         "internalType": "uint64",
                         "name": "diskUsage",
                         "type": "uint64"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "gpuCores",
+                        "type": "uint64"
                     }
                 ],
                 "internalType": "struct SlotInfo",
@@ -8201,6 +8246,11 @@ export const abi = [
                                 "internalType": "uint64",
                                 "name": "diskUsage",
                                 "type": "uint64"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "gpuCores",
+                                "type": "uint64"
                             }
                         ],
                         "internalType": "struct SlotInfo",
@@ -8297,6 +8347,11 @@ export const abi = [
                             {
                                 "internalType": "uint64",
                                 "name": "diskUsage",
+                                "type": "uint64"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "gpuCores",
                                 "type": "uint64"
                             }
                         ],
@@ -8435,6 +8490,11 @@ export const abi = [
                     {
                         "internalType": "uint64",
                         "name": "diskUsage",
+                        "type": "uint64"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "gpuCores",
                         "type": "uint64"
                     }
                 ],
@@ -10140,6 +10200,11 @@ export const abi = [
                         "internalType": "uint64",
                         "name": "diskUsage",
                         "type": "uint64"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "gpuCores",
+                        "type": "uint64"
                     }
                 ],
                 "internalType": "struct SlotInfo",
@@ -11228,6 +11293,11 @@ export const abi = [
                         "internalType": "uint64",
                         "name": "diskUsage",
                         "type": "uint64"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "gpuCores",
+                        "type": "uint64"
                     }
                 ],
                 "internalType": "struct SlotInfo",
@@ -11853,6 +11923,11 @@ export const abi = [
                                 "internalType": "uint64",
                                 "name": "diskUsage",
                                 "type": "uint64"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "gpuCores",
+                                "type": "uint64"
                             }
                         ],
                         "internalType": "struct SlotInfo",
@@ -11932,6 +12007,11 @@ export const abi = [
                             {
                                 "internalType": "uint64",
                                 "name": "diskUsage",
+                                "type": "uint64"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "gpuCores",
                                 "type": "uint64"
                             }
                         ],

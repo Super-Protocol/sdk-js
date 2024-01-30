@@ -111,3 +111,9 @@ import './polyfills';
 
 export { TeeSgxParser } from './tee/QuoteParser';
 export { QuoteValidator } from './tee/QuoteValidator';
+
+export { default as Analytics } from './analytics/Analytics';
+export { default as NodeEventProvider } from './analytics/eventProviders/NodeEventProvider';
+export { default as BrowserEventProvider } from './analytics/eventProviders/BrowserEventProvider';
+export { default as AxiosTransport } from './analytics/transports/AxiosTransport';
+export { default as FetchTransport } from './analytics/transports/FetchTransport';

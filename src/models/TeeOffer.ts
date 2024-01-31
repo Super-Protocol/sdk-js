@@ -35,7 +35,8 @@ import {
 import { formatBytes32String } from 'ethers/lib/utils';
 import TeeOffers from '../staticModels/TeeOffers';
 import { TCB } from '../models';
-import { TeeConfirmationBlock, GetTcbRequest } from '@super-protocol/dto-js';
+import { TeeConfirmationBlock, GetTcbRequest, TcbVerifiedStatus } from '@super-protocol/dto-js';
+import Consensus from '../staticModels/Consensus';
 
 class TeeOffer {
   private static contract: Contract<typeof abi>;
@@ -131,7 +132,7 @@ class TeeOffer {
       .then((response) => {
         return {
           slotInfo: cleanWeb3Data(response[0]) as SlotInfo,
-          optionInfo: convertOptionInfoFromRaw(cleanWeb3Data(response[1]) as OptionInfoRaw)
+          optionInfo: convertOptionInfoFromRaw(cleanWeb3Data(response[1]) as OptionInfoRaw),
         } as HardwareInfo;
       });
 
@@ -214,7 +215,12 @@ class TeeOffer {
     checkIfActionAccountInitialized(transactionOptions);
 
     await TxManager.execute(
-      TeeOffer.contract.methods.updateOption(this.id, optionId, convertOptionInfoToRaw(newInfo), newUsage),
+      TeeOffer.contract.methods.updateOption(
+        this.id,
+        optionId,
+        convertOptionInfoToRaw(newInfo),
+        newUsage,
+      ),
       transactionOptions,
     );
   }
@@ -271,20 +277,20 @@ class TeeOffer {
     checkIfActionAccountInitialized();
 
     const tcb = await this.initializeTcbAndAssignBlocks(transactionOptions);
-    const { blocksIds } = await tcb.getCheckingBlocksMarks();
-    const tcbsForVerification: TeeConfirmationBlock[] = [];
+    const { checkingTcbIds } = await tcb.getPublicData();
+    const tcbsPublicData = await Consensus.getTcbsPublicData(checkingTcbIds);
+    const tcbsUtilityData = await Consensus.getTcbsUtilityData(checkingTcbIds);
 
-    for (let blockIndex = 0; blockIndex < blocksIds.length; blockIndex++) {
-      const tcb = new TCB(blocksIds[blockIndex]);
-      const tcbInfo = await tcb.get();
+    const tcbsForVerification: TeeConfirmationBlock[] = [];
+    for (const checkingTcbId of checkingTcbIds) {
+      const { checkingTcbMarks, ...otherPublicData } = tcbsPublicData[checkingTcbId];
+      const { quote, pubKey } = tcbsUtilityData[checkingTcbId];
       tcbsForVerification.push({
-        tcbId: blocksIds[blockIndex].toString(),
-        deviceId: tcbInfo.publicData.deviceID,
-        properties: tcbInfo.publicData.properties,
-        benchmark: tcbInfo.publicData.benchmark,
-        quote: tcbInfo.quote,
-        marks: tcbInfo.utilData.checkingBlockMarks,
-        checkingBlocks: tcbInfo.utilData.checkingBlocks.map((x) => x.toString()),
+        ...otherPublicData,
+        checkingTcbId,
+        checkingTcbMarks: checkingTcbMarks.map((mark) => mark as TcbVerifiedStatus),
+        pubKey,
+        quote,
       });
     }
 
@@ -311,9 +317,9 @@ class TeeOffer {
       .getTeeOfferSlotById(this.id, slotId)
       .call();
 
-    const cpuDenominator = await TeeOffers.getDenominator();
+    const coresDenominator = await TeeOffers.getDenominator();
 
-    return formatTeeOfferSlot(slot, cpuDenominator);
+    return formatTeeOfferSlot(slot, coresDenominator);
   }
 
   /**
@@ -334,10 +340,10 @@ class TeeOffer {
       .getTeeOfferSlots(this.id, begin, end)
       .call()
       .then((slots) => slots.map((slot) => transformComplexObject(slot)));
-    const cpuDenominator = await TeeOffers.getDenominator();
+    const coresDenominator = await TeeOffers.getDenominator();
 
     const slotsResult = slots.map((slot) =>
-      formatTeeOfferSlot(slot as TeeOfferSlot, cpuDenominator),
+      formatTeeOfferSlot(slot as TeeOfferSlot, coresDenominator),
     );
 
     return slotsResult;
@@ -537,7 +543,7 @@ class TeeOffer {
   ): Promise<void> {
     checkIfActionAccountInitialized(transactionOptions);
 
-    newInfo.hardwareInfo = await TeeOffers.packHardwareInfo(newInfo.hardwareInfo);
+    await this.setHardwareInfo(newInfo.hardwareInfo, transactionOptions);
 
     await TxManager.execute(
       TeeOffer.contract.methods.setTeeOfferInfo(this.id, newInfo),

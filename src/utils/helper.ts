@@ -11,6 +11,7 @@ import {
   OrderUsageRaw,
   PriceType,
   SlotUsage,
+  TcbPublicData,
   TeeOfferOption,
   TeeOfferOptionRaw,
   TeeOfferSlot,
@@ -159,23 +160,37 @@ export function convertTeeOfferOptionFromRaw(option: TeeOfferOptionRaw): TeeOffe
   };
 }
 
-export function formatTeeOfferSlot(slot: TeeOfferSlot, cpuDenominator: number): TeeOfferSlot {
+export function formatTcbPublicData(unparsedPublicData: any[]): TcbPublicData[] {
+  const response: TcbPublicData[] = [];
+  for (const data of unparsedPublicData) {
+    response.push({
+      checkingTcbIds: data.checkingTcbIds,
+      checkingTcbMarks: data.checkingTcbMarks,
+      deviceId: data.deviceId,
+      benchmark: data.benchmark,
+      properties: data.properties,
+    });
+  }
+  return response;
+}
+
+export function formatTeeOfferSlot(slot: TeeOfferSlot, coresDenominator: number): TeeOfferSlot {
   slot = cleanWeb3Data(slot);
 
   return {
     ...slot,
-    info: unpackSlotInfo(slot.info, cpuDenominator),
+    info: unpackSlotInfo(slot.info, coresDenominator),
     usage: formatUsage(slot.usage),
   };
 }
 
-export function formatOfferSlot(slot: ValueOfferSlotRaw, cpuDenominator: number): ValueOfferSlot {
+export function formatOfferSlot(slot: ValueOfferSlotRaw, coresDenominator: number): ValueOfferSlot {
   slot = cleanWeb3Data(slot);
 
   return {
     ...slot,
     option: convertOptionInfoFromRaw(slot.option),
-    info: unpackSlotInfo(slot.info, cpuDenominator),
+    info: unpackSlotInfo(slot.info, coresDenominator),
     usage: formatUsage(slot.usage),
   };
 }
@@ -189,15 +204,19 @@ export function formatUsage(usage: SlotUsage): SlotUsage {
   };
 }
 
-export function convertOrderUsage(usage: OrderUsageRaw, slotInfo: SlotInfo, slotUsage: SlotUsage): OrderUsage {
+export function convertOrderUsage(
+  usage: OrderUsageRaw,
+  slotInfo: SlotInfo,
+  slotUsage: SlotUsage,
+): OrderUsage {
   return {
     slotCount: usage.slotCount,
-    optionInfo: usage.optionInfo.map(oi => convertOptionInfoFromRaw(oi)),
+    optionInfo: usage.optionInfo.map((oi) => convertOptionInfoFromRaw(oi)),
     optionUsage: usage.optionUsage,
     optionIds: usage.optionIds,
     optionsCount: usage.optionsCount,
     slotInfo,
-    slotUsage
+    slotUsage,
   };
 }
 
@@ -209,19 +228,21 @@ export function convertOptionInfoToRaw(optionInfoRaw: OptionInfo): OptionInfoRaw
   return { data: JSON.stringify(optionInfoRaw) };
 }
 
-export function unpackSlotInfo(slotInfo: SlotInfo, cpuDenominator: number): SlotInfo {
+export function unpackSlotInfo(slotInfo: SlotInfo, coresDenominator: number): SlotInfo {
   return {
-    cpuCores: Number(slotInfo.cpuCores) / cpuDenominator,
+    cpuCores: Number(slotInfo.cpuCores) / coresDenominator,
     ram: Number(slotInfo.ram),
     diskUsage: Number(slotInfo.diskUsage),
+    gpuCores: Number(slotInfo.gpuCores) / coresDenominator,
   };
 }
 
-export function packSlotInfo(slotInfo: SlotInfo, cpuDenominator: number): SlotInfo {
+export function packSlotInfo(slotInfo: SlotInfo, coresDenominator: number): SlotInfo {
   return {
-    cpuCores: slotInfo.cpuCores * cpuDenominator,
+    cpuCores: slotInfo.cpuCores * coresDenominator,
     ram: slotInfo.ram,
     diskUsage: slotInfo.diskUsage,
+    gpuCores: slotInfo.gpuCores * coresDenominator,
   };
 }
 

@@ -1,30 +1,31 @@
 import { BlockchainId, TokenAmount } from './Web3';
-
-export enum TcbVerifiedStatus {
-  Valid = 0,
-  InvalidQuote = 1,
-  InvalidMrEnclave = 2,
-  InvalidBcbHash = 3,
-}
+import { TcbVerifiedStatus } from '@super-protocol/dto-js';
 
 export type TcbPublicData = {
-  teeOffer?: BlockchainId;
-  deviceID: string;
+  checkingTcbIds: BlockchainId[];
+  checkingTcbMarks: TcbVerifiedStatus[];
+  deviceId: string;
   benchmark: number;
   properties: string;
 };
 
 export type TcbUtilityData = {
-  checkingBlocks: [BlockchainId];
-  checkingBlockMarks: [TcbVerifiedStatus];
+  teeOfferId: BlockchainId;
+  pubKey: string;
+  quote: string;
+};
+
+export type TcbData = {
+  status: TcbStatus;
+  previousTcb: BlockchainId;
+  timeInitialized: number;
+  timeAdded: number;
   lastBlocksTakenAmount: number;
   suspiciousBlocksTakenAmount: number;
   negative: number;
   positive: number;
-  previousTcb: BlockchainId;
   lastBlocksTaken: boolean;
   suspiciousBlocksTaken: boolean;
-  assignedToEpoch: boolean;
   checked: boolean;
   rewardClaimed: boolean;
 };
@@ -41,15 +42,6 @@ export enum TcbStatus {
   Banned = '2',
   BenchmarkChanged = '3',
 }
-
-export type TcbData = {
-  quote: string;
-  timeInitialized: number;
-  timeAdded: number;
-  publicData: TcbPublicData;
-  utilData: TcbUtilityData;
-  status: TcbStatus;
-};
 
 export type EpochInfo = {
   reward: TokenAmount;

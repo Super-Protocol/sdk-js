@@ -29,7 +29,7 @@ import { EventLog } from 'web3-eth-contract';
 import StaticModel from './StaticModel';
 
 class TeeOffers {
-  private static cpuDenominator?: number;
+  private static coresDenominator?: number;
 
   private static readonly logger = rootLogger.child({ className: 'TeeOffers' });
 
@@ -40,24 +40,26 @@ class TeeOffers {
   }
 
   public static async packHardwareInfo(hw: HardwareInfo): Promise<HardwareInfo> {
-    hw.slotInfo.cpuCores *= await TeeOffers.getDenominator();
+    const denominator = await TeeOffers.getDenominator();
+    hw.slotInfo.cpuCores *= denominator;
+    hw.slotInfo.gpuCores *= denominator;
 
     return hw;
   }
 
   public static async unpackHardwareInfo(hw: HardwareInfo): Promise<HardwareInfo> {
-    const cpuDenominator = await TeeOffers.getDenominator();
-    hw.slotInfo = unpackSlotInfo(hw.slotInfo, cpuDenominator);
+    const coresDenominator = await TeeOffers.getDenominator();
+    hw.slotInfo = unpackSlotInfo(hw.slotInfo, coresDenominator);
     return hw;
   }
 
   public static async getDenominator(): Promise<number> {
-    if (!this.cpuDenominator) {
+    if (!this.coresDenominator) {
       const contract = BlockchainConnector.getInstance().getContract();
-      this.cpuDenominator = Number(await contract.methods.getCpuDenominator().call());
+      this.coresDenominator = Number(await contract.methods.getCpuDenominator().call());
     }
 
-    return this.cpuDenominator;
+    return this.coresDenominator;
   }
 
   /**

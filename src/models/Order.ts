@@ -188,7 +188,7 @@ class Order {
    */
   @incrementMethodCall()
   public async getSelectedUsage(): Promise<OrderUsage> {
-    const cpuDenominator = await TeeOffers.getDenominator();
+    const coresDenominator = await TeeOffers.getDenominator();
 
     const selectedUsageSlotInfo = await Order.contract.methods
       .getOrderSelectedUsageSlotInfo(this.id)
@@ -206,7 +206,7 @@ class Order {
       .then((selectedUsage) =>
         convertOrderUsage(
           cleanWeb3Data(selectedUsage) as OrderUsageRaw,
-          unpackSlotInfo(selectedUsageSlotInfo, cpuDenominator),
+          unpackSlotInfo(selectedUsageSlotInfo, coresDenominator),
           formatUsage(selectedUsageSlotUsage),
         ),
       );

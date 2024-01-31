@@ -1,17 +1,15 @@
-import { Contract } from 'web3';
+import { Contract, TransactionReceipt } from 'web3';
 import { abi } from '../contracts/abi';
 import TxManager from '../utils/TxManager';
 import { BlockchainConnector } from '../connectors';
-import {
-  BlockchainId,
-  TcbData,
-  TcbPublicData,
-  TcbVerifiedStatus,
-  TransactionOptions,
-} from '../types';
-import { checkIfActionAccountInitialized, packDeviceId, unpackDeviceId } from '../utils/helper';
+import { BlockchainId, TcbData, TcbPublicData, TcbUtilityData, TransactionOptions } from '../types';
+import { TcbVerifiedStatus } from '@super-protocol/dto-js';
+import { checkIfActionAccountInitialized, cleanWeb3Data, packDeviceId } from '../utils/helper';
+import Consensus from '../staticModels/Consensus';
+import rootLogger from '../logger';
 
 class TCB {
+  private static readonly logger = rootLogger.child({ className: 'TCB' });
   public tcbId: BlockchainId;
   private static contract: Contract<typeof abi>;
 
@@ -22,31 +20,33 @@ class TCB {
     }
   }
 
-  private async applyTcbMarks(
+  private applyTcbMarks(
     marks: TcbVerifiedStatus[],
     transactionOptions?: TransactionOptions,
-  ): Promise<void> {
-    await TxManager.execute(
+  ): Promise<TransactionReceipt> {
+    return TxManager.execute(
       TCB.contract.methods.applyTcbMarks(marks, this.tcbId),
       transactionOptions,
     );
   }
 
-  private async setTcbData(
-    pb: TcbPublicData,
+  private setTcbData(
+    publicData: TcbPublicData,
     quote: string,
+    publicKey: string,
     transactionOptions?: TransactionOptions,
-  ): Promise<void> {
+  ): Promise<TransactionReceipt> {
     checkIfActionAccountInitialized(transactionOptions);
 
-    const fromattedDeviceId = packDeviceId(pb.deviceID);
-    await TxManager.execute(
+    const fromattedDeviceId = packDeviceId(publicData.deviceId);
+    return TxManager.execute(
       TCB.contract.methods.setTcbData(
         this.tcbId,
-        pb.benchmark,
-        pb.properties,
+        publicData.benchmark,
+        publicData.properties,
         fromattedDeviceId,
         quote,
+        publicKey,
       ),
       transactionOptions,
     );
@@ -59,17 +59,25 @@ class TCB {
    * @param marks - list of marks
    * @param transactionOptions - object what contains alternative action account or gas limit (optional)
    */
-  public async addToSupply(
-    pb: TcbPublicData,
-    quote: string,
-    marks: TcbVerifiedStatus[],
-    transactionOptions?: TransactionOptions,
-  ): Promise<void> {
+  private addToSupply(transactionOptions?: TransactionOptions): Promise<TransactionReceipt> {
     checkIfActionAccountInitialized(transactionOptions);
 
-    await this.setTcbData(pb, quote, transactionOptions);
-    await this.applyTcbMarks(marks, transactionOptions);
-    await TxManager.execute(TCB.contract.methods.addTcbToSupply(this.tcbId), transactionOptions);
+    return TxManager.execute(TCB.contract.methods.addTcbToSupply(this.tcbId), transactionOptions);
+  }
+
+  public async apply(
+    publicData: TcbPublicData,
+    quote: string,
+    publicKey: string,
+    transactionOptions?: TransactionOptions,
+  ): Promise<void> {
+    try {
+      await this.applyTcbMarks(publicData.checkingTcbMarks, transactionOptions);
+      await this.setTcbData(publicData, quote, publicKey, transactionOptions);
+      await this.addToSupply(transactionOptions);
+    } catch (error) {
+      TCB.logger.debug({ error }, 'Adding TCB to blockchain failed');
+    }
   }
 
   /**
@@ -123,25 +131,27 @@ class TCB {
    * Function for fetching all TCB data
    */
   public async get(): Promise<TcbData> {
-    const tcb: TcbData = await TCB.contract.methods.getTcbById(this.tcbId).call();
-    tcb.publicData.deviceID = unpackDeviceId(tcb.publicData.deviceID);
+    const tcb: TcbData = cleanWeb3Data(await TCB.contract.methods.getTcbById(this.tcbId).call());
 
     return tcb;
   }
 
   /**
-   * Function for fetching the given marks for recruited TCBs from the Tables of Consensus
+   * Function for fetching Public Data from TCB
    */
-  public async getCheckingBlocksMarks(): Promise<{
-    blocksIds: BlockchainId[];
-    marks: TcbVerifiedStatus[];
-  }> {
-    const tcb: TcbData = await TCB.contract.methods.getTcbById(this.tcbId).call();
+  public async getPublicData(): Promise<TcbPublicData> {
+    const publicData = await Consensus.getTcbsPublicData([this.tcbId]);
 
-    return {
-      blocksIds: tcb.utilData.checkingBlocks,
-      marks: tcb.utilData.checkingBlockMarks,
-    };
+    return publicData[this.tcbId];
+  }
+
+  /**
+   * Function for fetching Public Data from TCB
+   */
+  public async getUtilityData(): Promise<TcbUtilityData> {
+    const utilityData = await Consensus.getTcbsUtilityData([this.tcbId]);
+
+    return utilityData[this.tcbId];
   }
 
   /**

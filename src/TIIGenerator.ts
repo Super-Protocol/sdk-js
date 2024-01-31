@@ -5,7 +5,7 @@ import { config } from './config';
 import { Compression, Compression_TYPE } from './proto/Compression';
 import { TRI } from './proto/TRI';
 import Crypto from './crypto';
-import { Offer, Order, TeeOffer } from './models';
+import { Offer, Order, TeeOffer, TCB } from './models';
 import { BlockchainId, OrderInfo, OfferInfo, TeeOfferInfo } from './types';
 import {
   Cipher,
@@ -28,8 +28,79 @@ import logger from './logger';
 
 class TIIGenerator {
   static verifiedTlbHashes: Map<string, string> = new Map();
+  static verifiedTcbs: Set<BlockchainId> = new Set();
 
-  private static async verifyTlb(
+  private static async checkQuote(
+    quote: Uint8Array,
+    dataBlob: Uint8Array,
+    sgxApiUrl: string,
+  ): Promise<void> {
+    const quoteBuffer = Buffer.from(quote);
+    const validator = new QuoteValidator(sgxApiUrl);
+    const quoteStatus = await validator.validate(quoteBuffer);
+    if (quoteStatus.quoteValidationStatus !== QuoteValidationStatuses.UpToDate) {
+      if (quoteStatus.quoteValidationStatus === QuoteValidationStatuses.Error) {
+        throw new Error('Quote is invalid');
+      } else {
+        logger.warn(quoteStatus, 'Quote validation status is not UpToDate');
+      }
+    }
+
+    const userDataCheckResult = await validator.isQuoteHasUserData(
+      quoteBuffer,
+      Buffer.from(dataBlob),
+    );
+    if (!userDataCheckResult) {
+      throw new Error('Quote has invalid user data');
+    }
+
+    const parser = new TeeSgxParser();
+    const parsedQuote = parser.parseQuote(quote);
+    const report = parser.parseReport(parsedQuote.report);
+    if (report.mrSigner.toString('hex') !== config.TEE_LOADER_TRUSTED_MRSIGNER) {
+      throw new Error('Quote has invalid MR signer');
+    }
+  }
+
+  public static async verifyTcb(
+    tcb: TCB,
+    quoteString: string,
+    pubKey: string,
+    sgxApiUrl: string,
+  ): Promise<void> {
+    // check cache
+    if (this.verifiedTcbs.has(tcb.tcbId)) {
+      logger.trace(`Tcb id = ${tcb.tcbId}, already validated`);
+      return;
+    }
+
+    const quote = Buffer.from(quoteString, 'base64');
+    const signedTcbData = {
+      checkingTcbId: tcb.tcbId.toString(),
+      pubKey,
+      ...(await tcb.getPublicData()),
+    };
+    const serializer = new TLBlockSerializerV1();
+    const dataBlob = await serializer.serializeAnyData(signedTcbData);
+    await this.checkQuote(quote, dataBlob, sgxApiUrl);
+
+    // update cashe
+    this.verifiedTcbs.add(tcb.tcbId);
+    if (this.verifiedTcbs.size > config.TLB_CACHE_SIZE) {
+      const [value] = this.verifiedTcbs.entries().next().value;
+      this.verifiedTcbs.delete(value);
+      logger.trace(
+        value,
+        `TCB id = ${value} removed from the cache. Cache size: ${this.verifiedTcbs.size}, cache limit: ${config.TLB_CACHE_SIZE}`,
+      );
+    }
+    logger.trace(
+      tcb.tcbId,
+      `TCB id = ${tcb.tcbId} added to the cache. Cache size: ${this.verifiedTcbs.size}, cache limit: ${config.TLB_CACHE_SIZE}`,
+    );
+  }
+
+  public static async verifyTlb(
     tlb: TLBlockUnserializeResultType,
     tlbString: string,
     offerId: string,
@@ -50,29 +121,10 @@ class TIIGenerator {
       );
       return;
     }
-    const validator = new QuoteValidator(sgxApiUrl);
+
     const quoteBuffer = Buffer.from(tlb.quote);
-    const quoteStatus = await validator.validate(quoteBuffer);
-    if (quoteStatus.quoteValidationStatus !== QuoteValidationStatuses.UpToDate) {
-      if (quoteStatus.quoteValidationStatus === QuoteValidationStatuses.Error) {
-        throw new Error('Quote in TLB is invalid');
-      } else {
-        logger.warn(quoteStatus, 'Quote validation status is not UpToDate');
-      }
-    }
-    const userDataCheckResult = await validator.isQuoteHasUserData(
-      quoteBuffer,
-      Buffer.from(tlb.dataBlob),
-    );
-    if (!userDataCheckResult) {
-      throw new Error('Quote in TLB has invalid user data');
-    }
-    const parser = new TeeSgxParser();
-    const parsedQuote = parser.parseQuote(tlb.quote);
-    const report = parser.parseReport(parsedQuote.report);
-    if (report.mrSigner.toString('hex') !== config.TEE_LOADER_TRUSTED_MRSIGNER) {
-      throw new Error('Quote in TLB has invalid MR signer');
-    }
+    await this.checkQuote(quoteBuffer, tlb.dataBlob, sgxApiUrl);
+
     this.verifiedTlbHashes.set(tlbHash.hash, offerId);
     if (this.verifiedTlbHashes.size > config.TLB_CACHE_SIZE) {
       const [key, value] = this.verifiedTlbHashes.entries().next().value;
@@ -96,10 +148,10 @@ class TIIGenerator {
     args: any,
     encryption: Encryption,
     sgxApiUrl: string,
+    verifyByTcb = false,
   ): Promise<string> {
     const teeOffer: TeeOffer = new TeeOffer(offerId);
     const teeOfferInfo: TeeOfferInfo = await teeOffer.getInfo();
-
     const linkage: Linkage = linkageString
       ? JSON.parse(linkageString)
       : {
@@ -108,10 +160,30 @@ class TIIGenerator {
         };
 
     const serializer = new TLBlockSerializerV1();
-    const tlb: TLBlockUnserializeResultType = serializer.unserializeTlb(
-      Buffer.from(teeOfferInfo.tlb, 'base64'),
-    );
-    await this.verifyTlb(tlb, teeOfferInfo.tlb, offerId, sgxApiUrl);
+
+    let blockEncryption: Encryption;
+    if (verifyByTcb) {
+      const tcb = new TCB(await teeOffer.getActualTcbId());
+      const { pubKey, quote } = await tcb.getUtilityData();
+      await this.verifyTcb(tcb, quote, pubKey, sgxApiUrl);
+
+      // TODO: must be 'blockEncryption = JSON.parse(pubKey);'
+      blockEncryption = {
+        algo: CryptoAlgorithm.ECIES,
+        key: pubKey,
+        encoding: Encoding.base64,
+      };
+    } else {
+      const tlb: TLBlockUnserializeResultType = serializer.unserializeTlb(
+        Buffer.from(teeOfferInfo.tlb, 'base64'),
+      );
+      await this.verifyTlb(tlb, teeOfferInfo.tlb, offerId, sgxApiUrl);
+      blockEncryption = {
+        algo: CryptoAlgorithm.ECIES,
+        key: Buffer.from(tlb.data.teePubKeyData).toString('base64'),
+        encoding: Encoding.base64,
+      };
+    }
 
     // TODO: check env with SP-149
     const mac = (encryption as any).authTag || (encryption as EncryptionWithMacIV).mac;
@@ -146,11 +218,10 @@ class TIIGenerator {
         JSON.stringify(resource),
         JSON.parse(teeOfferInfo.argsPublicKey) as Encryption,
       ),
-      tri: await Crypto.encrypt(Buffer.from(compressedTri).toString(Encoding.base64), {
-        algo: CryptoAlgorithm.ECIES,
-        key: Buffer.from(tlb.data.teePubKeyData).toString('base64'),
-        encoding: Encoding.base64,
-      }),
+      tri: await Crypto.encrypt(
+        Buffer.from(compressedTri).toString(Encoding.base64),
+        blockEncryption,
+      ),
     });
   }
 
@@ -160,6 +231,7 @@ class TIIGenerator {
     args: any,
     encryption: Encryption,
     sgxApiUrl: string,
+    verifyByTcb = false,
   ): Promise<string> {
     const order: Order = new Order(orderId);
 
@@ -179,6 +251,7 @@ class TIIGenerator {
       args,
       encryption,
       sgxApiUrl,
+      verifyByTcb,
     );
   }
 

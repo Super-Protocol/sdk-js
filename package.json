@@ -1,6 +1,6 @@
 {
   "name": "@super-protocol/sdk-js",
-  "version": "2.1.1-beta.0",
+  "version": "2.1.1-beta.1",
   "main": "build/index.js",
   "license": "MIT",
   "files": [
@@ -63,7 +63,7 @@
     "@fidm/x509": "^1.2.1",
     "@super-protocol/dto-js": "^0.0.30",
     "@super-protocol/tee-lib": "^0.1.2",
-    "@super-protocol/uplink-nodejs": "1.2.16",
+    "@super-protocol/uplink-nodejs": "1.2.17",
     "asn1js": "^3.0.5",
     "axios": "^1.5.1",
     "bottleneck": "^2.19.5",

@@ -287,6 +287,8 @@ class Orders implements StaticModel {
         <BlockchainId>parsedEvent.offerId,
         <BlockchainId>parsedEvent.parentOrderId,
         <BlockchainId>parsedEvent.orderId,
+        <TokenAmount>parsedEvent.deposit,
+        <OrderStatus>parsedEvent.status,
         <BlockInfo>{
           index: Number(event.blockNumber),
           hash: <string>event.blockHash,
@@ -415,13 +417,13 @@ class Orders implements StaticModel {
    * @returns unsubscribe - unsubscribe function from event
    */
   public static onChangedWithdrawn(
-    callback: onOrderChangedWithdrawnCallback,
+    callback: onOrderChangeWithdrawnCallback,
     orderId?: BlockchainId,
   ): () => void {
     const contract = BlockchainEventsListener.getInstance().getContract();
-    const logger = this.logger.child({ method: 'onOrderChangedWithdrawn' });
+    const logger = this.logger.child({ method: 'onOrderChangeWithdrawn' });
 
-    const subscription = contract.events.OrderChangedWithdrawn();
+    const subscription = contract.events.OrderChangeWithdrawn();
     subscription.on('data', (event: EventLog): void => {
       const parsedEvent = cleanWeb3Data(event.returnValues);
       if (orderId && parsedEvent.orderId != convertBigIntToString(orderId)) {
@@ -726,6 +728,8 @@ export type onOrderCreatedCallback = (
   offerId: BlockchainId,
   parentOrderId: BlockchainId,
   orderId: BlockchainId,
+  deposit: TokenAmount,
+  OrderStatus: OrderStatus,
   block?: BlockInfo,
 ) => void;
 export type onOrderDepositRefilledCallback = (
@@ -734,7 +738,7 @@ export type onOrderDepositRefilledCallback = (
   amount: TokenAmount,
   block?: BlockInfo,
 ) => void;
-export type onOrderChangedWithdrawnCallback = (
+export type onOrderChangeWithdrawnCallback = (
   orderId: BlockchainId,
   consumer: string,
   change: TokenAmount,

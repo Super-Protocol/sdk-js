@@ -1,4 +1,5 @@
-import { BlockchainId } from './Web3';
+import { OrderStatus } from './Order';
+import { BlockchainId, TokenAmount } from './Web3';
 
 export type OfferCreatedEvent = {
   creator: string;
@@ -12,6 +13,8 @@ export type OrderCreatedEvent = {
   offerId: BlockchainId;
   parentOrderId: BlockchainId;
   orderId: BlockchainId;
+  deposit: TokenAmount;
+  OrderStatus: OrderStatus;
 };
 
 export type TeeSlotAddedEvent = {

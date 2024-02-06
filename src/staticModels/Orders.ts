@@ -729,7 +729,7 @@ export type onOrderCreatedCallback = (
   parentOrderId: BlockchainId,
   orderId: BlockchainId,
   deposit: TokenAmount,
-  OrderStatus: OrderStatus,
+  orderStatus: OrderStatus,
   block?: BlockInfo,
 ) => void;
 export type onOrderDepositRefilledCallback = (

@@ -14,7 +14,7 @@ export type OrderCreatedEvent = {
   parentOrderId: BlockchainId;
   orderId: BlockchainId;
   deposit: TokenAmount;
-  OrderStatus: OrderStatus;
+  orderStatus: OrderStatus;
 };
 
 export type TeeSlotAddedEvent = {

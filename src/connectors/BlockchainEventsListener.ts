@@ -59,10 +59,10 @@ class BlockchainEventsListener extends BaseConnector {
       this.logger.info(info, 'Events listener connect');
     });
     provider.on('disconnect', (err: ProviderRpcError) => {
-      this.logger.error({ err }, 'Events listener disconnect');
+      this.logger.error(err, 'Events listener disconnect');
     });
     provider.on('error', (err: unknown) => {
-      this.logger.error({ err }, 'Events listener error');
+      this.logger.error(err, 'Events listener error');
     });
 
     store.web3Wss = new Web3(provider);

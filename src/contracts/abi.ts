@@ -4012,6 +4012,18 @@ export const abi = [
                 "internalType": "uint256",
                 "name": "orderId",
                 "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "deposit",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "enum OrderStatus",
+                "name": "status",
+                "type": "uint8"
             }
         ],
         "name": "OrderCreated",
@@ -4762,7 +4774,7 @@ export const abi = [
                 "type": "uint256"
             }
         ],
-        "name": "OrderChangedWithdrawn",
+        "name": "OrderChangeWithdrawn",
         "type": "event"
     },
     {
@@ -8579,6 +8591,18 @@ export const abi = [
                 "internalType": "uint256",
                 "name": "orderId",
                 "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "deposit",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "enum OrderStatus",
+                "name": "status",
+                "type": "uint8"
             }
         ],
         "name": "OrderCreated",

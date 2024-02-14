@@ -1,5 +1,10 @@
-import { AccessResultStruct as Access } from '@super-protocol/uplink-nodejs/access';
-import { ProjectResultStruct as Project } from '@super-protocol/uplink-nodejs/project';
+import {
+  AccessResultStruct as Access,
+  ProjectResultStruct as Project,
+  Uplink,
+  UploadOptions,
+  DownloadOptions,
+} from '@super-protocol/uplink-nodejs';
 import { Buffer } from 'buffer';
 import IStorageProvider, { DownloadConfig } from './IStorageProvider';
 import { isNodeJS } from '../../utils/helper';
@@ -151,7 +156,11 @@ export default class StorJStorageProvider implements IStorageProvider {
     return new Date(objectInfo.system.created * 1000);
   }
 
-  private async lazyStorj(): Promise<any> {
+  private async lazyStorj(): Promise<{
+    Uplink: typeof Uplink;
+    UploadOptions: typeof UploadOptions;
+    DownloadOptions: typeof DownloadOptions;
+  }> {
     if (!this._storj) {
       this._storj = await require('@super-protocol/uplink-nodejs');
     }

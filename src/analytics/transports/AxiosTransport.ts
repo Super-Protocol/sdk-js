@@ -1,6 +1,7 @@
-import axios, { AxiosRequestConfig } from 'axios';
+import axios, { AxiosError, AxiosRequestConfig } from 'axios';
 import { AnalyticsError } from '../AnalyticsError';
 import { Transport, AnalyticsEvent } from '../types';
+import util from 'util';
 
 export default class AxiosTransport<Response> implements Transport<Response> {
   async send(serverUrl: string, payload: AnalyticsEvent): Promise<Response> {
@@ -13,14 +14,18 @@ export default class AxiosTransport<Response> implements Transport<Response> {
           Accept: '*/*',
         },
         data: payload,
+        validateStatus: (status) => status < 300,
       };
       const response = await axios(config);
-      if (response.status > 299) {
-        throw new AnalyticsError({ code: response.status, message: response.statusText });
-      }
       return response.data;
-    } catch (e) {
-      throw new AnalyticsError({ code: null, message: (e as Error)?.message });
+    } catch (err) {
+      if (err instanceof AxiosError) {
+        throw new AnalyticsError({
+          code: err.response?.status || null,
+          message: `${err.message}. Error details: ${util.inspect(err.response?.data.message, { compact: true })}`,
+        });
+      }
+      throw new AnalyticsError({ code: null, message: (err as Error)?.message })
     }
   }
 }

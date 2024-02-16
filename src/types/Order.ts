@@ -25,14 +25,22 @@ export type OrderSlots = {
 
 export type OrderInfo = {
   offerId: BlockchainId;
-  resultPublicKey: string;
-  encryptedRequirements: string;
-  encryptedArgs: string;
+  resultInfo: string; // it contains 'publicKey' and 'encryptedPublicKey'(only for Loader)
+  encryptedRequirements_DEPRECATED?: string;
+  encryptedArgs_DEPRECATED?: string;
   status: OrderStatus;
   externalId: string;
   expectedPrice?: TokenAmount;
   maxPriceSlippage?: TokenAmount;
   args: OrderArgs;
+};
+
+export const removeOrderDeprecatedFields = (orderInfo: OrderInfo): OrderInfo => {
+  try {
+    delete orderInfo['encryptedRequirements_DEPRECATED'];
+    delete orderInfo['encryptedArgs_DEPRECATED'];
+  } catch (e) {}
+  return orderInfo;
 };
 
 export type ExtendedOrderInfo = OrderInfo & {

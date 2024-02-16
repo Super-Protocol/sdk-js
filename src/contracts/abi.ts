@@ -4059,17 +4059,17 @@ export const abi = [
                     },
                     {
                         "internalType": "string",
-                        "name": "resultPublicKey",
+                        "name": "resultInfo",
                         "type": "string"
                     },
                     {
                         "internalType": "string",
-                        "name": "encryptedRequirements",
+                        "name": "encryptedRequirements_DEPRECATED",
                         "type": "string"
                     },
                     {
                         "internalType": "string",
-                        "name": "encryptedArgs",
+                        "name": "encryptedArgs_DEPRECATED",
                         "type": "string"
                     },
                     {
@@ -4179,17 +4179,17 @@ export const abi = [
                     },
                     {
                         "internalType": "string",
-                        "name": "resultPublicKey",
+                        "name": "resultInfo",
                         "type": "string"
                     },
                     {
                         "internalType": "string",
-                        "name": "encryptedRequirements",
+                        "name": "encryptedRequirements_DEPRECATED",
                         "type": "string"
                     },
                     {
                         "internalType": "string",
-                        "name": "encryptedArgs",
+                        "name": "encryptedArgs_DEPRECATED",
                         "type": "string"
                     },
                     {
@@ -4299,17 +4299,17 @@ export const abi = [
                     },
                     {
                         "internalType": "string",
-                        "name": "resultPublicKey",
+                        "name": "resultInfo",
                         "type": "string"
                     },
                     {
                         "internalType": "string",
-                        "name": "encryptedRequirements",
+                        "name": "encryptedRequirements_DEPRECATED",
                         "type": "string"
                     },
                     {
                         "internalType": "string",
-                        "name": "encryptedArgs",
+                        "name": "encryptedArgs_DEPRECATED",
                         "type": "string"
                     },
                     {
@@ -4431,17 +4431,17 @@ export const abi = [
                     },
                     {
                         "internalType": "string",
-                        "name": "resultPublicKey",
+                        "name": "resultInfo",
                         "type": "string"
                     },
                     {
                         "internalType": "string",
-                        "name": "encryptedRequirements",
+                        "name": "encryptedRequirements_DEPRECATED",
                         "type": "string"
                     },
                     {
                         "internalType": "string",
-                        "name": "encryptedArgs",
+                        "name": "encryptedArgs_DEPRECATED",
                         "type": "string"
                     },
                     {
@@ -5378,17 +5378,17 @@ export const abi = [
                     },
                     {
                         "internalType": "string",
-                        "name": "resultPublicKey",
+                        "name": "resultInfo",
                         "type": "string"
                     },
                     {
                         "internalType": "string",
-                        "name": "encryptedRequirements",
+                        "name": "encryptedRequirements_DEPRECATED",
                         "type": "string"
                     },
                     {
                         "internalType": "string",
-                        "name": "encryptedArgs",
+                        "name": "encryptedArgs_DEPRECATED",
                         "type": "string"
                     },
                     {
@@ -8632,17 +8632,17 @@ export const abi = [
                     },
                     {
                         "internalType": "string",
-                        "name": "resultPublicKey",
+                        "name": "resultInfo",
                         "type": "string"
                     },
                     {
                         "internalType": "string",
-                        "name": "encryptedRequirements",
+                        "name": "encryptedRequirements_DEPRECATED",
                         "type": "string"
                     },
                     {
                         "internalType": "string",
-                        "name": "encryptedArgs",
+                        "name": "encryptedArgs_DEPRECATED",
                         "type": "string"
                     },
                     {
@@ -8728,17 +8728,17 @@ export const abi = [
                     },
                     {
                         "internalType": "string",
-                        "name": "resultPublicKey",
+                        "name": "resultInfo",
                         "type": "string"
                     },
                     {
                         "internalType": "string",
-                        "name": "encryptedRequirements",
+                        "name": "encryptedRequirements_DEPRECATED",
                         "type": "string"
                     },
                     {
                         "internalType": "string",
-                        "name": "encryptedArgs",
+                        "name": "encryptedArgs_DEPRECATED",
                         "type": "string"
                     },
                     {
@@ -10584,17 +10584,17 @@ export const abi = [
                     },
                     {
                         "internalType": "string",
-                        "name": "resultPublicKey",
+                        "name": "resultInfo",
                         "type": "string"
                     },
                     {
                         "internalType": "string",
-                        "name": "encryptedRequirements",
+                        "name": "encryptedRequirements_DEPRECATED",
                         "type": "string"
                     },
                     {
                         "internalType": "string",
-                        "name": "encryptedArgs",
+                        "name": "encryptedArgs_DEPRECATED",
                         "type": "string"
                     },
                     {
@@ -10709,17 +10709,17 @@ export const abi = [
                     },
                     {
                         "internalType": "string",
-                        "name": "resultPublicKey",
+                        "name": "resultInfo",
                         "type": "string"
                     },
                     {
                         "internalType": "string",
-                        "name": "encryptedRequirements",
+                        "name": "encryptedRequirements_DEPRECATED",
                         "type": "string"
                     },
                     {
                         "internalType": "string",
-                        "name": "encryptedArgs",
+                        "name": "encryptedArgs_DEPRECATED",
                         "type": "string"
                     },
                     {
@@ -10844,17 +10844,17 @@ export const abi = [
                     },
                     {
                         "internalType": "string",
-                        "name": "resultPublicKey",
+                        "name": "resultInfo",
                         "type": "string"
                     },
                     {
                         "internalType": "string",
-                        "name": "encryptedRequirements",
+                        "name": "encryptedRequirements_DEPRECATED",
                         "type": "string"
                     },
                     {
                         "internalType": "string",
-                        "name": "encryptedArgs",
+                        "name": "encryptedArgs_DEPRECATED",
                         "type": "string"
                     },
                     {
@@ -11134,17 +11134,17 @@ export const abi = [
                     },
                     {
                         "internalType": "string",
-                        "name": "resultPublicKey",
+                        "name": "resultInfo",
                         "type": "string"
                     },
                     {
                         "internalType": "string",
-                        "name": "encryptedRequirements",
+                        "name": "encryptedRequirements_DEPRECATED",
                         "type": "string"
                     },
                     {
                         "internalType": "string",
-                        "name": "encryptedArgs",
+                        "name": "encryptedArgs_DEPRECATED",
                         "type": "string"
                     },
                     {

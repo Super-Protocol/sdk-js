@@ -1,4 +1,5 @@
 import { TokenAmount, BlockchainId } from './Web3';
+import { formatBytes32String, parseBytes32String } from 'ethers/lib/utils';
 
 export enum OrderStatus {
   New = '0',
@@ -25,9 +26,9 @@ export type OrderSlots = {
 
 export type OrderInfo = {
   offerId: BlockchainId;
-  resultInfo: string; // it contains 'publicKey' and 'encryptedPublicKey'(only for Loader)
-  encryptedRequirements_DEPRECATED?: string;
-  encryptedArgs_DEPRECATED?: string;
+  publicKey: string;
+  encryptedInfo: string;
+  encryptedArgs: string;
   status: OrderStatus;
   externalId: string;
   expectedPrice?: TokenAmount;
@@ -35,12 +36,54 @@ export type OrderInfo = {
   args: OrderArgs;
 };
 
-export const removeOrderDeprecatedFields = (orderInfo: OrderInfo): OrderInfo => {
+export type OrderInfoRaw = {
+  offerId: BlockchainId;
+  fieldsDataBlob: string;
+  encryptedRequirements_DEPRECATED: string;
+  encryptedArgs_DEPRECATED: string;
+  status: OrderStatus;
+  externalId: string;
+  expectedPrice: TokenAmount;
+  maxPriceSlippage: TokenAmount;
+};
+
+export const orderInfoToRaw = (orderInfo: OrderInfo): OrderInfoRaw => {
+  const fieldsDataBlob = JSON.stringify({
+    publicKey: orderInfo.publicKey,
+    encryptedInfo: orderInfo.encryptedInfo,
+    encryptedArgs: orderInfo.encryptedArgs,
+  });
+  return {
+    offerId: orderInfo.offerId,
+    fieldsDataBlob,
+    encryptedRequirements_DEPRECATED: '',
+    encryptedArgs_DEPRECATED: '',
+    status: orderInfo.status,
+    externalId: formatBytes32String(orderInfo.externalId),
+    expectedPrice: orderInfo.expectedPrice ?? '0',
+    maxPriceSlippage: orderInfo.maxPriceSlippage ?? '0',
+  };
+};
+
+export const orderInfoFromRaw = (orderInfoBch: OrderInfoRaw, args: OrderArgs): OrderInfo => {
+  let publicKey = '';
+  let encryptedInfo = '';
+  let encryptedArgs = orderInfoBch.encryptedArgs_DEPRECATED;
   try {
-    delete orderInfo['encryptedRequirements_DEPRECATED'];
-    delete orderInfo['encryptedArgs_DEPRECATED'];
+    const parsedFields = JSON.parse(orderInfoBch.fieldsDataBlob!);
+    publicKey = parsedFields.publicKey ?? publicKey;
+    encryptedInfo = parsedFields.encryptedInfo ?? encryptedInfo;
+    encryptedArgs = parsedFields.encryptedArgs ?? encryptedArgs;
   } catch (e) {}
-  return orderInfo;
+  return {
+    publicKey,
+    encryptedInfo,
+    encryptedArgs,
+    offerId: orderInfoBch.offerId,
+    status: orderInfoBch.status,
+    externalId: parseBytes32String(orderInfoBch.externalId),
+    args,
+  };
 };
 
 export type ExtendedOrderInfo = OrderInfo & {

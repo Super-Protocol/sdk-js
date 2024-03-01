@@ -103,14 +103,11 @@ class Order {
     if (!(await this.checkIfOrderExistsWithInterval())) {
       throw Error(`Order ${this.id} does not exist`);
     }
-    const [, orderInfo] = await Order.contract.methods.getOrder(this.id).call();
+    const orderInfo = (await Order.contract.methods.getOrder(this.id).call())['1'];
     const orderArgs = await Order.contract.methods.getOrderArgs(this.id).call();
-    const cleanedOrderInfo = cleanWeb3Data(orderInfo as any);
 
-    const finalOrderInfo: OrderInfo = orderInfoFromRaw(
-      cleanedOrderInfo as OrderInfoRaw,
-      cleanWeb3Data(orderArgs) as OrderArgs,
-    );
+    const a = cleanWeb3Data(orderInfo as any) as OrderInfoRaw;
+    const finalOrderInfo: OrderInfo = orderInfoFromRaw(a, cleanWeb3Data(orderArgs) as OrderArgs);
 
     return (this.orderInfo = finalOrderInfo);
   }
@@ -132,7 +129,7 @@ class Order {
 
   @incrementMethodCall()
   public async getConsumer(): Promise<string> {
-    const [consumer] = await Order.contract.methods.getOrder(this.id).call();
+    const consumer = (await Order.contract.methods.getOrder(this.id).call())['0'];
     this.consumer = consumer;
 
     return this.consumer!;
@@ -143,7 +140,7 @@ class Order {
    */
   @incrementMethodCall()
   public async getOrderResult(): Promise<OrderResult> {
-    const [, , orderResults] = await Order.contract.methods.getOrder(this.id).call();
+    const orderResults = (await Order.contract.methods.getOrder(this.id).call())['2'];
 
     return (this.orderResult = cleanWeb3Data(orderResults) as OrderResult);
   }

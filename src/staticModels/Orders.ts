@@ -95,9 +95,6 @@ class Orders implements StaticModel {
             ...restOrderInfoArguments,
             expectedPrice: restOrderInfoArguments.expectedPrice ?? '0',
             maxPriceSlippage: restOrderInfoArguments.maxPriceSlippage ?? '0',
-            encryptedRequirements_DEPRECATED:
-              restOrderInfoArguments.encryptedRequirements_DEPRECATED ?? '',
-            encryptedArgs_DEPRECATED: restOrderInfoArguments.encryptedArgs_DEPRECATED ?? '',
           },
           slots,
           args,
@@ -114,9 +111,6 @@ class Orders implements StaticModel {
           ...restOrderInfoArguments,
           expectedPrice: restOrderInfoArguments.expectedPrice ?? '0',
           maxPriceSlippage: restOrderInfoArguments.maxPriceSlippage ?? '0',
-          encryptedRequirements_DEPRECATED:
-            restOrderInfoArguments.encryptedRequirements_DEPRECATED ?? '',
-          encryptedArgs_DEPRECATED: restOrderInfoArguments.encryptedArgs_DEPRECATED ?? '',
         },
         slots,
         args,
@@ -174,8 +168,6 @@ class Orders implements StaticModel {
       externalId: formatBytes32String(o.externalId),
       expectedPrice: o.expectedPrice ?? '0',
       maxPriceSlippage: o.maxPriceSlippage ?? '0',
-      encryptedRequirements_DEPRECATED: o.encryptedRequirements_DEPRECATED ?? '',
-      encryptedArgs_DEPRECATED: o.encryptedArgs_DEPRECATED ?? '',
     }));
 
     const subOrdersArgs = subOrdersInfo.map((i) => i.args);
@@ -187,9 +179,6 @@ class Orders implements StaticModel {
             ...restParentOrderInfoArgs,
             expectedPrice: restParentOrderInfoArgs.expectedPrice ?? '0',
             maxPriceSlippage: restParentOrderInfoArgs.maxPriceSlippage ?? '0',
-            encryptedRequirements_DEPRECATED:
-              restParentOrderInfoArgs.encryptedRequirements_DEPRECATED ?? '',
-            encryptedArgs_DEPRECATED: restParentOrderInfoArgs.encryptedArgs_DEPRECATED ?? '',
           },
           parentOrderSlot,
           args,
@@ -208,9 +197,6 @@ class Orders implements StaticModel {
           ...restParentOrderInfoArgs,
           expectedPrice: restParentOrderInfoArgs.expectedPrice ?? '0',
           maxPriceSlippage: restParentOrderInfoArgs.maxPriceSlippage ?? '0',
-          encryptedRequirements_DEPRECATED:
-            restParentOrderInfoArgs.encryptedRequirements_DEPRECATED ?? '',
-          encryptedArgs_DEPRECATED: restParentOrderInfoArgs.encryptedArgs_DEPRECATED ?? '',
         },
         parentOrderSlot,
         args,

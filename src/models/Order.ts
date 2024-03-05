@@ -14,7 +14,6 @@ import {
   SlotUsage,
   OrderUsageRaw,
   OrderSlots,
-  removeOrderDeprecatedFields,
 } from '../types';
 import { Contract, TransactionReceipt } from 'web3';
 import { EventLog } from 'web3-eth-contract';
@@ -102,19 +101,16 @@ class Order {
     if (!(await this.checkIfOrderExistsWithInterval())) {
       throw Error(`Order ${this.id} does not exist`);
     }
-    const [, orderInfo] = await Order.contract.methods.getOrder(this.id).call();
+    const orderInfoParams = await Order.contract.methods.getOrder(this.id).call();
     const orderArgs = await Order.contract.methods.getOrderArgs(this.id).call();
 
-    let cleanedOrderInfo = cleanWeb3Data(orderInfo as any);
-    cleanedOrderInfo = removeOrderDeprecatedFields(cleanedOrderInfo);
-
-    const finalOrderInfo: OrderInfo = {
-      ...(cleanedOrderInfo as OrderInfo),
+    const orderInfo: OrderInfo = {
+      ...(cleanWeb3Data(orderInfoParams[1]) as OrderInfo),
       args: cleanWeb3Data(orderArgs) as OrderArgs,
-      status: orderInfo.status.toString() as OrderStatus,
+      status: orderInfoParams[1].status.toString() as OrderStatus,
     };
 
-    return (this.orderInfo = finalOrderInfo);
+    return (this.orderInfo = orderInfo);
   }
 
   private async checkIfOrderExistsWithInterval(): Promise<boolean> {
@@ -134,8 +130,8 @@ class Order {
 
   @incrementMethodCall()
   public async getConsumer(): Promise<string> {
-    const [consumer] = await Order.contract.methods.getOrder(this.id).call();
-    this.consumer = consumer;
+    const consumer = await Order.contract.methods.getOrder(this.id).call();
+    this.consumer = consumer[0];
 
     return this.consumer!;
   }
@@ -145,9 +141,9 @@ class Order {
    */
   @incrementMethodCall()
   public async getOrderResult(): Promise<OrderResult> {
-    const [, , orderResults] = await Order.contract.methods.getOrder(this.id).call();
+    const orderResults = await Order.contract.methods.getOrder(this.id).call();
 
-    return (this.orderResult = cleanWeb3Data(orderResults) as OrderResult);
+    return (this.orderResult = cleanWeb3Data(orderResults[2]) as OrderResult);
   }
 
   /**
@@ -468,9 +464,6 @@ class Order {
             ...restPreparedInfo,
             expectedPrice: restPreparedInfo.expectedPrice ?? '0',
             maxPriceSlippage: restPreparedInfo.maxPriceSlippage ?? '0',
-            encryptedRequirements_DEPRECATED:
-              restPreparedInfo.encryptedRequirements_DEPRECATED ?? '',
-            encryptedArgs_DEPRECATED: restPreparedInfo.encryptedArgs_DEPRECATED ?? '',
           },
           slots,
           args,
@@ -487,8 +480,6 @@ class Order {
           ...restPreparedInfo,
           expectedPrice: restPreparedInfo.expectedPrice ?? '0',
           maxPriceSlippage: restPreparedInfo.maxPriceSlippage ?? '0',
-          encryptedRequirements_DEPRECATED: restPreparedInfo.encryptedRequirements_DEPRECATED ?? '',
-          encryptedArgs_DEPRECATED: restPreparedInfo.encryptedArgs_DEPRECATED ?? '',
         },
         slots,
         args,
@@ -524,9 +515,6 @@ class Order {
         externalId: formatBytes32String(subOrdersInfo[orderInfoIndex].externalId),
         expectedPrice: subOrdersInfo[orderInfoIndex].expectedPrice ?? '0',
         maxPriceSlippage: subOrdersInfo[orderInfoIndex].maxPriceSlippage ?? '0',
-        encryptedRequirements_DEPRECATED:
-          subOrdersInfo[orderInfoIndex].encryptedRequirements_DEPRECATED ?? '',
-        encryptedArgs_DEPRECATED: subOrdersInfo[orderInfoIndex].encryptedArgs_DEPRECATED ?? '',
       };
       const params: SubOrderParams = {
         blockParentOrder: subOrdersInfo[orderInfoIndex].blocking,

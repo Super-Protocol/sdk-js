@@ -4059,7 +4059,7 @@ export const abi = [
                     },
                     {
                         "internalType": "string",
-                        "name": "fieldsDataBlob",
+                        "name": "resultInfo",
                         "type": "string"
                     },
                     {
@@ -4179,7 +4179,7 @@ export const abi = [
                     },
                     {
                         "internalType": "string",
-                        "name": "fieldsDataBlob",
+                        "name": "resultInfo",
                         "type": "string"
                     },
                     {
@@ -4299,7 +4299,7 @@ export const abi = [
                     },
                     {
                         "internalType": "string",
-                        "name": "fieldsDataBlob",
+                        "name": "resultInfo",
                         "type": "string"
                     },
                     {
@@ -4431,7 +4431,7 @@ export const abi = [
                     },
                     {
                         "internalType": "string",
-                        "name": "fieldsDataBlob",
+                        "name": "resultInfo",
                         "type": "string"
                     },
                     {
@@ -5378,7 +5378,7 @@ export const abi = [
                     },
                     {
                         "internalType": "string",
-                        "name": "fieldsDataBlob",
+                        "name": "resultInfo",
                         "type": "string"
                     },
                     {
@@ -8632,7 +8632,7 @@ export const abi = [
                     },
                     {
                         "internalType": "string",
-                        "name": "fieldsDataBlob",
+                        "name": "resultInfo",
                         "type": "string"
                     },
                     {
@@ -8728,7 +8728,7 @@ export const abi = [
                     },
                     {
                         "internalType": "string",
-                        "name": "fieldsDataBlob",
+                        "name": "resultInfo",
                         "type": "string"
                     },
                     {
@@ -10584,7 +10584,7 @@ export const abi = [
                     },
                     {
                         "internalType": "string",
-                        "name": "fieldsDataBlob",
+                        "name": "resultInfo",
                         "type": "string"
                     },
                     {
@@ -10709,7 +10709,7 @@ export const abi = [
                     },
                     {
                         "internalType": "string",
-                        "name": "fieldsDataBlob",
+                        "name": "resultInfo",
                         "type": "string"
                     },
                     {
@@ -10844,7 +10844,7 @@ export const abi = [
                     },
                     {
                         "internalType": "string",
-                        "name": "fieldsDataBlob",
+                        "name": "resultInfo",
                         "type": "string"
                     },
                     {
@@ -11134,7 +11134,7 @@ export const abi = [
                     },
                     {
                         "internalType": "string",
-                        "name": "fieldsDataBlob",
+                        "name": "resultInfo",
                         "type": "string"
                     },
                     {
@@ -12536,103 +12536,6 @@ export const abi = [
             }
         ],
         "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "item",
-                "type": "uint256"
-            }
-        ],
-        "name": "add",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "clear",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "getAll",
-        "outputs": [
-            {
-                "internalType": "uint256[]",
-                "name": "",
-                "type": "uint256[]"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "item",
-                "type": "uint256"
-            }
-        ],
-        "name": "getItemIndex",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "isEmpty",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "item",
-                "type": "uint256"
-            }
-        ],
-        "name": "isExists",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "item",
-                "type": "uint256"
-            }
-        ],
-        "name": "remove",
-        "outputs": [],
-        "stateMutability": "nonpayable",
         "type": "function"
     },
     {

@@ -1,4 +1,4 @@
-import { parseBytes32String } from 'ethers/lib/utils';
+import { formatBytes32String, parseBytes32String } from 'ethers/lib/utils';
 import rootLogger from '../logger';
 import {
   checkIfActionAccountInitialized,
@@ -19,7 +19,6 @@ import {
   SlotInfo,
   SlotUsage,
   OptionInfo,
-  orderInfoToRaw,
 } from '../types';
 import Superpro from './Superpro';
 import TxManager from '../utils/TxManager';
@@ -83,18 +82,47 @@ class Orders implements StaticModel {
     const contract = BlockchainConnector.getInstance().getContract();
     checkIfActionAccountInitialized(transactionOptions);
     deposit = deposit ?? '0';
-    const args = orderInfo.args;
-    const orderInfoArguments = orderInfoToRaw(orderInfo);
+    const orderInfoArguments = {
+      ...orderInfo,
+      externalId: formatBytes32String(orderInfo.externalId),
+    };
+    const { args, ...restOrderInfoArguments } = orderInfoArguments;
 
     if (checkTxBeforeSend) {
       await TxManager.dryRun(
-        contract.methods.createOrder(orderInfoArguments, slots, args, deposit, suspended),
+        contract.methods.createOrder(
+          {
+            ...restOrderInfoArguments,
+            expectedPrice: restOrderInfoArguments.expectedPrice ?? '0',
+            maxPriceSlippage: restOrderInfoArguments.maxPriceSlippage ?? '0',
+            encryptedRequirements_DEPRECATED:
+              restOrderInfoArguments.encryptedRequirements_DEPRECATED ?? '',
+            encryptedArgs_DEPRECATED: restOrderInfoArguments.encryptedArgs_DEPRECATED ?? '',
+          },
+          slots,
+          args,
+          deposit,
+          suspended,
+        ),
         transactionOptions,
       );
     }
 
     await TxManager.execute(
-      contract.methods.createOrder(orderInfoArguments, slots, args, deposit, suspended),
+      contract.methods.createOrder(
+        {
+          ...restOrderInfoArguments,
+          expectedPrice: restOrderInfoArguments.expectedPrice ?? '0',
+          maxPriceSlippage: restOrderInfoArguments.maxPriceSlippage ?? '0',
+          encryptedRequirements_DEPRECATED:
+            restOrderInfoArguments.encryptedRequirements_DEPRECATED ?? '',
+          encryptedArgs_DEPRECATED: restOrderInfoArguments.encryptedArgs_DEPRECATED ?? '',
+        },
+        slots,
+        args,
+        deposit,
+        suspended,
+      ),
       transactionOptions,
     );
   }
@@ -136,17 +164,35 @@ class Orders implements StaticModel {
     const contract = BlockchainConnector.getInstance().getContract();
     checkIfActionAccountInitialized(transactionOptions);
     workflowDeposit = workflowDeposit ?? '0';
-    const parentArgs = parentOrderInfo.args;
-    const parentOrderInfoArgs = orderInfoToRaw(parentOrderInfo);
+    const parentOrderInfoArgs = {
+      ...parentOrderInfo,
+      externalId: formatBytes32String(parentOrderInfo.externalId),
+    };
+
+    const subOrdersInfoArgs = subOrdersInfo.map((o) => ({
+      ...o,
+      externalId: formatBytes32String(o.externalId),
+      expectedPrice: o.expectedPrice ?? '0',
+      maxPriceSlippage: o.maxPriceSlippage ?? '0',
+      encryptedRequirements_DEPRECATED: o.encryptedRequirements_DEPRECATED ?? '',
+      encryptedArgs_DEPRECATED: o.encryptedArgs_DEPRECATED ?? '',
+    }));
 
     const subOrdersArgs = subOrdersInfo.map((i) => i.args);
-    const subOrdersInfoArgs = subOrdersInfo.map((o) => orderInfoToRaw(o));
     if (checkTxBeforeSend) {
+      const { args, ...restParentOrderInfoArgs } = parentOrderInfoArgs;
       await TxManager.dryRun(
         contract.methods.createWorkflow(
-          parentOrderInfoArgs,
+          {
+            ...restParentOrderInfoArgs,
+            expectedPrice: restParentOrderInfoArgs.expectedPrice ?? '0',
+            maxPriceSlippage: restParentOrderInfoArgs.maxPriceSlippage ?? '0',
+            encryptedRequirements_DEPRECATED:
+              restParentOrderInfoArgs.encryptedRequirements_DEPRECATED ?? '',
+            encryptedArgs_DEPRECATED: restParentOrderInfoArgs.encryptedArgs_DEPRECATED ?? '',
+          },
           parentOrderSlot,
-          parentArgs,
+          args,
           workflowDeposit,
           subOrdersInfoArgs,
           subOrdersSlots,
@@ -155,12 +201,19 @@ class Orders implements StaticModel {
         transactionOptions,
       );
     }
-
+    const { args, ...restParentOrderInfoArgs } = parentOrderInfoArgs;
     await TxManager.execute(
       contract.methods.createWorkflow(
-        parentOrderInfoArgs,
+        {
+          ...restParentOrderInfoArgs,
+          expectedPrice: restParentOrderInfoArgs.expectedPrice ?? '0',
+          maxPriceSlippage: restParentOrderInfoArgs.maxPriceSlippage ?? '0',
+          encryptedRequirements_DEPRECATED:
+            restParentOrderInfoArgs.encryptedRequirements_DEPRECATED ?? '',
+          encryptedArgs_DEPRECATED: restParentOrderInfoArgs.encryptedArgs_DEPRECATED ?? '',
+        },
         parentOrderSlot,
-        parentArgs,
+        args,
         workflowDeposit,
         subOrdersInfoArgs,
         subOrdersSlots,

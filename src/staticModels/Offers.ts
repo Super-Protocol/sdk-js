@@ -10,6 +10,7 @@ import {
   OfferInfo,
   OfferType,
   BlockchainId,
+  OfferRestrictions,
 } from '../types';
 import Superpro from './Superpro';
 import TxManager from '../utils/TxManager';

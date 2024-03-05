@@ -14,9 +14,7 @@ import {
   SlotUsage,
   OrderUsageRaw,
   OrderSlots,
-  orderInfoFromRaw,
-  orderInfoToRaw,
-  OrderInfoRaw,
+  removeOrderDeprecatedFields,
 } from '../types';
 import { Contract, TransactionReceipt } from 'web3';
 import { EventLog } from 'web3-eth-contract';
@@ -30,6 +28,7 @@ import {
   incrementMethodCall,
   unpackSlotInfo,
 } from '../utils/helper';
+import { formatBytes32String } from 'ethers/lib/utils';
 import { BlockchainConnector, BlockchainEventsListener } from '../connectors';
 import TeeOffers from '../staticModels/TeeOffers';
 import TxManager from '../utils/TxManager';
@@ -105,12 +104,15 @@ class Order {
     }
     const [, orderInfo] = await Order.contract.methods.getOrder(this.id).call();
     const orderArgs = await Order.contract.methods.getOrderArgs(this.id).call();
-    const cleanedOrderInfo = cleanWeb3Data(orderInfo as any);
 
-    const finalOrderInfo: OrderInfo = orderInfoFromRaw(
-      cleanedOrderInfo as OrderInfoRaw,
-      cleanWeb3Data(orderArgs) as OrderArgs,
-    );
+    let cleanedOrderInfo = cleanWeb3Data(orderInfo as any);
+    cleanedOrderInfo = removeOrderDeprecatedFields(cleanedOrderInfo);
+
+    const finalOrderInfo: OrderInfo = {
+      ...(cleanedOrderInfo as OrderInfo),
+      args: cleanWeb3Data(orderArgs) as OrderArgs,
+      status: orderInfo.status.toString() as OrderStatus,
+    };
 
     return (this.orderInfo = finalOrderInfo);
   }
@@ -447,22 +449,51 @@ class Order {
   ): Promise<void> {
     checkIfActionAccountInitialized(transactionOptions);
     deposit = deposit ?? '0';
-    const args = subOrderInfo.args;
-    const preparedInfo: OrderInfoRaw = orderInfoToRaw(subOrderInfo);
+    const preparedInfo: OrderInfo = {
+      ...subOrderInfo,
+      externalId: formatBytes32String(subOrderInfo.externalId),
+    };
     const params: SubOrderParams = {
       blockParentOrder,
       deposit,
     };
 
+    const { args, ...restPreparedInfo } = preparedInfo;
+
     if (checkTxBeforeSend) {
       await TxManager.dryRun(
-        Order.contract.methods.createSubOrder(this.id, preparedInfo, slots, args, params),
+        Order.contract.methods.createSubOrder(
+          this.id,
+          {
+            ...restPreparedInfo,
+            expectedPrice: restPreparedInfo.expectedPrice ?? '0',
+            maxPriceSlippage: restPreparedInfo.maxPriceSlippage ?? '0',
+            encryptedRequirements_DEPRECATED:
+              restPreparedInfo.encryptedRequirements_DEPRECATED ?? '',
+            encryptedArgs_DEPRECATED: restPreparedInfo.encryptedArgs_DEPRECATED ?? '',
+          },
+          slots,
+          args,
+          params,
+        ),
         transactionOptions,
       );
     }
 
     await TxManager.execute(
-      Order.contract.methods.createSubOrder(this.id, preparedInfo, slots, args, params),
+      Order.contract.methods.createSubOrder(
+        this.id,
+        {
+          ...restPreparedInfo,
+          expectedPrice: restPreparedInfo.expectedPrice ?? '0',
+          maxPriceSlippage: restPreparedInfo.maxPriceSlippage ?? '0',
+          encryptedRequirements_DEPRECATED: restPreparedInfo.encryptedRequirements_DEPRECATED ?? '',
+          encryptedArgs_DEPRECATED: restPreparedInfo.encryptedArgs_DEPRECATED ?? '',
+        },
+        slots,
+        args,
+        params,
+      ),
       transactionOptions,
     );
   }
@@ -488,19 +519,25 @@ class Order {
 
     const promises: Promise<TransactionReceipt>[] = [];
     for (let orderInfoIndex = 0; orderInfoIndex < subOrdersInfo.length; orderInfoIndex++) {
-      const { blocking, deposit, ...orderInfo } = subOrdersInfo[orderInfoIndex];
-      const args = orderInfo.args;
-      const preparedInfo = orderInfoToRaw(orderInfo);
+      const preparedInfo = {
+        ...subOrdersInfo[orderInfoIndex],
+        externalId: formatBytes32String(subOrdersInfo[orderInfoIndex].externalId),
+        expectedPrice: subOrdersInfo[orderInfoIndex].expectedPrice ?? '0',
+        maxPriceSlippage: subOrdersInfo[orderInfoIndex].maxPriceSlippage ?? '0',
+        encryptedRequirements_DEPRECATED:
+          subOrdersInfo[orderInfoIndex].encryptedRequirements_DEPRECATED ?? '',
+        encryptedArgs_DEPRECATED: subOrdersInfo[orderInfoIndex].encryptedArgs_DEPRECATED ?? '',
+      };
       const params: SubOrderParams = {
-        blockParentOrder: blocking,
-        deposit,
+        blockParentOrder: subOrdersInfo[orderInfoIndex].blocking,
+        deposit: subOrdersInfo[orderInfoIndex].deposit,
       };
 
       const transactionCall = Order.contract.methods.createSubOrder(
         this.id,
         preparedInfo,
         subOrdersSlots[orderInfoIndex],
-        args,
+        preparedInfo.args,
         params,
       );
 

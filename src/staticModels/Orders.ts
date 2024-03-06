@@ -19,11 +19,11 @@ import {
   SlotInfo,
   SlotUsage,
   OptionInfo,
-} from '../types';
-import Superpro from './Superpro';
-import TxManager from '../utils/TxManager';
-import { BlockchainConnector, BlockchainEventsListener } from '../connectors';
-import { Order } from '../models';
+} from '../types/index.js';
+import Superpro from './Superpro.js';
+import TxManager from '../utils/TxManager.js';
+import { BlockchainConnector, BlockchainEventsListener } from '../connectors/index.js';
+import { Order } from '../models/index.js';
 import { EventLog } from 'web3-eth-contract';
 import StaticModel from './StaticModel.js';
 

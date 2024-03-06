@@ -5,7 +5,7 @@ import {
   defaultGasLimit,
   txIntervalMs,
   txConcurrency,
-} from './constants';
+} from './constants.js';
 
 export type Store = {
   web3Wss?: Web3;

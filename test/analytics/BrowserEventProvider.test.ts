@@ -1,4 +1,4 @@
-import BrowserEventProvider from '../../src/analytics/eventProviders/BrowserEventProvider';
+import BrowserEventProvider from '../../src/analytics/eventProviders/BrowserEventProvider.js';
 
 Object.defineProperty(global, 'navigator', {
   value: {

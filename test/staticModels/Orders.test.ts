@@ -1,4 +1,4 @@
-import { Orders, OrderUsage, PriceType } from '../../src';
+import { Orders, OrderUsage, PriceType } from '../../src/index.js';
 
 describe('Orders static model', () => {
   describe('selected usage calculation', () => {

@@ -1,9 +1,9 @@
-import rootLogger from '../logger';
-import { checkIfActionAccountInitialized, cleanWeb3Data } from '../utils/helper';
-import { ProviderInfo, BlockInfo, TransactionOptions, TokenAmount } from '../types';
+import rootLogger from '../logger.js';
+import { checkIfActionAccountInitialized, cleanWeb3Data } from '../utils/helper.js';
+import { ProviderInfo, BlockInfo, TransactionOptions, TokenAmount } from '../types/index.js';
 import { EventLog } from 'web3-eth-contract';
-import { BlockchainConnector, BlockchainEventsListener } from '../connectors';
-import TxManager from '../utils/TxManager';
+import { BlockchainConnector, BlockchainEventsListener } from '../connectors/index.js';
+import TxManager from '../utils/TxManager.js';
 
 class ProviderRegistry {
   private static readonly logger = rootLogger.child({ className: 'ProviderRegistry' });

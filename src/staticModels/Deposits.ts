@@ -1,14 +1,14 @@
-import rootLogger from '../logger';
-import Superpro from './Superpro';
-import TxManager from '../utils/TxManager';
+import rootLogger from '../logger.js';
+import Superpro from './Superpro.js';
+import TxManager from '../utils/TxManager.js';
 import {
   checkIfActionAccountInitialized,
   cleanWeb3Data,
   convertBigIntToString,
   incrementMethodCall,
-} from '../utils/helper';
-import { BlockchainConnector, BlockchainEventsListener } from '../connectors';
-import { DepositInfo, BlockInfo, TransactionOptions, TokenAmount } from '../types';
+} from '../utils/helper.js';
+import { BlockchainConnector, BlockchainEventsListener } from '../connectors/index.js';
+import { DepositInfo, BlockInfo, TransactionOptions, TokenAmount } from '../types/index.js';
 import { EventLog } from 'web3-eth-contract';
 
 class Deposits {

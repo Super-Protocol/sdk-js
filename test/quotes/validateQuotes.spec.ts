@@ -1,5 +1,5 @@
-import { QuoteValidator } from '../../src/tee/QuoteValidator';
-import { QuoteValidationStatuses } from '../../src/tee/statuses';
+import { QuoteValidator } from '../../src/tee/QuoteValidator.js';
+import { QuoteValidationStatuses } from '../../src/tee/statuses.js';
 import {
   testQuotes,
   quotesUserDatas,
@@ -7,7 +7,7 @@ import {
   intelCrlDer,
   tcbData,
   qeIdentityData,
-} from './examples';
+} from './examples.js';
 
 jest.mock('axios', () => ({
   get: (url: string): Promise<unknown> => {

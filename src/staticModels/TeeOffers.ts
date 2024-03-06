@@ -1,4 +1,4 @@
-import rootLogger from '../logger';
+import rootLogger from '../logger.js';
 import {
   checkIfActionAccountInitialized,
   cleanWeb3Data,
@@ -7,8 +7,8 @@ import {
   packDeviceId,
   unpackSlotInfo,
   convertOptionInfoToRaw,
-} from '../utils/helper';
-import { BytesLike, formatBytes32String, parseBytes32String } from 'ethers/lib/utils';
+} from '../utils/helper.js';
+import { BytesLike, formatBytes32String, parseBytes32String } from 'ethers/lib/utils.js';
 import {
   BlockInfo,
   TransactionOptions,
@@ -21,12 +21,12 @@ import {
   TeeOfferOption,
   BlockchainId,
   TeeOfferOptionRaw,
-} from '../types';
-import { BlockchainConnector, BlockchainEventsListener } from '../connectors';
-import Superpro from './Superpro';
-import TxManager from '../utils/TxManager';
+} from '../types/index.js';
+import { BlockchainConnector, BlockchainEventsListener } from '../connectors/index.js';
+import Superpro from './Superpro.js';
+import TxManager from '../utils/TxManager.js';
 import { EventLog } from 'web3-eth-contract';
-import StaticModel from './StaticModel';
+import StaticModel from './StaticModel.js';
 
 class TeeOffers {
   private static coresDenominator?: number;

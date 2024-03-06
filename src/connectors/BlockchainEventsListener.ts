@@ -1,13 +1,13 @@
-import { BaseConnector, Config } from './BaseConnector';
+import { BaseConnector, Config } from './BaseConnector.js';
 import Web3, { Web3Context, WebSocketProvider } from 'web3';
 import { ProviderRpcError, ProviderConnectInfo } from 'web3-types';
 import { ReconnectOptions } from 'web3-utils';
-import { abi } from '../contracts/abi';
+import { abi } from '../contracts/abi.js';
 
 // TODO: remove this dependencies
-import store from '../store';
-import Superpro from '../staticModels/Superpro';
-import SuperproToken from '../staticModels/SuperproToken';
+import store from '../store.js';
+import Superpro from '../staticModels/Superpro.js';
+import SuperproToken from '../staticModels/SuperproToken.js';
 
 class BlockchainEventsListener extends BaseConnector {
   // Singleton

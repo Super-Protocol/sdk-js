@@ -1,6 +1,6 @@
 import axios, { AxiosError, AxiosRequestConfig } from 'axios';
-import { AnalyticsError } from '../AnalyticsError';
-import { Transport, AnalyticsEvent } from '../types';
+import { AnalyticsError } from '../AnalyticsError.js';
+import { Transport, AnalyticsEvent } from '../types.js';
 import util from 'util';
 
 export default class AxiosTransport<Response> implements Transport<Response> {

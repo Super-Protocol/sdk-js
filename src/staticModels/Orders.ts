@@ -1,11 +1,11 @@
-import { formatBytes32String, parseBytes32String } from 'ethers/lib/utils';
-import rootLogger from '../logger';
+import { formatBytes32String, parseBytes32String } from 'ethers/lib/utils.js';
+import rootLogger from '../logger.js';
 import {
   checkIfActionAccountInitialized,
   cleanWeb3Data,
   convertBigIntToString,
   incrementMethodCall,
-} from '../utils/helper';
+} from '../utils/helper.js';
 import {
   OrderInfo,
   OrderStatus,
@@ -25,7 +25,7 @@ import TxManager from '../utils/TxManager';
 import { BlockchainConnector, BlockchainEventsListener } from '../connectors';
 import { Order } from '../models';
 import { EventLog } from 'web3-eth-contract';
-import StaticModel from './StaticModel';
+import StaticModel from './StaticModel.js';
 
 class Orders implements StaticModel {
   private static readonly logger = rootLogger.child({ className: 'Orders' });

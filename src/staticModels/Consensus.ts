@@ -1,6 +1,6 @@
-import rootLogger from '../logger';
-import TCB from '../models/TCB';
-import Superpro from './Superpro';
+import rootLogger from '../logger.js';
+import TCB from '../models/TCB.js';
+import Superpro from './Superpro.js';
 import {
   EpochInfo,
   ConsensusConstants,
@@ -10,16 +10,16 @@ import {
   TokenAmount,
   TcbPublicData,
   TcbUtilityData,
-} from '../types';
+} from '../types/index.js';
 import {
   checkIfActionAccountInitialized,
   cleanWeb3Data,
   formatTcbPublicData,
   transformComplexObject,
   unpackDeviceId,
-} from '../utils/helper';
-import TxManager from '../utils/TxManager';
-import { BlockchainConnector, BlockchainEventsListener } from '../connectors';
+} from '../utils/helper.js';
+import TxManager from '../utils/TxManager.js';
+import { BlockchainConnector, BlockchainEventsListener } from '../connectors/index.js';
 import { EventLog } from 'web3-eth-contract';
 import { TcbVerifiedStatus } from '@super-protocol/dto-js';
 

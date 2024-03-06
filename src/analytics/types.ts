@@ -1,4 +1,4 @@
-import EventProvider, { Event } from './eventProviders/EventProvider';
+import EventProvider, { Event } from './eventProviders/EventProvider.js';
 
 export interface AnalyticsEvent {
   events: Event[];
@@ -9,7 +9,7 @@ export interface Transport<Response> {
   send(serverUrl: string, payload: AnalyticsEvent): Promise<Response>;
 }
 
-export interface Config<TransportResponse> {
+export interface AnalyticsConfig<TransportResponse> {
   apiUrl: string;
   apiKey: string;
   transport?: Transport<TransportResponse>;

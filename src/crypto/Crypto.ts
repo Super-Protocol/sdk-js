@@ -8,11 +8,11 @@ import {
   RSAHybridEncryption,
 } from '@super-protocol/dto-js';
 import fs from 'fs';
-import AES from './nodejs/AES';
-import ARIA from './nodejs/ARIA';
-import ECIES from './nodejs/ECIES';
-import RSAHybrid from './nodejs/RSA-Hybrid';
-import NativeCrypto from './nodejs/NativeCrypto';
+import AES from './nodejs/AES.js';
+import ARIA from './nodejs/ARIA.js';
+import ECIES from './nodejs/ECIES.js';
+import RSAHybrid from './nodejs/RSA-Hybrid.js';
+import NativeCrypto from './nodejs/NativeCrypto.js';
 import { Readable } from 'stream';
 
 class Crypto {

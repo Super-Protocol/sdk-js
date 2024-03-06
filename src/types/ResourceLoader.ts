@@ -1,5 +1,5 @@
 import { Resource, ResourceType } from '@super-protocol/dto-js';
-import { RetryDownloadChunkOptions } from '../providers/storage/ChunksDownloadDecorator';
+import { RetryDownloadChunkOptions } from '../providers/storage/ChunksDownloadDecorator.js';
 
 export interface ResourceLoaderConfig {
   progressListener?: (total: number, current: number) => void;

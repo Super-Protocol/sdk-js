@@ -1,10 +1,9 @@
-import { OptionInfo, OptionInfoRaw } from './OptionInfo';
-import { BlockchainId } from './Web3';
-import { SlotInfo } from './SlotInfo';
-import { SlotUsage } from './SlotUsage';
+import { OptionInfo, OptionInfoRaw } from './OptionInfo.js';
+import { BlockchainId } from './Web3.js';
+import { SlotInfo } from './SlotInfo.js';
+import { SlotUsage } from './SlotUsage.js';
 
-
-type ValueOfferSlotBase= {
+type ValueOfferSlotBase = {
   id: BlockchainId;
   info: SlotInfo;
   usage: SlotUsage;

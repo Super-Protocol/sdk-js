@@ -1,15 +1,15 @@
 import { Contract, Transaction } from 'web3';
-import rootLogger from '../logger';
-import { abi } from '../contracts/abi';
-import store from '../store';
+import rootLogger from '../logger.js';
+import { abi } from '../contracts/abi.js';
+import store from '../store.js';
 import {
   checkIfActionAccountInitialized,
   cleanWeb3Data,
   convertBigIntToString,
-} from '../utils/helper';
-import { TransactionOptions, BlockInfo, TokenAmount } from '../types';
+} from '../utils/helper.js';
+import { TransactionOptions, BlockInfo, TokenAmount } from '../types/index.js';
 import { EventLog } from 'web3-eth-contract';
-import TxManager from '../utils/TxManager';
+import TxManager from '../utils/TxManager.js';
 
 class SuperproToken {
   private static _addressHttps: string;

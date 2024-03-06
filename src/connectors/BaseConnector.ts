@@ -1,5 +1,5 @@
-import abi from '../contracts/abi';
-import rootLogger from '../logger';
+import abi from '../contracts/abi.js';
+import rootLogger from '../logger.js';
 import { Contract } from 'web3';
 import { ReconnectOptions } from 'web3-utils';
 

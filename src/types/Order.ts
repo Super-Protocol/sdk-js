@@ -1,4 +1,4 @@
-import { TokenAmount, BlockchainId } from './Web3';
+import { TokenAmount, BlockchainId } from './Web3.js';
 
 export enum OrderStatus {
   New = '0',

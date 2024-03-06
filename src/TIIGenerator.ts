@@ -1,12 +1,12 @@
-import { gzip, ungzip } from 'node-gzip';
+import nodeGzip from 'node-gzip';
 import _ from 'lodash';
 
-import { config } from './config';
-import { Compression, Compression_TYPE } from './proto/Compression';
-import { TRI } from './proto/TRI';
-import Crypto from './crypto';
-import { Offer, Order, TeeOffer, TCB } from './models';
-import { BlockchainId, OrderInfo, OfferInfo, TeeOfferInfo } from './types';
+import { config } from './config.js';
+import { Compression, Compression_TYPE } from './proto/Compression.js';
+import { TRI } from './proto/TRI.js';
+import Crypto from './crypto/index.js';
+import { Offer, Order, TeeOffer, TCB } from './models/index.js';
+import { BlockchainId, OrderInfo, OfferInfo, TeeOfferInfo } from './types/index.js';
 import {
   Cipher,
   CryptoAlgorithm,
@@ -21,10 +21,12 @@ import {
   UrlResource,
 } from '@super-protocol/dto-js';
 import { TLBlockSerializerV1, TLBlockUnserializeResultType } from '@super-protocol/tee-lib';
-import { QuoteValidator } from './tee/QuoteValidator';
-import { QuoteValidationStatuses } from './tee/statuses';
-import { TeeSgxParser } from './tee/QuoteParser';
-import logger from './logger';
+import { QuoteValidator } from './tee/QuoteValidator.js';
+import { QuoteValidationStatuses } from './tee/statuses.js';
+import { TeeSgxParser } from './tee/QuoteParser.js';
+import logger from './logger.js';
+
+const { gzip, ungzip } = nodeGzip;
 
 class TIIGenerator {
   static verifiedTlbHashes: Map<string, string> = new Map();

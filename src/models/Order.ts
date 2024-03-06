@@ -14,11 +14,11 @@ import {
   SlotUsage,
   OrderUsageRaw,
   OrderSlots,
-} from '../types';
+} from '../types/index.js';
 import { Contract, TransactionReceipt } from 'web3';
 import { EventLog } from 'web3-eth-contract';
-import rootLogger from '../logger';
-import { abi } from '../contracts/abi';
+import rootLogger from '../logger.js';
+import { abi } from '../contracts/abi.js';
 import {
   checkIfActionAccountInitialized,
   cleanWeb3Data,
@@ -26,13 +26,13 @@ import {
   formatUsage,
   incrementMethodCall,
   unpackSlotInfo,
-} from '../utils/helper';
-import { formatBytes32String } from 'ethers/lib/utils';
-import { BlockchainConnector, BlockchainEventsListener } from '../connectors';
-import TeeOffers from '../staticModels/TeeOffers';
-import TxManager from '../utils/TxManager';
-import { tryWithInterval } from '../utils/helpers';
-import { BLOCKCHAIN_CALL_RETRY_INTERVAL, BLOCKCHAIN_CALL_RETRY_ATTEMPTS } from '../constants';
+} from '../utils/helper.js';
+import { formatBytes32String } from 'ethers/lib/utils.js';
+import { BlockchainConnector, BlockchainEventsListener } from '../connectors/index.js';
+import TeeOffers from '../staticModels/TeeOffers.js';
+import TxManager from '../utils/TxManager.js';
+import { tryWithInterval } from '../utils/helpers/index.js';
+import { BLOCKCHAIN_CALL_RETRY_INTERVAL, BLOCKCHAIN_CALL_RETRY_ATTEMPTS } from '../constants.js';
 
 class Order {
   private static contract: Contract<typeof abi>;

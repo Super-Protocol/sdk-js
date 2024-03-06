@@ -1,5 +1,5 @@
-import { AnalyticsError } from '../AnalyticsError';
-import { Transport, AnalyticsEvent } from '../types';
+import { AnalyticsError } from '../AnalyticsError.js';
+import { Transport, AnalyticsEvent } from '../types.js';
 
 export default class FetchTransport<Response> implements Transport<Response> {
   async send(serverUrl: string, payload: AnalyticsEvent): Promise<Response> {

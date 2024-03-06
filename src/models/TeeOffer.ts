@@ -1,5 +1,5 @@
 import { Contract } from 'web3';
-import { abi } from '../contracts/abi';
+import { abi } from '../contracts/abi.js';
 import {
   checkIfActionAccountInitialized,
   incrementMethodCall,
@@ -11,7 +11,7 @@ import {
   transformComplexObject,
   convertOptionInfoFromRaw,
   convertOptionInfoToRaw,
-} from '../utils/helper';
+} from '../utils/helper.js';
 import {
   TeeOfferInfo,
   TransactionOptions,
@@ -21,9 +21,9 @@ import {
   TokenAmount,
   OptionInfoRaw,
   TeeOfferOptionRaw,
-} from '../types';
-import { BlockchainConnector } from '../connectors';
-import TxManager from '../utils/TxManager';
+} from '../types/index.js';
+import { BlockchainConnector } from '../connectors/index.js';
+import TxManager from '../utils/TxManager.js';
 import {
   HardwareInfo,
   TeeOfferOption,
@@ -31,12 +31,12 @@ import {
   OptionInfo,
   SlotUsage,
   SlotInfo,
-} from '../types';
-import { formatBytes32String } from 'ethers/lib/utils';
-import TeeOffers from '../staticModels/TeeOffers';
-import { TCB } from '../models';
+} from '../types/index.js';
+import { formatBytes32String } from 'ethers/lib/utils.js';
+import TeeOffers from '../staticModels/TeeOffers.js';
+import { TCB } from '../models/index.js';
 import { TeeConfirmationBlock, GetTcbRequest, TcbVerifiedStatus } from '@super-protocol/dto-js';
-import Consensus from '../staticModels/Consensus';
+import Consensus from '../staticModels/Consensus.js';
 
 class TeeOffer {
   private static contract: Contract<typeof abi>;

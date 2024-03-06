@@ -1,5 +1,5 @@
-import { Compression, Compression_TYPE } from '../src/proto/Compression';
-import { ModelPackager } from '../src/staticModels/ModelPackager';
+import { Compression, Compression_TYPE } from '../src/proto/Compression.js';
+import { ModelPackager } from '../src/staticModels/ModelPackager.js';
 
 describe('ModelPackager', () => {
   test('packing data with lot of text', async () => {

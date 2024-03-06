@@ -1,7 +1,7 @@
-import Analytics from '../../src/analytics/Analytics';
-import NodeEventProvider from '../../src/analytics/eventProviders/NodeEventProvider';
-import BrowserEventProvider from '../../src/analytics/eventProviders/BrowserEventProvider';
-import { AnalyticsEvent, Transport } from '../../src/analytics/types';
+import Analytics from '../../src/analytics/Analytics.js';
+import NodeEventProvider from '../../src/analytics/eventProviders/NodeEventProvider.js';
+import BrowserEventProvider from '../../src/analytics/eventProviders/BrowserEventProvider.js';
+import { AnalyticsEvent, Transport } from '../../src/analytics/types.js';
 
 const EVENT_NAME = 'test event';
 const USER_ID = '123';

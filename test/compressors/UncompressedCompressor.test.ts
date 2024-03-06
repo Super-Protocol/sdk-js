@@ -1,4 +1,4 @@
-import { UncompressedCompressor } from '../../src/utils/compressors';
+import { UncompressedCompressor } from '../../src/utils/compressors/index.js';
 
 const testData = {
   number: 100500,

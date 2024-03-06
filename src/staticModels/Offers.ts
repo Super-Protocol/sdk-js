@@ -1,7 +1,7 @@
-import rootLogger from '../logger';
-import StaticModel from './StaticModel';
-import { checkIfActionAccountInitialized, cleanWeb3Data } from '../utils/helper';
-import { BytesLike, formatBytes32String, parseBytes32String } from 'ethers/lib/utils';
+import rootLogger from '../logger.js';
+import StaticModel from './StaticModel.js';
+import { checkIfActionAccountInitialized, cleanWeb3Data } from '../utils/helper.js';
+import { BytesLike, formatBytes32String, parseBytes32String } from 'ethers/lib/utils.js';
 import {
   OfferCreatedEvent,
   ValueSlotAddedEvent,
@@ -10,11 +10,10 @@ import {
   OfferInfo,
   OfferType,
   BlockchainId,
-  OfferRestrictions,
-} from '../types';
-import Superpro from './Superpro';
-import TxManager from '../utils/TxManager';
-import { BlockchainConnector, BlockchainEventsListener } from '../connectors';
+} from '../types/index.js';
+import Superpro from './Superpro.js';
+import TxManager from '../utils/TxManager.js';
+import { BlockchainConnector, BlockchainEventsListener } from '../connectors/index.js';
 import { EventLog } from 'web3-eth-contract';
 
 class Offers implements StaticModel {

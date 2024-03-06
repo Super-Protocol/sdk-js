@@ -1,7 +1,7 @@
-import AxiosTransport from './transports/AxiosTransport';
-import EventProvider, { Event } from './eventProviders/EventProvider';
-import { Transport, Config, TrackEventsProp, TrackEventProp } from './types';
-import logger, { Logger } from '../logger';
+import AxiosTransport from './transports/AxiosTransport.js';
+import EventProvider, { Event } from './eventProviders/EventProvider.js';
+import { Transport, AnalyticsConfig, TrackEventsProp, TrackEventProp } from './types.js';
+import logger, { Logger } from '../logger.js';
 
 export default class Analytics<TransportResponse> {
   private readonly transport: Transport<TransportResponse>;
@@ -10,7 +10,7 @@ export default class Analytics<TransportResponse> {
   private readonly eventProvider: EventProvider;
   private readonly logger?: Logger | null;
 
-  constructor(config: Config<TransportResponse>) {
+  constructor(config: AnalyticsConfig<TransportResponse>) {
     const { apiUrl, apiKey, transport, eventProvider, showLogs } = config || {};
     this.apiUrl = apiUrl;
     this.apiKey = apiKey;

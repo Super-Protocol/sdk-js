@@ -1,5 +1,5 @@
-import { OrderStatus } from './Order';
-import { BlockchainId, TokenAmount } from './Web3';
+import { OrderStatus } from './Order.js';
+import { BlockchainId, TokenAmount } from './Web3.js';
 
 export type OfferCreatedEvent = {
   creator: string;

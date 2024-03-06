@@ -1,5 +1,5 @@
-import { Compression } from '../proto/Compression';
-import { GzipCompressor, UncompressedCompressor } from '../utils/compressors';
+import { Compression } from '../proto/Compression.js';
+import { GzipCompressor, UncompressedCompressor } from '../utils/compressors/index.js';
 
 export class ModelPackager {
   private static compressors = [GzipCompressor, UncompressedCompressor];

@@ -1,8 +1,6 @@
 import { ReadStream, WriteStream } from 'fs';
 import {
-  createCipher,
   createCipheriv,
-  createDecipher,
   createDecipheriv,
   Cipher,
   CipherGCMOptions,
@@ -96,8 +94,9 @@ class NativeCrypto {
 
   public static createCipher(cipher: string, key: Buffer, iv: Buffer): Cipher {
     if (this.isECB(cipher) || this.isRC4(cipher)) {
-      return createCipher(cipher, key);
+      throw new Error(`Cipher "${cipher}" is not supported`);
     }
+
     if (this.isCCM(cipher) || this.isOCB(cipher)) {
       const options: CipherGCMOptions = {
         authTagLength: 16,
@@ -106,20 +105,16 @@ class NativeCrypto {
     }
     return createCipheriv(cipher, key, iv);
   }
-  public static createDecipher(cipher: string, key: Buffer, iv?: Buffer, mac?: Buffer): Decipher {
-    if (iv) {
-      const options: CipherGCMOptions = {};
-      if (this.isCCM(cipher) || this.isOCB(cipher)) {
-        options.authTagLength = 16;
-      }
-      const decipher: DecipherGCM = createDecipheriv(cipher, key, iv, options) as DecipherGCM;
-      if (mac) {
-        decipher.setAuthTag(mac);
-      }
-      return decipher;
-    } else {
-      return createDecipher(cipher, key);
+  public static createDecipher(cipher: string, key: Buffer, iv: Buffer, mac?: Buffer): Decipher {
+    const options: CipherGCMOptions = {};
+    if (this.isCCM(cipher) || this.isOCB(cipher)) {
+      options.authTagLength = 16;
     }
+    const decipher: DecipherGCM = createDecipheriv(cipher, key, iv, options) as DecipherGCM;
+    if (mac) {
+      decipher.setAuthTag(mac);
+    }
+    return decipher;
   }
 
   public static encrypt(
@@ -175,7 +170,7 @@ class NativeCrypto {
     key: Buffer,
     content: string,
     cipherName: string,
-    params?: {
+    params: {
       iv: Buffer;
       mac?: Buffer;
     },
@@ -183,7 +178,7 @@ class NativeCrypto {
     // TODO: replace BufferEncoding with Encoding
     outputEncoding: BufferEncoding = 'binary',
   ): string {
-    const decipher: Decipher = this.createDecipher(cipherName, key, params?.iv, params?.mac);
+    const decipher: Decipher = this.createDecipher(cipherName, key, params.iv, params?.mac);
 
     let decrypted: string = decipher.update(content, inputEncoding, outputEncoding);
     decrypted += decipher.final(outputEncoding);
@@ -196,12 +191,12 @@ class NativeCrypto {
     inputStream: ReadStream,
     outputStream: WriteStream,
     cipherName: string,
-    params?: {
+    params: {
       iv: Buffer;
       mac: Buffer;
     },
   ): Promise<void> {
-    const decipher: Decipher = this.createDecipher(cipherName, key, params?.iv, params?.mac);
+    const decipher: Decipher = this.createDecipher(cipherName, key, params.iv, params.mac);
 
     inputStream.pipe(decipher).pipe(outputStream);
     await once(outputStream, 'finish');

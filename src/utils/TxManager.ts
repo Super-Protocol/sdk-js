@@ -1,22 +1,22 @@
 import { TransactionReceipt } from 'web3';
-import NonceTracker from './NonceTracker';
-import rootLogger from '../logger';
-import store from '../store';
+import NonceTracker from './NonceTracker.js';
+import rootLogger from '../logger.js';
+import store from '../store.js';
 import {
   TransactionOptions,
   DryRunError,
   TransactionDataOptions,
   BlockchainError,
   TransactionOptionsRequired,
-} from '../types';
+} from '../types/index.js';
 import {
   checkForUsingExternalTxManager,
   checkIfActionAccountInitialized,
   createTransactionOptions,
   multiplyBigIntByNumber,
-} from './helper';
-import Superpro from '../staticModels/Superpro';
-import { defaultGasLimit } from '../constants';
+} from './helper.js';
+import Superpro from '../staticModels/Superpro.js';
+import { defaultGasLimit } from '../constants.js';
 import lodash from 'lodash';
 import Web3 from 'web3';
 import Bottleneck from 'bottleneck';

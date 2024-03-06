@@ -1,8 +1,7 @@
-import { OptionInfo, OptionInfoRaw } from "./OptionInfo";
-import { SlotInfo } from "./SlotInfo";
-import { SlotUsage } from "./SlotUsage";
-import { BlockchainId } from "./Web3";
-
+import { OptionInfo, OptionInfoRaw } from './OptionInfo.js';
+import { SlotInfo } from './SlotInfo.js';
+import { SlotUsage } from './SlotUsage.js';
+import { BlockchainId } from './Web3.js';
 
 export type OrderUsageBase = {
   slotCount: number;

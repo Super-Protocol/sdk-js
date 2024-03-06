@@ -1,4 +1,4 @@
-import { BlockchainId } from './Web3';
+import { BlockchainId } from './Web3.js';
 
 export enum OfferType {
   TeeOffer = '0',

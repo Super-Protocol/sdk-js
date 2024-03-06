@@ -1,19 +1,22 @@
 import axios from 'axios';
-import { ec } from 'elliptic';
-import { util, asn1 } from 'node-forge';
+import elliptic from 'elliptic';
+import forge from 'node-forge';
 import { Certificate, Extension } from '@fidm/x509';
 import { formatter } from 'js-encoding-utils';
 import { CertificateRevocationList } from 'pkijs';
 import { fromBER } from 'asn1js';
 import _ from 'lodash';
-import { TeeSgxParser } from './QuoteParser';
-import { TeeSgxQuoteDataType, TeeSgxReportDataType } from './types';
-import rootLogger from '../logger';
-import { IQEIdentity, ITcbData } from './interface';
-import { TeeQuoteValidatorError } from './errors';
-import { QEIdentityStatuses, TCBStatuses, QuoteValidationStatuses } from './statuses';
+import { TeeSgxParser } from './QuoteParser.js';
+import { TeeSgxQuoteDataType, TeeSgxReportDataType } from './types.js';
+import rootLogger from '../logger.js';
+import { IQEIdentity, ITcbData } from './interface.js';
+import { TeeQuoteValidatorError } from './errors.js';
+import { QEIdentityStatuses, TCBStatuses, QuoteValidationStatuses } from './statuses.js';
 import { Encoding, HashAlgorithm } from '@super-protocol/dto-js';
-import Crypto from '../crypto';
+import Crypto from '../crypto/index.js';
+
+const { ec } = elliptic;
+const { util, asn1 } = forge;
 
 const INTEL_BASE_SGX_URL = 'https://api.trustedservices.intel.com';
 const INTEL_SGX_ROOT_CA_URL = 'https://certificates.trustedservices.intel.com/IntelSGXRootCA.der';
@@ -58,16 +61,16 @@ export class QuoteValidator {
       .map((cert) => begin.concat(cert.slice(0, cert.indexOf(end)), end));
   }
 
-  private findSequenceByOID(hexValue: string, targetOID: string): asn1.Asn1 | null {
+  private findSequenceByOID(hexValue: string, targetOID: string): forge.asn1.Asn1 | null {
     const buffer = util.hexToBytes(hexValue);
     const asn1Data = asn1.fromDer(buffer);
 
     return this.searchForSequence(asn1Data, targetOID);
   }
 
-  private searchForSequence(asn1Data: asn1.Asn1, targetOID: string): asn1.Asn1 | null {
+  private searchForSequence(asn1Data: forge.asn1.Asn1, targetOID: string): forge.asn1.Asn1 | null {
     if (asn1Data.type === asn1.Type.SEQUENCE) {
-      for (const child of asn1Data.value as asn1.Asn1[]) {
+      for (const child of asn1Data.value as forge.asn1.Asn1[]) {
         if (child.type === asn1.Type.OID) {
           const oid = asn1.derToOid(child.value as string);
           if (oid === targetOID) {
@@ -293,13 +296,13 @@ export class QuoteValidator {
   private getDataFromExtension(
     sgxExtensionData: Extension,
     targetOid: string,
-    targetType: asn1.Type,
+    targetType: forge.asn1.Type,
   ): string {
     const rawData = this.findSequenceByOID(sgxExtensionData.value.toString('hex'), targetOid);
     if (!rawData) {
       throw new TeeQuoteValidatorError(`OID ${targetOid} not found in PCK certificate's SGX data`);
     }
-    const data = (rawData.value as asn1.Asn1[]).filter(
+    const data = (rawData.value as forge.asn1.Asn1[]).filter(
       (asnElement) => asnElement.type === targetType,
     );
     if (!data.length) {

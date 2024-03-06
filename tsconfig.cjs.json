@@ -1,0 +1,13 @@
+{
+  "extends": [
+    "./tsconfig.json",
+    "@super-protocol/eslint-config-typescript/tsconfig/node-cjs"
+  ],
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist/cjs"
+  },
+  "include": [
+    "src/**/*"
+  ]
+}

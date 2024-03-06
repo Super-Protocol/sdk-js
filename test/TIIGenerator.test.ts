@@ -1,5 +1,5 @@
-import { BlockchainId, OfferInfo, OfferType, TeeOfferInfo } from '../src';
-import TIIGenerator from '../src/TIIGenerator';
+import { BlockchainId, OfferInfo, OfferType, TeeOfferInfo } from '../src/index.js';
+import TIIGenerator from '../src/TIIGenerator.js';
 import {
   CryptoAlgorithm,
   Encoding,
@@ -8,8 +8,8 @@ import {
   StorageProviderResource,
   StorageType,
 } from '@super-protocol/dto-js';
-import { ValidationResult } from '../src/tee/QuoteValidator';
-import { QuoteValidationStatuses } from '../src/tee/statuses';
+import { ValidationResult } from '../src/tee/QuoteValidator.js';
+import { QuoteValidationStatuses } from '../src/tee/statuses.js';
 
 const fileEncryptionAlgo = CryptoAlgorithm.AES;
 const key = '12345789';

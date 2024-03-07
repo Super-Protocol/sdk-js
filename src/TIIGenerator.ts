@@ -150,7 +150,6 @@ class TIIGenerator {
     args: any,
     encryption: Encryption,
     sgxApiUrl: string,
-    verifyByTcb = false,
   ): Promise<string> {
     const teeOffer: TeeOffer = new TeeOffer(offerId);
     const teeOfferInfo: TeeOfferInfo = await teeOffer.getInfo();
@@ -162,6 +161,7 @@ class TIIGenerator {
         };
 
     const serializer = new TLBlockSerializerV1();
+    const verifyByTcb = +(await teeOffer.getActualTcbId()) != 0;
 
     let blockEncryption: Encryption;
     if (verifyByTcb) {
@@ -233,7 +233,6 @@ class TIIGenerator {
     args: any,
     encryption: Encryption,
     sgxApiUrl: string,
-    verifyByTcb = false,
   ): Promise<string> {
     const order: Order = new Order(orderId);
 
@@ -253,7 +252,6 @@ class TIIGenerator {
       args,
       encryption,
       sgxApiUrl,
-      verifyByTcb,
     );
   }
 

@@ -161,7 +161,8 @@ class TIIGenerator {
         };
 
     const serializer = new TLBlockSerializerV1();
-    const verifyByTcb = +(await teeOffer.getActualTcbId()) != 0;
+    const tcbId = await teeOffer.getActualTcbId();
+    const verifyByTcb = Number.parseInt(tcbId) != 0;
 
     let blockEncryption: Encryption;
     if (verifyByTcb) {

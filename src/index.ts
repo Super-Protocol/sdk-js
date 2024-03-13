@@ -1,6 +1,5 @@
-import BlockchainConnector from './connectors/BlockchainConnector.js';
+export { default as BlockchainConnector } from './connectors/BlockchainConnector.js';
 
-export default BlockchainConnector;
 export * from './connectors/BlockchainConnector.js';
 
 export { Config } from './connectors/BaseConnector.js';

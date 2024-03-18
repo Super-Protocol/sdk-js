@@ -142,6 +142,58 @@ class TIIGenerator {
     );
   }
 
+  private static async getVerifiedBlockEncryption(
+    offerId: string,
+    sgxApiUrl: string,
+  ): Promise<Encryption> {
+    const teeOffer: TeeOffer = new TeeOffer(offerId);
+    const teeOfferInfo: TeeOfferInfo = await teeOffer.getInfo();
+    const tcbId = await teeOffer.getActualTcbId();
+    const verifyByTcb = Number.parseInt(tcbId) != 0;
+
+    let encryption: Encryption;
+
+    if (verifyByTcb) {
+      const tcb = new TCB(await teeOffer.getActualTcbId());
+      const { pubKey, quote } = await tcb.getUtilityData();
+      await this.verifyTcb(tcb, quote, pubKey, sgxApiUrl);
+
+      // TODO: must be 'blockEncryption = JSON.parse(pubKey);'
+      encryption = {
+        algo: CryptoAlgorithm.ECIES,
+        key: pubKey,
+        encoding: Encoding.base64,
+      };
+    } else {
+      const serializer = new TLBlockSerializerV1();
+      const tlb: TLBlockUnserializeResultType = serializer.unserializeTlb(
+        Buffer.from(teeOfferInfo.tlb, 'base64'),
+      );
+
+      await this.verifyTlb(tlb, teeOfferInfo.tlb, offerId, sgxApiUrl);
+
+      encryption = {
+        algo: CryptoAlgorithm.ECIES,
+        key: tlb.data.teePubKeyData.toString('base64'),
+        encoding: Encoding.base64,
+      };
+    }
+
+    return encryption;
+  }
+
+  public static async encryptByTeeBlock(
+    offerId: string,
+    data: string,
+    sgxApiUrl: string,
+  ): Promise<Encryption> {
+    const encryption = await this.getVerifiedBlockEncryption(offerId, sgxApiUrl);
+
+    const encryptedInfo = await Crypto.encrypt(data, encryption);
+
+    return encryptedInfo;
+  }
+
   public static async generateByOffer(
     offerId: BlockchainId,
     solutionHashes: Hash[],
@@ -160,33 +212,7 @@ class TIIGenerator {
           mrenclave: '',
         };
 
-    const serializer = new TLBlockSerializerV1();
-    const tcbId = await teeOffer.getActualTcbId();
-    const verifyByTcb = Number.parseInt(tcbId) != 0;
-
-    let blockEncryption: Encryption;
-    if (verifyByTcb) {
-      const tcb = new TCB(await teeOffer.getActualTcbId());
-      const { pubKey, quote } = await tcb.getUtilityData();
-      await this.verifyTcb(tcb, quote, pubKey, sgxApiUrl);
-
-      // TODO: must be 'blockEncryption = JSON.parse(pubKey);'
-      blockEncryption = {
-        algo: CryptoAlgorithm.ECIES,
-        key: pubKey,
-        encoding: Encoding.base64,
-      };
-    } else {
-      const tlb: TLBlockUnserializeResultType = serializer.unserializeTlb(
-        Buffer.from(teeOfferInfo.tlb, 'base64'),
-      );
-      await this.verifyTlb(tlb, teeOfferInfo.tlb, offerId, sgxApiUrl);
-      blockEncryption = {
-        algo: CryptoAlgorithm.ECIES,
-        key: Buffer.from(tlb.data.teePubKeyData).toString('base64'),
-        encoding: Encoding.base64,
-      };
-    }
+    const blockEncryption = await this.getVerifiedBlockEncryption(offerId, sgxApiUrl);
 
     // TODO: check env with SP-149
     const mac = (encryption as any).authTag || (encryption as EncryptionWithMacIV).mac;
@@ -293,7 +319,7 @@ class TIIGenerator {
     tiiObj.tri.key = decryptionKey.toString(tiiObj.tri.encoding);
     const tri: string = await Crypto.decrypt(tiiObj.tri as Encryption);
 
-    const compression = Compression.decode(Buffer.from(tri, (tiiObj.tri as Encryption).encoding));
+    const compression = Compression.decode(Buffer.from(tri, tiiObj.tri.encoding));
 
     let decompressed: Buffer;
     switch (compression.type) {

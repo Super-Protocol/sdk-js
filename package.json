@@ -1,6 +1,6 @@
 {
   "name": "@super-protocol/sdk-js",
-  "version": "2.1.7-beta.0",
+  "version": "2.1.7-beta.2",
   "main": "dist/cjs/index.js",
   "module": "dist/mjs/index.js",
   "exports": {
@@ -38,7 +38,7 @@
   },
   "devDependencies": {
     "@super-protocol/eslint-config-typescript": "2.0.0",
-    "@types/elliptic": "^6.4.14",
+    "@types/elliptic": "^6.4.18",
     "@types/jest": "^27.0.3",
     "@types/lodash": "^4.14.176",
     "@types/lru-cache": "^7.10.10",
@@ -47,7 +47,6 @@
     "@types/node-gzip": "^1.1.0",
     "@types/ua-parser-js": "^0.7.39",
     "@types/uuid": "^9.0.7",
-    "elliptic": "^6.5.4",
     "jest": "^29.7.0",
     "net": "^1.0.2",
     "ts-jest": "^29.1.2",
@@ -59,12 +58,13 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.470.0",
     "@fidm/x509": "^1.2.1",
-    "@super-protocol/dto-js": "^0.0.30",
+    "@super-protocol/dto-js": "^0.0.35",
     "@super-protocol/tee-lib": "^0.1.2",
     "@super-protocol/uplink-nodejs": "1.2.19",
     "asn1js": "^3.0.5",
     "axios": "^1.5.1",
     "bottleneck": "^2.19.5",
+    "elliptic": "^6.5.5",
     "ethers": "^5.5.3",
     "js-encoding-utils": "^0.7.3",
     "lodash": "^4.17.21",

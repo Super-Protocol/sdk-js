@@ -1,4 +1,4 @@
-import { formatBytes32String, parseBytes32String } from 'ethers/lib/utils.js';
+import { parseBytes32String } from 'ethers/lib/utils.js';
 import rootLogger from '../logger.js';
 import {
   checkIfActionAccountInitialized,
@@ -19,6 +19,7 @@ import {
   SlotInfo,
   SlotUsage,
   OptionInfo,
+  orderInfoToRaw,
 } from '../types/index.js';
 import Superpro from './Superpro.js';
 import TxManager from '../utils/TxManager.js';
@@ -82,20 +83,13 @@ class Orders implements StaticModel {
     const contract = BlockchainConnector.getInstance().getContract();
     checkIfActionAccountInitialized(transactionOptions);
     deposit = deposit ?? '0';
-    const orderInfoArguments = {
-      ...orderInfo,
-      externalId: formatBytes32String(orderInfo.externalId),
-    };
-    const { args, ...restOrderInfoArguments } = orderInfoArguments;
+    const args = orderInfo.args;
+    const orderInfoArguments = orderInfoToRaw(orderInfo);
 
     if (checkTxBeforeSend) {
       await TxManager.dryRun(
         contract.methods.createOrder(
-          {
-            ...restOrderInfoArguments,
-            expectedPrice: restOrderInfoArguments.expectedPrice ?? '0',
-            maxPriceSlippage: restOrderInfoArguments.maxPriceSlippage ?? '0',
-          },
+          orderInfoArguments,
           slots,
           args,
           deposit,
@@ -107,11 +101,7 @@ class Orders implements StaticModel {
 
     await TxManager.execute(
       contract.methods.createOrder(
-        {
-          ...restOrderInfoArguments,
-          expectedPrice: restOrderInfoArguments.expectedPrice ?? '0',
-          maxPriceSlippage: restOrderInfoArguments.maxPriceSlippage ?? '0',
-        },
+        orderInfoArguments,
         slots,
         args,
         deposit,
@@ -158,30 +148,18 @@ class Orders implements StaticModel {
     const contract = BlockchainConnector.getInstance().getContract();
     checkIfActionAccountInitialized(transactionOptions);
     workflowDeposit = workflowDeposit ?? '0';
-    const parentOrderInfoArgs = {
-      ...parentOrderInfo,
-      externalId: formatBytes32String(parentOrderInfo.externalId),
-    };
-
-    const subOrdersInfoArgs = subOrdersInfo.map((o) => ({
-      ...o,
-      externalId: formatBytes32String(o.externalId),
-      expectedPrice: o.expectedPrice ?? '0',
-      maxPriceSlippage: o.maxPriceSlippage ?? '0',
-    }));
+    const parentArgs = parentOrderInfo.args;
+    const parentOrderInfoArgs = orderInfoToRaw(parentOrderInfo);
 
     const subOrdersArgs = subOrdersInfo.map((i) => i.args);
+    const subOrdersInfoArgs = subOrdersInfo.map((o) => orderInfoToRaw(o));
+
     if (checkTxBeforeSend) {
-      const { args, ...restParentOrderInfoArgs } = parentOrderInfoArgs;
       await TxManager.dryRun(
         contract.methods.createWorkflow(
-          {
-            ...restParentOrderInfoArgs,
-            expectedPrice: restParentOrderInfoArgs.expectedPrice ?? '0',
-            maxPriceSlippage: restParentOrderInfoArgs.maxPriceSlippage ?? '0',
-          },
+          parentOrderInfoArgs,
           parentOrderSlot,
-          args,
+          parentArgs,
           workflowDeposit,
           subOrdersInfoArgs,
           subOrdersSlots,
@@ -190,16 +168,12 @@ class Orders implements StaticModel {
         transactionOptions,
       );
     }
-    const { args, ...restParentOrderInfoArgs } = parentOrderInfoArgs;
+
     await TxManager.execute(
       contract.methods.createWorkflow(
-        {
-          ...restParentOrderInfoArgs,
-          expectedPrice: restParentOrderInfoArgs.expectedPrice ?? '0',
-          maxPriceSlippage: restParentOrderInfoArgs.maxPriceSlippage ?? '0',
-        },
+        parentOrderInfoArgs,
         parentOrderSlot,
-        args,
+        parentArgs,
         workflowDeposit,
         subOrdersInfoArgs,
         subOrdersSlots,

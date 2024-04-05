@@ -210,6 +210,7 @@ class TIIGenerator {
       : {
           encoding: Encoding.base64,
           mrenclave: '',
+          mrsigner: '',
         };
 
     const blockEncryption = await this.getVerifiedBlockEncryption(offerId, sgxApiUrl);
@@ -222,6 +223,7 @@ class TIIGenerator {
         hash: Buffer.from(hash.hash, hash.encoding),
       })),
       mrenclave: Buffer.from(linkage.mrenclave, linkage.encoding),
+      mrsigner: Buffer.from(linkage.mrsigner, linkage.encoding),
       args: JSON.stringify(args || ''),
       encryption: {
         ...encryption,
@@ -342,6 +344,7 @@ class TIIGenerator {
       linkage: {
         encoding: Encoding.base64,
         mrenclave: Buffer.from(decoded.mrenclave).toString(Encoding.base64),
+        mrsigner: Buffer.from(decoded.mrsigner).toString(Encoding.base64),
       },
       args: decoded.args,
       encryption: {

@@ -75,6 +75,7 @@ jest.mock('../src/models/Offer', () => {
           linkage: JSON.stringify({
             encoding: Encoding.base64,
             mrenclave: '',
+            mrsigner: '',
           }),
           restrictions: {
             offers: ['10'],
@@ -151,6 +152,7 @@ describe('TIIGenerator', () => {
         JSON.stringify({
           encoding: Encoding.base64,
           mrenclave: '',
+          mrsigner: '',
         }),
         resource,
         {},

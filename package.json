@@ -34,7 +34,7 @@
     "tag:publish": "git push origin && git push origin $(git tag --points-at HEAD)",
     "dto:update": "npm run dto:clean && npm run dto:generate",
     "dto:clean": "rm -rf ./src/proto/*",
-    "dto:generate": "cd ./dto/src && protoc --plugin=../../node_modules/.bin/protoc-gen-ts_proto --ts_proto_opt=esModuleInterop=true --ts_proto_opt=unrecognizedEnum=false --ts_proto_out=../../src/proto ./*"
+    "dto:generate": "cd ./dto/src && protoc --plugin=../../node_modules/.bin/protoc-gen-ts_proto --ts_proto_opt=esModuleInterop=true --ts_proto_opt=importSuffix=.js --ts_proto_opt=unrecognizedEnum=false --ts_proto_out=../../src/proto ./*"
   },
   "devDependencies": {
     "@super-protocol/eslint-config-typescript": "2.0.0",
@@ -58,7 +58,7 @@
   "dependencies": {
     "@aws-sdk/client-s3": "^3.470.0",
     "@fidm/x509": "^1.2.1",
-    "@super-protocol/dto-js": "^0.0.35",
+    "@super-protocol/dto-js": "0.0.36-beta.0",
     "@super-protocol/tee-lib": "^0.1.2",
     "@super-protocol/uplink-nodejs": "1.2.19",
     "asn1js": "^3.0.5",

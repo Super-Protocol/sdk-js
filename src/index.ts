@@ -110,6 +110,7 @@ import './polyfills.js';
 
 export { TeeSgxParser } from './tee/QuoteParser.js';
 export { QuoteValidator } from './tee/QuoteValidator.js';
+export * from './tee/statuses.js';
 
 export * from './analytics/types.js';
 export { default as Analytics } from './analytics/Analytics.js';

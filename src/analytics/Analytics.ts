@@ -1,6 +1,13 @@
+import _ from 'lodash';
 import AxiosTransport from './transports/AxiosTransport.js';
 import EventProvider, { Event } from './eventProviders/EventProvider.js';
-import { Transport, AnalyticsConfig, TrackEventsProp, TrackEventProp } from './types.js';
+import {
+  Transport,
+  AnalyticsConfig,
+  TrackEventsProp,
+  TrackEventProp,
+  TrackEventObjProp,
+} from './types.js';
 import logger, { Logger } from '../logger.js';
 
 export default class Analytics<TransportResponse> {
@@ -71,21 +78,25 @@ export default class Analytics<TransportResponse> {
     return this.catchEvent(() => this.trackEvents(props));
   }
 
-  public trackSuccessEventCatched(eventName: string): Promise<TransportResponse | null> {
-    const eventProperties = { result: 'success' };
-    return this.catchEvent(() => this.trackEvent({ eventName, eventProperties }));
+  public trackSuccessEventCatched(props: TrackEventObjProp): Promise<TransportResponse | null> {
+    const eventProperties = {
+      ...(_.isPlainObject(props.eventProperties) && props.eventProperties),
+      result: 'success',
+    };
+    return this.catchEvent(() => this.trackEvent({ eventName: props.eventName, eventProperties }));
   }
 
   public trackErrorEventCatched(
-    eventName: string,
+    props: TrackEventObjProp,
     error: unknown,
   ): Promise<TransportResponse | null> {
     const eventProperties = {
+      ...(_.isPlainObject(props.eventProperties) && props.eventProperties),
       result: 'error',
       error: (error as Error).message || 'Unknown error',
       errorStack: (error as Error).stack || '',
     };
 
-    return this.catchEvent(() => this.trackEvent({ eventName, eventProperties }));
+    return this.catchEvent(() => this.trackEvent({ eventName: props.eventName, eventProperties }));
   }
 }

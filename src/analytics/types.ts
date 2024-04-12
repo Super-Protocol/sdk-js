@@ -25,3 +25,8 @@ export interface TrackEventProp {
 export interface TrackEventsProp {
   events: TrackEventProp[];
 }
+
+export interface TrackEventObjProp {
+  eventName: string;
+  eventProperties?: object;
+}

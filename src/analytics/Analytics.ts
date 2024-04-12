@@ -70,4 +70,22 @@ export default class Analytics<TransportResponse> {
   public trackEventsCatched(props: TrackEventsProp): Promise<TransportResponse | null> {
     return this.catchEvent(() => this.trackEvents(props));
   }
+
+  public trackSuccessEventCatched(eventName: string): Promise<TransportResponse | null> {
+    const eventProperties = { result: 'success' };
+    return this.catchEvent(() => this.trackEvent({ eventName, eventProperties }));
+  }
+
+  public trackErrorEventCatched(
+    eventName: string,
+    error: unknown,
+  ): Promise<TransportResponse | null> {
+    const eventProperties = {
+      result: 'error',
+      error: (error as Error).message || 'Unknown error',
+      errorStack: (error as Error).stack || '',
+    };
+
+    return this.catchEvent(() => this.trackEvent({ eventName, eventProperties }));
+  }
 }

@@ -16,7 +16,7 @@ import {
   multiplyBigIntByNumber,
 } from './helper.js';
 import Superpro from '../staticModels/Superpro.js';
-import { defaultGasLimit } from '../constants.js';
+import { AMOY_TX_COST_LIMIT, defaultGasLimit, POLYGON_AMOY_CHAIN_ID } from '../constants.js';
 import lodash from 'lodash';
 import Web3 from 'web3';
 import Bottleneck from 'bottleneck';
@@ -168,7 +168,14 @@ class TxManager {
         txData.gas = transactionOptions.gas;
       }
 
-      txData.gasPrice = multiplyBigIntByNumber(txData.gasPrice!, store.gasPriceMultiplier);
+      if (store.chainId === POLYGON_AMOY_CHAIN_ID) {
+        const maxGasPrice = AMOY_TX_COST_LIMIT / BigInt(txData.gas);
+        if (maxGasPrice < txData.gasPrice!) {
+          txData.gasPrice = maxGasPrice;
+        }
+      } else {
+        txData.gasPrice = multiplyBigIntByNumber(txData.gasPrice!, store.gasPriceMultiplier);
+      }
     }
 
     let nonceTracker;

@@ -64,7 +64,7 @@ export const createTransactionOptions = async (
 ): Promise<TransactionOptions> => {
   if (!options) options = {};
   if (!options.from) options.from = store.actionAccount;
-  if (!options.gas) options.gas = store.gasLimit;
+  if (!options.gas) options.gas = BigInt(0);
   if (!options.gasPriceMultiplier) options.gasPriceMultiplier = store.gasPriceMultiplier;
   if (!options.gasPrice) {
     const web3 = options.web3 || store.web3Https;

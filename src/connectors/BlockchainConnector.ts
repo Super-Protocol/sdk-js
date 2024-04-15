@@ -72,6 +72,7 @@ class BlockchainConnector extends BaseConnector {
       config: { contractDataInputFill: 'data' },
     });
 
+    store.chainId = Number(await store.web3Https.eth.getChainId());
     store.gasPrice = config?.gasPrice ?? defaultGasPrice;
     if (config?.gasLimit) store.gasLimit = config.gasLimit;
     if (config?.gasLimitMultiplier) store.gasLimitMultiplier = config.gasLimitMultiplier;

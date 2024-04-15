@@ -17,6 +17,7 @@ export type Store = {
   gasPrice?: bigint;
   txConcurrency: number;
   txIntervalMs: number;
+  chainId: number;
   keys: Record<string, string>;
 };
 
@@ -28,6 +29,7 @@ const store: Store = {
   gasLimitMultiplier: defaultGasLimitMultiplier,
   gasPriceMultiplier: defaultGasPriceMultiplier,
   gasPrice: undefined,
+  chainId: 137, // Polygon mainnet 
   txConcurrency: txConcurrency,
   txIntervalMs: txIntervalMs,
   keys: {},

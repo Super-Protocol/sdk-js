@@ -170,7 +170,7 @@ class TxManager {
             estimated: estimatedGas,
             specified: transactionOptions.gas,
           },
-          'Fail to calculate estimated gas',
+          'Overriding gas is lower than estimated',
         );
       }
       txData.gas = transactionOptions.gas;

@@ -143,39 +143,46 @@ class TxManager {
       gasPriceMultiplier,
     };
 
+    let estimatedGas;
     if (transactionCall) {
-      let estimatedGas;
       try {
         estimatedGas = await transactionCall.estimateGas(txData as NonPayableTxOptions);
       } catch (e) {
         TxManager.logger.debug({ error: e }, 'Fail to calculate estimated gas');
         estimatedGas = defaultGasLimit;
       }
-      txData.gas = multiplyBigIntByNumber(estimatedGas, store.gasLimitMultiplier);
-      // defaultGasLimit is max gas limit
-      txData.gas = txData.gas < defaultGasLimit ? txData.gas : defaultGasLimit;
-
-      if (transactionOptions.gas) {
-        if (transactionOptions.gas < estimatedGas) {
-          TxManager.logger.warn(
-            {
-              estimated: estimatedGas,
-              specified: transactionOptions.gas,
-            },
-            'Fail to calculate estimated gas',
-          );
-        }
-        txData.gas = transactionOptions.gas;
+    } else {
+      try {
+        estimatedGas = await store.web3Https!.eth.estimateGas(txData);
+      } catch (e) {
+        TxManager.logger.debug({ error: e }, 'Fail to calculate estimated gas');
+        estimatedGas = defaultGasLimit;
       }
+    }
+    txData.gas = multiplyBigIntByNumber(estimatedGas, store.gasLimitMultiplier);
+    // defaultGasLimit is max gas limit
+    txData.gas = txData.gas < defaultGasLimit ? txData.gas : defaultGasLimit;
 
-      if (store.chainId === POLYGON_AMOY_CHAIN_ID) {
-        const maxGasPrice = AMOY_TX_COST_LIMIT / BigInt(txData.gas);
-        if (maxGasPrice < txData.gasPrice!) {
-          txData.gasPrice = maxGasPrice;
-        }
-      } else {
-        txData.gasPrice = multiplyBigIntByNumber(txData.gasPrice!, store.gasPriceMultiplier);
+    if (transactionOptions.gas) {
+      if (transactionOptions.gas < estimatedGas) {
+        TxManager.logger.warn(
+          {
+            estimated: estimatedGas,
+            specified: transactionOptions.gas,
+          },
+          'Overriding gas is lower than estimated',
+        );
       }
+      txData.gas = transactionOptions.gas;
+    }
+
+    if (store.chainId === POLYGON_AMOY_CHAIN_ID) {
+      const maxGasPrice = AMOY_TX_COST_LIMIT / BigInt(txData.gas);
+      if (maxGasPrice < txData.gasPrice!) {
+        txData.gasPrice = maxGasPrice;
+      }
+    } else {
+      txData.gasPrice = multiplyBigIntByNumber(txData.gasPrice!, store.gasPriceMultiplier);
     }
 
     let nonceTracker;

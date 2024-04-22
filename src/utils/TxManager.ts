@@ -161,8 +161,7 @@ class TxManager {
     }
     txData.gas = multiplyBigIntByNumber(estimatedGas, store.gasLimitMultiplier);
     // defaultGasLimit is max gas limit
-    txData.gas =
-      txData.gas < defaultGasLimit && txData.gas !== BigInt(0) ? txData.gas : defaultGasLimit;
+    txData.gas = txData.gas < defaultGasLimit ? txData.gas : defaultGasLimit;
 
     if (transactionOptions.gas) {
       if (transactionOptions.gas < estimatedGas) {

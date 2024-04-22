@@ -2,6 +2,7 @@
   "$schema": "https://json.schemastore.org/tsconfig",
   "extends": "@super-protocol/eslint-config-typescript/tsconfig/base",
   "compilerOptions": {
+    "target": "es2022",
     "lib": [
       "es7",
       "dom"

@@ -4,6 +4,10 @@ import { ProviderInfo, BlockInfo, TransactionOptions, TokenAmount } from '../typ
 import { EventLog } from 'web3-eth-contract';
 import { BlockchainConnector, BlockchainEventsListener } from '../connectors/index.js';
 import TxManager from '../utils/TxManager.js';
+import {
+  WssSubscriptionOnDataFn,
+  WssSubscriptionOnErrorFn,
+} from '../connectors/BlockchainEventsListener.js';
 
 class ProviderRegistry {
   private static readonly logger = rootLogger.child({ className: 'ProviderRegistry' });
@@ -106,11 +110,9 @@ class ProviderRegistry {
    * @returns unsubscribe - unsubscribe function from event
    */
   public static onProviderRegistered(callback: onProviderRegisteredCallback): () => void {
-    const contract = BlockchainEventsListener.getInstance().getContract();
+    const listener = BlockchainEventsListener.getInstance();
     const logger = this.logger.child({ method: 'onProviderRegistered' });
-
-    const subscription = contract.events.ProviderRegistered();
-    subscription.on('data', (event: EventLog): void => {
+    const onData: WssSubscriptionOnDataFn = (event: EventLog): void => {
       callback(
         <string>event.returnValues.auth,
         <BlockInfo>{
@@ -118,12 +120,15 @@ class ProviderRegistry {
           hash: <string>event.blockHash,
         },
       );
-    });
-    subscription.on('error', (error: Error) => {
+    };
+    const onError: WssSubscriptionOnErrorFn = (error: Error) => {
       logger.warn(error);
+    };
+    return listener.subscribeEvent({
+      onError,
+      onData,
+      event: 'ProviderRegistered',
     });
-
-    return () => subscription.unsubscribe();
   }
 
   /**
@@ -132,11 +137,9 @@ class ProviderRegistry {
    * @returns unsubscribe - unsubscribe function from event
    */
   public static onProviderModified(callback: onProviderModifiedCallback): () => void {
-    const contract = BlockchainEventsListener.getInstance().getContract();
+    const listener = BlockchainEventsListener.getInstance();
     const logger = this.logger.child({ method: 'onProviderModified' });
-
-    const subscription = contract.events.ProviderModified();
-    subscription.on('data', (event: EventLog): void => {
+    const onData: WssSubscriptionOnDataFn = (event: EventLog): void => {
       callback(
         <string>event.returnValues.auth,
         <BlockInfo>{
@@ -144,12 +147,15 @@ class ProviderRegistry {
           hash: <string>event.blockHash,
         },
       );
-    });
-    subscription.on('error', (error: Error) => {
+    };
+    const onError: WssSubscriptionOnErrorFn = (error: Error) => {
       logger.warn(error);
+    };
+    return listener.subscribeEvent({
+      onError,
+      onData,
+      event: 'ProviderModified',
     });
-
-    return () => subscription.unsubscribe();
   }
 
   /**
@@ -160,11 +166,9 @@ class ProviderRegistry {
   public static onProviderViolationRateIncremented(
     callback: onProviderViolationRateIncrementedCallback,
   ): () => void {
-    const contract = BlockchainEventsListener.getInstance().getContract();
+    const listener = BlockchainEventsListener.getInstance();
     const logger = this.logger.child({ method: 'onProviderViolationRateIncremented' });
-
-    const subscription = contract.events.ProviderViolationRateIncremented();
-    subscription.on('data', (event: EventLog): void => {
+    const onData: WssSubscriptionOnDataFn = (event: EventLog): void => {
       const parsedEvent = cleanWeb3Data(event.returnValues);
       callback(
         <string>parsedEvent.auth,
@@ -174,12 +178,15 @@ class ProviderRegistry {
           hash: <string>event.blockHash,
         },
       );
-    });
-    subscription.on('error', (error: Error) => {
+    };
+    const onError: WssSubscriptionOnErrorFn = (error: Error) => {
       logger.warn(error);
+    };
+    return listener.subscribeEvent({
+      onError,
+      onData,
+      event: 'ProviderViolationRateIncremented',
     });
-
-    return () => subscription.unsubscribe();
   }
 
   /**
@@ -190,11 +197,9 @@ class ProviderRegistry {
   public static onProviderSecurityDepoRefilled(
     callback: onProviderSecurityDepoRefilledCallback,
   ): () => void {
-    const contract = BlockchainEventsListener.getInstance().getContract();
+    const listener = BlockchainEventsListener.getInstance();
     const logger = this.logger.child({ method: 'onProviderSecurityDepoRefilled' });
-
-    const subscription = contract.events.ProviderSecurityDepoRefilled();
-    subscription.on('data', (event: EventLog): void => {
+    const onData: WssSubscriptionOnDataFn = (event: EventLog): void => {
       const parsedEvent = cleanWeb3Data(event.returnValues);
       callback(
         <string>parsedEvent.auth,
@@ -204,12 +209,15 @@ class ProviderRegistry {
           hash: <string>event.blockHash,
         },
       );
-    });
-    subscription.on('error', (error: Error) => {
+    };
+    const onError: WssSubscriptionOnErrorFn = (error: Error) => {
       logger.warn(error);
+    };
+    return listener.subscribeEvent({
+      onError,
+      onData,
+      event: 'ProviderSecurityDepoRefilled',
     });
-
-    return () => subscription.unsubscribe();
   }
 
   /**
@@ -220,11 +228,9 @@ class ProviderRegistry {
   public static onProviderSecurityDepoUnlocked(
     callback: onProviderSecurityDepoUnlockedCallback,
   ): () => void {
-    const contract = BlockchainEventsListener.getInstance().getContract();
+    const listener = BlockchainEventsListener.getInstance();
     const logger = this.logger.child({ method: 'onProviderSecurityDepoUnlocked' });
-
-    const subscription = contract.events.ProviderSecurityDepoUnlocked();
-    subscription.on('data', (event: EventLog): void => {
+    const onData: WssSubscriptionOnDataFn = (event: EventLog): void => {
       const parsedEvent = cleanWeb3Data(event.returnValues);
       callback(
         <string>parsedEvent.auth,
@@ -234,12 +240,15 @@ class ProviderRegistry {
           hash: <string>parsedEvent.blockHash,
         },
       );
-    });
-    subscription.on('error', (error: Error) => {
+    };
+    const onError: WssSubscriptionOnErrorFn = (error: Error) => {
       logger.warn(error);
+    };
+    return listener.subscribeEvent({
+      onError,
+      onData,
+      event: 'ProviderSecurityDepoUnlocked',
     });
-
-    return () => subscription.unsubscribe();
   }
 }
 

@@ -27,6 +27,10 @@ import { BlockchainConnector, BlockchainEventsListener } from '../connectors/ind
 import { Order } from '../models/index.js';
 import { EventLog } from 'web3-eth-contract';
 import StaticModel from './StaticModel.js';
+import {
+  WssSubscriptionOnDataFn,
+  WssSubscriptionOnErrorFn,
+} from '../connectors/BlockchainEventsListener.js';
 
 class Orders implements StaticModel {
   private static readonly logger = rootLogger.child({ className: 'Orders' });
@@ -64,13 +68,6 @@ class Orders implements StaticModel {
     return Number(await contract.methods.getOrdersCount().call());
   }
 
-  /**
-   * Function for creating orders
-   * @param orderInfo - order info for new order
-   * @param suspended - is orders suspended
-   * @param transactionOptions - object what contains alternative action account or gas limit (optional)
-   * @returns {Promise<void>} - Does not return id of created order!
-   */
   @incrementMethodCall()
   public static async createOrder(
     orderInfo: OrderInfo,
@@ -88,25 +85,13 @@ class Orders implements StaticModel {
 
     if (checkTxBeforeSend) {
       await TxManager.dryRun(
-        contract.methods.createOrder(
-          orderInfoArguments,
-          slots,
-          args,
-          deposit,
-          suspended,
-        ),
+        contract.methods.createOrder(orderInfoArguments, slots, args, deposit, suspended),
         transactionOptions,
       );
     }
 
     await TxManager.execute(
-      contract.methods.createOrder(
-        orderInfoArguments,
-        slots,
-        args,
-        deposit,
-        suspended,
-      ),
+      contract.methods.createOrder(orderInfoArguments, slots, args, deposit, suspended),
       transactionOptions,
     );
   }
@@ -127,14 +112,6 @@ class Orders implements StaticModel {
     return founded as OrderCreatedEvent;
   }
 
-  /**
-   * Function for create workflow
-   * @param parentOrderInfo - order info for new order
-   * @param subOrdersInfo - array of sub orders infos
-   * @param externalId - external id
-   * @param transactionOptions - object what contains alternative action account or gas limit (optional)
-   * @returns {Promise<void>} - Does not return id of created order!
-   */
   @incrementMethodCall()
   public static async createWorkflow(
     parentOrderInfo: OrderInfo,
@@ -183,11 +160,6 @@ class Orders implements StaticModel {
     );
   }
 
-  /**
-   * Function for cancel workflow
-   * @param parentOrderId - Parent order id
-   * @returns {Promise<void>} - Does not return id of created order!
-   */
   public static async cancelWorkflow(
     perentOrderId: BlockchainId,
     transactionOptions?: TransactionOptions,
@@ -249,11 +221,9 @@ class Orders implements StaticModel {
    * @returns unsubscribe - unsubscribe function from event
    */
   public static onCreated(callback: onOrderCreatedCallback): () => void {
-    const contract = BlockchainEventsListener.getInstance().getContract();
+    const listener = BlockchainEventsListener.getInstance();
     const logger = this.logger.child({ method: 'onOrderCreated' });
-
-    const subscription = contract.events.OrderCreated();
-    subscription.on('data', (event: EventLog): void => {
+    const onData: WssSubscriptionOnDataFn = (event: EventLog): void => {
       const parsedEvent = cleanWeb3Data(event.returnValues);
       callback(
         <string>parsedEvent.consumer,
@@ -268,12 +238,15 @@ class Orders implements StaticModel {
           hash: <string>event.blockHash,
         },
       );
-    });
-    subscription.on('error', (error: Error) => {
+    };
+    const onError: WssSubscriptionOnErrorFn = (error: Error) => {
       logger.warn(error);
+    };
+    return listener.subscribeEvent({
+      onError,
+      onData,
+      event: 'OrderCreated',
     });
-
-    return () => subscription.unsubscribe();
   }
 
   /**
@@ -283,11 +256,9 @@ class Orders implements StaticModel {
    * @returns unsubscribe - unsubscribe function from event
    */
   public static onStarted(callback: onOrderStartedCallback, orderId?: bigint): () => void {
-    const contract = BlockchainEventsListener.getInstance().getContract();
+    const listener = BlockchainEventsListener.getInstance();
     const logger = this.logger.child({ method: 'onOrderStarted' });
-
-    const subscription = contract.events.OrderStarted();
-    subscription.on('data', (event: EventLog): void => {
+    const onData: WssSubscriptionOnDataFn = (event: EventLog): void => {
       const parsedEvent = cleanWeb3Data(event.returnValues);
       if (orderId && parsedEvent.orderId != convertBigIntToString(orderId)) {
         return;
@@ -300,12 +271,15 @@ class Orders implements StaticModel {
           hash: <string>event.blockHash,
         },
       );
-    });
-    subscription.on('error', (error: Error) => {
+    };
+    const onError: WssSubscriptionOnErrorFn = (error: Error) => {
       logger.warn(error);
+    };
+    return listener.subscribeEvent({
+      onError,
+      onData,
+      event: 'OrderStarted',
     });
-
-    return () => subscription.unsubscribe();
   }
 
   /**
@@ -318,11 +292,9 @@ class Orders implements StaticModel {
     callback: onOrdersStatusUpdatedCallback,
     orderId?: BlockchainId,
   ): () => void {
-    const contract = BlockchainEventsListener.getInstance().getContract();
+    const listener = BlockchainEventsListener.getInstance();
     const logger = this.logger.child({ method: 'onOrdersStatusUpdated' });
-
-    const subscription = contract.events.OrderStatusUpdated();
-    subscription.on('data', (event: EventLog): void => {
+    const onData: WssSubscriptionOnDataFn = (event: EventLog): void => {
       const parsedEvent = cleanWeb3Data(event.returnValues);
       if (orderId && parsedEvent.orderId != convertBigIntToString(orderId)) {
         return;
@@ -335,12 +307,15 @@ class Orders implements StaticModel {
           hash: <string>event.blockHash,
         },
       );
-    });
-    subscription.on('error', (error: Error) => {
+    };
+    const onError: WssSubscriptionOnErrorFn = (error: Error) => {
       logger.warn(error);
+    };
+    return listener.subscribeEvent({
+      onError,
+      onData,
+      event: 'OrderStatusUpdated',
     });
-
-    return () => subscription.unsubscribe();
   }
 
   /**
@@ -355,11 +330,9 @@ class Orders implements StaticModel {
     consumer?: string,
     orderId?: BlockchainId,
   ): () => void {
-    const contract = BlockchainEventsListener.getInstance().getContract();
+    const listener = BlockchainEventsListener.getInstance();
     const logger = this.logger.child({ method: 'onOrderDepositRefilled' });
-
-    const subscription = contract.events.OrderDepositRefilled();
-    subscription.on('data', (event: EventLog): void => {
+    const onData: WssSubscriptionOnDataFn = (event: EventLog): void => {
       const parsedEvent = cleanWeb3Data(event.returnValues);
       if (orderId && parsedEvent.orderId != convertBigIntToString(orderId)) {
         return;
@@ -376,12 +349,15 @@ class Orders implements StaticModel {
           hash: <string>event.blockHash,
         },
       );
-    });
-    subscription.on('error', (error: Error) => {
+    };
+    const onError: WssSubscriptionOnErrorFn = (error: Error) => {
       logger.warn(error);
+    };
+    return listener.subscribeEvent({
+      onError,
+      onData,
+      event: 'OrderDepositRefilled',
     });
-
-    return () => subscription.unsubscribe();
   }
 
   /**
@@ -394,11 +370,9 @@ class Orders implements StaticModel {
     callback: onOrderChangeWithdrawnCallback,
     orderId?: BlockchainId,
   ): () => void {
-    const contract = BlockchainEventsListener.getInstance().getContract();
+    const listener = BlockchainEventsListener.getInstance();
     const logger = this.logger.child({ method: 'onOrderChangeWithdrawn' });
-
-    const subscription = contract.events.OrderChangeWithdrawn();
-    subscription.on('data', (event: EventLog): void => {
+    const onData: WssSubscriptionOnDataFn = (event: EventLog): void => {
       const parsedEvent = cleanWeb3Data(event.returnValues);
       if (orderId && parsedEvent.orderId != convertBigIntToString(orderId)) {
         return;
@@ -412,12 +386,15 @@ class Orders implements StaticModel {
           hash: <string>event.blockHash,
         },
       );
-    });
-    subscription.on('error', (error: Error) => {
+    };
+    const onError: WssSubscriptionOnErrorFn = (error: Error) => {
       logger.warn(error);
+    };
+    return listener.subscribeEvent({
+      onError,
+      onData,
+      event: 'OrderChangeWithdrawn',
     });
-
-    return () => subscription.unsubscribe();
   }
 
   /**
@@ -432,11 +409,9 @@ class Orders implements StaticModel {
     orderId?: BlockchainId,
     tokenReceiver?: string,
   ): () => void {
-    const contract = BlockchainEventsListener.getInstance().getContract();
+    const listener = BlockchainEventsListener.getInstance();
     const logger = this.logger.child({ method: 'onOrderProfitWithdrawn' });
-
-    const subscription = contract.events.OrderProfitWithdrawn();
-    subscription.on('data', (event: EventLog): void => {
+    const onData: WssSubscriptionOnDataFn = (event: EventLog): void => {
       const parsedEvent = cleanWeb3Data(event.returnValues);
       if (orderId && parsedEvent.orderId != convertBigIntToString(orderId)) {
         return;
@@ -453,12 +428,15 @@ class Orders implements StaticModel {
           hash: <string>event.blockHash,
         },
       );
-    });
-    subscription.on('error', (error: Error) => {
+    };
+    const onError: WssSubscriptionOnErrorFn = (error: Error) => {
       logger.warn(error);
+    };
+    return listener.subscribeEvent({
+      onError,
+      onData,
+      event: 'OrderProfitWithdrawn',
     });
-
-    return () => subscription.unsubscribe();
   }
 
   /**
@@ -473,11 +451,9 @@ class Orders implements StaticModel {
     consumer?: string,
     orderId?: BlockchainId,
   ): () => void {
-    const contract = BlockchainEventsListener.getInstance().getContract();
+    const listener = BlockchainEventsListener.getInstance();
     const logger = this.logger.child({ method: 'onOrderAwaitingPaymentChanged' });
-
-    const subscription = contract.events.OrderAwaitingPaymentChanged();
-    subscription.on('data', (event: EventLog): void => {
+    const onData: WssSubscriptionOnDataFn = (event: EventLog): void => {
       const parsedEvent = cleanWeb3Data(event.returnValues);
       if (orderId && parsedEvent.orderId != convertBigIntToString(orderId)) {
         return;
@@ -494,12 +470,15 @@ class Orders implements StaticModel {
           hash: <string>event.blockHash,
         },
       );
-    });
-    subscription.on('error', (error: Error) => {
+    };
+    const onError: WssSubscriptionOnErrorFn = (error: Error) => {
       logger.warn(error);
+    };
+    return listener.subscribeEvent({
+      onError,
+      onData,
+      event: 'OrderAwaitingPaymentChanged',
     });
-
-    return () => subscription.unsubscribe();
   }
 
   /**
@@ -514,11 +493,9 @@ class Orders implements StaticModel {
     consumer?: string,
     orderId?: BlockchainId,
   ): () => void {
-    const contract = BlockchainEventsListener.getInstance().getContract();
+    const listener = BlockchainEventsListener.getInstance();
     const logger = this.logger.child({ method: 'onOrderEncryptedResultUpdated' });
-
-    const subscription = contract.events.OrderEncryptedResultUpdated();
-    subscription.on('data', (event: EventLog): void => {
+    const onData: WssSubscriptionOnDataFn = (event: EventLog): void => {
       const parsedEvent = cleanWeb3Data(event.returnValues);
       if (orderId && parsedEvent.orderId != convertBigIntToString(orderId)) {
         return;
@@ -535,12 +512,15 @@ class Orders implements StaticModel {
           hash: <string>event.blockHash,
         },
       );
-    });
-    subscription.on('error', (error: Error) => {
+    };
+    const onError: WssSubscriptionOnErrorFn = (error: Error) => {
       logger.warn(error);
+    };
+    return listener.subscribeEvent({
+      onError,
+      onData,
+      event: 'OrderEncryptedResultUpdated',
     });
-
-    return () => subscription.unsubscribe();
   }
 
   /**
@@ -555,11 +535,9 @@ class Orders implements StaticModel {
     consumer?: string,
     orderId?: BlockchainId,
   ): () => void {
-    const contract = BlockchainEventsListener.getInstance().getContract();
+    const listener = BlockchainEventsListener.getInstance();
     const logger = this.logger.child({ method: 'onOrderOptionsDepositSpentChanged' });
-
-    const subscription = contract.events.OrderOptionsDepositSpentChanged();
-    subscription.on('data', (event: EventLog): void => {
+    const onData: WssSubscriptionOnDataFn = (event: EventLog): void => {
       const parsedEvent = cleanWeb3Data(event.returnValues);
       if (orderId && parsedEvent.orderId != convertBigIntToString(orderId)) {
         return;
@@ -576,12 +554,15 @@ class Orders implements StaticModel {
           hash: <string>event.blockHash,
         },
       );
-    });
-    subscription.on('error', (error: Error) => {
+    };
+    const onError: WssSubscriptionOnErrorFn = (error: Error) => {
       logger.warn(error);
+    };
+    return listener.subscribeEvent({
+      onError,
+      onData,
+      event: 'OrderOptionsDepositSpentChanged',
     });
-
-    return () => subscription.unsubscribe();
   }
 
   /**
@@ -596,11 +577,9 @@ class Orders implements StaticModel {
     tokenReceiver?: string,
     orderId?: BlockchainId,
   ): () => void {
-    const contract = BlockchainEventsListener.getInstance().getContract();
+    const listener = BlockchainEventsListener.getInstance();
     const logger = this.logger.child({ method: 'onOrderProfitUnlocked' });
-
-    const subscription = contract.events.OrderProfitUnlocked();
-    subscription.on('data', (event: EventLog): void => {
+    const onData: WssSubscriptionOnDataFn = (event: EventLog): void => {
       const parsedEvent = cleanWeb3Data(event.returnValues);
       if (orderId && parsedEvent.orderId != convertBigIntToString(orderId)) {
         return;
@@ -617,12 +596,15 @@ class Orders implements StaticModel {
           hash: <string>event.blockHash,
         },
       );
-    });
-    subscription.on('error', (error: Error) => {
+    };
+    const onError: WssSubscriptionOnErrorFn = (error: Error) => {
       logger.warn(error);
+    };
+    return listener.subscribeEvent({
+      onError,
+      onData,
+      event: 'OrderProfitUnlocked',
     });
-
-    return () => subscription.unsubscribe();
   }
 
   /**

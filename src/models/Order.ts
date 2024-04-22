@@ -35,6 +35,10 @@ import TeeOffers from '../staticModels/TeeOffers.js';
 import TxManager from '../utils/TxManager.js';
 import { tryWithInterval } from '../utils/helpers/index.js';
 import { BLOCKCHAIN_CALL_RETRY_INTERVAL, BLOCKCHAIN_CALL_RETRY_ATTEMPTS } from '../constants.js';
+import {
+  WssSubscriptionOnDataFn,
+  WssSubscriptionOnErrorFn,
+} from '../connectors/BlockchainEventsListener.js';
 
 class Order {
   private static contract: Contract<typeof abi>;
@@ -457,25 +461,13 @@ class Order {
 
     if (checkTxBeforeSend) {
       await TxManager.dryRun(
-        Order.contract.methods.createSubOrder(
-          this.id,
-          preparedInfo,
-          slots,
-          args,
-          params,
-        ),
+        Order.contract.methods.createSubOrder(this.id, preparedInfo, slots, args, params),
         transactionOptions,
       );
     }
 
     await TxManager.execute(
-      Order.contract.methods.createSubOrder(
-        this.id,
-        preparedInfo,
-        slots,
-        args,
-        params,
-      ),
+      Order.contract.methods.createSubOrder(this.id, preparedInfo, slots, args, params),
       transactionOptions,
     );
   }
@@ -529,24 +521,25 @@ class Order {
    * @returns unsubscribe - function unsubscribing from event
    */
   public onStatusUpdated(callback: onOrderStatusUpdatedCallback): () => void {
+    const listener = BlockchainEventsListener.getInstance();
     const logger = this.logger.child({ method: 'onOrderStatusUpdated' });
-
-    // TODO: add ability to use this event without https provider initialization
-    const contractWss = BlockchainEventsListener.getInstance().getContract();
-    const subscription = contractWss.events.OrderStatusUpdated();
-    subscription.on('data', (event: EventLog): void => {
+    const onData: WssSubscriptionOnDataFn = (event: EventLog): void => {
       if (event.returnValues.orderId != this.id) {
         return;
       }
       const newStatus = <OrderStatus>event.returnValues.status?.toString();
       if (this.orderInfo) this.orderInfo.status = newStatus;
       callback(newStatus);
-    });
-    subscription.on('error', (error: Error) => {
+    };
+    const onError: WssSubscriptionOnErrorFn = (error: Error) => {
       logger.warn(error);
-    });
+    };
 
-    return () => subscription.unsubscribe();
+    return listener.subscribeEvent({
+      onError,
+      onData,
+      event: 'OrderStatusUpdated',
+    });
   }
 }
 

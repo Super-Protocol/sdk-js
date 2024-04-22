@@ -10,6 +10,10 @@ import {
 import { BlockchainConnector, BlockchainEventsListener } from '../connectors/index.js';
 import { DepositInfo, BlockInfo, TransactionOptions, TokenAmount } from '../types/index.js';
 import { EventLog } from 'web3-eth-contract';
+import {
+  WssSubscriptionOnDataFn,
+  WssSubscriptionOnErrorFn,
+} from '../connectors/BlockchainEventsListener.js';
 
 class Deposits {
   private static readonly logger = rootLogger.child({ className: 'Deposits' });
@@ -101,11 +105,9 @@ class Deposits {
     callback: onDepositReplenishedCallback,
     owner?: string,
   ): () => void {
-    const contract = BlockchainEventsListener.getInstance().getContract();
+    const listener = BlockchainEventsListener.getInstance();
     const logger = this.logger.child({ method: 'onDepositReplenished' });
-
-    const subscription = contract.events.DepositReplenished();
-    subscription.on('data', (event: EventLog): void => {
+    const onData: WssSubscriptionOnDataFn = (event: EventLog): void => {
       const parsedEvent = cleanWeb3Data(event.returnValues);
       if (owner && event.returnValues.owner != owner) {
         return;
@@ -119,12 +121,15 @@ class Deposits {
           hash: <string>event.blockHash,
         },
       );
-    });
-    subscription.on('error', (error: Error) => {
+    };
+    const onError: WssSubscriptionOnErrorFn = (error: Error) => {
       logger.warn(error);
+    };
+    return listener.subscribeEvent({
+      onError,
+      onData,
+      event: 'DepositReplenished',
     });
-
-    return () => subscription.unsubscribe();
   }
 
   /**
@@ -137,11 +142,9 @@ class Deposits {
     callback: onDepositWithdrawnCallback,
     owner?: string,
   ): () => void {
-    const contract = BlockchainEventsListener.getInstance().getContract();
+    const listener = BlockchainEventsListener.getInstance();
     const logger = this.logger.child({ method: 'onDepositWithdrawn' });
-
-    const subscription = contract.events.DepositWithdrawn();
-    subscription.on('data', (event: EventLog): void => {
+    const onData: WssSubscriptionOnDataFn = (event: EventLog): void => {
       const parsedEvent = cleanWeb3Data(event.returnValues);
       if (owner && parsedEvent.owner != owner) {
         return;
@@ -155,12 +158,15 @@ class Deposits {
           hash: <string>event.blockHash,
         },
       );
-    });
-    subscription.on('error', (error: Error) => {
+    };
+    const onError: WssSubscriptionOnErrorFn = (error: Error) => {
       logger.warn(error);
+    };
+    return listener.subscribeEvent({
+      onError,
+      onData,
+      event: 'DepositWithdrawn',
     });
-
-    return () => subscription.unsubscribe();
   }
 
   /**
@@ -173,11 +179,9 @@ class Deposits {
     callback: onDepositPartLockedCallback,
     owner?: string,
   ): () => void {
-    const contract = BlockchainEventsListener.getInstance().getContract();
+    const listener = BlockchainEventsListener.getInstance();
     const logger = this.logger.child({ method: 'onDepositPartLocked' });
-
-    const subscription = contract.events.DepositPartLocked();
-    subscription.on('data', (event: EventLog): void => {
+    const onData: WssSubscriptionOnDataFn = (event: EventLog): void => {
       const parsedEvent = cleanWeb3Data(event.returnValues);
       if (owner && parsedEvent.owner != owner) {
         return;
@@ -191,12 +195,15 @@ class Deposits {
           hash: <string>event.blockHash,
         },
       );
-    });
-    subscription.on('error', (error: Error) => {
+    };
+    const onError: WssSubscriptionOnErrorFn = (error: Error) => {
       logger.warn(error);
+    };
+    return listener.subscribeEvent({
+      onError,
+      onData,
+      event: 'DepositPartLocked',
     });
-
-    return () => subscription.unsubscribe();
   }
 
   /**
@@ -209,11 +216,9 @@ class Deposits {
     callback: onDepositPartUnlockedCallback,
     owner?: string,
   ): () => void {
-    const contract = BlockchainEventsListener.getInstance().getContract();
+    const listener = BlockchainEventsListener.getInstance();
     const logger = this.logger.child({ method: 'onDepositPartUnlocked' });
-
-    const subscription = contract.events.DepositPartUnlocked();
-    subscription.on('data', (event: EventLog): void => {
+    const onData: WssSubscriptionOnDataFn = (event: EventLog): void => {
       const parsedEvent = cleanWeb3Data(event.returnValues);
       if (owner && parsedEvent.owner != owner) {
         return;
@@ -227,12 +232,15 @@ class Deposits {
           hash: <string>event.blockHash,
         },
       );
-    });
-    subscription.on('error', (error: Error) => {
+    };
+    const onError: WssSubscriptionOnErrorFn = (error: Error) => {
       logger.warn(error);
+    };
+    return listener.subscribeEvent({
+      onError,
+      onData,
+      event: 'DepositPartUnlocked',
     });
-
-    return () => subscription.unsubscribe();
   }
 }
 

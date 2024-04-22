@@ -27,6 +27,10 @@ import Superpro from './Superpro.js';
 import TxManager from '../utils/TxManager.js';
 import { EventLog } from 'web3-eth-contract';
 import StaticModel from './StaticModel.js';
+import {
+  WssSubscriptionOnDataFn,
+  WssSubscriptionOnErrorFn,
+} from '../connectors/BlockchainEventsListener.js';
 
 class TeeOffers {
   private static coresDenominator?: number;
@@ -70,17 +74,17 @@ class TeeOffers {
 
     const count = Number(await contract.methods.getOffersTotalCount().call());
 
-    const teeOfffersSet = new Set(this.teeOffers);
+    const teeOffersSet = new Set(this.teeOffers);
 
-    for (let offerId = teeOfffersSet.size + 1; offerId <= count; ++offerId) {
+    for (let offerId = teeOffersSet.size + 1; offerId <= count; ++offerId) {
       const offerType = (
         await contract.methods.getOfferType(offerId).call()
       ).toString() as OfferType;
       if (offerType === OfferType.TeeOffer) {
-        teeOfffersSet.add(offerId.toString());
+        teeOffersSet.add(offerId.toString());
       }
     }
-    this.teeOffers = Array.from(teeOfffersSet);
+    this.teeOffers = Array.from(teeOffersSet);
 
     return this.teeOffers;
   }
@@ -136,15 +140,15 @@ class TeeOffers {
 
   /**
    * Function for fetching TEE offer id by TEE deviceId
-   * @param deviceId - unque TEE device id (unparsed, from blockchain)
+   * @param deviceId - unique TEE device id (unparsed, from blockchain)
    * @returns TEE offer id
    */
   public static getByDeviceId(deviceId: string): Promise<BlockchainId> {
     const contract = BlockchainConnector.getInstance().getContract();
 
-    const fromattedDeviceId = packDeviceId(deviceId);
+    const formattedDeviceId = packDeviceId(deviceId);
 
-    return contract.methods.getTeeOfferByDeviceId(fromattedDeviceId).call();
+    return contract.methods.getTeeOfferByDeviceId(formattedDeviceId).call();
   }
 
   /**
@@ -223,11 +227,9 @@ class TeeOffers {
    * @returns unsubscribe - unsubscribe function from event
    */
   public static onSlotAdded(callback: onTeeSlotAddedCallback, creator?: string): () => void {
-    const contract = BlockchainEventsListener.getInstance().getContract();
+    const listener = BlockchainEventsListener.getInstance();
     const logger = this.logger.child({ method: 'onTeeSlotAdded' });
-
-    const subscription = contract.events.TeeSlotAdded();
-    subscription.on('data', (event: EventLog): void => {
+    const onData: WssSubscriptionOnDataFn = (event: EventLog): void => {
       const parsedEvent = cleanWeb3Data(event.returnValues);
       if (creator && parsedEvent.creator != creator) {
         return;
@@ -242,12 +244,15 @@ class TeeOffers {
           hash: <string>event.blockHash,
         },
       );
-    });
-    subscription.on('error', (error: Error) => {
+    };
+    const onError: WssSubscriptionOnErrorFn = (error: Error) => {
       logger.warn(error);
+    };
+    return listener.subscribeEvent({
+      onError,
+      onData,
+      event: 'TeeSlotAdded',
     });
-
-    return () => subscription.unsubscribe();
   }
 
   /**
@@ -256,11 +261,9 @@ class TeeOffers {
    * @returns unsubscribe - unsubscribe function from event
    */
   public static onSlotUpdated(callback: onTeeSlotUpdatedCallback): () => void {
-    const contract = BlockchainEventsListener.getInstance().getContract();
+    const listener = BlockchainEventsListener.getInstance();
     const logger = this.logger.child({ method: 'onTeeSlotUpdated' });
-
-    const subscription = contract.events.TeeSlotUpdated();
-    subscription.on('data', (event: EventLog): void => {
+    const onData: WssSubscriptionOnDataFn = (event: EventLog): void => {
       const parsedEvent = cleanWeb3Data(event.returnValues);
       callback(
         <BlockchainId>parsedEvent.offerId,
@@ -270,12 +273,15 @@ class TeeOffers {
           hash: <string>event.blockHash,
         },
       );
-    });
-    subscription.on('error', (error: Error) => {
+    };
+    const onError: WssSubscriptionOnErrorFn = (error: Error) => {
       logger.warn(error);
+    };
+    return listener.subscribeEvent({
+      onError,
+      onData,
+      event: 'TeeSlotUpdated',
     });
-
-    return () => subscription.unsubscribe();
   }
 
   /**
@@ -284,11 +290,9 @@ class TeeOffers {
    * @returns unsubscribe - unsubscribe function from event
    */
   public static onSlotDeleted(callback: onTeeSlotDeletedCallback): () => void {
-    const contract = BlockchainEventsListener.getInstance().getContract();
+    const listener = BlockchainEventsListener.getInstance();
     const logger = this.logger.child({ method: 'onTeeSlotDeleted' });
-
-    const subscription = contract.events.TeeSlotDeleted();
-    subscription.on('data', (event: EventLog): void => {
+    const onData: WssSubscriptionOnDataFn = (event: EventLog): void => {
       const parsedEvent = cleanWeb3Data(event.returnValues);
       callback(
         <BlockchainId>parsedEvent.offerId,
@@ -298,12 +302,15 @@ class TeeOffers {
           hash: <string>event.blockHash,
         },
       );
-    });
-    subscription.on('error', (error: Error) => {
+    };
+    const onError: WssSubscriptionOnErrorFn = (error: Error) => {
       logger.warn(error);
+    };
+    return listener.subscribeEvent({
+      onError,
+      onData,
+      event: 'TeeSlotDeleted',
     });
-
-    return () => subscription.unsubscribe();
   }
 
   /**
@@ -313,11 +320,9 @@ class TeeOffers {
    * @returns unsubscribe - unsubscribe function from event
    */
   public static onOptionAdded(callback: onTeeOptionAddedCallback, creator?: string): () => void {
-    const contract = BlockchainEventsListener.getInstance().getContract();
+    const listener = BlockchainEventsListener.getInstance();
     const logger = this.logger.child({ method: 'onTeeOptionAddedCallback' });
-
-    const subscription = contract.events.OptionAdded();
-    subscription.on('data', (event: EventLog): void => {
+    const onData: WssSubscriptionOnDataFn = (event: EventLog): void => {
       const parsedEvent = cleanWeb3Data(event.returnValues);
       if (creator && parsedEvent.creator != creator) {
         return;
@@ -332,12 +337,15 @@ class TeeOffers {
           hash: <string>event.blockHash,
         },
       );
-    });
-    subscription.on('error', (error: Error): void => {
+    };
+    const onError: WssSubscriptionOnErrorFn = (error: Error) => {
       logger.warn(error);
+    };
+    return listener.subscribeEvent({
+      onError,
+      onData,
+      event: 'OptionAdded',
     });
-
-    return () => subscription.unsubscribe();
   }
 
   /**
@@ -350,11 +358,9 @@ class TeeOffers {
     callback: onTeeOptionUpdatedCallback,
     teeOfferId?: BlockchainId,
   ): () => void {
-    const contract = BlockchainEventsListener.getInstance().getContract();
+    const listener = BlockchainEventsListener.getInstance();
     const logger = this.logger.child({ method: 'onTeeOptionUpdatedCallback' });
-
-    const subscription = contract.events.OptionUpdated();
-    subscription.on('data', (event: EventLog): void => {
+    const onData: WssSubscriptionOnDataFn = (event: EventLog): void => {
       const parsedEvent = cleanWeb3Data(event.returnValues);
       if (teeOfferId && event.returnValues.teeOfferId != convertBigIntToString(teeOfferId)) {
         return;
@@ -367,12 +373,15 @@ class TeeOffers {
           hash: <string>event.blockHash,
         },
       );
-    });
-    subscription.on('error', (error: Error) => {
+    };
+    const onError: WssSubscriptionOnErrorFn = (error: Error) => {
       logger.warn(error);
+    };
+    return listener.subscribeEvent({
+      onError,
+      onData,
+      event: 'OptionUpdated',
     });
-
-    return () => subscription.unsubscribe();
   }
 
   /**
@@ -385,11 +394,9 @@ class TeeOffers {
     callback: onTeeOptionDeletedCallback,
     teeOfferId?: BlockchainId,
   ): () => void {
-    const contract = BlockchainEventsListener.getInstance().getContract();
+    const listener = BlockchainEventsListener.getInstance();
     const logger = this.logger.child({ method: 'onTeeOptionDeletedCallback' });
-
-    const subscription = contract.events.OptionDeleted();
-    subscription.on('data', (event: EventLog): void => {
+    const onData: WssSubscriptionOnDataFn = (event: EventLog): void => {
       const parsedEvent = cleanWeb3Data(event.returnValues);
       if (teeOfferId && parsedEvent.teeOfferId != convertBigIntToString(teeOfferId)) {
         return;
@@ -402,12 +409,15 @@ class TeeOffers {
           hash: <string>event.blockHash,
         },
       );
-    });
-    subscription.on('error', (error: Error) => {
+    };
+    const onError: WssSubscriptionOnErrorFn = (error: Error) => {
       logger.warn(error);
+    };
+    return listener.subscribeEvent({
+      onError,
+      onData,
+      event: 'OptionDeleted',
     });
-
-    return () => subscription.unsubscribe();
   }
 
   /**
@@ -416,11 +426,9 @@ class TeeOffers {
    * @returns unsubscribe - unsubscribe function from event
    */
   public static onCreated(callback: onTeeOfferCreatedCallback): () => void {
-    const contract = BlockchainEventsListener.getInstance().getContract();
+    const listener = BlockchainEventsListener.getInstance();
     const logger = this.logger.child({ method: 'onTeeOfferCreated' });
-
-    const subscription = contract.events.TeeOfferCreated();
-    subscription.on('data', (event: EventLog): void => {
+    const onData: WssSubscriptionOnDataFn = (event: EventLog): void => {
       const parsedEvent = cleanWeb3Data(event.returnValues);
       callback(
         <BlockchainId>parsedEvent.offerId,
@@ -431,20 +439,21 @@ class TeeOffers {
           hash: <string>event.blockHash,
         },
       );
-    });
-    subscription.on('error', (error: Error) => {
+    };
+    const onError: WssSubscriptionOnErrorFn = (error: Error) => {
       logger.warn(error);
+    };
+    return listener.subscribeEvent({
+      onError,
+      onData,
+      event: 'TeeOfferCreated',
     });
-
-    return () => subscription.unsubscribe();
   }
 
   public static onViolationRateChanged(callback: onTeeViolationRateChangedCallback): () => void {
-    const contract = BlockchainEventsListener.getInstance().getContract();
+    const listener = BlockchainEventsListener.getInstance();
     const logger = this.logger.child({ method: 'onTeeOfferViolationRateChanged' });
-
-    const subscription = contract.events.TeeOfferViolationRateChanged();
-    subscription.on('data', (event: EventLog): void => {
+    const onData: WssSubscriptionOnDataFn = (event: EventLog): void => {
       const parsedEvent = cleanWeb3Data(event.returnValues);
       callback(
         <BlockchainId>parsedEvent.offerId,
@@ -455,12 +464,15 @@ class TeeOffers {
           hash: <string>event.blockHash,
         },
       );
-    });
-    subscription.on('error', (error: Error) => {
+    };
+    const onError: WssSubscriptionOnErrorFn = (error: Error) => {
       logger.warn(error);
+    };
+    return listener.subscribeEvent({
+      onError,
+      onData,
+      event: 'TeeOfferViolationRateChanged',
     });
-
-    return () => subscription.unsubscribe();
   }
 }
 

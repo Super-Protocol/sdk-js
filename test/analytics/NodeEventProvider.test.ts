@@ -1,4 +1,4 @@
-import NodeEventProvider from '../../src/analytics/eventProviders/NodeEventProvider';
+import NodeEventProvider from '../../src/analytics/eventProviders/NodeEventProvider.js';
 
 Object.defineProperties(process, {
   version: {

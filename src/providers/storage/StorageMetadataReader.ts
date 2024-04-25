@@ -1,7 +1,7 @@
-import StorageObject from '../../types/storage/StorageObject';
-import logger, { Logger } from '../../logger';
-import { CacheRecord } from './types';
-import StorageKeyValueAdapter from './StorageKeyValueAdapter';
+import StorageObject from '../../types/storage/StorageObject.js';
+import logger, { Logger } from '../../logger.js';
+import { CacheRecord } from './types.js';
+import StorageKeyValueAdapter from './StorageKeyValueAdapter.js';
 
 export interface InstancesUpdates {
   updated: Map<string, StorageObject>;

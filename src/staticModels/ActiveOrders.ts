@@ -1,7 +1,7 @@
-import Superpro from './Superpro';
-import { BlockchainConnector } from '../connectors';
-import { convertBigIntToString, incrementMethodCall } from '../utils/helper';
-import { BlockchainId } from '../types';
+import Superpro from './Superpro.js';
+import { BlockchainConnector } from '../connectors/index.js';
+import { convertBigIntToString, incrementMethodCall } from '../utils/helper.js';
+import { BlockchainId } from '../types/index.js';
 
 class ActiveOrders {
   public static get address(): string {

@@ -1,5 +1,5 @@
 import Web3 from 'web3';
-import rootLogger from '../logger';
+import rootLogger from '../logger.js';
 import { Logger } from 'pino';
 
 class NonceTracker {

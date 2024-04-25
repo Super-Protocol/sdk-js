@@ -1,6 +1,6 @@
-import { BlockchainId } from './Web3';
-import { SlotInfo } from './SlotInfo';
-import { SlotUsage } from './SlotUsage';
+import { BlockchainId } from './Web3.js';
+import { SlotInfo } from './SlotInfo.js';
+import { SlotUsage } from './SlotUsage.js';
 
 export type TeeOfferSlot = {
   id: BlockchainId;

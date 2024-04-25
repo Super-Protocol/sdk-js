@@ -7,7 +7,7 @@ import {
 } from '@super-protocol/dto-js';
 import { ReadStream, WriteStream } from 'fs';
 
-import NativeCrypto from './NativeCrypto';
+import NativeCrypto from './NativeCrypto.js';
 
 class ARIA {
   public static async encrypt(content: string, encryption: Encryption): Promise<ARIAEncryption> {

@@ -1,6 +1,6 @@
-import StorageKeyValueAdapter from '../../src/providers/storage/StorageKeyValueAdapter';
-import StorageProviderMock, { getDefaultListObjectMock } from '../mocks/StorageProvider.mock';
-import { keyValueStorageAdapterConfig, aesKey } from './utils';
+import StorageKeyValueAdapter from '../../src/providers/storage/StorageKeyValueAdapter.js';
+import StorageProviderMock, { getDefaultListObjectMock } from '../mocks/StorageProvider.mock.js';
+import { keyValueStorageAdapterConfig, aesKey } from './utils.js';
 
 const data = { message: 'I am a secret data!' };
 

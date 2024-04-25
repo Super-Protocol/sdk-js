@@ -1,11 +1,11 @@
 import { Readable } from 'stream';
 import { Encryption, CryptoAlgorithm, Encoding, Cipher } from '@super-protocol/dto-js';
-import StorageAccess from '../../types/storage/StorageAccess';
-import StorageObject from '../../types/storage/StorageObject';
-import getStorageProvider from './getStorageProvider';
-import IStorageProvider from './IStorageProvider';
-import logger, { Logger } from '../../logger';
-import Crypto from '../../crypto/Crypto';
+import StorageAccess from '../../types/storage/StorageAccess.js';
+import StorageObject from '../../types/storage/StorageObject.js';
+import getStorageProvider from './getStorageProvider.js';
+import IStorageProvider from './IStorageProvider.js';
+import logger, { Logger } from '../../logger.js';
+import Crypto from '../../crypto/Crypto.js';
 
 export interface StorageKeyValueAdapterConfig {
   showLogs?: boolean;

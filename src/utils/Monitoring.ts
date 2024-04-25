@@ -1,4 +1,4 @@
-import rootLogger from '../logger';
+import rootLogger from '../logger.js';
 
 export class Monitoring {
   private static instance: Monitoring;

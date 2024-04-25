@@ -1,8 +1,8 @@
-import { TeeSgxParser } from '../../src/tee/QuoteParser';
-import { TeeSgxQuoteDataType, TeeSgxReportDataType } from '../../src/tee/types';
+import { TeeSgxParser } from '../../src/tee/QuoteParser.js';
+import { TeeSgxQuoteDataType, TeeSgxReportDataType } from '../../src/tee/types.js';
 import * as crypto from 'crypto';
 import elliptic from 'elliptic';
-import { testQuotes } from './examples';
+import { testQuotes } from './examples.js';
 
 describe('TeeSgxParser', () => {
   const parser = new TeeSgxParser();

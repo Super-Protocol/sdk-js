@@ -1,1 +1,1 @@
-export * from './getResourceLoader';
+export * from './getResourceLoader.js';

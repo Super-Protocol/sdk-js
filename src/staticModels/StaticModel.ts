@@ -1,11 +1,11 @@
-import { formatBytes32String, parseBytes32String } from 'ethers/lib/utils';
+import { formatBytes32String, parseBytes32String } from 'ethers/lib/utils.js';
 import { ContractEvents, DecodedParams } from 'web3';
-import BlockchainConnector from '../connectors/BlockchainConnector';
-import { EventOptions, FilterWithExternalId } from '../types';
-import rootLogger from '../logger';
-import { cleanWeb3Data, isValidBytes32Hex } from '../utils/helper';
+import BlockchainConnector from '../connectors/BlockchainConnector.js';
+import { EventOptions, FilterWithExternalId } from '../types/index.js';
+import rootLogger from '../logger.js';
+import { cleanWeb3Data, isValidBytes32Hex } from '../utils/helper.js';
 import { EventLog } from 'web3-eth-contract';
-import abi from '../contracts/abi';
+import abi from '../contracts/abi.js';
 
 interface IObjectWithExternalId {
   externalId: string

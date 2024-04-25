@@ -1,8 +1,8 @@
 import { LRUCache } from 'lru-cache';
 import Queue from 'p-queue';
-import logger, { Logger } from '../../logger';
-import { CacheRecord, Performance } from './types';
-import StorageKeyValueAdapter from './StorageKeyValueAdapter';
+import logger, { Logger } from '../../logger.js';
+import { CacheRecord, Performance } from './types.js';
+import StorageKeyValueAdapter from './StorageKeyValueAdapter.js';
 
 export interface StorageContentWriterConfig<V extends object> {
   interval: number;

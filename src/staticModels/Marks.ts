@@ -1,7 +1,7 @@
-import { BlockchainConnector } from '../connectors';
-import Superpro from './Superpro';
-import { BlockchainId, Mark, ProviderMarksCount } from '../types';
-import { cleanWeb3Data } from '../utils/helper';
+import { BlockchainConnector } from '../connectors/index.js';
+import Superpro from './Superpro.js';
+import { BlockchainId, Mark, ProviderMarksCount } from '../types/index.js';
+import { cleanWeb3Data } from '../utils/helper.js';
 
 class Marks {
   public static get address(): string {

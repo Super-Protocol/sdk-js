@@ -6,13 +6,14 @@ import {
   Encryption,
   Hash,
   RSAHybridEncryption,
+  EncryptionKey,
 } from '@super-protocol/dto-js';
 import fs from 'fs';
-import AES from './nodejs/AES';
-import ARIA from './nodejs/ARIA';
-import ECIES from './nodejs/ECIES';
-import RSAHybrid from './nodejs/RSA-Hybrid';
-import NativeCrypto from './nodejs/NativeCrypto';
+import AES from './nodejs/AES.js';
+import ARIA from './nodejs/ARIA.js';
+import ECIES from './nodejs/ECIES.js';
+import RSAHybrid from './nodejs/RSA-Hybrid.js';
+import NativeCrypto from './nodejs/NativeCrypto.js';
 import { Readable } from 'stream';
 
 class Crypto {
@@ -82,7 +83,7 @@ class Crypto {
         return ARIA.decrypt(encryption as ARIAEncryption);
 
       case CryptoAlgorithm.ECIES:
-        return await ECIES.decrypt(encryption as ECIESEncryption);
+        return ECIES.decrypt(encryption as ECIESEncryption);
 
       case CryptoAlgorithm.RSAHybrid:
         return RSAHybrid.decrypt(encryption as RSAHybridEncryption);
@@ -144,6 +145,15 @@ class Crypto {
     return Buffer.isBuffer(param1)
       ? NativeCrypto.createHashFromBuffer(param1, algo, encoding)
       : await NativeCrypto.createHashFromStream(param1, algo, encoding);
+  }
+
+  public static getPublicKey(privateKey: EncryptionKey): EncryptionKey {
+    switch (privateKey.algo) {
+      case CryptoAlgorithm.ECIES:
+        return ECIES.getPublicKeyEncryption(privateKey);
+      default:
+        throw Error(`${privateKey.algo} algorithm not supported`);
+    }
   }
 }
 

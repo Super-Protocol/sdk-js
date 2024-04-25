@@ -6,11 +6,11 @@ import {
   downloadChunkMethod,
   DownloadDecorator,
   RetryDownloadChunkOptions,
-} from '../../providers/storage/ChunksDownloadDecorator';
-import { IResourceLoader, ResourceLoaderConfig } from '../../types/ResourceLoader';
-import getStorageProvider from '../../providers/storage/getStorageProvider';
-import IStorageProvider from '../../providers/storage/IStorageProvider';
-import { BaseResourceLoader } from './BaseResourceLoader';
+} from '../../providers/storage/ChunksDownloadDecorator.js';
+import { IResourceLoader, ResourceLoaderConfig } from '../../types/ResourceLoader.js';
+import getStorageProvider from '../../providers/storage/getStorageProvider.js';
+import IStorageProvider from '../../providers/storage/IStorageProvider.js';
+import { BaseResourceLoader } from './BaseResourceLoader.js';
 
 export class StorageProviderLoader extends BaseResourceLoader implements IResourceLoader {
   private static DEFAULT_RETRY_COUNT = 3;

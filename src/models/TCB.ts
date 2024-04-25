@@ -1,12 +1,12 @@
 import { Contract, TransactionReceipt } from 'web3';
-import { abi } from '../contracts/abi';
-import TxManager from '../utils/TxManager';
-import { BlockchainConnector } from '../connectors';
-import { BlockchainId, TcbData, TcbPublicData, TcbUtilityData, TransactionOptions } from '../types';
+import { abi } from '../contracts/abi.js';
+import TxManager from '../utils/TxManager.js';
+import { BlockchainConnector } from '../connectors/index.js';
+import { BlockchainId, TcbData, TcbPublicData, TcbUtilityData, TransactionOptions } from '../types/index.js';
 import { TcbVerifiedStatus } from '@super-protocol/dto-js';
-import { checkIfActionAccountInitialized, cleanWeb3Data, packDeviceId } from '../utils/helper';
-import Consensus from '../staticModels/Consensus';
-import rootLogger from '../logger';
+import { checkIfActionAccountInitialized, cleanWeb3Data, packDeviceId } from '../utils/helper.js';
+import Consensus from '../staticModels/Consensus.js';
+import rootLogger from '../logger.js';
 
 class TCB {
   private static readonly logger = rootLogger.child({ className: 'TCB' });

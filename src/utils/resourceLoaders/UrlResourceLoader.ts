@@ -3,7 +3,7 @@ import http from 'http';
 import https from 'https';
 import stream from 'stream';
 import { Resource, ResourceType, UrlResource } from '@super-protocol/dto-js';
-import { BaseResourceLoader } from './BaseResourceLoader';
+import { BaseResourceLoader } from './BaseResourceLoader.js';
 
 export class UrlResourceLoader extends BaseResourceLoader {
   public static type = ResourceType.Url;

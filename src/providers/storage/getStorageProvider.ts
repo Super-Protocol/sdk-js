@@ -1,8 +1,8 @@
 import { StorageType } from '@super-protocol/dto-js';
-import StorageAccess from '../../types/storage/StorageAccess';
-import IStorageProvider from './IStorageProvider';
-import StorjStorageProvider from './StorjStorageProvider';
-import { S3StorageProvider } from './S3StorageProvider';
+import StorageAccess from '../../types/storage/StorageAccess.js';
+import IStorageProvider from './IStorageProvider.js';
+import StorjStorageProvider from './StorjStorageProvider.js';
+import { S3StorageProvider } from './S3StorageProvider.js';
 
 export default (storageAccess: StorageAccess): IStorageProvider => {
   const key = storageAccess.storageType as StorageType;

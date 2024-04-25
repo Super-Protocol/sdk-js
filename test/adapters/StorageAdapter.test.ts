@@ -1,10 +1,10 @@
 import StorageAdapter, {
   StorageAdapterConfig,
   CacheEvents,
-} from '../../src/providers/storage/StorageAdapter';
-import StorageProviderMock from '../mocks/StorageProvider.mock';
-import { keyValueStorageAdapterConfig, bufferAesKey } from './utils';
-import { sleep } from '../utils';
+} from '../../src/providers/storage/StorageAdapter.js';
+import StorageProviderMock from '../mocks/StorageProvider.mock.js';
+import { keyValueStorageAdapterConfig, bufferAesKey } from './utils.js';
+import { sleep } from '../utils.js';
 
 interface Data {
   message: string;

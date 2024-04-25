@@ -1,6 +1,6 @@
-import StorageAccess from '../../types/storage/StorageAccess';
-import logger, { Logger } from '../../logger';
-import StorageAdapter, { StorageAdapterConfig, CacheEvents } from './StorageAdapter';
+import StorageAccess from '../../types/storage/StorageAccess.js';
+import logger, { Logger } from '../../logger.js';
+import StorageAdapter, { StorageAdapterConfig, CacheEvents } from './StorageAdapter.js';
 
 export type StorjConfig = StorageAdapterConfig;
 

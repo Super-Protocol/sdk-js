@@ -1,5 +1,5 @@
 import UAParser from 'ua-parser-js';
-import EventProvider from './EventProvider';
+import EventProvider from './EventProvider.js';
 
 export interface BrowserEventProviderProp {
   userId: string;

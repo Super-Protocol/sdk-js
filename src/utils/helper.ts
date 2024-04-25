@@ -1,9 +1,9 @@
-import store from '../store';
-import { TransactionOptions } from '../types/Web3';
+import store from '../store.js';
+import { TransactionOptions } from '../types/Web3.js';
 import Web3, { DecodedParams, JsonRpcError } from 'web3';
 import { Web3BatchRequest } from 'web3-core';
-import { Monitoring } from './Monitoring';
-import { SlotInfo } from '../types/SlotInfo';
+import { Monitoring } from './Monitoring.js';
+import { SlotInfo } from '../types/SlotInfo.js';
 import {
   OptionInfo,
   OptionInfoRaw,
@@ -17,8 +17,8 @@ import {
   TeeOfferSlot,
   ValueOfferSlot,
   ValueOfferSlotRaw,
-} from '../types';
-import { BLOCKCHAIN_BATCH_REQUEST_TIMEOUT } from '../constants';
+} from '../types/index.js';
+import { BLOCKCHAIN_BATCH_REQUEST_TIMEOUT } from '../constants.js';
 
 /**
  * Function for checking if provider action account initialized (required for set methods)
@@ -64,7 +64,7 @@ export const createTransactionOptions = async (
 ): Promise<TransactionOptions> => {
   if (!options) options = {};
   if (!options.from) options.from = store.actionAccount;
-  if (!options.gas) options.gas = store.gasLimit;
+  if (!options.gas) options.gas = BigInt(0);
   if (!options.gasPriceMultiplier) options.gasPriceMultiplier = store.gasPriceMultiplier;
   if (!options.gasPrice) {
     const web3 = options.web3 || store.web3Https;

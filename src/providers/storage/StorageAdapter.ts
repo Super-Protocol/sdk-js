@@ -1,13 +1,13 @@
 import { LRUCache } from 'lru-cache';
 import { createHash, randomUUID } from 'crypto';
 import Queue from 'p-queue';
-import StorageKeyValueAdapter from './StorageKeyValueAdapter';
-import StorageContentWriter, { ContentWriterType } from './StorageContentWriter';
-import StorageMetadataReader from './StorageMetadataReader';
-import StorageAccess from '../../types/storage/StorageAccess';
-import logger, { Logger } from '../../logger';
-import { CacheRecord, Performance } from './types';
-import PubSub from '../../utils/PubSub';
+import StorageKeyValueAdapter from './StorageKeyValueAdapter.js';
+import StorageContentWriter, { ContentWriterType } from './StorageContentWriter.js';
+import StorageMetadataReader from './StorageMetadataReader.js';
+import StorageAccess from '../../types/storage/StorageAccess.js';
+import logger, { Logger } from '../../logger.js';
+import { CacheRecord, Performance } from './types.js';
+import PubSub from '../../utils/PubSub.js';
 
 export interface LRUCacheConfig {
   max: number;

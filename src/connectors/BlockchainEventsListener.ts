@@ -108,23 +108,28 @@ export default class BlockchainEventsListener extends BaseConnector {
 
     const events: Omit<SubscribeParams, 'unsubscribe' | 'subscription'>[] = [];
 
-    try {
-      for (const [, item] of this.subscriptions) {
+    for (const [, item] of this.subscriptions) {
+      try {
         await item.subscription?.unsubscribe();
-        events.push(_.omit(item, ['unsubscribe', 'subscription']));
+      } catch (err) {
+        this.logger.error({ err }, 'Failed to unsubscribe');
       }
 
-      if (events.length) {
+      events.push(_.omit(item, ['unsubscribe', 'subscription']));
+    }
+
+    if (events.length) {
+      try {
         await Promise.all(events.map((event) => this.subscribeEvent(event)));
         this.logger.trace(`${events.length} subscriptions were resubscribed`);
+      } catch (err) {
+        this.logger.error({ err }, 'Something went wrong on resubscribing');
+
+        return false;
       }
-
-      return true;
-    } catch (err) {
-      this.logger.error({ err }, 'Something went wrong on resubscribing');
-
-      return false;
     }
+
+    return true;
   }
 
   async unsubscribeAll(): Promise<boolean> {

@@ -3026,6 +3026,224 @@ export const abi = [
     {
         "inputs": [
             {
+                "components": [
+                    {
+                        "internalType": "uint256[]",
+                        "name": "slotsIds",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint32[]",
+                        "name": "slotsCounts",
+                        "type": "uint32[]"
+                    },
+                    {
+                        "components": [
+                            {
+                                "internalType": "enum PriceType",
+                                "name": "priceType",
+                                "type": "uint8"
+                            },
+                            {
+                                "internalType": "uint256",
+                                "name": "price",
+                                "type": "uint256"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "minTimeMinutes",
+                                "type": "uint64"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "maxTimeMinutes",
+                                "type": "uint64"
+                            }
+                        ],
+                        "internalType": "struct SlotUsage[]",
+                        "name": "slotsUsages",
+                        "type": "tuple[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "slotsMaxPriceSlippages",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "slotsInfoModificationTime",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "optionsIds",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint32[]",
+                        "name": "optionsCounts",
+                        "type": "uint32[]"
+                    },
+                    {
+                        "components": [
+                            {
+                                "internalType": "enum PriceType",
+                                "name": "priceType",
+                                "type": "uint8"
+                            },
+                            {
+                                "internalType": "uint256",
+                                "name": "price",
+                                "type": "uint256"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "minTimeMinutes",
+                                "type": "uint64"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "maxTimeMinutes",
+                                "type": "uint64"
+                            }
+                        ],
+                        "internalType": "struct SlotUsage[]",
+                        "name": "optionsUsages",
+                        "type": "tuple[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "optionsMaxPriceSlippages",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "optionsInfoModificationTime",
+                        "type": "uint256[]"
+                    }
+                ],
+                "internalType": "struct OrderSlots",
+                "name": "slots",
+                "type": "tuple"
+            }
+        ],
+        "name": "validateTeeOfferSlots",
+        "outputs": [],
+        "stateMutability": "pure",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "uint256[]",
+                        "name": "slotsIds",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint32[]",
+                        "name": "slotsCounts",
+                        "type": "uint32[]"
+                    },
+                    {
+                        "components": [
+                            {
+                                "internalType": "enum PriceType",
+                                "name": "priceType",
+                                "type": "uint8"
+                            },
+                            {
+                                "internalType": "uint256",
+                                "name": "price",
+                                "type": "uint256"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "minTimeMinutes",
+                                "type": "uint64"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "maxTimeMinutes",
+                                "type": "uint64"
+                            }
+                        ],
+                        "internalType": "struct SlotUsage[]",
+                        "name": "slotsUsages",
+                        "type": "tuple[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "slotsMaxPriceSlippages",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "slotsInfoModificationTime",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "optionsIds",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint32[]",
+                        "name": "optionsCounts",
+                        "type": "uint32[]"
+                    },
+                    {
+                        "components": [
+                            {
+                                "internalType": "enum PriceType",
+                                "name": "priceType",
+                                "type": "uint8"
+                            },
+                            {
+                                "internalType": "uint256",
+                                "name": "price",
+                                "type": "uint256"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "minTimeMinutes",
+                                "type": "uint64"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "maxTimeMinutes",
+                                "type": "uint64"
+                            }
+                        ],
+                        "internalType": "struct SlotUsage[]",
+                        "name": "optionsUsages",
+                        "type": "tuple[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "optionsMaxPriceSlippages",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "optionsInfoModificationTime",
+                        "type": "uint256[]"
+                    }
+                ],
+                "internalType": "struct OrderSlots",
+                "name": "slots",
+                "type": "tuple"
+            }
+        ],
+        "name": "validateValueOfferSlots",
+        "outputs": [],
+        "stateMutability": "pure",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
                 "internalType": "uint256",
                 "name": "begin",
                 "type": "uint256"
@@ -3282,24 +3500,105 @@ export const abi = [
                 "type": "uint256"
             },
             {
-                "internalType": "uint256",
-                "name": "slotId",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint32",
-                "name": "slotCount",
-                "type": "uint32"
-            },
-            {
-                "internalType": "uint256[]",
-                "name": "optionsIds",
-                "type": "uint256[]"
-            },
-            {
-                "internalType": "uint32[]",
-                "name": "optionsCount",
-                "type": "uint32[]"
+                "components": [
+                    {
+                        "internalType": "uint256[]",
+                        "name": "slotsIds",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint32[]",
+                        "name": "slotsCounts",
+                        "type": "uint32[]"
+                    },
+                    {
+                        "components": [
+                            {
+                                "internalType": "enum PriceType",
+                                "name": "priceType",
+                                "type": "uint8"
+                            },
+                            {
+                                "internalType": "uint256",
+                                "name": "price",
+                                "type": "uint256"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "minTimeMinutes",
+                                "type": "uint64"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "maxTimeMinutes",
+                                "type": "uint64"
+                            }
+                        ],
+                        "internalType": "struct SlotUsage[]",
+                        "name": "slotsUsages",
+                        "type": "tuple[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "slotsMaxPriceSlippages",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "slotsInfoModificationTime",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "optionsIds",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint32[]",
+                        "name": "optionsCounts",
+                        "type": "uint32[]"
+                    },
+                    {
+                        "components": [
+                            {
+                                "internalType": "enum PriceType",
+                                "name": "priceType",
+                                "type": "uint8"
+                            },
+                            {
+                                "internalType": "uint256",
+                                "name": "price",
+                                "type": "uint256"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "minTimeMinutes",
+                                "type": "uint64"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "maxTimeMinutes",
+                                "type": "uint64"
+                            }
+                        ],
+                        "internalType": "struct SlotUsage[]",
+                        "name": "optionsUsages",
+                        "type": "tuple[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "optionsMaxPriceSlippages",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "optionsInfoModificationTime",
+                        "type": "uint256[]"
+                    }
+                ],
+                "internalType": "struct OrderSlots",
+                "name": "slots",
+                "type": "tuple"
             }
         ],
         "name": "getOfferMinDeposit",
@@ -4081,16 +4380,6 @@ export const abi = [
                         "internalType": "bytes32",
                         "name": "externalId",
                         "type": "bytes32"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "expectedPrice",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "maxPriceSlippage",
-                        "type": "uint256"
                     }
                 ],
                 "internalType": "struct OrderInfo",
@@ -4100,14 +4389,51 @@ export const abi = [
             {
                 "components": [
                     {
-                        "internalType": "uint256",
-                        "name": "slotId",
-                        "type": "uint256"
+                        "internalType": "uint256[]",
+                        "name": "slotsIds",
+                        "type": "uint256[]"
                     },
                     {
-                        "internalType": "uint32",
-                        "name": "slotCount",
-                        "type": "uint32"
+                        "internalType": "uint32[]",
+                        "name": "slotsCounts",
+                        "type": "uint32[]"
+                    },
+                    {
+                        "components": [
+                            {
+                                "internalType": "enum PriceType",
+                                "name": "priceType",
+                                "type": "uint8"
+                            },
+                            {
+                                "internalType": "uint256",
+                                "name": "price",
+                                "type": "uint256"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "minTimeMinutes",
+                                "type": "uint64"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "maxTimeMinutes",
+                                "type": "uint64"
+                            }
+                        ],
+                        "internalType": "struct SlotUsage[]",
+                        "name": "slotsUsages",
+                        "type": "tuple[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "slotsMaxPriceSlippages",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "slotsInfoModificationTime",
+                        "type": "uint256[]"
                     },
                     {
                         "internalType": "uint256[]",
@@ -4116,8 +4442,45 @@ export const abi = [
                     },
                     {
                         "internalType": "uint32[]",
-                        "name": "optionsCount",
+                        "name": "optionsCounts",
                         "type": "uint32[]"
+                    },
+                    {
+                        "components": [
+                            {
+                                "internalType": "enum PriceType",
+                                "name": "priceType",
+                                "type": "uint8"
+                            },
+                            {
+                                "internalType": "uint256",
+                                "name": "price",
+                                "type": "uint256"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "minTimeMinutes",
+                                "type": "uint64"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "maxTimeMinutes",
+                                "type": "uint64"
+                            }
+                        ],
+                        "internalType": "struct SlotUsage[]",
+                        "name": "optionsUsages",
+                        "type": "tuple[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "optionsMaxPriceSlippages",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "optionsInfoModificationTime",
+                        "type": "uint256[]"
                     }
                 ],
                 "internalType": "struct OrderSlots",
@@ -4201,16 +4564,6 @@ export const abi = [
                         "internalType": "bytes32",
                         "name": "externalId",
                         "type": "bytes32"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "expectedPrice",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "maxPriceSlippage",
-                        "type": "uint256"
                     }
                 ],
                 "internalType": "struct OrderInfo",
@@ -4220,14 +4573,51 @@ export const abi = [
             {
                 "components": [
                     {
-                        "internalType": "uint256",
-                        "name": "slotId",
-                        "type": "uint256"
+                        "internalType": "uint256[]",
+                        "name": "slotsIds",
+                        "type": "uint256[]"
                     },
                     {
-                        "internalType": "uint32",
-                        "name": "slotCount",
-                        "type": "uint32"
+                        "internalType": "uint32[]",
+                        "name": "slotsCounts",
+                        "type": "uint32[]"
+                    },
+                    {
+                        "components": [
+                            {
+                                "internalType": "enum PriceType",
+                                "name": "priceType",
+                                "type": "uint8"
+                            },
+                            {
+                                "internalType": "uint256",
+                                "name": "price",
+                                "type": "uint256"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "minTimeMinutes",
+                                "type": "uint64"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "maxTimeMinutes",
+                                "type": "uint64"
+                            }
+                        ],
+                        "internalType": "struct SlotUsage[]",
+                        "name": "slotsUsages",
+                        "type": "tuple[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "slotsMaxPriceSlippages",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "slotsInfoModificationTime",
+                        "type": "uint256[]"
                     },
                     {
                         "internalType": "uint256[]",
@@ -4236,8 +4626,45 @@ export const abi = [
                     },
                     {
                         "internalType": "uint32[]",
-                        "name": "optionsCount",
+                        "name": "optionsCounts",
                         "type": "uint32[]"
+                    },
+                    {
+                        "components": [
+                            {
+                                "internalType": "enum PriceType",
+                                "name": "priceType",
+                                "type": "uint8"
+                            },
+                            {
+                                "internalType": "uint256",
+                                "name": "price",
+                                "type": "uint256"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "minTimeMinutes",
+                                "type": "uint64"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "maxTimeMinutes",
+                                "type": "uint64"
+                            }
+                        ],
+                        "internalType": "struct SlotUsage[]",
+                        "name": "optionsUsages",
+                        "type": "tuple[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "optionsMaxPriceSlippages",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "optionsInfoModificationTime",
+                        "type": "uint256[]"
                     }
                 ],
                 "internalType": "struct OrderSlots",
@@ -4321,16 +4748,6 @@ export const abi = [
                         "internalType": "bytes32",
                         "name": "externalId",
                         "type": "bytes32"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "expectedPrice",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "maxPriceSlippage",
-                        "type": "uint256"
                     }
                 ],
                 "internalType": "struct OrderInfo",
@@ -4340,14 +4757,51 @@ export const abi = [
             {
                 "components": [
                     {
-                        "internalType": "uint256",
-                        "name": "slotId",
-                        "type": "uint256"
+                        "internalType": "uint256[]",
+                        "name": "slotsIds",
+                        "type": "uint256[]"
                     },
                     {
-                        "internalType": "uint32",
-                        "name": "slotCount",
-                        "type": "uint32"
+                        "internalType": "uint32[]",
+                        "name": "slotsCounts",
+                        "type": "uint32[]"
+                    },
+                    {
+                        "components": [
+                            {
+                                "internalType": "enum PriceType",
+                                "name": "priceType",
+                                "type": "uint8"
+                            },
+                            {
+                                "internalType": "uint256",
+                                "name": "price",
+                                "type": "uint256"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "minTimeMinutes",
+                                "type": "uint64"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "maxTimeMinutes",
+                                "type": "uint64"
+                            }
+                        ],
+                        "internalType": "struct SlotUsage[]",
+                        "name": "slotsUsages",
+                        "type": "tuple[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "slotsMaxPriceSlippages",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "slotsInfoModificationTime",
+                        "type": "uint256[]"
                     },
                     {
                         "internalType": "uint256[]",
@@ -4356,8 +4810,45 @@ export const abi = [
                     },
                     {
                         "internalType": "uint32[]",
-                        "name": "optionsCount",
+                        "name": "optionsCounts",
                         "type": "uint32[]"
+                    },
+                    {
+                        "components": [
+                            {
+                                "internalType": "enum PriceType",
+                                "name": "priceType",
+                                "type": "uint8"
+                            },
+                            {
+                                "internalType": "uint256",
+                                "name": "price",
+                                "type": "uint256"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "minTimeMinutes",
+                                "type": "uint64"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "maxTimeMinutes",
+                                "type": "uint64"
+                            }
+                        ],
+                        "internalType": "struct SlotUsage[]",
+                        "name": "optionsUsages",
+                        "type": "tuple[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "optionsMaxPriceSlippages",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "optionsInfoModificationTime",
+                        "type": "uint256[]"
                     }
                 ],
                 "internalType": "struct OrderSlots",
@@ -4453,16 +4944,6 @@ export const abi = [
                         "internalType": "bytes32",
                         "name": "externalId",
                         "type": "bytes32"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "expectedPrice",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "maxPriceSlippage",
-                        "type": "uint256"
                     }
                 ],
                 "internalType": "struct OrderInfo",
@@ -4472,14 +4953,51 @@ export const abi = [
             {
                 "components": [
                     {
-                        "internalType": "uint256",
-                        "name": "slotId",
-                        "type": "uint256"
+                        "internalType": "uint256[]",
+                        "name": "slotsIds",
+                        "type": "uint256[]"
                     },
                     {
-                        "internalType": "uint32",
-                        "name": "slotCount",
-                        "type": "uint32"
+                        "internalType": "uint32[]",
+                        "name": "slotsCounts",
+                        "type": "uint32[]"
+                    },
+                    {
+                        "components": [
+                            {
+                                "internalType": "enum PriceType",
+                                "name": "priceType",
+                                "type": "uint8"
+                            },
+                            {
+                                "internalType": "uint256",
+                                "name": "price",
+                                "type": "uint256"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "minTimeMinutes",
+                                "type": "uint64"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "maxTimeMinutes",
+                                "type": "uint64"
+                            }
+                        ],
+                        "internalType": "struct SlotUsage[]",
+                        "name": "slotsUsages",
+                        "type": "tuple[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "slotsMaxPriceSlippages",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "slotsInfoModificationTime",
+                        "type": "uint256[]"
                     },
                     {
                         "internalType": "uint256[]",
@@ -4488,8 +5006,45 @@ export const abi = [
                     },
                     {
                         "internalType": "uint32[]",
-                        "name": "optionsCount",
+                        "name": "optionsCounts",
                         "type": "uint32[]"
+                    },
+                    {
+                        "components": [
+                            {
+                                "internalType": "enum PriceType",
+                                "name": "priceType",
+                                "type": "uint8"
+                            },
+                            {
+                                "internalType": "uint256",
+                                "name": "price",
+                                "type": "uint256"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "minTimeMinutes",
+                                "type": "uint64"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "maxTimeMinutes",
+                                "type": "uint64"
+                            }
+                        ],
+                        "internalType": "struct SlotUsage[]",
+                        "name": "optionsUsages",
+                        "type": "tuple[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "optionsMaxPriceSlippages",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "optionsInfoModificationTime",
+                        "type": "uint256[]"
                     }
                 ],
                 "internalType": "struct OrderSlots",
@@ -4532,6 +5087,30 @@ export const abi = [
             }
         ],
         "name": "createSubOrderByApp",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "consumer",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "deposit",
+                "type": "uint256"
+            }
+        ],
+        "name": "deductOrderDepositByApp",
         "outputs": [
             {
                 "internalType": "uint256",
@@ -4873,25 +5452,6 @@ export const abi = [
                 "type": "uint256"
             }
         ],
-        "name": "calculateOrderCurrentPrice",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "resultedPrice",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
-            }
-        ],
         "name": "cancelOrder",
         "outputs": [],
         "stateMutability": "nonpayable",
@@ -5016,6 +5576,44 @@ export const abi = [
                 "type": "uint256"
             }
         ],
+        "name": "OrderOptionsChangeCancelled",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "provider",
+                "type": "address"
+            },
+            {
+                "indexed": true,
+                "internalType": "uint256",
+                "name": "orderId",
+                "type": "uint256"
+            }
+        ],
+        "name": "OrderOptionsChangeConfirmed",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "consumer",
+                "type": "address"
+            },
+            {
+                "indexed": true,
+                "internalType": "uint256",
+                "name": "orderId",
+                "type": "uint256"
+            }
+        ],
         "name": "OrderOptionsChangeRequested",
         "type": "event"
     },
@@ -5035,7 +5633,26 @@ export const abi = [
                 "type": "uint256"
             }
         ],
-        "name": "OrderOptionsChanged",
+        "name": "OrderSlotsChangeCancelled",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "address",
+                "name": "provider",
+                "type": "address"
+            },
+            {
+                "indexed": true,
+                "internalType": "uint256",
+                "name": "orderId",
+                "type": "uint256"
+            }
+        ],
+        "name": "OrderSlotsChangeConfirmed",
         "type": "event"
     },
     {
@@ -5052,40 +5669,9 @@ export const abi = [
                 "internalType": "uint256",
                 "name": "orderId",
                 "type": "uint256"
-            },
-            {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "newSlotCount",
-                "type": "uint256"
             }
         ],
-        "name": "OrderSlotCountUpdateRequested",
-        "type": "event"
-    },
-    {
-        "anonymous": false,
-        "inputs": [
-            {
-                "indexed": true,
-                "internalType": "address",
-                "name": "consumer",
-                "type": "address"
-            },
-            {
-                "indexed": true,
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
-            },
-            {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "newSlotCount",
-                "type": "uint256"
-            }
-        ],
-        "name": "OrderSlotCountUpdated",
+        "name": "OrderSlotsChangeRequested",
         "type": "event"
     },
     {
@@ -5094,41 +5680,22 @@ export const abi = [
                 "internalType": "uint256",
                 "name": "orderId",
                 "type": "uint256"
-            },
-            {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
-            },
-            {
-                "components": [
-                    {
-                        "internalType": "uint256",
-                        "name": "slotId",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint32",
-                        "name": "slotCount",
-                        "type": "uint32"
-                    },
-                    {
-                        "internalType": "uint256[]",
-                        "name": "optionsIds",
-                        "type": "uint256[]"
-                    },
-                    {
-                        "internalType": "uint32[]",
-                        "name": "optionsCount",
-                        "type": "uint32[]"
-                    }
-                ],
-                "internalType": "struct OrderSlots",
-                "name": "orderSlotsSetup",
-                "type": "tuple"
             }
         ],
-        "name": "setTeeOrderSelectedUsageAndOptions",
+        "name": "cancelOrderChangeOptions",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "orderId",
+                "type": "uint256"
+            }
+        ],
+        "name": "cancelOrderChangeSlots",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
@@ -5142,18 +5709,772 @@ export const abi = [
             },
             {
                 "internalType": "uint256",
-                "name": "offerId",
+                "name": "requestLastModificationTime",
+                "type": "uint256"
+            },
+            {
+                "components": [
+                    {
+                        "internalType": "uint256[]",
+                        "name": "ids",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "prices",
+                        "type": "uint256[]"
+                    }
+                ],
+                "internalType": "struct ProviderConfirmationPrices",
+                "name": "providerPrices",
+                "type": "tuple"
+            }
+        ],
+        "name": "confirmOrderChangeOptions",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "orderId",
                 "type": "uint256"
             },
             {
                 "internalType": "uint256",
-                "name": "slotId",
+                "name": "requestLastModificationTime",
+                "type": "uint256"
+            },
+            {
+                "components": [
+                    {
+                        "internalType": "uint256[]",
+                        "name": "ids",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "prices",
+                        "type": "uint256[]"
+                    }
+                ],
+                "internalType": "struct ProviderConfirmationPrices",
+                "name": "providerPrices",
+                "type": "tuple"
+            }
+        ],
+        "name": "confirmOrderChangeSlots",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "orderId",
+                "type": "uint256"
+            },
+            {
+                "components": [
+                    {
+                        "internalType": "uint256[]",
+                        "name": "ids",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint32[]",
+                        "name": "counts",
+                        "type": "uint32[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "priceSlippages",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "components": [
+                            {
+                                "internalType": "enum PriceType",
+                                "name": "priceType",
+                                "type": "uint8"
+                            },
+                            {
+                                "internalType": "uint256",
+                                "name": "price",
+                                "type": "uint256"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "minTimeMinutes",
+                                "type": "uint64"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "maxTimeMinutes",
+                                "type": "uint64"
+                            }
+                        ],
+                        "internalType": "struct SlotUsage[]",
+                        "name": "usages",
+                        "type": "tuple[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "infosLastModificationTimes",
+                        "type": "uint256[]"
+                    }
+                ],
+                "internalType": "struct OrderUsageAddRequest",
+                "name": "adds",
+                "type": "tuple"
+            }
+        ],
+        "name": "requestToAddOptions",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "orderId",
+                "type": "uint256"
+            },
+            {
+                "components": [
+                    {
+                        "internalType": "uint256[]",
+                        "name": "ids",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint32[]",
+                        "name": "counts",
+                        "type": "uint32[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "priceSlippages",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "components": [
+                            {
+                                "internalType": "enum PriceType",
+                                "name": "priceType",
+                                "type": "uint8"
+                            },
+                            {
+                                "internalType": "uint256",
+                                "name": "price",
+                                "type": "uint256"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "minTimeMinutes",
+                                "type": "uint64"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "maxTimeMinutes",
+                                "type": "uint64"
+                            }
+                        ],
+                        "internalType": "struct SlotUsage[]",
+                        "name": "usages",
+                        "type": "tuple[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "infosLastModificationTimes",
+                        "type": "uint256[]"
+                    }
+                ],
+                "internalType": "struct OrderUsageAddRequest",
+                "name": "adds",
+                "type": "tuple"
+            }
+        ],
+        "name": "requestToAddSlots",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "orderId",
+                "type": "uint256"
+            },
+            {
+                "components": [
+                    {
+                        "internalType": "uint256[]",
+                        "name": "indexes",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint32[]",
+                        "name": "counts",
+                        "type": "uint32[]"
+                    }
+                ],
+                "internalType": "struct OrderUsageDeleteRequest",
+                "name": "deletes",
+                "type": "tuple"
+            }
+        ],
+        "name": "requestToDeleteOptions",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "orderId",
+                "type": "uint256"
+            },
+            {
+                "components": [
+                    {
+                        "internalType": "uint256[]",
+                        "name": "indexes",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint32[]",
+                        "name": "counts",
+                        "type": "uint32[]"
+                    }
+                ],
+                "internalType": "struct OrderUsageDeleteRequest",
+                "name": "deletes",
+                "type": "tuple"
+            }
+        ],
+        "name": "requestToDeleteSlots",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "orderId",
+                "type": "uint256"
+            },
+            {
+                "components": [
+                    {
+                        "internalType": "uint256[]",
+                        "name": "slotsIds",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint32[]",
+                        "name": "slotsCounts",
+                        "type": "uint32[]"
+                    },
+                    {
+                        "components": [
+                            {
+                                "internalType": "enum PriceType",
+                                "name": "priceType",
+                                "type": "uint8"
+                            },
+                            {
+                                "internalType": "uint256",
+                                "name": "price",
+                                "type": "uint256"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "minTimeMinutes",
+                                "type": "uint64"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "maxTimeMinutes",
+                                "type": "uint64"
+                            }
+                        ],
+                        "internalType": "struct SlotUsage[]",
+                        "name": "slotsUsages",
+                        "type": "tuple[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "slotsMaxPriceSlippages",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "slotsInfoModificationTime",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "optionsIds",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint32[]",
+                        "name": "optionsCounts",
+                        "type": "uint32[]"
+                    },
+                    {
+                        "components": [
+                            {
+                                "internalType": "enum PriceType",
+                                "name": "priceType",
+                                "type": "uint8"
+                            },
+                            {
+                                "internalType": "uint256",
+                                "name": "price",
+                                "type": "uint256"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "minTimeMinutes",
+                                "type": "uint64"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "maxTimeMinutes",
+                                "type": "uint64"
+                            }
+                        ],
+                        "internalType": "struct SlotUsage[]",
+                        "name": "optionsUsages",
+                        "type": "tuple[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "optionsMaxPriceSlippages",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "optionsInfoModificationTime",
+                        "type": "uint256[]"
+                    }
+                ],
+                "internalType": "struct OrderSlots",
+                "name": "initialSetup",
+                "type": "tuple"
+            }
+        ],
+        "name": "setInitialOrderUsage",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256[]",
+                "name": "optionsIds",
+                "type": "uint256[]"
+            },
+            {
+                "internalType": "uint32[]",
+                "name": "optionsCounts",
+                "type": "uint32[]"
+            },
+            {
+                "components": [
+                    {
+                        "internalType": "bool",
+                        "name": "includeFixed",
+                        "type": "bool"
+                    },
+                    {
+                        "internalType": "bool",
+                        "name": "includePerHour",
+                        "type": "bool"
+                    }
+                ],
+                "internalType": "struct PriceTypeFilter",
+                "name": "filter",
+                "type": "tuple"
+            }
+        ],
+        "name": "calculateMinOptionsPriceFiltered",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "minPrice",
                 "type": "uint256"
             }
         ],
-        "name": "setValueOrderUsage",
-        "outputs": [],
-        "stateMutability": "nonpayable",
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "offerId",
+                "type": "uint256"
+            },
+            {
+                "components": [
+                    {
+                        "internalType": "uint256[]",
+                        "name": "slotsIds",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint32[]",
+                        "name": "slotsCounts",
+                        "type": "uint32[]"
+                    },
+                    {
+                        "components": [
+                            {
+                                "internalType": "enum PriceType",
+                                "name": "priceType",
+                                "type": "uint8"
+                            },
+                            {
+                                "internalType": "uint256",
+                                "name": "price",
+                                "type": "uint256"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "minTimeMinutes",
+                                "type": "uint64"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "maxTimeMinutes",
+                                "type": "uint64"
+                            }
+                        ],
+                        "internalType": "struct SlotUsage[]",
+                        "name": "slotsUsages",
+                        "type": "tuple[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "slotsMaxPriceSlippages",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "slotsInfoModificationTime",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "optionsIds",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint32[]",
+                        "name": "optionsCounts",
+                        "type": "uint32[]"
+                    },
+                    {
+                        "components": [
+                            {
+                                "internalType": "enum PriceType",
+                                "name": "priceType",
+                                "type": "uint8"
+                            },
+                            {
+                                "internalType": "uint256",
+                                "name": "price",
+                                "type": "uint256"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "minTimeMinutes",
+                                "type": "uint64"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "maxTimeMinutes",
+                                "type": "uint64"
+                            }
+                        ],
+                        "internalType": "struct SlotUsage[]",
+                        "name": "optionsUsages",
+                        "type": "tuple[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "optionsMaxPriceSlippages",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "optionsInfoModificationTime",
+                        "type": "uint256[]"
+                    }
+                ],
+                "internalType": "struct OrderSlots",
+                "name": "orderSetup",
+                "type": "tuple"
+            }
+        ],
+        "name": "calculateMinOrderPrice",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "minPrice",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "offerId",
+                "type": "uint256"
+            },
+            {
+                "components": [
+                    {
+                        "internalType": "uint256[]",
+                        "name": "slotsIds",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint32[]",
+                        "name": "slotsCounts",
+                        "type": "uint32[]"
+                    },
+                    {
+                        "components": [
+                            {
+                                "internalType": "enum PriceType",
+                                "name": "priceType",
+                                "type": "uint8"
+                            },
+                            {
+                                "internalType": "uint256",
+                                "name": "price",
+                                "type": "uint256"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "minTimeMinutes",
+                                "type": "uint64"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "maxTimeMinutes",
+                                "type": "uint64"
+                            }
+                        ],
+                        "internalType": "struct SlotUsage[]",
+                        "name": "slotsUsages",
+                        "type": "tuple[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "slotsMaxPriceSlippages",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "slotsInfoModificationTime",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "optionsIds",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint32[]",
+                        "name": "optionsCounts",
+                        "type": "uint32[]"
+                    },
+                    {
+                        "components": [
+                            {
+                                "internalType": "enum PriceType",
+                                "name": "priceType",
+                                "type": "uint8"
+                            },
+                            {
+                                "internalType": "uint256",
+                                "name": "price",
+                                "type": "uint256"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "minTimeMinutes",
+                                "type": "uint64"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "maxTimeMinutes",
+                                "type": "uint64"
+                            }
+                        ],
+                        "internalType": "struct SlotUsage[]",
+                        "name": "optionsUsages",
+                        "type": "tuple[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "optionsMaxPriceSlippages",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "optionsInfoModificationTime",
+                        "type": "uint256[]"
+                    }
+                ],
+                "internalType": "struct OrderSlots",
+                "name": "orderSetup",
+                "type": "tuple"
+            },
+            {
+                "components": [
+                    {
+                        "internalType": "bool",
+                        "name": "includeFixed",
+                        "type": "bool"
+                    },
+                    {
+                        "internalType": "bool",
+                        "name": "includePerHour",
+                        "type": "bool"
+                    }
+                ],
+                "internalType": "struct PriceTypeFilter",
+                "name": "filter",
+                "type": "tuple"
+            }
+        ],
+        "name": "calculateMinOrderPriceFiltered",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "minPrice",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "offerId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256[]",
+                "name": "slotsIds",
+                "type": "uint256[]"
+            },
+            {
+                "internalType": "uint32[]",
+                "name": "slotsCounts",
+                "type": "uint32[]"
+            },
+            {
+                "components": [
+                    {
+                        "internalType": "bool",
+                        "name": "includeFixed",
+                        "type": "bool"
+                    },
+                    {
+                        "internalType": "bool",
+                        "name": "includePerHour",
+                        "type": "bool"
+                    }
+                ],
+                "internalType": "struct PriceTypeFilter",
+                "name": "filter",
+                "type": "tuple"
+            }
+        ],
+        "name": "calculateMinSlotsPriceFiltered",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "minPrice",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "orderId",
+                "type": "uint256"
+            }
+        ],
+        "name": "calculateOrderCurrentPrice",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "resultedPrice",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "orderId",
+                "type": "uint256"
+            },
+            {
+                "components": [
+                    {
+                        "internalType": "bool",
+                        "name": "includeFixed",
+                        "type": "bool"
+                    },
+                    {
+                        "internalType": "bool",
+                        "name": "includePerHour",
+                        "type": "bool"
+                    }
+                ],
+                "internalType": "struct PriceTypeFilter",
+                "name": "filter",
+                "type": "tuple"
+            }
+        ],
+        "name": "calculateOrderCurrentPriceFiltered",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "resultedPrice",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
         "type": "function"
     },
     {
@@ -5254,6 +6575,67 @@ export const abi = [
     {
         "inputs": [
             {
+                "components": [
+                    {
+                        "internalType": "enum PriceType",
+                        "name": "priceType",
+                        "type": "uint8"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "price",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "minTimeMinutes",
+                        "type": "uint64"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "maxTimeMinutes",
+                        "type": "uint64"
+                    }
+                ],
+                "internalType": "struct SlotUsage",
+                "name": "usage",
+                "type": "tuple"
+            },
+            {
+                "internalType": "uint256",
+                "name": "startTime",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "modifiedTime",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "currentTime",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "slotCount",
+                "type": "uint256"
+            }
+        ],
+        "name": "calculateUsagePrice",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "pure",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
                 "internalType": "enum OfferGroup",
                 "name": "parentOfferGroup",
                 "type": "uint8"
@@ -5343,6 +6725,71 @@ export const abi = [
                 "type": "uint256"
             }
         ],
+        "name": "getFinalizationDate",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "offerId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "slotId",
+                "type": "uint256"
+            }
+        ],
+        "name": "getOfferSlotUsage",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "enum PriceType",
+                        "name": "priceType",
+                        "type": "uint8"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "price",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "minTimeMinutes",
+                        "type": "uint64"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "maxTimeMinutes",
+                        "type": "uint64"
+                    }
+                ],
+                "internalType": "struct SlotUsage",
+                "name": "usage",
+                "type": "tuple"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "orderId",
+                "type": "uint256"
+            }
+        ],
         "name": "getOptionsDepositSpent",
         "outputs": [
             {
@@ -5400,16 +6847,6 @@ export const abi = [
                         "internalType": "bytes32",
                         "name": "externalId",
                         "type": "bytes32"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "expectedPrice",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "maxPriceSlippage",
-                        "type": "uint256"
                     }
                 ],
                 "internalType": "struct OrderInfo",
@@ -5463,6 +6900,238 @@ export const abi = [
                 "internalType": "struct OrderArgs",
                 "name": "",
                 "type": "tuple"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "orderId",
+                "type": "uint256"
+            }
+        ],
+        "name": "getOrderChangeOptions",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "uint256",
+                        "name": "lastModificationTime",
+                        "type": "uint256"
+                    },
+                    {
+                        "components": [
+                            {
+                                "internalType": "uint256[]",
+                                "name": "ids",
+                                "type": "uint256[]"
+                            },
+                            {
+                                "internalType": "uint32[]",
+                                "name": "counts",
+                                "type": "uint32[]"
+                            },
+                            {
+                                "internalType": "uint256[]",
+                                "name": "priceSlippages",
+                                "type": "uint256[]"
+                            },
+                            {
+                                "components": [
+                                    {
+                                        "internalType": "enum PriceType",
+                                        "name": "priceType",
+                                        "type": "uint8"
+                                    },
+                                    {
+                                        "internalType": "uint256",
+                                        "name": "price",
+                                        "type": "uint256"
+                                    },
+                                    {
+                                        "internalType": "uint64",
+                                        "name": "minTimeMinutes",
+                                        "type": "uint64"
+                                    },
+                                    {
+                                        "internalType": "uint64",
+                                        "name": "maxTimeMinutes",
+                                        "type": "uint64"
+                                    }
+                                ],
+                                "internalType": "struct SlotUsage[]",
+                                "name": "usages",
+                                "type": "tuple[]"
+                            },
+                            {
+                                "internalType": "uint256[]",
+                                "name": "infosLastModificationTimes",
+                                "type": "uint256[]"
+                            }
+                        ],
+                        "internalType": "struct OrderUsageAddRequest[]",
+                        "name": "adds",
+                        "type": "tuple[]"
+                    },
+                    {
+                        "components": [
+                            {
+                                "internalType": "uint256[]",
+                                "name": "indexes",
+                                "type": "uint256[]"
+                            },
+                            {
+                                "internalType": "uint32[]",
+                                "name": "counts",
+                                "type": "uint32[]"
+                            }
+                        ],
+                        "internalType": "struct OrderUsageDeleteRequest[]",
+                        "name": "deletes",
+                        "type": "tuple[]"
+                    }
+                ],
+                "internalType": "struct OrderUsageModificationRequest",
+                "name": "",
+                "type": "tuple"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "orderId",
+                "type": "uint256"
+            }
+        ],
+        "name": "getOrderChangeOptionsLastModificationTime",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "orderId",
+                "type": "uint256"
+            }
+        ],
+        "name": "getOrderChangeSlots",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "uint256",
+                        "name": "lastModificationTime",
+                        "type": "uint256"
+                    },
+                    {
+                        "components": [
+                            {
+                                "internalType": "uint256[]",
+                                "name": "ids",
+                                "type": "uint256[]"
+                            },
+                            {
+                                "internalType": "uint32[]",
+                                "name": "counts",
+                                "type": "uint32[]"
+                            },
+                            {
+                                "internalType": "uint256[]",
+                                "name": "priceSlippages",
+                                "type": "uint256[]"
+                            },
+                            {
+                                "components": [
+                                    {
+                                        "internalType": "enum PriceType",
+                                        "name": "priceType",
+                                        "type": "uint8"
+                                    },
+                                    {
+                                        "internalType": "uint256",
+                                        "name": "price",
+                                        "type": "uint256"
+                                    },
+                                    {
+                                        "internalType": "uint64",
+                                        "name": "minTimeMinutes",
+                                        "type": "uint64"
+                                    },
+                                    {
+                                        "internalType": "uint64",
+                                        "name": "maxTimeMinutes",
+                                        "type": "uint64"
+                                    }
+                                ],
+                                "internalType": "struct SlotUsage[]",
+                                "name": "usages",
+                                "type": "tuple[]"
+                            },
+                            {
+                                "internalType": "uint256[]",
+                                "name": "infosLastModificationTimes",
+                                "type": "uint256[]"
+                            }
+                        ],
+                        "internalType": "struct OrderUsageAddRequest[]",
+                        "name": "adds",
+                        "type": "tuple[]"
+                    },
+                    {
+                        "components": [
+                            {
+                                "internalType": "uint256[]",
+                                "name": "indexes",
+                                "type": "uint256[]"
+                            },
+                            {
+                                "internalType": "uint32[]",
+                                "name": "counts",
+                                "type": "uint32[]"
+                            }
+                        ],
+                        "internalType": "struct OrderUsageDeleteRequest[]",
+                        "name": "deletes",
+                        "type": "tuple[]"
+                    }
+                ],
+                "internalType": "struct OrderUsageModificationRequest",
+                "name": "",
+                "type": "tuple"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "orderId",
+                "type": "uint256"
+            }
+        ],
+        "name": "getOrderChangeSlotsLastModificationTime",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
             }
         ],
         "stateMutability": "view",
@@ -5574,25 +7243,66 @@ export const abi = [
                 "type": "uint256"
             }
         ],
+        "name": "getOrderPriceAuxiliaryData",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "uint256",
+                        "name": "lastModifiedPerHours",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "accumulatedPerHourSpent",
+                        "type": "uint256"
+                    }
+                ],
+                "internalType": "struct OrderPriceAuxiliaryData",
+                "name": "",
+                "type": "tuple"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "orderId",
+                "type": "uint256"
+            }
+        ],
         "name": "getOrderSelectedUsage",
         "outputs": [
             {
                 "components": [
                     {
-                        "internalType": "uint32",
-                        "name": "slotCount",
-                        "type": "uint32"
-                    },
-                    {
                         "components": [
                             {
-                                "internalType": "string",
-                                "name": "data",
-                                "type": "string"
+                                "internalType": "uint64",
+                                "name": "cpuCores",
+                                "type": "uint64"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "ram",
+                                "type": "uint64"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "diskUsage",
+                                "type": "uint64"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "gpuCores",
+                                "type": "uint64"
                             }
                         ],
-                        "internalType": "struct OptionInfo[]",
-                        "name": "optionInfo",
+                        "internalType": "struct SlotInfo[]",
+                        "name": "slotsInfos",
                         "type": "tuple[]"
                     },
                     {
@@ -5619,18 +7329,77 @@ export const abi = [
                             }
                         ],
                         "internalType": "struct SlotUsage[]",
-                        "name": "optionUsage",
+                        "name": "slotsUsages",
                         "type": "tuple[]"
                     },
                     {
                         "internalType": "uint256[]",
-                        "name": "optionIds",
+                        "name": "slotsIds",
                         "type": "uint256[]"
                     },
                     {
                         "internalType": "uint32[]",
-                        "name": "optionsCount",
+                        "name": "slotsCounts",
                         "type": "uint32[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "slotsDateAdded",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "components": [
+                            {
+                                "internalType": "string",
+                                "name": "data",
+                                "type": "string"
+                            }
+                        ],
+                        "internalType": "struct OptionInfo[]",
+                        "name": "optionsInfos",
+                        "type": "tuple[]"
+                    },
+                    {
+                        "components": [
+                            {
+                                "internalType": "enum PriceType",
+                                "name": "priceType",
+                                "type": "uint8"
+                            },
+                            {
+                                "internalType": "uint256",
+                                "name": "price",
+                                "type": "uint256"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "minTimeMinutes",
+                                "type": "uint64"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "maxTimeMinutes",
+                                "type": "uint64"
+                            }
+                        ],
+                        "internalType": "struct SlotUsage[]",
+                        "name": "optionsUsages",
+                        "type": "tuple[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "optionsIds",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint32[]",
+                        "name": "optionsCounts",
+                        "type": "uint32[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "optionsDateAdded",
+                        "type": "uint256[]"
                     }
                 ],
                 "internalType": "struct OrderUsage",
@@ -5649,7 +7418,7 @@ export const abi = [
                 "type": "uint256"
             }
         ],
-        "name": "getOrderSelectedUsageSlotInfo",
+        "name": "getOrderSelectedUsageComulativeSlotInfo",
         "outputs": [
             {
                 "components": [
@@ -5675,47 +7444,6 @@ export const abi = [
                     }
                 ],
                 "internalType": "struct SlotInfo",
-                "name": "",
-                "type": "tuple"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
-            }
-        ],
-        "name": "getOrderSelectedUsageSlotUsage",
-        "outputs": [
-            {
-                "components": [
-                    {
-                        "internalType": "enum PriceType",
-                        "name": "priceType",
-                        "type": "uint8"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "price",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint64",
-                        "name": "minTimeMinutes",
-                        "type": "uint64"
-                    },
-                    {
-                        "internalType": "uint64",
-                        "name": "maxTimeMinutes",
-                        "type": "uint64"
-                    }
-                ],
-                "internalType": "struct SlotUsage",
                 "name": "",
                 "type": "tuple"
             }
@@ -6771,6 +8499,11 @@ export const abi = [
                         "internalType": "uint256",
                         "name": "teeRewardPerEpoch",
                         "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "storageRequestFee",
+                        "type": "uint256"
                     }
                 ],
                 "internalType": "struct SuperproParams",
@@ -7033,6 +8766,11 @@ export const abi = [
                         "internalType": "struct SlotUsage",
                         "name": "usage",
                         "type": "tuple"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "infoLastModificationTime",
+                        "type": "uint256"
                     }
                 ],
                 "internalType": "struct TeeOfferOption",
@@ -7121,6 +8859,11 @@ export const abi = [
                         "internalType": "struct SlotUsage",
                         "name": "usage",
                         "type": "tuple"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "infoLastModificationTime",
+                        "type": "uint256"
                     }
                 ],
                 "internalType": "struct TeeOfferOption[]",
@@ -7190,8 +8933,26 @@ export const abi = [
                     }
                 ],
                 "internalType": "struct OptionInfo",
-                "name": "info",
+                "name": "newInfo",
                 "type": "tuple"
+            }
+        ],
+        "name": "updateOptionInfo",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "teeOfferId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "optionId",
+                "type": "uint256"
             },
             {
                 "components": [
@@ -7217,11 +8978,11 @@ export const abi = [
                     }
                 ],
                 "internalType": "struct SlotUsage",
-                "name": "usage",
+                "name": "newUsage",
                 "type": "tuple"
             }
         ],
-        "name": "updateOption",
+        "name": "updateOptionUsage",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
@@ -7473,6 +9234,11 @@ export const abi = [
                         "internalType": "struct SlotUsage",
                         "name": "usage",
                         "type": "tuple"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "infoLastModificationTime",
+                        "type": "uint256"
                     }
                 ],
                 "internalType": "struct TeeOfferSlot",
@@ -7563,6 +9329,11 @@ export const abi = [
                         "internalType": "struct SlotUsage",
                         "name": "usage",
                         "type": "tuple"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "infoLastModificationTime",
+                        "type": "uint256"
                     }
                 ],
                 "internalType": "struct TeeOfferSlot[]",
@@ -7665,8 +9436,26 @@ export const abi = [
                     }
                 ],
                 "internalType": "struct SlotInfo",
-                "name": "info",
+                "name": "newInfo",
                 "type": "tuple"
+            }
+        ],
+        "name": "updateTeeOfferSlotInfo",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "teeOfferId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "slotId",
+                "type": "uint256"
             },
             {
                 "components": [
@@ -7692,11 +9481,11 @@ export const abi = [
                     }
                 ],
                 "internalType": "struct SlotUsage",
-                "name": "usage",
+                "name": "newUsage",
                 "type": "tuple"
             }
         ],
-        "name": "updateTeeOfferSlot",
+        "name": "updateTeeOfferSlotUsage",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
@@ -8272,18 +10061,6 @@ export const abi = [
                     {
                         "components": [
                             {
-                                "internalType": "string",
-                                "name": "data",
-                                "type": "string"
-                            }
-                        ],
-                        "internalType": "struct OptionInfo",
-                        "name": "option",
-                        "type": "tuple"
-                    },
-                    {
-                        "components": [
-                            {
                                 "internalType": "enum PriceType",
                                 "name": "priceType",
                                 "type": "uint8"
@@ -8307,6 +10084,23 @@ export const abi = [
                         "internalType": "struct SlotUsage",
                         "name": "usage",
                         "type": "tuple"
+                    },
+                    {
+                        "components": [
+                            {
+                                "internalType": "string",
+                                "name": "data",
+                                "type": "string"
+                            }
+                        ],
+                        "internalType": "struct OptionInfo",
+                        "name": "option",
+                        "type": "tuple"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "infoLastModificationTime",
+                        "type": "uint256"
                     }
                 ],
                 "internalType": "struct ValueOfferSlot",
@@ -8374,18 +10168,6 @@ export const abi = [
                     {
                         "components": [
                             {
-                                "internalType": "string",
-                                "name": "data",
-                                "type": "string"
-                            }
-                        ],
-                        "internalType": "struct OptionInfo",
-                        "name": "option",
-                        "type": "tuple"
-                    },
-                    {
-                        "components": [
-                            {
                                 "internalType": "enum PriceType",
                                 "name": "priceType",
                                 "type": "uint8"
@@ -8409,6 +10191,23 @@ export const abi = [
                         "internalType": "struct SlotUsage",
                         "name": "usage",
                         "type": "tuple"
+                    },
+                    {
+                        "components": [
+                            {
+                                "internalType": "string",
+                                "name": "data",
+                                "type": "string"
+                            }
+                        ],
+                        "internalType": "struct OptionInfo",
+                        "name": "option",
+                        "type": "tuple"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "infoLastModificationTime",
+                        "type": "uint256"
                     }
                 ],
                 "internalType": "struct ValueOfferSlot[]",
@@ -8511,8 +10310,26 @@ export const abi = [
                     }
                 ],
                 "internalType": "struct SlotInfo",
-                "name": "info",
+                "name": "newInfo",
                 "type": "tuple"
+            }
+        ],
+        "name": "updateValueOfferSlotInfo",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "offerId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "slotId",
+                "type": "uint256"
             },
             {
                 "components": [
@@ -8523,8 +10340,26 @@ export const abi = [
                     }
                 ],
                 "internalType": "struct OptionInfo",
-                "name": "option",
+                "name": "newOption",
                 "type": "tuple"
+            }
+        ],
+        "name": "updateValueOfferSlotOption",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "offerId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "slotId",
+                "type": "uint256"
             },
             {
                 "components": [
@@ -8550,11 +10385,11 @@ export const abi = [
                     }
                 ],
                 "internalType": "struct SlotUsage",
-                "name": "usage",
+                "name": "newUsage",
                 "type": "tuple"
             }
         ],
-        "name": "updateValueOfferSlot",
+        "name": "updateValueOfferSlotUsage",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
@@ -8654,16 +10489,6 @@ export const abi = [
                         "internalType": "bytes32",
                         "name": "externalId",
                         "type": "bytes32"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "expectedPrice",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "maxPriceSlippage",
-                        "type": "uint256"
                     }
                 ],
                 "internalType": "struct OrderInfo",
@@ -8673,14 +10498,51 @@ export const abi = [
             {
                 "components": [
                     {
-                        "internalType": "uint256",
-                        "name": "slotId",
-                        "type": "uint256"
+                        "internalType": "uint256[]",
+                        "name": "slotsIds",
+                        "type": "uint256[]"
                     },
                     {
-                        "internalType": "uint32",
-                        "name": "slotCount",
-                        "type": "uint32"
+                        "internalType": "uint32[]",
+                        "name": "slotsCounts",
+                        "type": "uint32[]"
+                    },
+                    {
+                        "components": [
+                            {
+                                "internalType": "enum PriceType",
+                                "name": "priceType",
+                                "type": "uint8"
+                            },
+                            {
+                                "internalType": "uint256",
+                                "name": "price",
+                                "type": "uint256"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "minTimeMinutes",
+                                "type": "uint64"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "maxTimeMinutes",
+                                "type": "uint64"
+                            }
+                        ],
+                        "internalType": "struct SlotUsage[]",
+                        "name": "slotsUsages",
+                        "type": "tuple[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "slotsMaxPriceSlippages",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "slotsInfoModificationTime",
+                        "type": "uint256[]"
                     },
                     {
                         "internalType": "uint256[]",
@@ -8689,8 +10551,45 @@ export const abi = [
                     },
                     {
                         "internalType": "uint32[]",
-                        "name": "optionsCount",
+                        "name": "optionsCounts",
                         "type": "uint32[]"
+                    },
+                    {
+                        "components": [
+                            {
+                                "internalType": "enum PriceType",
+                                "name": "priceType",
+                                "type": "uint8"
+                            },
+                            {
+                                "internalType": "uint256",
+                                "name": "price",
+                                "type": "uint256"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "minTimeMinutes",
+                                "type": "uint64"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "maxTimeMinutes",
+                                "type": "uint64"
+                            }
+                        ],
+                        "internalType": "struct SlotUsage[]",
+                        "name": "optionsUsages",
+                        "type": "tuple[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "optionsMaxPriceSlippages",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "optionsInfoModificationTime",
+                        "type": "uint256[]"
                     }
                 ],
                 "internalType": "struct OrderSlots",
@@ -8750,16 +10649,6 @@ export const abi = [
                         "internalType": "bytes32",
                         "name": "externalId",
                         "type": "bytes32"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "expectedPrice",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "maxPriceSlippage",
-                        "type": "uint256"
                     }
                 ],
                 "internalType": "struct OrderInfo[]",
@@ -8769,14 +10658,51 @@ export const abi = [
             {
                 "components": [
                     {
-                        "internalType": "uint256",
-                        "name": "slotId",
-                        "type": "uint256"
+                        "internalType": "uint256[]",
+                        "name": "slotsIds",
+                        "type": "uint256[]"
                     },
                     {
-                        "internalType": "uint32",
-                        "name": "slotCount",
-                        "type": "uint32"
+                        "internalType": "uint32[]",
+                        "name": "slotsCounts",
+                        "type": "uint32[]"
+                    },
+                    {
+                        "components": [
+                            {
+                                "internalType": "enum PriceType",
+                                "name": "priceType",
+                                "type": "uint8"
+                            },
+                            {
+                                "internalType": "uint256",
+                                "name": "price",
+                                "type": "uint256"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "minTimeMinutes",
+                                "type": "uint64"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "maxTimeMinutes",
+                                "type": "uint64"
+                            }
+                        ],
+                        "internalType": "struct SlotUsage[]",
+                        "name": "slotsUsages",
+                        "type": "tuple[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "slotsMaxPriceSlippages",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "slotsInfoModificationTime",
+                        "type": "uint256[]"
                     },
                     {
                         "internalType": "uint256[]",
@@ -8785,8 +10711,45 @@ export const abi = [
                     },
                     {
                         "internalType": "uint32[]",
-                        "name": "optionsCount",
+                        "name": "optionsCounts",
                         "type": "uint32[]"
+                    },
+                    {
+                        "components": [
+                            {
+                                "internalType": "enum PriceType",
+                                "name": "priceType",
+                                "type": "uint8"
+                            },
+                            {
+                                "internalType": "uint256",
+                                "name": "price",
+                                "type": "uint256"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "minTimeMinutes",
+                                "type": "uint64"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "maxTimeMinutes",
+                                "type": "uint64"
+                            }
+                        ],
+                        "internalType": "struct SlotUsage[]",
+                        "name": "optionsUsages",
+                        "type": "tuple[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "optionsMaxPriceSlippages",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "optionsInfoModificationTime",
+                        "type": "uint256[]"
                     }
                 ],
                 "internalType": "struct OrderSlots[]",
@@ -9417,6 +11380,1324 @@ export const abi = [
         "type": "function"
     },
     {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "uint256",
+                "name": "teeOfferId",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "bytes",
+                "name": "secretPublicKey",
+                "type": "bytes"
+            }
+        ],
+        "name": "LoaderSecretPublicKeySessionUpdated",
+        "type": "event"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "teeOfferId",
+                "type": "uint256"
+            }
+        ],
+        "name": "getLoaderSecretPublicKey",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "bytes",
+                        "name": "secretPublicKey",
+                        "type": "bytes"
+                    },
+                    {
+                        "internalType": "bytes",
+                        "name": "signature",
+                        "type": "bytes"
+                    },
+                    {
+                        "internalType": "uint32",
+                        "name": "signedTime",
+                        "type": "uint32"
+                    },
+                    {
+                        "internalType": "uint32",
+                        "name": "timestamp",
+                        "type": "uint32"
+                    }
+                ],
+                "internalType": "struct LoaderSecretPublicKey",
+                "name": "",
+                "type": "tuple"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "teeOfferId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "bytes",
+                "name": "signature",
+                "type": "bytes"
+            },
+            {
+                "internalType": "bytes",
+                "name": "secretPublicKey",
+                "type": "bytes"
+            },
+            {
+                "internalType": "uint256",
+                "name": "signedTime",
+                "type": "uint256"
+            }
+        ],
+        "name": "setLoaderSecretPublicKey",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "uint256",
+                "name": "loader",
+                "type": "uint256"
+            },
+            {
+                "indexed": true,
+                "internalType": "uint256",
+                "name": "keeperOfferId",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "bytes",
+                "name": "publicSessionsKey",
+                "type": "bytes"
+            }
+        ],
+        "name": "LoaderSessionKeyUpdated",
+        "type": "event"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "teeOfferId",
+                "type": "uint256"
+            }
+        ],
+        "name": "disableLoader",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "getDisabledLoaders",
+        "outputs": [
+            {
+                "internalType": "uint256[]",
+                "name": "",
+                "type": "uint256[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "getEnabledLoaders",
+        "outputs": [
+            {
+                "internalType": "uint256[]",
+                "name": "",
+                "type": "uint256[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "teeOfferId",
+                "type": "uint256"
+            }
+        ],
+        "name": "getLoaderSession",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "bytes",
+                        "name": "publicSessionKey",
+                        "type": "bytes"
+                    },
+                    {
+                        "internalType": "bytes",
+                        "name": "signture",
+                        "type": "bytes"
+                    },
+                    {
+                        "internalType": "uint32",
+                        "name": "timestamp",
+                        "type": "uint32"
+                    },
+                    {
+                        "internalType": "uint32",
+                        "name": "signedTime",
+                        "type": "uint32"
+                    }
+                ],
+                "internalType": "struct LoaderSession",
+                "name": "",
+                "type": "tuple"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "uint256",
+                        "name": "teeOfferId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "keeperOfferId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint32",
+                        "name": "signedTime",
+                        "type": "uint32"
+                    },
+                    {
+                        "internalType": "bytes",
+                        "name": "publicSessionKey",
+                        "type": "bytes"
+                    },
+                    {
+                        "internalType": "bytes",
+                        "name": "signture",
+                        "type": "bytes"
+                    }
+                ],
+                "internalType": "struct NewLoaderSessionArgs",
+                "name": "newSessionArgs",
+                "type": "tuple"
+            }
+        ],
+        "name": "setLoaderSession",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "uint256",
+                        "name": "secretRequestorId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "secretKeeperId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "offerId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "offerVersion",
+                        "type": "uint64"
+                    }
+                ],
+                "internalType": "struct SecretRequestObj",
+                "name": "request",
+                "type": "tuple"
+            },
+            {
+                "components": [
+                    {
+                        "internalType": "uint256",
+                        "name": "teeOfferId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "keeperOfferId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint32",
+                        "name": "signedTime",
+                        "type": "uint32"
+                    },
+                    {
+                        "internalType": "bytes",
+                        "name": "publicSessionKey",
+                        "type": "bytes"
+                    },
+                    {
+                        "internalType": "bytes",
+                        "name": "signture",
+                        "type": "bytes"
+                    }
+                ],
+                "internalType": "struct NewLoaderSessionArgs",
+                "name": "newSessionArgs",
+                "type": "tuple"
+            }
+        ],
+        "name": "setLoaderSessionAndRequestSecret",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "uint256",
+                "name": "offerId",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "version",
+                "type": "uint256"
+            },
+            {
+                "indexed": true,
+                "internalType": "uint256",
+                "name": "keeperId",
+                "type": "uint256"
+            },
+            {
+                "indexed": true,
+                "internalType": "uint256",
+                "name": "issuerId",
+                "type": "uint256"
+            }
+        ],
+        "name": "NewOfferResources",
+        "type": "event"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "teeOfferKeeperId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "maxCount",
+                "type": "uint256"
+            }
+        ],
+        "name": "clearOfferResources",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "uint256",
+                        "name": "offerId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "resultInfo",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "encryptedRequirements_DEPRECATED",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "encryptedArgs_DEPRECATED",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "enum OrderStatus",
+                        "name": "status",
+                        "type": "uint8"
+                    },
+                    {
+                        "internalType": "bytes32",
+                        "name": "externalId",
+                        "type": "bytes32"
+                    }
+                ],
+                "internalType": "struct OrderInfo",
+                "name": "info",
+                "type": "tuple"
+            },
+            {
+                "components": [
+                    {
+                        "internalType": "uint256[]",
+                        "name": "slotsIds",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint32[]",
+                        "name": "slotsCounts",
+                        "type": "uint32[]"
+                    },
+                    {
+                        "components": [
+                            {
+                                "internalType": "enum PriceType",
+                                "name": "priceType",
+                                "type": "uint8"
+                            },
+                            {
+                                "internalType": "uint256",
+                                "name": "price",
+                                "type": "uint256"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "minTimeMinutes",
+                                "type": "uint64"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "maxTimeMinutes",
+                                "type": "uint64"
+                            }
+                        ],
+                        "internalType": "struct SlotUsage[]",
+                        "name": "slotsUsages",
+                        "type": "tuple[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "slotsMaxPriceSlippages",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "slotsInfoModificationTime",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "optionsIds",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint32[]",
+                        "name": "optionsCounts",
+                        "type": "uint32[]"
+                    },
+                    {
+                        "components": [
+                            {
+                                "internalType": "enum PriceType",
+                                "name": "priceType",
+                                "type": "uint8"
+                            },
+                            {
+                                "internalType": "uint256",
+                                "name": "price",
+                                "type": "uint256"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "minTimeMinutes",
+                                "type": "uint64"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "maxTimeMinutes",
+                                "type": "uint64"
+                            }
+                        ],
+                        "internalType": "struct SlotUsage[]",
+                        "name": "optionsUsages",
+                        "type": "tuple[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "optionsMaxPriceSlippages",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "optionsInfoModificationTime",
+                        "type": "uint256[]"
+                    }
+                ],
+                "internalType": "struct OrderSlots",
+                "name": "slots",
+                "type": "tuple"
+            },
+            {
+                "components": [
+                    {
+                        "internalType": "uint256[]",
+                        "name": "inputOffers",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "outputOffer",
+                        "type": "uint256"
+                    }
+                ],
+                "internalType": "struct OrderArgs",
+                "name": "args",
+                "type": "tuple"
+            },
+            {
+                "internalType": "bytes",
+                "name": "signedResultInfoBySecretKey",
+                "type": "bytes"
+            }
+        ],
+        "name": "createResourceOrder",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "offerId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint64",
+                "name": "version",
+                "type": "uint64"
+            }
+        ],
+        "name": "getOfferRecourcesByOfferVersion",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "uint256",
+                        "name": "offerId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "teeOfferIssuerId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "teeOfferKeeperId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "storageOrderId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "offerVersion",
+                        "type": "uint64"
+                    },
+                    {
+                        "internalType": "uint32",
+                        "name": "timestamp",
+                        "type": "uint32"
+                    },
+                    {
+                        "internalType": "uint32",
+                        "name": "signedTime",
+                        "type": "uint32"
+                    },
+                    {
+                        "internalType": "bytes",
+                        "name": "signature",
+                        "type": "bytes"
+                    },
+                    {
+                        "internalType": "bytes",
+                        "name": "signedData",
+                        "type": "bytes"
+                    }
+                ],
+                "internalType": "struct OfferResource[]",
+                "name": "",
+                "type": "tuple[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "teeOfferIssuerId",
+                "type": "uint256"
+            }
+        ],
+        "name": "getOfferResourcesByIssuerId",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "uint256",
+                        "name": "offerId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "teeOfferIssuerId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "teeOfferKeeperId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "storageOrderId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "offerVersion",
+                        "type": "uint64"
+                    },
+                    {
+                        "internalType": "uint32",
+                        "name": "timestamp",
+                        "type": "uint32"
+                    },
+                    {
+                        "internalType": "uint32",
+                        "name": "signedTime",
+                        "type": "uint32"
+                    },
+                    {
+                        "internalType": "bytes",
+                        "name": "signature",
+                        "type": "bytes"
+                    },
+                    {
+                        "internalType": "bytes",
+                        "name": "signedData",
+                        "type": "bytes"
+                    }
+                ],
+                "internalType": "struct OfferResource[]",
+                "name": "",
+                "type": "tuple[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "teeKeeperId",
+                "type": "uint256"
+            }
+        ],
+        "name": "getOfferResourcesByKeeperId",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "uint256",
+                        "name": "offerId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "teeOfferIssuerId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "teeOfferKeeperId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "storageOrderId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "offerVersion",
+                        "type": "uint64"
+                    },
+                    {
+                        "internalType": "uint32",
+                        "name": "timestamp",
+                        "type": "uint32"
+                    },
+                    {
+                        "internalType": "uint32",
+                        "name": "signedTime",
+                        "type": "uint32"
+                    },
+                    {
+                        "internalType": "bytes",
+                        "name": "signature",
+                        "type": "bytes"
+                    },
+                    {
+                        "internalType": "bytes",
+                        "name": "signedData",
+                        "type": "bytes"
+                    }
+                ],
+                "internalType": "struct OfferResource[]",
+                "name": "",
+                "type": "tuple[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "teeKeeperId",
+                "type": "uint256"
+            }
+        ],
+        "name": "getOfferResourcesCountByKeeperId",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "uint256",
+                        "name": "offerId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "teeOfferIssuerId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "teeOfferKeeperId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "storageOrderId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "offerVersion",
+                        "type": "uint64"
+                    },
+                    {
+                        "internalType": "uint32",
+                        "name": "signedTime",
+                        "type": "uint32"
+                    },
+                    {
+                        "internalType": "bytes",
+                        "name": "signature",
+                        "type": "bytes"
+                    },
+                    {
+                        "internalType": "bytes",
+                        "name": "signedData",
+                        "type": "bytes"
+                    }
+                ],
+                "internalType": "struct OfferResourceObj",
+                "name": "resource",
+                "type": "tuple"
+            }
+        ],
+        "name": "setOfferResource",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "getNewStorageOrders",
+        "outputs": [
+            {
+                "internalType": "uint256[]",
+                "name": "",
+                "type": "uint256[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "offerId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint32",
+                "name": "offerVersion",
+                "type": "uint32"
+            }
+        ],
+        "name": "getStorageOrdersAllocated",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "uint256",
+                        "name": "offerId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "teeOfferIssuerId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "storageOrderId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "offerVersion",
+                        "type": "uint64"
+                    },
+                    {
+                        "internalType": "uint32",
+                        "name": "distributionRepliactionFactor",
+                        "type": "uint32"
+                    },
+                    {
+                        "internalType": "uint32",
+                        "name": "timestamp",
+                        "type": "uint32"
+                    }
+                ],
+                "internalType": "struct OfferStorageAllocated",
+                "name": "",
+                "type": "tuple"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "getUsedStorageOrders",
+        "outputs": [
+            {
+                "internalType": "uint256[]",
+                "name": "",
+                "type": "uint256[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "uint256",
+                "name": "offerId",
+                "type": "uint256"
+            },
+            {
+                "indexed": true,
+                "internalType": "uint64",
+                "name": "offerVersion",
+                "type": "uint64"
+            }
+        ],
+        "name": "OfferStorageRequestCanceled",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "uint256",
+                "name": "offerId",
+                "type": "uint256"
+            },
+            {
+                "indexed": true,
+                "internalType": "uint64",
+                "name": "offerVersion",
+                "type": "uint64"
+            },
+            {
+                "indexed": true,
+                "internalType": "uint256",
+                "name": "teeOfferIssuerId",
+                "type": "uint256"
+            }
+        ],
+        "name": "OfferStorageRequestSetUp",
+        "type": "event"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "offerId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint64",
+                "name": "version",
+                "type": "uint64"
+            }
+        ],
+        "name": "cancelOfferStorageRequest",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "teeOfferIssuerId",
+                "type": "uint256"
+            }
+        ],
+        "name": "getOfferStorageRequestsCountByIssuerId",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "teeOfferIssuerId",
+                "type": "uint256"
+            }
+        ],
+        "name": "getOffersStorageRequestsByIssuerId",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "uint256",
+                        "name": "offerId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "teeOfferIssuerId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "storageOfferId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "storageSlotId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "deposit",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "offerVersion",
+                        "type": "uint64"
+                    },
+                    {
+                        "internalType": "uint32",
+                        "name": "repliactionFactor",
+                        "type": "uint32"
+                    },
+                    {
+                        "internalType": "uint32",
+                        "name": "timestamp",
+                        "type": "uint32"
+                    }
+                ],
+                "internalType": "struct OfferStorageRequest[]",
+                "name": "",
+                "type": "tuple[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "offerId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint64",
+                "name": "version",
+                "type": "uint64"
+            }
+        ],
+        "name": "getOffersStorageRequestsByOfferVersion",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "uint256",
+                        "name": "offerId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "teeOfferIssuerId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "storageOfferId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "storageSlotId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "deposit",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "offerVersion",
+                        "type": "uint64"
+                    },
+                    {
+                        "internalType": "uint32",
+                        "name": "repliactionFactor",
+                        "type": "uint32"
+                    },
+                    {
+                        "internalType": "uint32",
+                        "name": "timestamp",
+                        "type": "uint32"
+                    }
+                ],
+                "internalType": "struct OfferStorageRequest",
+                "name": "",
+                "type": "tuple"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "uint256",
+                        "name": "offerId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "teeOfferIssuerId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "storageOfferId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "storageSlotId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "deposit",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "offerVersion",
+                        "type": "uint64"
+                    },
+                    {
+                        "internalType": "uint32",
+                        "name": "repliactionFactor",
+                        "type": "uint32"
+                    }
+                ],
+                "internalType": "struct OfferStorageRequestObj",
+                "name": "request",
+                "type": "tuple"
+            }
+        ],
+        "name": "setOffersStorgaeRequest",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "uint256",
+                "name": "secretRequestorId",
+                "type": "uint256"
+            },
+            {
+                "indexed": true,
+                "internalType": "uint256",
+                "name": "secretKeeperId",
+                "type": "uint256"
+            },
+            {
+                "indexed": true,
+                "internalType": "uint256",
+                "name": "offerId",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint64",
+                "name": "offerVersion",
+                "type": "uint64"
+            }
+        ],
+        "name": "SecretRequestAdded",
+        "type": "event"
+    },
+    {
+        "inputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "uint256",
+                        "name": "secretRequestorId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "secretKeeperId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "offerId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "offerVersion",
+                        "type": "uint64"
+                    }
+                ],
+                "internalType": "struct SecretRequestObj",
+                "name": "request",
+                "type": "tuple"
+            }
+        ],
+        "name": "addSecretRequest",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "uint256",
+                        "name": "secretRequestorId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "secretKeeperId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "offerId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "offerVersion",
+                        "type": "uint64"
+                    }
+                ],
+                "internalType": "struct SecretRequestObj",
+                "name": "request",
+                "type": "tuple"
+            }
+        ],
+        "name": "cancelSecretRequest",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "teeOfferKeeperId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "maxCount",
+                "type": "uint256"
+            }
+        ],
+        "name": "clearSecretRequests",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "teeOfferKeeperId",
+                "type": "uint256"
+            }
+        ],
+        "name": "getSecretRequestsByKeeperId",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "uint256",
+                        "name": "secretKeeperId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "secretRequestorId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "offerId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "offerVersion",
+                        "type": "uint64"
+                    },
+                    {
+                        "internalType": "uint32",
+                        "name": "timestamp",
+                        "type": "uint32"
+                    }
+                ],
+                "internalType": "struct SecretRequest[]",
+                "name": "",
+                "type": "tuple[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "teeOfferKeeperId",
+                "type": "uint256"
+            }
+        ],
+        "name": "getSecretRequestsCountByKeeperId",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
         "inputs": [
             {
                 "internalType": "uint256",
@@ -9976,6 +13257,224 @@ export const abi = [
     {
         "inputs": [
             {
+                "components": [
+                    {
+                        "internalType": "uint256[]",
+                        "name": "slotsIds",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint32[]",
+                        "name": "slotsCounts",
+                        "type": "uint32[]"
+                    },
+                    {
+                        "components": [
+                            {
+                                "internalType": "enum PriceType",
+                                "name": "priceType",
+                                "type": "uint8"
+                            },
+                            {
+                                "internalType": "uint256",
+                                "name": "price",
+                                "type": "uint256"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "minTimeMinutes",
+                                "type": "uint64"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "maxTimeMinutes",
+                                "type": "uint64"
+                            }
+                        ],
+                        "internalType": "struct SlotUsage[]",
+                        "name": "slotsUsages",
+                        "type": "tuple[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "slotsMaxPriceSlippages",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "slotsInfoModificationTime",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "optionsIds",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint32[]",
+                        "name": "optionsCounts",
+                        "type": "uint32[]"
+                    },
+                    {
+                        "components": [
+                            {
+                                "internalType": "enum PriceType",
+                                "name": "priceType",
+                                "type": "uint8"
+                            },
+                            {
+                                "internalType": "uint256",
+                                "name": "price",
+                                "type": "uint256"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "minTimeMinutes",
+                                "type": "uint64"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "maxTimeMinutes",
+                                "type": "uint64"
+                            }
+                        ],
+                        "internalType": "struct SlotUsage[]",
+                        "name": "optionsUsages",
+                        "type": "tuple[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "optionsMaxPriceSlippages",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "optionsInfoModificationTime",
+                        "type": "uint256[]"
+                    }
+                ],
+                "internalType": "struct OrderSlots",
+                "name": "slots",
+                "type": "tuple"
+            }
+        ],
+        "name": "validateTeeOfferSlots",
+        "outputs": [],
+        "stateMutability": "pure",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "uint256[]",
+                        "name": "slotsIds",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint32[]",
+                        "name": "slotsCounts",
+                        "type": "uint32[]"
+                    },
+                    {
+                        "components": [
+                            {
+                                "internalType": "enum PriceType",
+                                "name": "priceType",
+                                "type": "uint8"
+                            },
+                            {
+                                "internalType": "uint256",
+                                "name": "price",
+                                "type": "uint256"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "minTimeMinutes",
+                                "type": "uint64"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "maxTimeMinutes",
+                                "type": "uint64"
+                            }
+                        ],
+                        "internalType": "struct SlotUsage[]",
+                        "name": "slotsUsages",
+                        "type": "tuple[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "slotsMaxPriceSlippages",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "slotsInfoModificationTime",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "optionsIds",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint32[]",
+                        "name": "optionsCounts",
+                        "type": "uint32[]"
+                    },
+                    {
+                        "components": [
+                            {
+                                "internalType": "enum PriceType",
+                                "name": "priceType",
+                                "type": "uint8"
+                            },
+                            {
+                                "internalType": "uint256",
+                                "name": "price",
+                                "type": "uint256"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "minTimeMinutes",
+                                "type": "uint64"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "maxTimeMinutes",
+                                "type": "uint64"
+                            }
+                        ],
+                        "internalType": "struct SlotUsage[]",
+                        "name": "optionsUsages",
+                        "type": "tuple[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "optionsMaxPriceSlippages",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "optionsInfoModificationTime",
+                        "type": "uint256[]"
+                    }
+                ],
+                "internalType": "struct OrderSlots",
+                "name": "slots",
+                "type": "tuple"
+            }
+        ],
+        "name": "validateValueOfferSlots",
+        "outputs": [],
+        "stateMutability": "pure",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
                 "internalType": "uint256",
                 "name": "offerId",
                 "type": "uint256"
@@ -10000,24 +13499,105 @@ export const abi = [
                 "type": "uint256"
             },
             {
-                "internalType": "uint256",
-                "name": "slotId",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint32",
-                "name": "slotCount",
-                "type": "uint32"
-            },
-            {
-                "internalType": "uint256[]",
-                "name": "optionsIds",
-                "type": "uint256[]"
-            },
-            {
-                "internalType": "uint32[]",
-                "name": "optionsCount",
-                "type": "uint32[]"
+                "components": [
+                    {
+                        "internalType": "uint256[]",
+                        "name": "slotsIds",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint32[]",
+                        "name": "slotsCounts",
+                        "type": "uint32[]"
+                    },
+                    {
+                        "components": [
+                            {
+                                "internalType": "enum PriceType",
+                                "name": "priceType",
+                                "type": "uint8"
+                            },
+                            {
+                                "internalType": "uint256",
+                                "name": "price",
+                                "type": "uint256"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "minTimeMinutes",
+                                "type": "uint64"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "maxTimeMinutes",
+                                "type": "uint64"
+                            }
+                        ],
+                        "internalType": "struct SlotUsage[]",
+                        "name": "slotsUsages",
+                        "type": "tuple[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "slotsMaxPriceSlippages",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "slotsInfoModificationTime",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "optionsIds",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint32[]",
+                        "name": "optionsCounts",
+                        "type": "uint32[]"
+                    },
+                    {
+                        "components": [
+                            {
+                                "internalType": "enum PriceType",
+                                "name": "priceType",
+                                "type": "uint8"
+                            },
+                            {
+                                "internalType": "uint256",
+                                "name": "price",
+                                "type": "uint256"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "minTimeMinutes",
+                                "type": "uint64"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "maxTimeMinutes",
+                                "type": "uint64"
+                            }
+                        ],
+                        "internalType": "struct SlotUsage[]",
+                        "name": "optionsUsages",
+                        "type": "tuple[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "optionsMaxPriceSlippages",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "optionsInfoModificationTime",
+                        "type": "uint256[]"
+                    }
+                ],
+                "internalType": "struct OrderSlots",
+                "name": "slots",
+                "type": "tuple"
             }
         ],
         "name": "getOfferMinDeposit",
@@ -10606,16 +14186,6 @@ export const abi = [
                         "internalType": "bytes32",
                         "name": "externalId",
                         "type": "bytes32"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "expectedPrice",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "maxPriceSlippage",
-                        "type": "uint256"
                     }
                 ],
                 "internalType": "struct OrderInfo",
@@ -10625,14 +14195,51 @@ export const abi = [
             {
                 "components": [
                     {
-                        "internalType": "uint256",
-                        "name": "slotId",
-                        "type": "uint256"
+                        "internalType": "uint256[]",
+                        "name": "slotsIds",
+                        "type": "uint256[]"
                     },
                     {
-                        "internalType": "uint32",
-                        "name": "slotCount",
-                        "type": "uint32"
+                        "internalType": "uint32[]",
+                        "name": "slotsCounts",
+                        "type": "uint32[]"
+                    },
+                    {
+                        "components": [
+                            {
+                                "internalType": "enum PriceType",
+                                "name": "priceType",
+                                "type": "uint8"
+                            },
+                            {
+                                "internalType": "uint256",
+                                "name": "price",
+                                "type": "uint256"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "minTimeMinutes",
+                                "type": "uint64"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "maxTimeMinutes",
+                                "type": "uint64"
+                            }
+                        ],
+                        "internalType": "struct SlotUsage[]",
+                        "name": "slotsUsages",
+                        "type": "tuple[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "slotsMaxPriceSlippages",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "slotsInfoModificationTime",
+                        "type": "uint256[]"
                     },
                     {
                         "internalType": "uint256[]",
@@ -10641,8 +14248,45 @@ export const abi = [
                     },
                     {
                         "internalType": "uint32[]",
-                        "name": "optionsCount",
+                        "name": "optionsCounts",
                         "type": "uint32[]"
+                    },
+                    {
+                        "components": [
+                            {
+                                "internalType": "enum PriceType",
+                                "name": "priceType",
+                                "type": "uint8"
+                            },
+                            {
+                                "internalType": "uint256",
+                                "name": "price",
+                                "type": "uint256"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "minTimeMinutes",
+                                "type": "uint64"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "maxTimeMinutes",
+                                "type": "uint64"
+                            }
+                        ],
+                        "internalType": "struct SlotUsage[]",
+                        "name": "optionsUsages",
+                        "type": "tuple[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "optionsMaxPriceSlippages",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "optionsInfoModificationTime",
+                        "type": "uint256[]"
                     }
                 ],
                 "internalType": "struct OrderSlots",
@@ -10731,16 +14375,6 @@ export const abi = [
                         "internalType": "bytes32",
                         "name": "externalId",
                         "type": "bytes32"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "expectedPrice",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "maxPriceSlippage",
-                        "type": "uint256"
                     }
                 ],
                 "internalType": "struct OrderInfo",
@@ -10750,14 +14384,51 @@ export const abi = [
             {
                 "components": [
                     {
-                        "internalType": "uint256",
-                        "name": "slotId",
-                        "type": "uint256"
+                        "internalType": "uint256[]",
+                        "name": "slotsIds",
+                        "type": "uint256[]"
                     },
                     {
-                        "internalType": "uint32",
-                        "name": "slotCount",
-                        "type": "uint32"
+                        "internalType": "uint32[]",
+                        "name": "slotsCounts",
+                        "type": "uint32[]"
+                    },
+                    {
+                        "components": [
+                            {
+                                "internalType": "enum PriceType",
+                                "name": "priceType",
+                                "type": "uint8"
+                            },
+                            {
+                                "internalType": "uint256",
+                                "name": "price",
+                                "type": "uint256"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "minTimeMinutes",
+                                "type": "uint64"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "maxTimeMinutes",
+                                "type": "uint64"
+                            }
+                        ],
+                        "internalType": "struct SlotUsage[]",
+                        "name": "slotsUsages",
+                        "type": "tuple[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "slotsMaxPriceSlippages",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "slotsInfoModificationTime",
+                        "type": "uint256[]"
                     },
                     {
                         "internalType": "uint256[]",
@@ -10766,8 +14437,45 @@ export const abi = [
                     },
                     {
                         "internalType": "uint32[]",
-                        "name": "optionsCount",
+                        "name": "optionsCounts",
                         "type": "uint32[]"
+                    },
+                    {
+                        "components": [
+                            {
+                                "internalType": "enum PriceType",
+                                "name": "priceType",
+                                "type": "uint8"
+                            },
+                            {
+                                "internalType": "uint256",
+                                "name": "price",
+                                "type": "uint256"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "minTimeMinutes",
+                                "type": "uint64"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "maxTimeMinutes",
+                                "type": "uint64"
+                            }
+                        ],
+                        "internalType": "struct SlotUsage[]",
+                        "name": "optionsUsages",
+                        "type": "tuple[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "optionsMaxPriceSlippages",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "optionsInfoModificationTime",
+                        "type": "uint256[]"
                     }
                 ],
                 "internalType": "struct OrderSlots",
@@ -10823,84 +14531,25 @@ export const abi = [
     {
         "inputs": [
             {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
-            }
-        ],
-        "name": "getOrder",
-        "outputs": [
-            {
                 "internalType": "address",
-                "name": "",
+                "name": "consumer",
                 "type": "address"
             },
             {
-                "components": [
-                    {
-                        "internalType": "uint256",
-                        "name": "offerId",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "string",
-                        "name": "resultInfo",
-                        "type": "string"
-                    },
-                    {
-                        "internalType": "string",
-                        "name": "encryptedRequirements_DEPRECATED",
-                        "type": "string"
-                    },
-                    {
-                        "internalType": "string",
-                        "name": "encryptedArgs_DEPRECATED",
-                        "type": "string"
-                    },
-                    {
-                        "internalType": "enum OrderStatus",
-                        "name": "status",
-                        "type": "uint8"
-                    },
-                    {
-                        "internalType": "bytes32",
-                        "name": "externalId",
-                        "type": "bytes32"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "expectedPrice",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "maxPriceSlippage",
-                        "type": "uint256"
-                    }
-                ],
-                "internalType": "struct OrderInfo",
-                "name": "",
-                "type": "tuple"
-            },
-            {
-                "components": [
-                    {
-                        "internalType": "string",
-                        "name": "encryptedResult",
-                        "type": "string"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "orderPrice",
-                        "type": "uint256"
-                    }
-                ],
-                "internalType": "struct OrderResult",
-                "name": "",
-                "type": "tuple"
+                "internalType": "uint256",
+                "name": "deposit",
+                "type": "uint256"
             }
         ],
-        "stateMutability": "view",
+        "name": "deductOrderDepositByApp",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "nonpayable",
         "type": "function"
     },
     {
@@ -10947,21 +14596,53 @@ export const abi = [
                 "type": "uint256"
             },
             {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
-            },
-            {
                 "components": [
                     {
-                        "internalType": "uint256",
-                        "name": "slotId",
-                        "type": "uint256"
+                        "internalType": "uint256[]",
+                        "name": "slotsIds",
+                        "type": "uint256[]"
                     },
                     {
-                        "internalType": "uint32",
-                        "name": "slotCount",
-                        "type": "uint32"
+                        "internalType": "uint32[]",
+                        "name": "slotsCounts",
+                        "type": "uint32[]"
+                    },
+                    {
+                        "components": [
+                            {
+                                "internalType": "enum PriceType",
+                                "name": "priceType",
+                                "type": "uint8"
+                            },
+                            {
+                                "internalType": "uint256",
+                                "name": "price",
+                                "type": "uint256"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "minTimeMinutes",
+                                "type": "uint64"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "maxTimeMinutes",
+                                "type": "uint64"
+                            }
+                        ],
+                        "internalType": "struct SlotUsage[]",
+                        "name": "slotsUsages",
+                        "type": "tuple[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "slotsMaxPriceSlippages",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "slotsInfoModificationTime",
+                        "type": "uint256[]"
                     },
                     {
                         "internalType": "uint256[]",
@@ -10970,18 +14651,418 @@ export const abi = [
                     },
                     {
                         "internalType": "uint32[]",
-                        "name": "optionsCount",
+                        "name": "optionsCounts",
                         "type": "uint32[]"
+                    },
+                    {
+                        "components": [
+                            {
+                                "internalType": "enum PriceType",
+                                "name": "priceType",
+                                "type": "uint8"
+                            },
+                            {
+                                "internalType": "uint256",
+                                "name": "price",
+                                "type": "uint256"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "minTimeMinutes",
+                                "type": "uint64"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "maxTimeMinutes",
+                                "type": "uint64"
+                            }
+                        ],
+                        "internalType": "struct SlotUsage[]",
+                        "name": "optionsUsages",
+                        "type": "tuple[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "optionsMaxPriceSlippages",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "optionsInfoModificationTime",
+                        "type": "uint256[]"
                     }
                 ],
                 "internalType": "struct OrderSlots",
-                "name": "slots",
+                "name": "initialSlotsSetup",
                 "type": "tuple"
             }
         ],
-        "name": "setTeeOrderSelectedUsageAndOptions",
+        "name": "setInitialOrderUsage",
         "outputs": [],
         "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256[]",
+                "name": "optionsIds",
+                "type": "uint256[]"
+            },
+            {
+                "internalType": "uint32[]",
+                "name": "optionsCounts",
+                "type": "uint32[]"
+            },
+            {
+                "components": [
+                    {
+                        "internalType": "bool",
+                        "name": "includeFixed",
+                        "type": "bool"
+                    },
+                    {
+                        "internalType": "bool",
+                        "name": "includePerHour",
+                        "type": "bool"
+                    }
+                ],
+                "internalType": "struct PriceTypeFilter",
+                "name": "filter",
+                "type": "tuple"
+            }
+        ],
+        "name": "calculateMinOptionsPriceFiltered",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "minPrice",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "offerId",
+                "type": "uint256"
+            },
+            {
+                "components": [
+                    {
+                        "internalType": "uint256[]",
+                        "name": "slotsIds",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint32[]",
+                        "name": "slotsCounts",
+                        "type": "uint32[]"
+                    },
+                    {
+                        "components": [
+                            {
+                                "internalType": "enum PriceType",
+                                "name": "priceType",
+                                "type": "uint8"
+                            },
+                            {
+                                "internalType": "uint256",
+                                "name": "price",
+                                "type": "uint256"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "minTimeMinutes",
+                                "type": "uint64"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "maxTimeMinutes",
+                                "type": "uint64"
+                            }
+                        ],
+                        "internalType": "struct SlotUsage[]",
+                        "name": "slotsUsages",
+                        "type": "tuple[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "slotsMaxPriceSlippages",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "slotsInfoModificationTime",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "optionsIds",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint32[]",
+                        "name": "optionsCounts",
+                        "type": "uint32[]"
+                    },
+                    {
+                        "components": [
+                            {
+                                "internalType": "enum PriceType",
+                                "name": "priceType",
+                                "type": "uint8"
+                            },
+                            {
+                                "internalType": "uint256",
+                                "name": "price",
+                                "type": "uint256"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "minTimeMinutes",
+                                "type": "uint64"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "maxTimeMinutes",
+                                "type": "uint64"
+                            }
+                        ],
+                        "internalType": "struct SlotUsage[]",
+                        "name": "optionsUsages",
+                        "type": "tuple[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "optionsMaxPriceSlippages",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "optionsInfoModificationTime",
+                        "type": "uint256[]"
+                    }
+                ],
+                "internalType": "struct OrderSlots",
+                "name": "orderSetup",
+                "type": "tuple"
+            }
+        ],
+        "name": "calculateMinOrderPrice",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "offerId",
+                "type": "uint256"
+            },
+            {
+                "components": [
+                    {
+                        "internalType": "uint256[]",
+                        "name": "slotsIds",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint32[]",
+                        "name": "slotsCounts",
+                        "type": "uint32[]"
+                    },
+                    {
+                        "components": [
+                            {
+                                "internalType": "enum PriceType",
+                                "name": "priceType",
+                                "type": "uint8"
+                            },
+                            {
+                                "internalType": "uint256",
+                                "name": "price",
+                                "type": "uint256"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "minTimeMinutes",
+                                "type": "uint64"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "maxTimeMinutes",
+                                "type": "uint64"
+                            }
+                        ],
+                        "internalType": "struct SlotUsage[]",
+                        "name": "slotsUsages",
+                        "type": "tuple[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "slotsMaxPriceSlippages",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "slotsInfoModificationTime",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "optionsIds",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint32[]",
+                        "name": "optionsCounts",
+                        "type": "uint32[]"
+                    },
+                    {
+                        "components": [
+                            {
+                                "internalType": "enum PriceType",
+                                "name": "priceType",
+                                "type": "uint8"
+                            },
+                            {
+                                "internalType": "uint256",
+                                "name": "price",
+                                "type": "uint256"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "minTimeMinutes",
+                                "type": "uint64"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "maxTimeMinutes",
+                                "type": "uint64"
+                            }
+                        ],
+                        "internalType": "struct SlotUsage[]",
+                        "name": "optionsUsages",
+                        "type": "tuple[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "optionsMaxPriceSlippages",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "optionsInfoModificationTime",
+                        "type": "uint256[]"
+                    }
+                ],
+                "internalType": "struct OrderSlots",
+                "name": "slotsSetup",
+                "type": "tuple"
+            },
+            {
+                "components": [
+                    {
+                        "internalType": "bool",
+                        "name": "includeFixed",
+                        "type": "bool"
+                    },
+                    {
+                        "internalType": "bool",
+                        "name": "includePerHour",
+                        "type": "bool"
+                    }
+                ],
+                "internalType": "struct PriceTypeFilter",
+                "name": "filter",
+                "type": "tuple"
+            }
+        ],
+        "name": "calculateMinOrderPriceFiltered",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "offerId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256[]",
+                "name": "slotsIds",
+                "type": "uint256[]"
+            },
+            {
+                "internalType": "uint32[]",
+                "name": "slotsCounts",
+                "type": "uint32[]"
+            },
+            {
+                "components": [
+                    {
+                        "internalType": "bool",
+                        "name": "includeFixed",
+                        "type": "bool"
+                    },
+                    {
+                        "internalType": "bool",
+                        "name": "includePerHour",
+                        "type": "bool"
+                    }
+                ],
+                "internalType": "struct PriceTypeFilter",
+                "name": "filter",
+                "type": "tuple"
+            }
+        ],
+        "name": "calculateMinSlotsPriceFiltered",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "minPrice",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "orderId",
+                "type": "uint256"
+            }
+        ],
+        "name": "calculateOrderCurrentPrice",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
         "type": "function"
     },
     {
@@ -10992,19 +15073,32 @@ export const abi = [
                 "type": "uint256"
             },
             {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
-            },
+                "components": [
+                    {
+                        "internalType": "bool",
+                        "name": "includeFixed",
+                        "type": "bool"
+                    },
+                    {
+                        "internalType": "bool",
+                        "name": "includePerHour",
+                        "type": "bool"
+                    }
+                ],
+                "internalType": "struct PriceTypeFilter",
+                "name": "filter",
+                "type": "tuple"
+            }
+        ],
+        "name": "calculateOrderCurrentPriceFiltered",
+        "outputs": [
             {
                 "internalType": "uint256",
-                "name": "slotId",
+                "name": "",
                 "type": "uint256"
             }
         ],
-        "name": "setValueOrderUsage",
-        "outputs": [],
-        "stateMutability": "nonpayable",
+        "stateMutability": "view",
         "type": "function"
     },
     {
@@ -11024,6 +15118,67 @@ export const abi = [
             }
         ],
         "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "enum PriceType",
+                        "name": "priceType",
+                        "type": "uint8"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "price",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "minTimeMinutes",
+                        "type": "uint64"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "maxTimeMinutes",
+                        "type": "uint64"
+                    }
+                ],
+                "internalType": "struct SlotUsage",
+                "name": "usage",
+                "type": "tuple"
+            },
+            {
+                "internalType": "uint256",
+                "name": "startTime",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "modifiedTime",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "currentTime",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "slotCount",
+                "type": "uint256"
+            }
+        ],
+        "name": "calculateUsagePrice",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "pure",
         "type": "function"
     },
     {
@@ -11156,16 +15311,6 @@ export const abi = [
                         "internalType": "bytes32",
                         "name": "externalId",
                         "type": "bytes32"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "expectedPrice",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "maxPriceSlippage",
-                        "type": "uint256"
                     }
                 ],
                 "internalType": "struct OrderInfo",
@@ -11186,6 +15331,200 @@ export const abi = [
                     }
                 ],
                 "internalType": "struct OrderResult",
+                "name": "",
+                "type": "tuple"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "orderId",
+                "type": "uint256"
+            }
+        ],
+        "name": "getOrderChangeOptions",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "uint256",
+                        "name": "lastModificationTime",
+                        "type": "uint256"
+                    },
+                    {
+                        "components": [
+                            {
+                                "internalType": "uint256[]",
+                                "name": "ids",
+                                "type": "uint256[]"
+                            },
+                            {
+                                "internalType": "uint32[]",
+                                "name": "counts",
+                                "type": "uint32[]"
+                            },
+                            {
+                                "internalType": "uint256[]",
+                                "name": "priceSlippages",
+                                "type": "uint256[]"
+                            },
+                            {
+                                "components": [
+                                    {
+                                        "internalType": "enum PriceType",
+                                        "name": "priceType",
+                                        "type": "uint8"
+                                    },
+                                    {
+                                        "internalType": "uint256",
+                                        "name": "price",
+                                        "type": "uint256"
+                                    },
+                                    {
+                                        "internalType": "uint64",
+                                        "name": "minTimeMinutes",
+                                        "type": "uint64"
+                                    },
+                                    {
+                                        "internalType": "uint64",
+                                        "name": "maxTimeMinutes",
+                                        "type": "uint64"
+                                    }
+                                ],
+                                "internalType": "struct SlotUsage[]",
+                                "name": "usages",
+                                "type": "tuple[]"
+                            },
+                            {
+                                "internalType": "uint256[]",
+                                "name": "infosLastModificationTimes",
+                                "type": "uint256[]"
+                            }
+                        ],
+                        "internalType": "struct OrderUsageAddRequest[]",
+                        "name": "adds",
+                        "type": "tuple[]"
+                    },
+                    {
+                        "components": [
+                            {
+                                "internalType": "uint256[]",
+                                "name": "indexes",
+                                "type": "uint256[]"
+                            },
+                            {
+                                "internalType": "uint32[]",
+                                "name": "counts",
+                                "type": "uint32[]"
+                            }
+                        ],
+                        "internalType": "struct OrderUsageDeleteRequest[]",
+                        "name": "deletes",
+                        "type": "tuple[]"
+                    }
+                ],
+                "internalType": "struct OrderUsageModificationRequest",
+                "name": "",
+                "type": "tuple"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "orderId",
+                "type": "uint256"
+            }
+        ],
+        "name": "getOrderChangeSlots",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "uint256",
+                        "name": "lastModificationTime",
+                        "type": "uint256"
+                    },
+                    {
+                        "components": [
+                            {
+                                "internalType": "uint256[]",
+                                "name": "ids",
+                                "type": "uint256[]"
+                            },
+                            {
+                                "internalType": "uint32[]",
+                                "name": "counts",
+                                "type": "uint32[]"
+                            },
+                            {
+                                "internalType": "uint256[]",
+                                "name": "priceSlippages",
+                                "type": "uint256[]"
+                            },
+                            {
+                                "components": [
+                                    {
+                                        "internalType": "enum PriceType",
+                                        "name": "priceType",
+                                        "type": "uint8"
+                                    },
+                                    {
+                                        "internalType": "uint256",
+                                        "name": "price",
+                                        "type": "uint256"
+                                    },
+                                    {
+                                        "internalType": "uint64",
+                                        "name": "minTimeMinutes",
+                                        "type": "uint64"
+                                    },
+                                    {
+                                        "internalType": "uint64",
+                                        "name": "maxTimeMinutes",
+                                        "type": "uint64"
+                                    }
+                                ],
+                                "internalType": "struct SlotUsage[]",
+                                "name": "usages",
+                                "type": "tuple[]"
+                            },
+                            {
+                                "internalType": "uint256[]",
+                                "name": "infosLastModificationTimes",
+                                "type": "uint256[]"
+                            }
+                        ],
+                        "internalType": "struct OrderUsageAddRequest[]",
+                        "name": "adds",
+                        "type": "tuple[]"
+                    },
+                    {
+                        "components": [
+                            {
+                                "internalType": "uint256[]",
+                                "name": "indexes",
+                                "type": "uint256[]"
+                            },
+                            {
+                                "internalType": "uint32[]",
+                                "name": "counts",
+                                "type": "uint32[]"
+                            }
+                        ],
+                        "internalType": "struct OrderUsageDeleteRequest[]",
+                        "name": "deletes",
+                        "type": "tuple[]"
+                    }
+                ],
+                "internalType": "struct OrderUsageModificationRequest",
                 "name": "",
                 "type": "tuple"
             }
@@ -11299,7 +15638,182 @@ export const abi = [
                 "type": "uint256"
             }
         ],
-        "name": "getOrderSelectedUsageSlotInfo",
+        "name": "getOrderPriceAuxiliaryData",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "uint256",
+                        "name": "lastModifiedPerHours",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "accumulatedPerHourSpent",
+                        "type": "uint256"
+                    }
+                ],
+                "internalType": "struct OrderPriceAuxiliaryData",
+                "name": "",
+                "type": "tuple"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "orderId",
+                "type": "uint256"
+            }
+        ],
+        "name": "getOrderSelectedUsage",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "components": [
+                            {
+                                "internalType": "uint64",
+                                "name": "cpuCores",
+                                "type": "uint64"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "ram",
+                                "type": "uint64"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "diskUsage",
+                                "type": "uint64"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "gpuCores",
+                                "type": "uint64"
+                            }
+                        ],
+                        "internalType": "struct SlotInfo[]",
+                        "name": "slotsInfos",
+                        "type": "tuple[]"
+                    },
+                    {
+                        "components": [
+                            {
+                                "internalType": "enum PriceType",
+                                "name": "priceType",
+                                "type": "uint8"
+                            },
+                            {
+                                "internalType": "uint256",
+                                "name": "price",
+                                "type": "uint256"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "minTimeMinutes",
+                                "type": "uint64"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "maxTimeMinutes",
+                                "type": "uint64"
+                            }
+                        ],
+                        "internalType": "struct SlotUsage[]",
+                        "name": "slotsUsages",
+                        "type": "tuple[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "slotsIds",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint32[]",
+                        "name": "slotsCounts",
+                        "type": "uint32[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "slotsDateAdded",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "components": [
+                            {
+                                "internalType": "string",
+                                "name": "data",
+                                "type": "string"
+                            }
+                        ],
+                        "internalType": "struct OptionInfo[]",
+                        "name": "optionsInfos",
+                        "type": "tuple[]"
+                    },
+                    {
+                        "components": [
+                            {
+                                "internalType": "enum PriceType",
+                                "name": "priceType",
+                                "type": "uint8"
+                            },
+                            {
+                                "internalType": "uint256",
+                                "name": "price",
+                                "type": "uint256"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "minTimeMinutes",
+                                "type": "uint64"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "maxTimeMinutes",
+                                "type": "uint64"
+                            }
+                        ],
+                        "internalType": "struct SlotUsage[]",
+                        "name": "optionsUsages",
+                        "type": "tuple[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "optionsIds",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "uint32[]",
+                        "name": "optionsCounts",
+                        "type": "uint32[]"
+                    },
+                    {
+                        "internalType": "uint256[]",
+                        "name": "optionsDateAdded",
+                        "type": "uint256[]"
+                    }
+                ],
+                "internalType": "struct OrderUsage",
+                "name": "",
+                "type": "tuple"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "orderId",
+                "type": "uint256"
+            }
+        ],
+        "name": "getOrderSelectedUsageComulativeSlotInfo",
         "outputs": [
             {
                 "components": [
@@ -11325,47 +15839,6 @@ export const abi = [
                     }
                 ],
                 "internalType": "struct SlotInfo",
-                "name": "",
-                "type": "tuple"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
-            }
-        ],
-        "name": "getOrderSelectedUsageSlotUsage",
-        "outputs": [
-            {
-                "components": [
-                    {
-                        "internalType": "enum PriceType",
-                        "name": "priceType",
-                        "type": "uint8"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "price",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint64",
-                        "name": "minTimeMinutes",
-                        "type": "uint64"
-                    },
-                    {
-                        "internalType": "uint64",
-                        "name": "maxTimeMinutes",
-                        "type": "uint64"
-                    }
-                ],
-                "internalType": "struct SlotUsage",
                 "name": "",
                 "type": "tuple"
             }
@@ -11466,7 +15939,7 @@ export const abi = [
         "inputs": [
             {
                 "internalType": "uint256",
-                "name": "",
+                "name": "orderId",
                 "type": "uint256"
             }
         ],
@@ -11899,6 +16372,11 @@ export const abi = [
                         "internalType": "struct SlotUsage",
                         "name": "usage",
                         "type": "tuple"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "infoLastModificationTime",
+                        "type": "uint256"
                     }
                 ],
                 "internalType": "struct TeeOfferOption",
@@ -11984,6 +16462,11 @@ export const abi = [
                         "internalType": "struct SlotUsage",
                         "name": "usage",
                         "type": "tuple"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "infoLastModificationTime",
+                        "type": "uint256"
                     }
                 ],
                 "internalType": "struct TeeOfferSlot",
@@ -12046,18 +16529,6 @@ export const abi = [
                     {
                         "components": [
                             {
-                                "internalType": "string",
-                                "name": "data",
-                                "type": "string"
-                            }
-                        ],
-                        "internalType": "struct OptionInfo",
-                        "name": "option",
-                        "type": "tuple"
-                    },
-                    {
-                        "components": [
-                            {
                                 "internalType": "enum PriceType",
                                 "name": "priceType",
                                 "type": "uint8"
@@ -12081,6 +16552,23 @@ export const abi = [
                         "internalType": "struct SlotUsage",
                         "name": "usage",
                         "type": "tuple"
+                    },
+                    {
+                        "components": [
+                            {
+                                "internalType": "string",
+                                "name": "data",
+                                "type": "string"
+                            }
+                        ],
+                        "internalType": "struct OptionInfo",
+                        "name": "option",
+                        "type": "tuple"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "infoLastModificationTime",
+                        "type": "uint256"
                     }
                 ],
                 "internalType": "struct ValueOfferSlot",
@@ -12536,6 +17024,54 @@ export const abi = [
             }
         ],
         "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "bytes",
+                "name": "a",
+                "type": "bytes"
+            },
+            {
+                "internalType": "bytes",
+                "name": "b",
+                "type": "bytes"
+            }
+        ],
+        "name": "isEqual",
+        "outputs": [
+            {
+                "internalType": "bool",
+                "name": "",
+                "type": "bool"
+            }
+        ],
+        "stateMutability": "pure",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "string",
+                "name": "a",
+                "type": "string"
+            },
+            {
+                "internalType": "string",
+                "name": "b",
+                "type": "string"
+            }
+        ],
+        "name": "isEqual",
+        "outputs": [
+            {
+                "internalType": "bool",
+                "name": "",
+                "type": "bool"
+            }
+        ],
+        "stateMutability": "pure",
         "type": "function"
     },
     {

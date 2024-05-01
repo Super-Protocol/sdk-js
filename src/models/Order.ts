@@ -199,19 +199,19 @@ class Order {
     const selectedUsageSlotInfo = await Order.contract.methods
       .getOrderSelectedUsageSlotInfo(this.id)
       .call()
-      .then((slotInfo) => cleanWeb3Data(slotInfo) as SlotInfo);
+      .then((slotInfo) => cleanWeb3Data(slotInfo) as unknown as SlotInfo);
 
     const selectedUsageSlotUsage = await Order.contract.methods
       .getOrderSelectedUsageSlotUsage(this.id)
       .call()
-      .then((slotUsage) => cleanWeb3Data(slotUsage) as SlotUsage);
+      .then((slotUsage) => cleanWeb3Data(slotUsage) as unknown as SlotUsage);
 
     this.selectedUsage = await Order.contract.methods
       .getOrderSelectedUsage(this.id)
       .call()
       .then((selectedUsage) =>
         convertOrderUsage(
-          cleanWeb3Data(selectedUsage) as OrderUsageRaw,
+          cleanWeb3Data(selectedUsage) as unknown as OrderUsageRaw,
           unpackSlotInfo(selectedUsageSlotInfo, coresDenominator),
           formatUsage(selectedUsageSlotUsage),
         ),

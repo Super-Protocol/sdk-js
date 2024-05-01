@@ -9,7 +9,7 @@ import { abi } from '../contracts/abi.js';
 import store from '../store.js';
 import Superpro from '../staticModels/Superpro.js';
 import SuperproToken from '../staticModels/SuperproToken.js';
-import { randomUUID } from 'crypto';
+import * as uuid from 'uuid';
 import { LogsSubscription } from 'web3-eth-contract';
 
 export type WssSubscriptionOnDataFn = (event: EventLog) => Promise<void> | void;
@@ -52,7 +52,7 @@ export default class BlockchainEventsListener extends BaseConnector {
 
     const contract = this.getContract();
     const subscription = contract.events[params.event]();
-    const key = randomUUID();
+    const key = uuid.v4();
     this.logger.trace(
       {
         event: params.event,

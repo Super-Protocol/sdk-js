@@ -11,6 +11,9 @@ export { default as Crypto } from './crypto/index.js';
 export { default as TIIGenerator } from './TIIGenerator.js';
 export * from './TIIGenerator.js';
 
+export { default as RIGenerator } from './RIGenerator.js';
+export * from './TIIGenerator.js';
+
 export { default as Consensus } from './staticModels/Consensus.js';
 export * from './staticModels/Consensus.js';
 
@@ -103,6 +106,7 @@ export { default as getStorageProvider } from './providers/storage/getStoragePro
 export { default as IStorageProvider } from './providers/storage/IStorageProvider.js';
 
 export * as helpers from './utils/helpers/index.js';
+export * as constants from './constants.js';
 
 export { Web3TransactionRevertedByEvmError } from './utils/TxManager.js';
 
@@ -111,6 +115,7 @@ import './polyfills.js';
 export { TeeSgxParser } from './tee/QuoteParser.js';
 export { QuoteValidator } from './tee/QuoteValidator.js';
 export * from './tee/statuses.js';
+export { TeeBlockVerifier } from './tee/TeeBlockVerifier.js';
 
 export * from './analytics/types.js';
 export { default as Analytics } from './analytics/Analytics.js';

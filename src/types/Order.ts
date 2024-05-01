@@ -1,6 +1,6 @@
 import { formatBytes32String, parseBytes32String } from 'ethers/lib/utils.js';
 import { TokenAmount, BlockchainId } from './Web3.js';
-import { EncryptionKey } from '@super-protocol/dto-js';
+import { EncryptionKey, Hash } from '@super-protocol/dto-js';
 
 export enum OrderStatus {
   New = '0',
@@ -25,12 +25,14 @@ export type OrderSlots = {
   optionsCount: number[];
 };
 
+export type OrderResultInfo = {
+  publicKey: string;
+  encryptedInfo: string;
+};
+
 export type OrderInfo = {
   offerId: BlockchainId;
-  resultInfo: {
-    publicKey: string;
-    encryptedInfo: string;
-  };
+  resultInfo: OrderResultInfo;
   encryptedArgs: string;
   status: OrderStatus;
   externalId: string;
@@ -109,6 +111,7 @@ export type SubOrderParams = {
 
 export type OrderEncryptedInfo = {
   publicKey: EncryptionKey;
-  hashes: string[];
+  solutionHashes: Hash[];
+  dataHashes: Hash[];
   linkage: string;
 };

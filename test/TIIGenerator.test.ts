@@ -103,7 +103,7 @@ jest.mock('../src/models/TeeOffer', () => {
       },
       getActualTcbId(): string {
         return '0n';
-      }
+      },
     };
   });
 });
@@ -146,24 +146,24 @@ describe('TIIGenerator', () => {
 
   describe('generateByOffer', () => {
     test('generate TII', async () => {
-      const tii = await TIIGenerator.generateByOffer(
-        '10',
-        [],
-        JSON.stringify({
+      const tii = await TIIGenerator.generateByOffer({
+        offerId: '10',
+        solutionHashes: [],
+        linkageString: JSON.stringify({
           encoding: Encoding.base64,
           mrenclave: '',
           mrsigner: '',
         }),
         resource,
-        {},
-        {
+        args: {},
+        encryption: {
           algo: fileEncryptionAlgo,
           encoding: Encoding.base64,
           key: key,
           ...fileEncryptoAlgoDeps,
         },
-        'https://pccs.superprotocol.io',
-      );
+        sgxApiUrl: 'https://pccs.superprotocol.io',
+      });
 
       expect(typeof tii).toBe('string');
 

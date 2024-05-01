@@ -1,3 +1,5 @@
+import { Encoding, Hash, HashAlgorithm } from '@super-protocol/dto-js';
+
 export const defaultBlockchainUrl = 'http://127.0.0.1:8545';
 export const defaultGasLimit = BigInt(7000000);
 export const defaultGasPrice = BigInt(3000000000);
@@ -14,3 +16,8 @@ export const BLOCKCHAIN_BATCH_REQUEST_TIMEOUT = 10000;
 export const POLYGON_MAIN_CHAIN_ID = 137;
 export const POLYGON_AMOY_CHAIN_ID = 80002;
 export const AMOY_TX_COST_LIMIT = BigInt('5000000000000000000');
+export const ZERO_HASH: Hash = {
+  hash: '0000000000000000000000000000000000000000000000000000000000000000',
+  algo: HashAlgorithm.SHA256,
+  encoding: Encoding.base64,
+};

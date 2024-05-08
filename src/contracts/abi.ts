@@ -1642,6 +1642,19 @@ export const abi = [
         "type": "function"
     },
     {
+        "inputs": [],
+        "name": "getTcbsCount",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
         "inputs": [
             {
                 "internalType": "uint256[]",
@@ -1797,7 +1810,7 @@ export const abi = [
                 "type": "uint256"
             }
         ],
-        "name": "isTeeOfferVerifying",
+        "name": "isTeeOfferVerified",
         "outputs": [
             {
                 "internalType": "bool",
@@ -4350,6 +4363,30 @@ export const abi = [
     {
         "inputs": [
             {
+                "internalType": "address",
+                "name": "consumer",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "deposit",
+                "type": "uint256"
+            }
+        ],
+        "name": "adjustOrderDepositByApp",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
                 "components": [
                     {
                         "internalType": "uint256",
@@ -5087,30 +5124,6 @@ export const abi = [
             }
         ],
         "name": "createSubOrderByApp",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "consumer",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "deposit",
-                "type": "uint256"
-            }
-        ],
-        "name": "deductOrderDepositByApp",
         "outputs": [
             {
                 "internalType": "uint256",
@@ -9618,25 +9631,6 @@ export const abi = [
     {
         "inputs": [
             {
-                "internalType": "uint256",
-                "name": "teeOfferId",
-                "type": "uint256"
-            }
-        ],
-        "name": "getLastTeeBenchmark",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
                 "internalType": "bytes32",
                 "name": "deviceId",
                 "type": "bytes32"
@@ -11385,14 +11379,14 @@ export const abi = [
             {
                 "indexed": true,
                 "internalType": "uint256",
-                "name": "teeOfferId",
+                "name": "teeOfferIssuerId",
                 "type": "uint256"
             },
             {
                 "indexed": false,
-                "internalType": "bytes",
+                "internalType": "string",
                 "name": "secretPublicKey",
-                "type": "bytes"
+                "type": "string"
             }
         ],
         "name": "LoaderSecretPublicKeySessionUpdated",
@@ -11411,14 +11405,14 @@ export const abi = [
             {
                 "components": [
                     {
-                        "internalType": "bytes",
+                        "internalType": "string",
                         "name": "secretPublicKey",
-                        "type": "bytes"
+                        "type": "string"
                     },
                     {
-                        "internalType": "bytes",
+                        "internalType": "string",
                         "name": "signature",
-                        "type": "bytes"
+                        "type": "string"
                     },
                     {
                         "internalType": "uint32",
@@ -11447,14 +11441,14 @@ export const abi = [
                 "type": "uint256"
             },
             {
-                "internalType": "bytes",
+                "internalType": "string",
                 "name": "signature",
-                "type": "bytes"
+                "type": "string"
             },
             {
-                "internalType": "bytes",
+                "internalType": "string",
                 "name": "secretPublicKey",
-                "type": "bytes"
+                "type": "string"
             },
             {
                 "internalType": "uint256",
@@ -11479,14 +11473,14 @@ export const abi = [
             {
                 "indexed": true,
                 "internalType": "uint256",
-                "name": "keeperOfferId",
+                "name": "teeOfferkeeperId",
                 "type": "uint256"
             },
             {
                 "indexed": false,
-                "internalType": "bytes",
+                "internalType": "string",
                 "name": "publicSessionsKey",
-                "type": "bytes"
+                "type": "string"
             }
         ],
         "name": "LoaderSessionKeyUpdated",
@@ -11544,14 +11538,14 @@ export const abi = [
             {
                 "components": [
                     {
-                        "internalType": "bytes",
+                        "internalType": "string",
                         "name": "publicSessionKey",
-                        "type": "bytes"
+                        "type": "string"
                     },
                     {
-                        "internalType": "bytes",
-                        "name": "signture",
-                        "type": "bytes"
+                        "internalType": "string",
+                        "name": "signature",
+                        "type": "string"
                     },
                     {
                         "internalType": "uint32",
@@ -11578,12 +11572,12 @@ export const abi = [
                 "components": [
                     {
                         "internalType": "uint256",
-                        "name": "teeOfferId",
+                        "name": "teeOfferIssuerId",
                         "type": "uint256"
                     },
                     {
                         "internalType": "uint256",
-                        "name": "keeperOfferId",
+                        "name": "teeOfferKeeperId",
                         "type": "uint256"
                     },
                     {
@@ -11592,14 +11586,14 @@ export const abi = [
                         "type": "uint32"
                     },
                     {
-                        "internalType": "bytes",
+                        "internalType": "string",
                         "name": "publicSessionKey",
-                        "type": "bytes"
+                        "type": "string"
                     },
                     {
-                        "internalType": "bytes",
-                        "name": "signture",
-                        "type": "bytes"
+                        "internalType": "string",
+                        "name": "signature",
+                        "type": "string"
                     }
                 ],
                 "internalType": "struct NewLoaderSessionArgs",
@@ -11618,12 +11612,12 @@ export const abi = [
                 "components": [
                     {
                         "internalType": "uint256",
-                        "name": "secretRequestorId",
+                        "name": "secretKeeperId",
                         "type": "uint256"
                     },
                     {
                         "internalType": "uint256",
-                        "name": "secretKeeperId",
+                        "name": "secretRequestorId",
                         "type": "uint256"
                     },
                     {
@@ -11635,9 +11629,14 @@ export const abi = [
                         "internalType": "uint64",
                         "name": "offerVersion",
                         "type": "uint64"
+                    },
+                    {
+                        "internalType": "uint32",
+                        "name": "timestamp",
+                        "type": "uint32"
                     }
                 ],
-                "internalType": "struct SecretRequestObj",
+                "internalType": "struct SecretRequest",
                 "name": "request",
                 "type": "tuple"
             },
@@ -11645,12 +11644,12 @@ export const abi = [
                 "components": [
                     {
                         "internalType": "uint256",
-                        "name": "teeOfferId",
+                        "name": "teeOfferIssuerId",
                         "type": "uint256"
                     },
                     {
                         "internalType": "uint256",
-                        "name": "keeperOfferId",
+                        "name": "teeOfferKeeperId",
                         "type": "uint256"
                     },
                     {
@@ -11659,14 +11658,14 @@ export const abi = [
                         "type": "uint32"
                     },
                     {
-                        "internalType": "bytes",
+                        "internalType": "string",
                         "name": "publicSessionKey",
-                        "type": "bytes"
+                        "type": "string"
                     },
                     {
-                        "internalType": "bytes",
-                        "name": "signture",
-                        "type": "bytes"
+                        "internalType": "string",
+                        "name": "signature",
+                        "type": "string"
                     }
                 ],
                 "internalType": "struct NewLoaderSessionArgs",
@@ -11691,23 +11690,23 @@ export const abi = [
             {
                 "indexed": false,
                 "internalType": "uint256",
-                "name": "version",
+                "name": "offerVersion",
                 "type": "uint256"
             },
             {
                 "indexed": true,
                 "internalType": "uint256",
-                "name": "keeperId",
+                "name": "TeeOfferKeeperId",
                 "type": "uint256"
             },
             {
                 "indexed": true,
                 "internalType": "uint256",
-                "name": "issuerId",
+                "name": "TeeOfferIssuerId",
                 "type": "uint256"
             }
         ],
-        "name": "NewOfferResources",
+        "name": "OfferResourceCreated",
         "type": "event"
     },
     {
@@ -11716,20 +11715,72 @@ export const abi = [
                 "internalType": "uint256",
                 "name": "teeOfferKeeperId",
                 "type": "uint256"
-            },
-            {
-                "internalType": "uint256",
-                "name": "maxCount",
-                "type": "uint256"
             }
         ],
         "name": "clearOfferResources",
+        "outputs": [
+            {
+                "internalType": "bool",
+                "name": "",
+                "type": "bool"
+            }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "requestOfferId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint64",
+                "name": "requestOfferVersion",
+                "type": "uint64"
+            },
+            {
+                "internalType": "string",
+                "name": "resultInfo",
+                "type": "string"
+            },
+            {
+                "internalType": "string",
+                "name": "resultInfoSignatureBySecretKey",
+                "type": "string"
+            }
+        ],
+        "name": "createResourceOrder",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
     },
     {
         "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "teeOfferIssuerId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "teeOfferKeeperId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "offerId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint64",
+                "name": "offerVersion",
+                "type": "uint64"
+            }
+        ],
+        "name": "getOfferRecource",
+        "outputs": [
             {
                 "components": [
                     {
@@ -11738,162 +11789,52 @@ export const abi = [
                         "type": "uint256"
                     },
                     {
-                        "internalType": "string",
-                        "name": "resultInfo",
-                        "type": "string"
-                    },
-                    {
-                        "internalType": "string",
-                        "name": "encryptedRequirements_DEPRECATED",
-                        "type": "string"
-                    },
-                    {
-                        "internalType": "string",
-                        "name": "encryptedArgs_DEPRECATED",
-                        "type": "string"
-                    },
-                    {
-                        "internalType": "enum OrderStatus",
-                        "name": "status",
-                        "type": "uint8"
-                    },
-                    {
-                        "internalType": "bytes32",
-                        "name": "externalId",
-                        "type": "bytes32"
-                    }
-                ],
-                "internalType": "struct OrderInfo",
-                "name": "info",
-                "type": "tuple"
-            },
-            {
-                "components": [
-                    {
-                        "internalType": "uint256[]",
-                        "name": "slotsIds",
-                        "type": "uint256[]"
-                    },
-                    {
-                        "internalType": "uint32[]",
-                        "name": "slotsCounts",
-                        "type": "uint32[]"
-                    },
-                    {
-                        "components": [
-                            {
-                                "internalType": "enum PriceType",
-                                "name": "priceType",
-                                "type": "uint8"
-                            },
-                            {
-                                "internalType": "uint256",
-                                "name": "price",
-                                "type": "uint256"
-                            },
-                            {
-                                "internalType": "uint64",
-                                "name": "minTimeMinutes",
-                                "type": "uint64"
-                            },
-                            {
-                                "internalType": "uint64",
-                                "name": "maxTimeMinutes",
-                                "type": "uint64"
-                            }
-                        ],
-                        "internalType": "struct SlotUsage[]",
-                        "name": "slotsUsages",
-                        "type": "tuple[]"
-                    },
-                    {
-                        "internalType": "uint256[]",
-                        "name": "slotsMaxPriceSlippages",
-                        "type": "uint256[]"
-                    },
-                    {
-                        "internalType": "uint256[]",
-                        "name": "slotsInfoModificationTime",
-                        "type": "uint256[]"
-                    },
-                    {
-                        "internalType": "uint256[]",
-                        "name": "optionsIds",
-                        "type": "uint256[]"
-                    },
-                    {
-                        "internalType": "uint32[]",
-                        "name": "optionsCounts",
-                        "type": "uint32[]"
-                    },
-                    {
-                        "components": [
-                            {
-                                "internalType": "enum PriceType",
-                                "name": "priceType",
-                                "type": "uint8"
-                            },
-                            {
-                                "internalType": "uint256",
-                                "name": "price",
-                                "type": "uint256"
-                            },
-                            {
-                                "internalType": "uint64",
-                                "name": "minTimeMinutes",
-                                "type": "uint64"
-                            },
-                            {
-                                "internalType": "uint64",
-                                "name": "maxTimeMinutes",
-                                "type": "uint64"
-                            }
-                        ],
-                        "internalType": "struct SlotUsage[]",
-                        "name": "optionsUsages",
-                        "type": "tuple[]"
-                    },
-                    {
-                        "internalType": "uint256[]",
-                        "name": "optionsMaxPriceSlippages",
-                        "type": "uint256[]"
-                    },
-                    {
-                        "internalType": "uint256[]",
-                        "name": "optionsInfoModificationTime",
-                        "type": "uint256[]"
-                    }
-                ],
-                "internalType": "struct OrderSlots",
-                "name": "slots",
-                "type": "tuple"
-            },
-            {
-                "components": [
-                    {
-                        "internalType": "uint256[]",
-                        "name": "inputOffers",
-                        "type": "uint256[]"
+                        "internalType": "uint256",
+                        "name": "teeOfferIssuerId",
+                        "type": "uint256"
                     },
                     {
                         "internalType": "uint256",
-                        "name": "outputOffer",
+                        "name": "teeOfferKeeperId",
                         "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "storageOrderId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "offerVersion",
+                        "type": "uint64"
+                    },
+                    {
+                        "internalType": "uint32",
+                        "name": "timestamp",
+                        "type": "uint32"
+                    },
+                    {
+                        "internalType": "uint32",
+                        "name": "signedTime",
+                        "type": "uint32"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "signature",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "signedData",
+                        "type": "string"
                     }
                 ],
-                "internalType": "struct OrderArgs",
-                "name": "args",
+                "internalType": "struct OfferResource",
+                "name": "",
                 "type": "tuple"
-            },
-            {
-                "internalType": "bytes",
-                "name": "signedResultInfoBySecretKey",
-                "type": "bytes"
             }
         ],
-        "name": "createResourceOrder",
-        "outputs": [],
-        "stateMutability": "nonpayable",
+        "stateMutability": "view",
         "type": "function"
     },
     {
@@ -11949,14 +11890,14 @@ export const abi = [
                         "type": "uint32"
                     },
                     {
-                        "internalType": "bytes",
+                        "internalType": "string",
                         "name": "signature",
-                        "type": "bytes"
+                        "type": "string"
                     },
                     {
-                        "internalType": "bytes",
+                        "internalType": "string",
                         "name": "signedData",
-                        "type": "bytes"
+                        "type": "string"
                     }
                 ],
                 "internalType": "struct OfferResource[]",
@@ -12015,14 +11956,14 @@ export const abi = [
                         "type": "uint32"
                     },
                     {
-                        "internalType": "bytes",
+                        "internalType": "string",
                         "name": "signature",
-                        "type": "bytes"
+                        "type": "string"
                     },
                     {
-                        "internalType": "bytes",
+                        "internalType": "string",
                         "name": "signedData",
-                        "type": "bytes"
+                        "type": "string"
                     }
                 ],
                 "internalType": "struct OfferResource[]",
@@ -12081,14 +12022,14 @@ export const abi = [
                         "type": "uint32"
                     },
                     {
-                        "internalType": "bytes",
+                        "internalType": "string",
                         "name": "signature",
-                        "type": "bytes"
+                        "type": "string"
                     },
                     {
-                        "internalType": "bytes",
+                        "internalType": "string",
                         "name": "signedData",
-                        "type": "bytes"
+                        "type": "string"
                     }
                 ],
                 "internalType": "struct OfferResource[]",
@@ -12149,21 +12090,26 @@ export const abi = [
                     },
                     {
                         "internalType": "uint32",
+                        "name": "timestamp",
+                        "type": "uint32"
+                    },
+                    {
+                        "internalType": "uint32",
                         "name": "signedTime",
                         "type": "uint32"
                     },
                     {
-                        "internalType": "bytes",
+                        "internalType": "string",
                         "name": "signature",
-                        "type": "bytes"
+                        "type": "string"
                     },
                     {
-                        "internalType": "bytes",
+                        "internalType": "string",
                         "name": "signedData",
-                        "type": "bytes"
+                        "type": "string"
                     }
                 ],
-                "internalType": "struct OfferResourceObj",
+                "internalType": "struct OfferResource",
                 "name": "resource",
                 "type": "tuple"
             }
@@ -12171,19 +12117,6 @@ export const abi = [
         "name": "setOfferResource",
         "outputs": [],
         "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "getNewStorageOrders",
-        "outputs": [
-            {
-                "internalType": "uint256[]",
-                "name": "",
-                "type": "uint256[]"
-            }
-        ],
-        "stateMutability": "view",
         "type": "function"
     },
     {
@@ -12205,11 +12138,6 @@ export const abi = [
                 "components": [
                     {
                         "internalType": "uint256",
-                        "name": "offerId",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
                         "name": "teeOfferIssuerId",
                         "type": "uint256"
                     },
@@ -12219,13 +12147,8 @@ export const abi = [
                         "type": "uint256"
                     },
                     {
-                        "internalType": "uint64",
-                        "name": "offerVersion",
-                        "type": "uint64"
-                    },
-                    {
                         "internalType": "uint32",
-                        "name": "distributionRepliactionFactor",
+                        "name": "distributionreplicationFactor",
                         "type": "uint32"
                     },
                     {
@@ -12237,19 +12160,6 @@ export const abi = [
                 "internalType": "struct OfferStorageAllocated",
                 "name": "",
                 "type": "tuple"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "getUsedStorageOrders",
-        "outputs": [
-            {
-                "internalType": "uint256[]",
-                "name": "",
-                "type": "uint256[]"
             }
         ],
         "stateMutability": "view",
@@ -12296,7 +12206,7 @@ export const abi = [
                 "type": "uint256"
             }
         ],
-        "name": "OfferStorageRequestSetUp",
+        "name": "OfferStorageRequestCreated",
         "type": "event"
     },
     {
@@ -12374,13 +12284,18 @@ export const abi = [
                         "type": "uint256"
                     },
                     {
+                        "internalType": "uint256",
+                        "name": "orderId",
+                        "type": "uint256"
+                    },
+                    {
                         "internalType": "uint64",
                         "name": "offerVersion",
                         "type": "uint64"
                     },
                     {
                         "internalType": "uint32",
-                        "name": "repliactionFactor",
+                        "name": "replicationFactor",
                         "type": "uint32"
                     },
                     {
@@ -12440,13 +12355,18 @@ export const abi = [
                         "type": "uint256"
                     },
                     {
+                        "internalType": "uint256",
+                        "name": "orderId",
+                        "type": "uint256"
+                    },
+                    {
                         "internalType": "uint64",
                         "name": "offerVersion",
                         "type": "uint64"
                     },
                     {
                         "internalType": "uint32",
-                        "name": "repliactionFactor",
+                        "name": "replicationFactor",
                         "type": "uint32"
                     },
                     {
@@ -12493,22 +12413,32 @@ export const abi = [
                         "type": "uint256"
                     },
                     {
+                        "internalType": "uint256",
+                        "name": "orderId",
+                        "type": "uint256"
+                    },
+                    {
                         "internalType": "uint64",
                         "name": "offerVersion",
                         "type": "uint64"
                     },
                     {
                         "internalType": "uint32",
-                        "name": "repliactionFactor",
+                        "name": "replicationFactor",
+                        "type": "uint32"
+                    },
+                    {
+                        "internalType": "uint32",
+                        "name": "timestamp",
                         "type": "uint32"
                     }
                 ],
-                "internalType": "struct OfferStorageRequestObj",
+                "internalType": "struct OfferStorageRequest",
                 "name": "request",
                 "type": "tuple"
             }
         ],
-        "name": "setOffersStorgaeRequest",
+        "name": "setOffersStorageRequest",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
@@ -12541,7 +12471,7 @@ export const abi = [
                 "type": "uint64"
             }
         ],
-        "name": "SecretRequestAdded",
+        "name": "SecretRequestCreated",
         "type": "event"
     },
     {
@@ -12550,12 +12480,12 @@ export const abi = [
                 "components": [
                     {
                         "internalType": "uint256",
-                        "name": "secretRequestorId",
+                        "name": "secretKeeperId",
                         "type": "uint256"
                     },
                     {
                         "internalType": "uint256",
-                        "name": "secretKeeperId",
+                        "name": "secretRequestorId",
                         "type": "uint256"
                     },
                     {
@@ -12567,9 +12497,14 @@ export const abi = [
                         "internalType": "uint64",
                         "name": "offerVersion",
                         "type": "uint64"
+                    },
+                    {
+                        "internalType": "uint32",
+                        "name": "timestamp",
+                        "type": "uint32"
                     }
                 ],
-                "internalType": "struct SecretRequestObj",
+                "internalType": "struct SecretRequest",
                 "name": "request",
                 "type": "tuple"
             }
@@ -12585,12 +12520,12 @@ export const abi = [
                 "components": [
                     {
                         "internalType": "uint256",
-                        "name": "secretRequestorId",
+                        "name": "secretKeeperId",
                         "type": "uint256"
                     },
                     {
                         "internalType": "uint256",
-                        "name": "secretKeeperId",
+                        "name": "secretRequestorId",
                         "type": "uint256"
                     },
                     {
@@ -12602,9 +12537,14 @@ export const abi = [
                         "internalType": "uint64",
                         "name": "offerVersion",
                         "type": "uint64"
+                    },
+                    {
+                        "internalType": "uint32",
+                        "name": "timestamp",
+                        "type": "uint32"
                     }
                 ],
-                "internalType": "struct SecretRequestObj",
+                "internalType": "struct SecretRequest",
                 "name": "request",
                 "type": "tuple"
             }
@@ -12620,15 +12560,16 @@ export const abi = [
                 "internalType": "uint256",
                 "name": "teeOfferKeeperId",
                 "type": "uint256"
-            },
-            {
-                "internalType": "uint256",
-                "name": "maxCount",
-                "type": "uint256"
             }
         ],
         "name": "clearSecretRequests",
-        "outputs": [],
+        "outputs": [
+            {
+                "internalType": "bool",
+                "name": "",
+                "type": "bool"
+            }
+        ],
         "stateMutability": "nonpayable",
         "type": "function"
     },
@@ -12958,7 +12899,7 @@ export const abi = [
                 "type": "uint256"
             }
         ],
-        "name": "isTeeOfferVerifying",
+        "name": "isTeeOfferVerified",
         "outputs": [
             {
                 "internalType": "bool",
@@ -13655,6 +13596,52 @@ export const abi = [
                 "internalType": "uint256",
                 "name": "offerId",
                 "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "slotId",
+                "type": "uint256"
+            }
+        ],
+        "name": "getOfferSlotUsage",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "enum PriceType",
+                        "name": "priceType",
+                        "type": "uint8"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "price",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "minTimeMinutes",
+                        "type": "uint64"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "maxTimeMinutes",
+                        "type": "uint64"
+                    }
+                ],
+                "internalType": "struct SlotUsage",
+                "name": "usage",
+                "type": "tuple"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "offerId",
+                "type": "uint256"
             }
         ],
         "name": "getOfferType",
@@ -14114,6 +14101,30 @@ export const abi = [
     {
         "inputs": [
             {
+                "internalType": "address",
+                "name": "consumer",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "deposit",
+                "type": "uint256"
+            }
+        ],
+        "name": "adjustOrderDepositByApp",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
                 "internalType": "uint256",
                 "name": "orderId",
                 "type": "uint256"
@@ -14518,30 +14529,6 @@ export const abi = [
             }
         ],
         "name": "createSubOrderByApp",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "consumer",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "deposit",
-                "type": "uint256"
-            }
-        ],
-        "name": "deductOrderDepositByApp",
         "outputs": [
             {
                 "internalType": "uint256",
@@ -17024,54 +17011,6 @@ export const abi = [
             }
         ],
         "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "bytes",
-                "name": "a",
-                "type": "bytes"
-            },
-            {
-                "internalType": "bytes",
-                "name": "b",
-                "type": "bytes"
-            }
-        ],
-        "name": "isEqual",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
-            }
-        ],
-        "stateMutability": "pure",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "string",
-                "name": "a",
-                "type": "string"
-            },
-            {
-                "internalType": "string",
-                "name": "b",
-                "type": "string"
-            }
-        ],
-        "name": "isEqual",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
-            }
-        ],
-        "stateMutability": "pure",
         "type": "function"
     },
     {

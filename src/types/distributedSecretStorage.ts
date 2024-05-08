@@ -9,64 +9,53 @@ export type LoaderSecretPublicKey = {
 
 export type LoaderSession = {
   publicSessionKey: string;
-  signture: string;
+  signature: string;
   timestamp: number;
   signedTime: number;
 };
 
 export type NewLoaderSessionArgs = {
-  teeOfferId: BlockchainId;
+  teeOfferId?: BlockchainId; // TODO: might be removed
   keeperOfferId: BlockchainId;
   signedTime: number;
   publicSessionKey: string;
-  signture: string;
+  signature: string;
 };
 
-export type SecretRequestObj = {
+export type SecretRequest = {
   secretRequestorId: BlockchainId;
   secretKeeperId: BlockchainId;
   offerId: BlockchainId;
   offerVersion?: number;
+  timestamp: number;
 };
 
-export type SecretRequest = {
-  timestamp: number;
-} & SecretRequestObj;
-
-export type OfferResourceObj = {
+export type OfferResource = {
   offerId: BlockchainId;
   teeOfferIssuerId: BlockchainId;
   teeOfferKeeperId: BlockchainId;
   storageOrderId: BlockchainId;
   offerVersion?: number;
   signedTime: number;
+  timestamp: number;
   signature: string;
   signedData: string;
 };
 
-export type OfferResource = {
-  timestamp: number;
-} & OfferResourceObj;
-
 export type OfferStorageAllocated = {
-  offerId: BlockchainId;
   teeOfferIssuerId: BlockchainId;
   storageOrderId: BlockchainId;
-  offerVersion?: number;
-  distributionRepliactionFactor: number;
+  distributionreplicationFactor: number;
   timestamp: number;
 };
 
-export type OfferStorageRequestObj = {
+export type OfferStorageRequest = {
   offerId: BlockchainId;
   teeOfferIssuerId: BlockchainId;
   storageOfferId: BlockchainId;
   storageSlotId: BlockchainId;
   deposit: TokenAmount;
   offerVersion?: number;
-  repliactionFactor: number;
-};
-
-export type OfferStorageRequest = {
+  replicationFactor: number;
   timestamp: number;
-} & OfferStorageRequestObj;
+};

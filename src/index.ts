@@ -44,6 +44,24 @@ export * from './staticModels/Marks.js';
 export { default as Deposits } from './staticModels/Deposits.js';
 export * from './staticModels/Deposits.js';
 
+export { default as LoaderSessions } from './staticModels/LoaderSessions.js';
+export * from './staticModels/LoaderSessions.js';
+
+export { default as LoaderSecretsPublicKeys } from './staticModels/LoaderSecretsPublicKeys.js';
+export * from './staticModels/LoaderSecretsPublicKeys.js';
+
+export { default as OfferResources } from './staticModels/OfferResources.js';
+export * from './staticModels/OfferResources.js';
+
+export { default as OffersStorageAllocated } from './staticModels/OffersStorageAllocated.js';
+export * from './staticModels/OffersStorageAllocated.js';
+
+export { default as OffersStorageRequests } from './staticModels/OffersStorageRequests.js';
+export * from './staticModels/OffersStorageRequests.js';
+
+export { default as SecretRequests } from './staticModels/SecretRequests.js';
+export * from './staticModels/SecretRequests.js';
+
 export { default as Order } from './models/Order.js';
 export * from './models/Order.js';
 

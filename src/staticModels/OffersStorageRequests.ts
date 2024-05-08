@@ -3,7 +3,6 @@ import {
   BlockchainId,
   BlockInfo,
   OfferStorageRequest,
-  OfferStorageRequestObj,
   TransactionOptions,
 } from '../types/index.js';
 import { checkIfActionAccountInitialized, cleanWeb3Data } from '../utils/helper.js';
@@ -48,7 +47,7 @@ class OffersStorageRequests {
   }
 
   public static async set(
-    request: OfferStorageRequestObj,
+    request: OfferStorageRequest,
     transactionOptions?: TransactionOptions,
   ): Promise<void> {
     const contract = BlockchainConnector.getInstance().getContract();
@@ -56,7 +55,7 @@ class OffersStorageRequests {
 
     request.offerVersion ?? 0;
 
-    await TxManager.execute(contract.methods.setOffersStorgaeRequest(request), transactionOptions);
+    await TxManager.execute(contract.methods.setOffersStorageRequest(request), transactionOptions);
   }
 
   public static async cancel(
@@ -73,11 +72,11 @@ class OffersStorageRequests {
     );
   }
 
-  public static onOfferStorageRequestSetUp(
-    callback: onOfferStorageRequestSetUpCallback,
+  public static onOfferStorageRequestCreated(
+    callback: onOfferStorageRequestCreatedCallback,
   ): () => void {
     const listener = BlockchainEventsListener.getInstance();
-    const logger = this.logger.child({ method: 'onOfferStorageRequestSetUp' });
+    const logger = this.logger.child({ method: 'onOfferStorageRequestCreated' });
     const onData: WssSubscriptionOnDataFn = (event: EventLog): void => {
       const parsedEvent = cleanWeb3Data(event.returnValues);
       callback(
@@ -96,15 +95,47 @@ class OffersStorageRequests {
     return listener.subscribeEvent({
       onError,
       onData,
-      event: 'OfferStorageRequestSetUp',
+      event: 'OfferStorageRequestCreated',
+    });
+  }
+
+  public static onOfferStorageRequestCanceled(
+    callback: onOfferStorageRequestCanceledCallback,
+  ): () => void {
+    const listener = BlockchainEventsListener.getInstance();
+    const logger = this.logger.child({ method: 'onOfferStorageRequestCanceled' });
+    const onData: WssSubscriptionOnDataFn = (event: EventLog): void => {
+      const parsedEvent = cleanWeb3Data(event.returnValues);
+      callback(
+        <BlockchainId>parsedEvent.offerId,
+        <number>parsedEvent.offerVersion,
+        <BlockInfo>{
+          index: Number(event.blockNumber),
+          hash: <string>event.blockHash,
+        },
+      );
+    };
+    const onError: WssSubscriptionOnErrorFn = (error: Error) => {
+      logger.warn(error);
+    };
+    return listener.subscribeEvent({
+      onError,
+      onData,
+      event: 'OfferStorageRequestCanceled',
     });
   }
 }
 
-export type onOfferStorageRequestSetUpCallback = (
+export type onOfferStorageRequestCreatedCallback = (
   offerId: BlockchainId,
   offerVersion: number,
   teeOfferIssuerId: BlockchainId,
+  block?: BlockInfo,
+) => void;
+
+export type onOfferStorageRequestCanceledCallback = (
+  offerId: BlockchainId,
+  offerVersion: number,
   block?: BlockInfo,
 ) => void;
 

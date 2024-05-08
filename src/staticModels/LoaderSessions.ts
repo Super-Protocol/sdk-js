@@ -4,7 +4,7 @@ import {
   TransactionOptions,
   LoaderSession,
   NewLoaderSessionArgs,
-  SecretRequestObj,
+  SecretRequest,
   BlockInfo,
 } from '../types/index.js';
 import { cleanWeb3Data } from '../utils/helper.js';
@@ -46,12 +46,11 @@ class LoaderSessions {
   ): Promise<void> {
     const contract = BlockchainConnector.getInstance().getContract();
 
-    // TODO: signature
     await TxManager.execute(contract.methods.setLoaderSession(sessionArgs), transactionOptions);
   }
 
   public static async setSessionAndRequestSecret(
-    request: SecretRequestObj,
+    request: SecretRequest,
     sessionArgs: NewLoaderSessionArgs,
     transactionOptions?: TransactionOptions,
   ): Promise<void> {
@@ -59,7 +58,6 @@ class LoaderSessions {
 
     request.offerVersion ?? 0;
 
-    // TODO: signature
     await TxManager.execute(
       contract.methods.setLoaderSessionAndRequestSecret(request, sessionArgs),
       transactionOptions,
@@ -102,8 +100,8 @@ class LoaderSessions {
 }
 
 export type onLoaderSessionKeyUpdatedCallback = (
-  keeperOfferId: BlockchainId,
   loader: BlockchainId,
+  teeOfferkeeperId: BlockchainId,
   publicSessionsKey: string,
   block?: BlockInfo,
 ) => void;

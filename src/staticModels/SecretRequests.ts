@@ -1,11 +1,5 @@
 import { BlockchainConnector, BlockchainEventsListener } from '../connectors/index.js';
-import {
-  BlockchainId,
-  BlockInfo,
-  SecretRequest,
-  SecretRequestObj,
-  TransactionOptions,
-} from '../types/index.js';
+import { BlockchainId, BlockInfo, SecretRequest, TransactionOptions } from '../types/index.js';
 import { checkIfActionAccountInitialized, cleanWeb3Data } from '../utils/helper.js';
 import TxManager from '../utils/TxManager.js';
 import { EventLog } from 'web3-eth-contract';
@@ -36,7 +30,7 @@ class SecretRequests {
   }
 
   public static async add(
-    request: SecretRequestObj,
+    request: SecretRequest,
     transactionOptions?: TransactionOptions,
   ): Promise<void> {
     const contract = BlockchainConnector.getInstance().getContract();
@@ -49,20 +43,19 @@ class SecretRequests {
 
   public static async clear(
     teeOfferKeeperId: BlockchainId,
-    maxCount: number,
     transactionOptions?: TransactionOptions,
   ): Promise<void> {
     const contract = BlockchainConnector.getInstance().getContract();
     checkIfActionAccountInitialized(transactionOptions);
 
     await TxManager.execute(
-      contract.methods.clearSecretRequests(teeOfferKeeperId, maxCount),
+      contract.methods.clearSecretRequests(teeOfferKeeperId),
       transactionOptions,
     );
   }
 
   public static async cancel(
-    request: SecretRequestObj,
+    request: SecretRequest,
     transactionOptions?: TransactionOptions,
   ): Promise<void> {
     const contract = BlockchainConnector.getInstance().getContract();
@@ -71,9 +64,9 @@ class SecretRequests {
     await TxManager.execute(contract.methods.cancelSecretRequest(request), transactionOptions);
   }
 
-  public static onSecretRequestAdded(callback: onSecretRequestAddedCallback): () => void {
+  public static onSecretRequestCreated(callback: onSecretRequestCreatedCallback): () => void {
     const listener = BlockchainEventsListener.getInstance();
-    const logger = this.logger.child({ method: 'onSecretRequestAdded' });
+    const logger = this.logger.child({ method: 'onSecretRequestCreated' });
     const onData: WssSubscriptionOnDataFn = (event: EventLog): void => {
       const parsedEvent = cleanWeb3Data(event.returnValues);
       callback(
@@ -93,12 +86,12 @@ class SecretRequests {
     return listener.subscribeEvent({
       onError,
       onData,
-      event: 'SecretRequestAdded',
+      event: 'SecretRequestCreated',
     });
   }
 }
 
-export type onSecretRequestAddedCallback = (
+export type onSecretRequestCreatedCallback = (
   secretRequestorId: BlockchainId,
   secretKeeperId: BlockchainId,
   offerId: BlockchainId,

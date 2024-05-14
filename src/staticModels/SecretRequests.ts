@@ -29,6 +29,17 @@ class SecretRequests {
       );
   }
 
+  public static getByRequestorId(teeOfferRequestorId: BlockchainId): Promise<SecretRequest[]> {
+    const contract = BlockchainConnector.getInstance().getContract();
+
+    return contract.methods
+      .getSecretRequestsByRequestorId(teeOfferRequestorId)
+      .call()
+      .then((requests: unknown[] | void) =>
+        requests!.map((request) => cleanWeb3Data(request) as SecretRequest),
+      );
+  }
+
   public static async add(
     request: SecretRequest,
     transactionOptions?: TransactionOptions,
@@ -37,6 +48,7 @@ class SecretRequests {
     checkIfActionAccountInitialized(transactionOptions);
 
     request.offerVersion ?? 0;
+    request.timestamp ?? 0;
 
     await TxManager.execute(contract.methods.addSecretRequest(request), transactionOptions);
   }
@@ -60,6 +72,9 @@ class SecretRequests {
   ): Promise<void> {
     const contract = BlockchainConnector.getInstance().getContract();
     checkIfActionAccountInitialized(transactionOptions);
+
+    request.offerVersion ?? 0;
+    request.timestamp ?? 0;
 
     await TxManager.execute(contract.methods.cancelSecretRequest(request), transactionOptions);
   }

@@ -3,7 +3,6 @@ import {
   BlockchainId,
   TransactionOptions,
   LoaderSession,
-  NewLoaderSessionArgs,
   SecretRequest,
   BlockInfo,
 } from '../types/index.js';
@@ -41,25 +40,45 @@ class LoaderSessions {
   }
 
   public static async set(
-    sessionArgs: NewLoaderSessionArgs,
+    teeOfferIssuerId: BlockchainId,
+    sessionPublicKey: string,
+    signature: string,
+    signedTime: number,
     transactionOptions?: TransactionOptions,
   ): Promise<void> {
     const contract = BlockchainConnector.getInstance().getContract();
 
-    await TxManager.execute(contract.methods.setLoaderSession(sessionArgs), transactionOptions);
+    // TODO: transform 'signature'
+    // TODO: transform 'sessionPublicKey'
+
+    await TxManager.execute(
+      contract.methods.setLoaderSession(sessionPublicKey, signature, teeOfferIssuerId, signedTime),
+      transactionOptions,
+    );
   }
 
   public static async setSessionAndRequestSecret(
     request: SecretRequest,
-    sessionArgs: NewLoaderSessionArgs,
+    teeOfferIssuerId: BlockchainId,
+    sessionPublicKey: string,
+    signature: string,
+    signedTime: number,
     transactionOptions?: TransactionOptions,
   ): Promise<void> {
     const contract = BlockchainConnector.getInstance().getContract();
 
     request.offerVersion ?? 0;
+    request.timestamp ?? 0;
+    // TODO: transform 'signature'
 
     await TxManager.execute(
-      contract.methods.setLoaderSessionAndRequestSecret(request, sessionArgs),
+      contract.methods.setLoaderSessionAndRequestSecret(
+        request,
+        sessionPublicKey,
+        signature,
+        teeOfferIssuerId,
+        signedTime,
+      ),
       transactionOptions,
     );
   }

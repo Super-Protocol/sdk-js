@@ -76,6 +76,7 @@ class OfferResources {
     checkIfActionAccountInitialized(transactionOptions);
 
     offerResource.offerVersion ?? 0;
+    offerResource.timestamp ?? 0;
 
     await TxManager.execute(contract.methods.setOfferResource(offerResource), transactionOptions);
   }
@@ -85,11 +86,13 @@ class OfferResources {
     requestOfferVersion: number = 0,
     resultInfo: string,
     resultInfoSignatureBySecretKey: string,
-    // TODO: here will be signedTime too.
+    signedTime: string,
     transactionOptions?: TransactionOptions,
   ): Promise<void> {
     const contract = BlockchainConnector.getInstance().getContract();
     checkIfActionAccountInitialized(transactionOptions);
+
+    // TODO: resultInfoSignatureBySecretKey
 
     await TxManager.execute(
       contract.methods.createResourceOrder(
@@ -97,7 +100,7 @@ class OfferResources {
         requestOfferVersion,
         resultInfo,
         resultInfoSignatureBySecretKey,
-        // TODO: here will be signedTime too.
+        signedTime,
       ),
       transactionOptions,
     );
@@ -141,6 +144,31 @@ class OfferResources {
       event: 'OfferResourceCreated',
     });
   }
+
+  public static onOrderResourceCreated(callback: onOrderResourceCreatedCallback): () => void {
+    const listener = BlockchainEventsListener.getInstance();
+    const logger = this.logger.child({ method: 'onOrderResourceCreated' });
+    const onData: WssSubscriptionOnDataFn = (event: EventLog): void => {
+      const parsedEvent = cleanWeb3Data(event.returnValues);
+      callback(
+        <BlockchainId>parsedEvent.requestOfferId,
+        <number>parsedEvent.requestOfferVersion,
+        <BlockchainId>parsedEvent.orderId,
+        <BlockInfo>{
+          index: Number(event.blockNumber),
+          hash: <string>event.blockHash,
+        },
+      );
+    };
+    const onError: WssSubscriptionOnErrorFn = (error: Error) => {
+      logger.warn(error);
+    };
+    return listener.subscribeEvent({
+      onError,
+      onData,
+      event: 'OrderResourceCreated',
+    });
+  }
 }
 
 export type onOfferResourceCreatedCallback = (
@@ -148,6 +176,13 @@ export type onOfferResourceCreatedCallback = (
   offerVersion: number,
   teeOfferKeeperId: BlockchainId,
   teeOfferIssuerId: BlockchainId,
+  block?: BlockInfo,
+) => void;
+
+export type onOrderResourceCreatedCallback = (
+  requestOfferId: BlockchainId,
+  requestOfferVersion: number,
+  orderId: BlockchainId,
   block?: BlockInfo,
 ) => void;
 

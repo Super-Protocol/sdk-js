@@ -30,13 +30,15 @@ class LoaderSecretPublicKeys {
     teeOfferId: BlockchainId,
     signature: string,
     secretPublicKey: string,
-    datetime: number,
+    signedTime: number,
     transactionOptions?: TransactionOptions,
   ): Promise<void> {
     const contract = BlockchainConnector.getInstance().getContract();
 
+    // TODO: transform 'signature'
+
     await TxManager.execute(
-      contract.methods.setLoaderSecretPublicKey(teeOfferId, signature, secretPublicKey, datetime),
+      contract.methods.setLoaderSecretPublicKey(teeOfferId, signature, secretPublicKey, signedTime),
       transactionOptions,
     );
   }

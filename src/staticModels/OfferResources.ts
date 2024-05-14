@@ -129,6 +129,7 @@ class OfferResources {
         <number>parsedEvent.version,
         <BlockchainId>parsedEvent.keeperId,
         <BlockchainId>parsedEvent.issuerId,
+        <string>parsedEvent.transactionHash,
         <BlockInfo>{
           index: Number(event.blockNumber),
           hash: <string>event.blockHash,
@@ -154,6 +155,7 @@ class OfferResources {
         <BlockchainId>parsedEvent.requestOfferId,
         <number>parsedEvent.requestOfferVersion,
         <BlockchainId>parsedEvent.orderId,
+        <string>parsedEvent.transactionHash,
         <BlockInfo>{
           index: Number(event.blockNumber),
           hash: <string>event.blockHash,
@@ -176,6 +178,7 @@ export type onOfferResourceCreatedCallback = (
   offerVersion: number,
   teeOfferKeeperId: BlockchainId,
   teeOfferIssuerId: BlockchainId,
+  transactionHash: string,
   block?: BlockInfo,
 ) => void;
 
@@ -183,6 +186,7 @@ export type onOrderResourceCreatedCallback = (
   requestOfferId: BlockchainId,
   requestOfferVersion: number,
   orderId: BlockchainId,
+  transactionHash: string,
   block?: BlockInfo,
 ) => void;
 

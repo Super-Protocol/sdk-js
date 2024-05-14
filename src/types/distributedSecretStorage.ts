@@ -31,7 +31,7 @@ export type OfferResource = {
   signedTime: number;
   timestamp?: number;
   signature: string;
-  signedData: string;
+  signedEncryptedData: string;
 };
 
 export type OfferStorageAllocated = {

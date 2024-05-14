@@ -80,24 +80,7 @@ export * from './models/Offer.js';
 export { default as TCB } from './models/TCB.js';
 export * from './models/TCB.js';
 
-export * from './types/Offer.js';
-export * from './types/Marks.js';
-export * from './types/Order.js';
-export * from './types/TeeOfferInfo.js';
-export * from './types/HardwareInfo.js';
-export * from './types/SlotInfo.js';
-export * from './types/SlotUsage.js';
-export * from './types/OptionInfo.js';
-export * from './types/OrderUsage.js';
-export * from './types/TeeOfferInfo.js';
-export * from './types/TeeOfferOption.js';
-export * from './types/TeeOfferSlot.js';
-export * from './types/ValueOfferSlot.js';
-export * from './types/Provider.js';
-export * from './types/Superpro.js';
-export * from './types/Consensus.js';
-export * from './types/Origins.js';
-export * from './types/Web3.js';
+export * from './types/index.js';
 
 export * as ChunkedStorageProvider from './providers/storage/ChunksDownloadDecorator.js';
 export { default as StorjAdapter, StorjConfig } from './providers/storage/StorjAdapter.js';
@@ -141,3 +124,4 @@ export { default as NodeEventProvider } from './analytics/eventProviders/NodeEve
 export { default as BrowserEventProvider } from './analytics/eventProviders/BrowserEventProvider.js';
 export { default as AxiosTransport } from './analytics/transports/AxiosTransport.js';
 export { default as FetchTransport } from './analytics/transports/FetchTransport.js';
+export * from './utils/cache/index.js';

@@ -11,12 +11,13 @@ import {
 import fs from 'fs';
 import AES from './nodejs/AES.js';
 import ARIA from './nodejs/ARIA.js';
-import ECIES, { Keys } from './nodejs/ECIES.js';
+import ECIES from './nodejs/ECIES.js';
 import RSAHybrid from './nodejs/RSA-Hybrid.js';
 import NativeCrypto from './nodejs/NativeCrypto.js';
 import { Readable } from 'stream';
 import crypto, { BinaryToTextEncoding } from 'crypto';
 import { HashAlgorithm } from '@super-protocol/dto-js';
+import { CryptoKeyType } from './types.js';
 
 class Crypto {
   /**
@@ -152,10 +153,12 @@ class Crypto {
     }
   }
 
-  static async generateKeys(algo: CryptoAlgorithm): Promise<Keys> {
+  static async generateKeys<T extends CryptoAlgorithm>(algo: T): Promise<CryptoKeyType<T>> {
     switch (algo) {
       case CryptoAlgorithm.ECIES:
-        return await ECIES.generateKeys();
+        return (await ECIES.generateKeys()) as CryptoKeyType<T>;
+      case CryptoAlgorithm.AES:
+        return AES.generateKeys() as CryptoKeyType<T>;
       default:
         throw Error(`${algo} algorithm not supported`);
     }

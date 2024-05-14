@@ -6,11 +6,7 @@ import {
   EncryptionKey,
 } from '@super-protocol/dto-js';
 import crypto, { generateKeyPair } from 'crypto';
-
-export type Keys = {
-  publicKey: Buffer;
-  privateKey: Buffer;
-};
+import { AsymmetricKeys } from '../types.js';
 
 class ECIES {
   static encrypt(content: string, encryption: Encryption): ECIESEncryption {
@@ -102,8 +98,8 @@ class ECIES {
     };
   };
 
-  static generateKeys(namedCurve = 'secp256k1'): Promise<Keys> {
-    return new Promise<Keys>((resolve, reject) => {
+  static generateKeys(namedCurve = 'secp256k1'): Promise<AsymmetricKeys> {
+    return new Promise<AsymmetricKeys>((resolve, reject) => {
       generateKeyPair('ec', { namedCurve }, (err, publicKey, privateKey) => {
         if (err) {
           return reject(err);

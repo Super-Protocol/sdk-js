@@ -10746,7 +10746,7 @@ export const abi = [
                     },
                     {
                         "internalType": "string",
-                        "name": "signedData",
+                        "name": "signedEncryptedData",
                         "type": "string"
                     }
                 ],
@@ -10817,7 +10817,7 @@ export const abi = [
                     },
                     {
                         "internalType": "string",
-                        "name": "signedData",
+                        "name": "signedEncryptedData",
                         "type": "string"
                     }
                 ],
@@ -10883,7 +10883,7 @@ export const abi = [
                     },
                     {
                         "internalType": "string",
-                        "name": "signedData",
+                        "name": "signedEncryptedData",
                         "type": "string"
                     }
                 ],
@@ -10949,7 +10949,7 @@ export const abi = [
                     },
                     {
                         "internalType": "string",
-                        "name": "signedData",
+                        "name": "signedEncryptedData",
                         "type": "string"
                     }
                 ],
@@ -11026,7 +11026,7 @@ export const abi = [
                     },
                     {
                         "internalType": "string",
-                        "name": "signedData",
+                        "name": "signedEncryptedData",
                         "type": "string"
                     }
                 ],

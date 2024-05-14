@@ -460,7 +460,7 @@ class TeeOffer {
 
   @incrementMethodCall()
   public isTeeOfferVerifying(): Promise<boolean> {
-    return TeeOffer.contract.methods.isTeeOfferVerifying(this.id).call();
+    return TeeOffer.contract.methods.isTeeOfferVerified(this.id).call();
   }
 
   /**
@@ -566,7 +566,11 @@ class TeeOffer {
     newHardwareInfo = await TeeOffers.packHardwareInfo(newHardwareInfo);
 
     await TxManager.execute(
-      TeeOffer.contract.methods.setTeeOfferHardwareInfo(this.id, newHardwareInfo.slotInfo, convertOptionInfoToRaw(newHardwareInfo.optionInfo)),
+      TeeOffer.contract.methods.setTeeOfferHardwareInfo(
+        this.id,
+        newHardwareInfo.slotInfo,
+        convertOptionInfoToRaw(newHardwareInfo.optionInfo),
+      ),
       transactionOptions,
     );
   }

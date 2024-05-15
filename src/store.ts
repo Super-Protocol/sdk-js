@@ -30,7 +30,6 @@ const store: Store = {
   gasLimitMultiplier: defaultGasLimitMultiplier,
   gasPriceMultiplier: defaultGasPriceMultiplier,
   gasPrice: undefined,
-  chainId: 137, // Polygon mainnet 
   txConcurrency: txConcurrency,
   txIntervalMs: txIntervalMs,
   chainId: POLYGON_MAIN_CHAIN_ID,

@@ -18,7 +18,7 @@ jest.mock('../src/utils/resourceLoaders', () => ({
   getResourceLoader: () => jest.fn().mockImplementation(() => mockResourceLoader),
 }));
 
-import { EtlModel } from '../src/models/EtlModel';
+import { EtlModel } from '../src/models/EtlModel.js';
 
 const etlModelObj: IEtlModel = {
   type: EtlModelType.Image,

@@ -1,7 +1,14 @@
-import AxiosTransport from './transports/AxiosTransport';
-import EventProvider, { Event } from './eventProviders/EventProvider';
-import { Transport, Config, TrackEventsProp, TrackEventProp } from './types';
-import logger, { Logger } from '../logger';
+import _ from 'lodash';
+import AxiosTransport from './transports/AxiosTransport.js';
+import EventProvider, { Event } from './eventProviders/EventProvider.js';
+import {
+  Transport,
+  AnalyticsConfig,
+  TrackEventsProp,
+  TrackEventProp,
+  TrackEventObjProp,
+} from './types.js';
+import logger, { Logger } from '../logger.js';
 
 export default class Analytics<TransportResponse> {
   private readonly transport: Transport<TransportResponse>;
@@ -10,7 +17,7 @@ export default class Analytics<TransportResponse> {
   private readonly eventProvider: EventProvider;
   private readonly logger?: Logger | null;
 
-  constructor(config: Config<TransportResponse>) {
+  constructor(config: AnalyticsConfig<TransportResponse>) {
     const { apiUrl, apiKey, transport, eventProvider, showLogs } = config || {};
     this.apiUrl = apiUrl;
     this.apiKey = apiKey;
@@ -69,5 +76,27 @@ export default class Analytics<TransportResponse> {
 
   public trackEventsCatched(props: TrackEventsProp): Promise<TransportResponse | null> {
     return this.catchEvent(() => this.trackEvents(props));
+  }
+
+  public trackSuccessEventCatched(props: TrackEventObjProp): Promise<TransportResponse | null> {
+    const eventProperties = {
+      ...(_.isPlainObject(props.eventProperties) && props.eventProperties),
+      result: 'success',
+    };
+    return this.catchEvent(() => this.trackEvent({ eventName: props.eventName, eventProperties }));
+  }
+
+  public trackErrorEventCatched(
+    props: TrackEventObjProp,
+    error: unknown,
+  ): Promise<TransportResponse | null> {
+    const eventProperties = {
+      ...(_.isPlainObject(props.eventProperties) && props.eventProperties),
+      result: 'error',
+      error: (error as Error).message || 'Unknown error',
+      errorStack: (error as Error).stack || '',
+    };
+
+    return this.catchEvent(() => this.trackEvent({ eventName: props.eventName, eventProperties }));
   }
 }

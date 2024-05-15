@@ -1642,6 +1642,19 @@ export const abi = [
         "type": "function"
     },
     {
+        "inputs": [],
+        "name": "getTcbsCount",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
         "inputs": [
             {
                 "internalType": "uint256[]",
@@ -1797,7 +1810,7 @@ export const abi = [
                 "type": "uint256"
             }
         ],
-        "name": "isTeeOfferVerifying",
+        "name": "isTeeOfferVerified",
         "outputs": [
             {
                 "internalType": "bool",
@@ -4059,17 +4072,17 @@ export const abi = [
                     },
                     {
                         "internalType": "string",
-                        "name": "resultPublicKey",
+                        "name": "resultInfo",
                         "type": "string"
                     },
                     {
                         "internalType": "string",
-                        "name": "encryptedRequirements",
+                        "name": "encryptedRequirements_DEPRECATED",
                         "type": "string"
                     },
                     {
                         "internalType": "string",
-                        "name": "encryptedArgs",
+                        "name": "encryptedArgs_DEPRECATED",
                         "type": "string"
                     },
                     {
@@ -4179,17 +4192,17 @@ export const abi = [
                     },
                     {
                         "internalType": "string",
-                        "name": "resultPublicKey",
+                        "name": "resultInfo",
                         "type": "string"
                     },
                     {
                         "internalType": "string",
-                        "name": "encryptedRequirements",
+                        "name": "encryptedRequirements_DEPRECATED",
                         "type": "string"
                     },
                     {
                         "internalType": "string",
-                        "name": "encryptedArgs",
+                        "name": "encryptedArgs_DEPRECATED",
                         "type": "string"
                     },
                     {
@@ -4299,17 +4312,17 @@ export const abi = [
                     },
                     {
                         "internalType": "string",
-                        "name": "resultPublicKey",
+                        "name": "resultInfo",
                         "type": "string"
                     },
                     {
                         "internalType": "string",
-                        "name": "encryptedRequirements",
+                        "name": "encryptedRequirements_DEPRECATED",
                         "type": "string"
                     },
                     {
                         "internalType": "string",
-                        "name": "encryptedArgs",
+                        "name": "encryptedArgs_DEPRECATED",
                         "type": "string"
                     },
                     {
@@ -4431,17 +4444,17 @@ export const abi = [
                     },
                     {
                         "internalType": "string",
-                        "name": "resultPublicKey",
+                        "name": "resultInfo",
                         "type": "string"
                     },
                     {
                         "internalType": "string",
-                        "name": "encryptedRequirements",
+                        "name": "encryptedRequirements_DEPRECATED",
                         "type": "string"
                     },
                     {
                         "internalType": "string",
-                        "name": "encryptedArgs",
+                        "name": "encryptedArgs_DEPRECATED",
                         "type": "string"
                     },
                     {
@@ -5378,17 +5391,17 @@ export const abi = [
                     },
                     {
                         "internalType": "string",
-                        "name": "resultPublicKey",
+                        "name": "resultInfo",
                         "type": "string"
                     },
                     {
                         "internalType": "string",
-                        "name": "encryptedRequirements",
+                        "name": "encryptedRequirements_DEPRECATED",
                         "type": "string"
                     },
                     {
                         "internalType": "string",
-                        "name": "encryptedArgs",
+                        "name": "encryptedArgs_DEPRECATED",
                         "type": "string"
                     },
                     {
@@ -7829,25 +7842,6 @@ export const abi = [
     {
         "inputs": [
             {
-                "internalType": "uint256",
-                "name": "teeOfferId",
-                "type": "uint256"
-            }
-        ],
-        "name": "getLastTeeBenchmark",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
                 "internalType": "bytes32",
                 "name": "deviceId",
                 "type": "bytes32"
@@ -8632,17 +8626,17 @@ export const abi = [
                     },
                     {
                         "internalType": "string",
-                        "name": "resultPublicKey",
+                        "name": "resultInfo",
                         "type": "string"
                     },
                     {
                         "internalType": "string",
-                        "name": "encryptedRequirements",
+                        "name": "encryptedRequirements_DEPRECATED",
                         "type": "string"
                     },
                     {
                         "internalType": "string",
-                        "name": "encryptedArgs",
+                        "name": "encryptedArgs_DEPRECATED",
                         "type": "string"
                     },
                     {
@@ -8728,17 +8722,17 @@ export const abi = [
                     },
                     {
                         "internalType": "string",
-                        "name": "resultPublicKey",
+                        "name": "resultInfo",
                         "type": "string"
                     },
                     {
                         "internalType": "string",
-                        "name": "encryptedRequirements",
+                        "name": "encryptedRequirements_DEPRECATED",
                         "type": "string"
                     },
                     {
                         "internalType": "string",
-                        "name": "encryptedArgs",
+                        "name": "encryptedArgs_DEPRECATED",
                         "type": "string"
                     },
                     {
@@ -9677,7 +9671,7 @@ export const abi = [
                 "type": "uint256"
             }
         ],
-        "name": "isTeeOfferVerifying",
+        "name": "isTeeOfferVerified",
         "outputs": [
             {
                 "internalType": "bool",
@@ -10584,17 +10578,17 @@ export const abi = [
                     },
                     {
                         "internalType": "string",
-                        "name": "resultPublicKey",
+                        "name": "resultInfo",
                         "type": "string"
                     },
                     {
                         "internalType": "string",
-                        "name": "encryptedRequirements",
+                        "name": "encryptedRequirements_DEPRECATED",
                         "type": "string"
                     },
                     {
                         "internalType": "string",
-                        "name": "encryptedArgs",
+                        "name": "encryptedArgs_DEPRECATED",
                         "type": "string"
                     },
                     {
@@ -10709,17 +10703,17 @@ export const abi = [
                     },
                     {
                         "internalType": "string",
-                        "name": "resultPublicKey",
+                        "name": "resultInfo",
                         "type": "string"
                     },
                     {
                         "internalType": "string",
-                        "name": "encryptedRequirements",
+                        "name": "encryptedRequirements_DEPRECATED",
                         "type": "string"
                     },
                     {
                         "internalType": "string",
-                        "name": "encryptedArgs",
+                        "name": "encryptedArgs_DEPRECATED",
                         "type": "string"
                     },
                     {
@@ -10844,17 +10838,17 @@ export const abi = [
                     },
                     {
                         "internalType": "string",
-                        "name": "resultPublicKey",
+                        "name": "resultInfo",
                         "type": "string"
                     },
                     {
                         "internalType": "string",
-                        "name": "encryptedRequirements",
+                        "name": "encryptedRequirements_DEPRECATED",
                         "type": "string"
                     },
                     {
                         "internalType": "string",
-                        "name": "encryptedArgs",
+                        "name": "encryptedArgs_DEPRECATED",
                         "type": "string"
                     },
                     {
@@ -11134,17 +11128,17 @@ export const abi = [
                     },
                     {
                         "internalType": "string",
-                        "name": "resultPublicKey",
+                        "name": "resultInfo",
                         "type": "string"
                     },
                     {
                         "internalType": "string",
-                        "name": "encryptedRequirements",
+                        "name": "encryptedRequirements_DEPRECATED",
                         "type": "string"
                     },
                     {
                         "internalType": "string",
-                        "name": "encryptedArgs",
+                        "name": "encryptedArgs_DEPRECATED",
                         "type": "string"
                     },
                     {
@@ -12536,6 +12530,103 @@ export const abi = [
             }
         ],
         "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "item",
+                "type": "uint256"
+            }
+        ],
+        "name": "add",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "clear",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "getAll",
+        "outputs": [
+            {
+                "internalType": "uint256[]",
+                "name": "",
+                "type": "uint256[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "item",
+                "type": "uint256"
+            }
+        ],
+        "name": "getItemIndex",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "isEmpty",
+        "outputs": [
+            {
+                "internalType": "bool",
+                "name": "",
+                "type": "bool"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "item",
+                "type": "uint256"
+            }
+        ],
+        "name": "isExists",
+        "outputs": [
+            {
+                "internalType": "bool",
+                "name": "",
+                "type": "bool"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "item",
+                "type": "uint256"
+            }
+        ],
+        "name": "remove",
+        "outputs": [],
+        "stateMutability": "nonpayable",
         "type": "function"
     },
     {

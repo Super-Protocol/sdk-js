@@ -1,5 +1,5 @@
 import { v5 as uuidv5 } from 'uuid';
-import EventProvider from './EventProvider';
+import EventProvider from './EventProvider.js';
 
 export interface NodeEventProviderProp {
   userId: string;

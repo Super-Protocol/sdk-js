@@ -13,10 +13,10 @@ import {
   S3Client,
   UploadPartCommand,
 } from '@aws-sdk/client-s3';
-import IStorageProvider, { DownloadConfig } from './IStorageProvider';
+import IStorageProvider, { DownloadConfig } from './IStorageProvider.js';
 import { Readable } from 'stream';
-import StorageObject from '../../types/storage/StorageObject';
-import { getStreamChunks } from '../../utils/helpers/getStreamChunks';
+import StorageObject from '../../types/storage/StorageObject.js';
+import { getStreamChunks } from '../../utils/helpers/getStreamChunks.js';
 
 export type S3ClientConfig = {
   accessKeyId: string;

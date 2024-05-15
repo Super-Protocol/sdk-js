@@ -1,4 +1,4 @@
-import StorageObject from '../../types/storage/StorageObject';
+import StorageObject from '../../types/storage/StorageObject.js';
 import stream from 'stream';
 
 export type DownloadConfig = {

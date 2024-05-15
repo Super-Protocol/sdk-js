@@ -1,6 +1,6 @@
-import rootLogger from '../logger';
-import TCB from '../models/TCB';
-import Superpro from './Superpro';
+import rootLogger from '../logger.js';
+import TCB from '../models/TCB.js';
+import Superpro from './Superpro.js';
 import {
   EpochInfo,
   ConsensusConstants,
@@ -10,18 +10,22 @@ import {
   TokenAmount,
   TcbPublicData,
   TcbUtilityData,
-} from '../types';
+} from '../types/index.js';
 import {
   checkIfActionAccountInitialized,
   cleanWeb3Data,
   formatTcbPublicData,
   transformComplexObject,
   unpackDeviceId,
-} from '../utils/helper';
-import TxManager from '../utils/TxManager';
-import { BlockchainConnector, BlockchainEventsListener } from '../connectors';
+} from '../utils/helper.js';
+import TxManager from '../utils/TxManager.js';
+import { BlockchainConnector, BlockchainEventsListener } from '../connectors/index.js';
 import { EventLog } from 'web3-eth-contract';
 import { TcbVerifiedStatus } from '@super-protocol/dto-js';
+import {
+  WssSubscriptionOnDataFn,
+  WssSubscriptionOnErrorFn,
+} from '../connectors/BlockchainEventsListener.js';
 
 class Consensus {
   private static readonly logger = rootLogger.child({ className: 'Consensus' });
@@ -36,16 +40,21 @@ class Consensus {
    * @returns list of tcb ids
    */
   public static async getAllTcbs(): Promise<BlockchainId[]> {
-    const contract = BlockchainConnector.getInstance().getContract();
     const tcbSet = new Set(this.tcbIds ?? []);
 
-    const tcbsCount = Number(await contract.methods.getTcbsCount().call());
+    const tcbsCount = await Consensus.getTcbsCount();
     for (let tcbId = tcbSet.size + 1; tcbId <= tcbsCount; tcbId++) {
       tcbSet.add(tcbId.toString());
     }
     this.tcbIds = Array.from(tcbSet);
 
     return this.tcbIds;
+  }
+
+  public static async getTcbsCount(): Promise<number> {
+    const contract = BlockchainConnector.getInstance().getContract();
+
+    return Number(await contract.methods.getTcbsCount().call());
   }
 
   public static async getEpochTime(
@@ -182,11 +191,9 @@ class Consensus {
   }
 
   public static onTcbBanned(callback: onTcbBannedCallback): () => void {
-    const contract = BlockchainEventsListener.getInstance().getContract();
+    const listener = BlockchainEventsListener.getInstance();
     const logger = this.logger.child({ method: 'onTcbBanned' });
-
-    const subscription = contract.events.TcbBanned();
-    subscription.on('data', (event: EventLog): void => {
+    const onData: WssSubscriptionOnDataFn = (event: EventLog): void => {
       const parsedEvent = cleanWeb3Data(event.returnValues);
       callback(
         <string>parsedEvent.tcbId,
@@ -196,20 +203,21 @@ class Consensus {
           hash: <string>event.blockHash,
         },
       );
-    });
-    subscription.on('error', (error: Error) => {
+    };
+    const onError: WssSubscriptionOnErrorFn = (error: Error) => {
       logger.warn(error);
+    };
+    return listener.subscribeEvent({
+      onError,
+      onData,
+      event: 'TcbBanned',
     });
-
-    return () => subscription.unsubscribe();
   }
 
   public static onTcbCompleted(callback: onTcbCompletedCallback): () => void {
-    const contract = BlockchainEventsListener.getInstance().getContract();
+    const listener = BlockchainEventsListener.getInstance();
     const logger = this.logger.child({ method: 'onTcbCompleted' });
-
-    const subscription = contract.events.TcbCompleted();
-    subscription.on('data', (event: EventLog): void => {
+    const onData: WssSubscriptionOnDataFn = (event: EventLog): void => {
       const parsedEvent = cleanWeb3Data(event.returnValues);
       callback(
         <string>parsedEvent.tcbId,
@@ -219,20 +227,21 @@ class Consensus {
           hash: <string>event.blockHash,
         },
       );
-    });
-    subscription.on('error', (error: Error) => {
+    };
+    const onError: WssSubscriptionOnErrorFn = (error: Error) => {
       logger.warn(error);
+    };
+    return listener.subscribeEvent({
+      onError,
+      onData,
+      event: 'TcbCompleted',
     });
-
-    return () => subscription.unsubscribe();
   }
 
   public static onTcbInitialized(callback: onTcbInitializedCallback): () => void {
-    const contract = BlockchainEventsListener.getInstance().getContract();
+    const listener = BlockchainEventsListener.getInstance();
     const logger = this.logger.child({ method: 'onTcbInitialized' });
-
-    const subscription = contract.events.TcbInitialized();
-    subscription.on('data', (event: EventLog): void => {
+    const onData: WssSubscriptionOnDataFn = (event: EventLog): void => {
       const parsedEvent = cleanWeb3Data(event.returnValues);
       callback(
         <string>parsedEvent.tcbId,
@@ -242,20 +251,21 @@ class Consensus {
           hash: <string>event.blockHash,
         },
       );
-    });
-    subscription.on('error', (error: Error) => {
+    };
+    const onError: WssSubscriptionOnErrorFn = (error: Error) => {
       logger.warn(error);
+    };
+    return listener.subscribeEvent({
+      onError,
+      onData,
+      event: 'TcbInitialized',
     });
-
-    return () => subscription.unsubscribe();
   }
 
   public static onTcbBenchmarkChanged(callback: onTcbBenchmarkChangedCallback): () => void {
-    const contract = BlockchainEventsListener.getInstance().getContract();
+    const listener = BlockchainEventsListener.getInstance();
     const logger = this.logger.child({ method: 'onTcbBenchmarkChanged' });
-
-    const subscription = contract.events.TcbBenchmarkChanged();
-    subscription.on('data', (event: EventLog) => {
+    const onData: WssSubscriptionOnDataFn = (event: EventLog) => {
       const parsedEvent = cleanWeb3Data(event.returnValues);
       callback(
         <string>parsedEvent.tcbId,
@@ -265,20 +275,21 @@ class Consensus {
           hash: <string>event.blockHash,
         },
       );
-    });
-    subscription.on('error', (error: Error) => {
+    };
+    const onError: WssSubscriptionOnErrorFn = (error: Error) => {
       logger.warn(error);
+    };
+    return listener.subscribeEvent({
+      onError,
+      onData,
+      event: 'TcbBenchmarkChanged',
     });
-
-    return () => subscription.unsubscribe();
   }
 
   public static onRewardsClaimed(callback: onRewardsClaimedCallback): () => void {
-    const contract = BlockchainEventsListener.getInstance().getContract();
+    const listener = BlockchainEventsListener.getInstance();
     const logger = this.logger.child({ method: 'onRewardsClaimed' });
-
-    const subscription = contract.events.RewardsClaimed();
-    subscription.on('data', (event: EventLog) => {
+    const onData: WssSubscriptionOnDataFn = (event: EventLog) => {
       const parsedEvent = cleanWeb3Data(event.returnValues);
       callback(
         <BlockchainId>parsedEvent.tcbId,
@@ -289,20 +300,21 @@ class Consensus {
           hash: <string>event.blockHash,
         },
       );
-    });
-    subscription.on('error', (error: Error) => {
+    };
+    const onError: WssSubscriptionOnErrorFn = (error: Error) => {
       logger.warn(error);
+    };
+    return listener.subscribeEvent({
+      onError,
+      onData,
+      event: 'RewardsClaimed',
     });
-
-    return () => subscription.unsubscribe();
   }
 
   public static onTcbRewardUnlocked(callback: onTcbRewardUnlockedCallback): () => void {
-    const contract = BlockchainEventsListener.getInstance().getContract();
+    const listener = BlockchainEventsListener.getInstance();
     const logger = this.logger.child({ method: 'onTcbRewardUnlocked' });
-
-    const subscription = contract.events.TcbRewardUnlocked();
-    subscription.on('data', (event: EventLog) => {
+    const onData: WssSubscriptionOnDataFn = (event: EventLog) => {
       const parsedEvent = cleanWeb3Data(event.returnValues);
       callback(
         <BlockchainId>parsedEvent.tcbId,
@@ -312,12 +324,15 @@ class Consensus {
           hash: <string>event.blockHash,
         },
       );
-    });
-    subscription.on('error', (error: Error) => {
+    };
+    const onError: WssSubscriptionOnErrorFn = (error: Error) => {
       logger.warn(error);
+    };
+    return listener.subscribeEvent({
+      onError,
+      onData,
+      event: 'TcbRewardUnlocked',
     });
-
-    return () => subscription.unsubscribe();
   }
 }
 

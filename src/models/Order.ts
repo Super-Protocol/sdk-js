@@ -14,11 +14,14 @@ import {
   SlotUsage,
   OrderUsageRaw,
   OrderSlots,
-} from '../types';
+  orderInfoFromRaw,
+  OrderInfoRaw,
+  orderInfoToRaw,
+} from '../types/index.js';
 import { Contract, TransactionReceipt } from 'web3';
 import { EventLog } from 'web3-eth-contract';
-import rootLogger from '../logger';
-import { abi } from '../contracts/abi';
+import rootLogger from '../logger.js';
+import { abi } from '../contracts/abi.js';
 import {
   checkIfActionAccountInitialized,
   cleanWeb3Data,
@@ -26,13 +29,16 @@ import {
   formatUsage,
   incrementMethodCall,
   unpackSlotInfo,
-} from '../utils/helper';
-import { formatBytes32String } from 'ethers/lib/utils';
-import { BlockchainConnector, BlockchainEventsListener } from '../connectors';
-import TeeOffers from '../staticModels/TeeOffers';
-import TxManager from '../utils/TxManager';
-import { tryWithInterval } from '../utils/helpers';
-import { BLOCKCHAIN_CALL_RETRY_INTERVAL, BLOCKCHAIN_CALL_RETRY_ATTEMPTS } from '../constants';
+} from '../utils/helper.js';
+import { BlockchainConnector, BlockchainEventsListener } from '../connectors/index.js';
+import TeeOffers from '../staticModels/TeeOffers.js';
+import TxManager from '../utils/TxManager.js';
+import { tryWithInterval } from '../utils/helpers/index.js';
+import { BLOCKCHAIN_CALL_RETRY_INTERVAL, BLOCKCHAIN_CALL_RETRY_ATTEMPTS } from '../constants.js';
+import {
+  WssSubscriptionOnDataFn,
+  WssSubscriptionOnErrorFn,
+} from '../connectors/BlockchainEventsListener.js';
 
 class Order {
   private static contract: Contract<typeof abi>;
@@ -103,14 +109,14 @@ class Order {
     }
     const orderInfoParams = await Order.contract.methods.getOrder(this.id).call();
     const orderArgs = await Order.contract.methods.getOrderArgs(this.id).call();
+    const cleanedOrderInfo = cleanWeb3Data(orderInfoParams[1]);
 
-    const orderInfo: OrderInfo = {
-      ...(cleanWeb3Data(orderInfoParams[1]) as OrderInfo),
-      args: cleanWeb3Data(orderArgs) as OrderArgs,
-      status: orderInfoParams[1].status.toString() as OrderStatus,
-    };
+    const finalOrderInfo: OrderInfo = orderInfoFromRaw(
+      cleanedOrderInfo as OrderInfoRaw,
+      cleanWeb3Data(orderArgs) as OrderArgs,
+    );
 
-    return (this.orderInfo = orderInfo);
+    return (this.orderInfo = finalOrderInfo);
   }
 
   private async checkIfOrderExistsWithInterval(): Promise<boolean> {
@@ -445,46 +451,23 @@ class Order {
   ): Promise<void> {
     checkIfActionAccountInitialized(transactionOptions);
     deposit = deposit ?? '0';
-    const preparedInfo: OrderInfo = {
-      ...subOrderInfo,
-      externalId: formatBytes32String(subOrderInfo.externalId),
-    };
+    const args = subOrderInfo.args;
+    const preparedInfo: OrderInfoRaw = orderInfoToRaw(subOrderInfo);
+
     const params: SubOrderParams = {
       blockParentOrder,
       deposit,
     };
 
-    const { args, ...restPreparedInfo } = preparedInfo;
-
     if (checkTxBeforeSend) {
       await TxManager.dryRun(
-        Order.contract.methods.createSubOrder(
-          this.id,
-          {
-            ...restPreparedInfo,
-            expectedPrice: restPreparedInfo.expectedPrice ?? '0',
-            maxPriceSlippage: restPreparedInfo.maxPriceSlippage ?? '0',
-          },
-          slots,
-          args,
-          params,
-        ),
+        Order.contract.methods.createSubOrder(this.id, preparedInfo, slots, args, params),
         transactionOptions,
       );
     }
 
     await TxManager.execute(
-      Order.contract.methods.createSubOrder(
-        this.id,
-        {
-          ...restPreparedInfo,
-          expectedPrice: restPreparedInfo.expectedPrice ?? '0',
-          maxPriceSlippage: restPreparedInfo.maxPriceSlippage ?? '0',
-        },
-        slots,
-        args,
-        params,
-      ),
+      Order.contract.methods.createSubOrder(this.id, preparedInfo, slots, args, params),
       transactionOptions,
     );
   }
@@ -510,22 +493,19 @@ class Order {
 
     const promises: Promise<TransactionReceipt>[] = [];
     for (let orderInfoIndex = 0; orderInfoIndex < subOrdersInfo.length; orderInfoIndex++) {
-      const preparedInfo = {
-        ...subOrdersInfo[orderInfoIndex],
-        externalId: formatBytes32String(subOrdersInfo[orderInfoIndex].externalId),
-        expectedPrice: subOrdersInfo[orderInfoIndex].expectedPrice ?? '0',
-        maxPriceSlippage: subOrdersInfo[orderInfoIndex].maxPriceSlippage ?? '0',
-      };
+      const { blocking, deposit, ...orderInfo } = subOrdersInfo[orderInfoIndex];
+      const args = orderInfo.args;
+      const preparedInfo = orderInfoToRaw(orderInfo);
       const params: SubOrderParams = {
-        blockParentOrder: subOrdersInfo[orderInfoIndex].blocking,
-        deposit: subOrdersInfo[orderInfoIndex].deposit,
+        blockParentOrder: blocking,
+        deposit,
       };
 
       const transactionCall = Order.contract.methods.createSubOrder(
         this.id,
         preparedInfo,
         subOrdersSlots[orderInfoIndex],
-        preparedInfo.args,
+        args,
         params,
       );
 
@@ -541,24 +521,25 @@ class Order {
    * @returns unsubscribe - function unsubscribing from event
    */
   public onStatusUpdated(callback: onOrderStatusUpdatedCallback): () => void {
+    const listener = BlockchainEventsListener.getInstance();
     const logger = this.logger.child({ method: 'onOrderStatusUpdated' });
-
-    // TODO: add ability to use this event without https provider initialization
-    const contractWss = BlockchainEventsListener.getInstance().getContract();
-    const subscription = contractWss.events.OrderStatusUpdated();
-    subscription.on('data', (event: EventLog): void => {
+    const onData: WssSubscriptionOnDataFn = (event: EventLog): void => {
       if (event.returnValues.orderId != this.id) {
         return;
       }
       const newStatus = <OrderStatus>event.returnValues.status?.toString();
       if (this.orderInfo) this.orderInfo.status = newStatus;
       callback(newStatus);
-    });
-    subscription.on('error', (error: Error) => {
+    };
+    const onError: WssSubscriptionOnErrorFn = (error: Error) => {
       logger.warn(error);
-    });
+    };
 
-    return () => subscription.unsubscribe();
+    return listener.subscribeEvent({
+      onError,
+      onData,
+      event: 'OrderStatusUpdated',
+    });
   }
 }
 

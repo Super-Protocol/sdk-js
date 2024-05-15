@@ -1,7 +1,7 @@
-import { ParamName } from '../types';
-import { BlockchainConnector } from '../connectors';
+import { ParamName } from '../types/index.js';
+import { BlockchainConnector } from '../connectors/index.js';
 import { Contract } from 'web3';
-import abi from '../contracts/abi';
+import abi from '../contracts/abi.js';
 
 class Superpro {
   public static address: string;

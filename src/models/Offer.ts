@@ -1,6 +1,6 @@
 import { Contract } from 'web3';
-import { abi } from '../contracts/abi';
-import rootLogger from '../logger';
+import { abi } from '../contracts/abi.js';
+import rootLogger from '../logger.js';
 import {
   checkIfActionAccountInitialized,
   incrementMethodCall,
@@ -10,8 +10,8 @@ import {
   convertBigIntToString,
   transformComplexObject,
   convertOptionInfoToRaw,
-} from '../utils/helper';
-import { BlockchainConnector } from '../connectors';
+} from '../utils/helper.js';
+import { BlockchainConnector } from '../connectors/index.js';
 import {
   SlotInfo,
   OptionInfo,
@@ -25,12 +25,12 @@ import {
   OfferRestrictions,
   TokenAmount,
   ValueOfferSlotRaw,
-} from '../types';
-import { formatBytes32String } from 'ethers/lib/utils';
-import TeeOffers from '../staticModels/TeeOffers';
-import TxManager from '../utils/TxManager';
-import { tryWithInterval } from '../utils/helpers';
-import { BLOCKCHAIN_CALL_RETRY_INTERVAL, BLOCKCHAIN_CALL_RETRY_ATTEMPTS } from '../constants';
+} from '../types/index.js';
+import { formatBytes32String } from 'ethers/lib/utils.js';
+import TeeOffers from '../staticModels/TeeOffers.js';
+import TxManager from '../utils/TxManager.js';
+import { tryWithInterval } from '../utils/helpers/index.js';
+import { BLOCKCHAIN_CALL_RETRY_INTERVAL, BLOCKCHAIN_CALL_RETRY_ATTEMPTS } from '../constants.js';
 
 class Offer {
   private static contract: Contract<typeof abi>;
@@ -62,6 +62,19 @@ class Offer {
   @incrementMethodCall()
   public isEnabled(): Promise<boolean> {
     return Offer.contract.methods.isOfferEnabled(this.id).call();
+  }
+
+  /**
+   * Function for fetching offer status from blockchain
+   */
+  @incrementMethodCall()
+  public async isBaseImage(): Promise<boolean> {
+    const info = this.offerInfo ?? (await this.getInfo());
+    if (info.offerType !== OfferType.Solution || !Boolean(info.resultResource)) {
+      return false;
+    }
+    const isRestrictedBySolution = await this.isRestrictedByOfferType(OfferType.Solution);
+    return !isRestrictedBySolution;
   }
 
   /**

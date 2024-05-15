@@ -1,4 +1,4 @@
-import { TokenAmount } from './Web3';
+import { TokenAmount } from './Web3.js';
 
 export type DepositInfo = {
   amount: TokenAmount;

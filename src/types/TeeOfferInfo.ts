@@ -1,4 +1,4 @@
-import { HardwareInfo } from './HardwareInfo';
+import { HardwareInfo } from './HardwareInfo.js';
 
 export type TeeOfferInfo = {
   name: string;

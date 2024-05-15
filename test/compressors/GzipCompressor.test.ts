@@ -1,4 +1,4 @@
-import { GzipCompressor } from '../../src/utils/compressors';
+import { GzipCompressor } from '../../src/utils/compressors/index.js';
 
 const testData = {
   number: 100500,

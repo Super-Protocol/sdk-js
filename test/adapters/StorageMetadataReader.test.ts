@@ -1,8 +1,8 @@
-import StorageMetadataReader from '../../src/providers/storage/StorageMetadataReader';
-import StorageKeyValueAdapter from '../../src/providers/storage/StorageKeyValueAdapter';
-import StorageProviderMock from '../mocks/StorageProvider.mock';
-import { CacheRecord } from '../../src/providers/storage/types';
-import { keyValueStorageAdapterConfig, aesKey } from './utils';
+import StorageMetadataReader from '../../src/providers/storage/StorageMetadataReader.js';
+import StorageKeyValueAdapter from '../../src/providers/storage/StorageKeyValueAdapter.js';
+import StorageProviderMock from '../mocks/StorageProvider.mock.js';
+import { CacheRecord } from '../../src/providers/storage/types.js';
+import { keyValueStorageAdapterConfig, aesKey } from './utils.js';
 
 interface Data {
   message: string;

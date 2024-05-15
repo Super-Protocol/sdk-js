@@ -6,16 +6,15 @@ import {
   DownloadOptions,
 } from '@super-protocol/uplink-nodejs';
 import { Buffer } from 'buffer';
-import IStorageProvider, { DownloadConfig } from './IStorageProvider';
-import { isNodeJS } from '../../utils/helper';
-import StorageObject from '../../types/storage/StorageObject';
+import IStorageProvider, { DownloadConfig } from './IStorageProvider.js';
+import { isNodeJS } from '../../utils/helper.js';
+import StorageObject from '../../types/storage/StorageObject.js';
 import stream from 'stream';
-import logger from '../../logger';
+import logger from '../../logger.js';
 
 export default class StorJStorageProvider implements IStorageProvider {
   static DOWNLOAD_BUFFER_SIZE = 4194304; // 4mb
 
-  private logger = logger.child({ className: 'StorJStorageProvider' });
   private bucket: string;
   private prefix: string;
   private accessToken: string;
@@ -118,7 +117,6 @@ export default class StorJStorageProvider implements IStorageProvider {
   }
 
   async listObjects(remotePath: string): Promise<StorageObject[]> {
-    const storj = await this.lazyStorj();
     const project = await this.lazyProject();
     const objects = await project.listObjects(this.bucket, {
       recursive: true,

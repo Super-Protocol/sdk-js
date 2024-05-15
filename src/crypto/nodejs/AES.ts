@@ -6,8 +6,9 @@ import {
   Encryption,
 } from '@super-protocol/dto-js';
 import { ReadStream, WriteStream } from 'fs';
-
-import NativeCrypto from './NativeCrypto';
+import * as crypto from 'crypto';
+import NativeCrypto from './NativeCrypto.js';
+import { SymmetricKey } from '../types.js';
 
 class AES {
   public static async encrypt(content: string, encryption: Encryption): Promise<AESEncryption> {
@@ -107,6 +108,10 @@ class AES {
     }
 
     await NativeCrypto.decryptStream(key, inputStream, outputStream, encryption.cipher, params);
+  }
+
+  public static generateKeys(): SymmetricKey {
+    return crypto.randomBytes(32);
   }
 }
 

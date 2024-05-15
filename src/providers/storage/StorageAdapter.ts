@@ -1,13 +1,14 @@
 import { LRUCache } from 'lru-cache';
-import { createHash, randomUUID } from 'crypto';
+import * as uuid from 'uuid';
+import { createHash } from 'crypto';
 import Queue from 'p-queue';
-import StorageKeyValueAdapter from './StorageKeyValueAdapter';
-import StorageContentWriter, { ContentWriterType } from './StorageContentWriter';
-import StorageMetadataReader from './StorageMetadataReader';
-import StorageAccess from '../../types/storage/StorageAccess';
-import logger, { Logger } from '../../logger';
-import { CacheRecord, Performance } from './types';
-import PubSub from '../../utils/PubSub';
+import StorageKeyValueAdapter from './StorageKeyValueAdapter.js';
+import StorageContentWriter, { ContentWriterType } from './StorageContentWriter.js';
+import StorageMetadataReader from './StorageMetadataReader.js';
+import StorageAccess from '../../types/storage/StorageAccess.js';
+import logger, { Logger } from '../../logger.js';
+import { CacheRecord, Performance } from './types.js';
+import PubSub from '../../utils/PubSub.js';
 
 export interface LRUCacheConfig {
   max: number;
@@ -84,7 +85,7 @@ export default class StorageAdapter<V extends object> {
 
   private generateHash(str?: string): string {
     return createHash('sha256')
-      .update(str || randomUUID())
+      .update(str || uuid.v4())
       .digest('hex');
   }
 
@@ -185,9 +186,12 @@ export default class StorageAdapter<V extends object> {
     const map = this.cache.get(key);
     if (!map?.size) return null;
     const currentInstance = map.get(this.instanceId)?.value || null;
-    const otherInstances = Array.from(map.entries()).reduce((acc, [instanceId, instance]) => {
-      return instanceId !== this.instanceId ? [...acc, instance?.value || null] : acc;
-    }, [] as (V | null)[]);
+    const otherInstances = Array.from(map.entries()).reduce(
+      (acc, [instanceId, instance]) => {
+        return instanceId !== this.instanceId ? [...acc, instance?.value || null] : acc;
+      },
+      [] as (V | null)[],
+    );
 
     return [currentInstance, ...otherInstances];
   }

@@ -1,9 +1,9 @@
 import Web3 from 'web3';
-import { TransactionOptions } from '../src/types/Web3';
-import TxManager from '../src/utils/TxManager';
-import { defaultBlockchainUrl } from '../src/constants';
-import store from '../src/store';
-import NonceTracker from '../src/utils/NonceTracker';
+import { TransactionOptions } from '../src/types/Web3.js';
+import TxManager from '../src/utils/TxManager.js';
+import { defaultBlockchainUrl } from '../src/constants.js';
+import store from '../src/store.js';
+import NonceTracker from '../src/utils/NonceTracker.js';
 
 jest.mock<typeof import('../src/store')>('../src/store');
 

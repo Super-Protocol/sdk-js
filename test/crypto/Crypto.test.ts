@@ -1,5 +1,5 @@
 import { Readable } from 'stream';
-import Crypto from '../../src/crypto';
+import Crypto from '../../src/crypto/index.js';
 import { CryptoAlgorithm, Encoding, HashAlgorithm } from '@super-protocol/dto-js';
 
 const rsaPrivateKey = `-----BEGIN RSA PRIVATE KEY-----

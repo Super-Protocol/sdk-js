@@ -1,4 +1,4 @@
-import rootLogger from '../logger';
+import rootLogger from '../logger.js';
 import {
   checkIfActionAccountInitialized,
   cleanWeb3Data,
@@ -7,8 +7,8 @@ import {
   packDeviceId,
   unpackSlotInfo,
   convertOptionInfoToRaw,
-} from '../utils/helper';
-import { BytesLike, formatBytes32String, parseBytes32String } from 'ethers/lib/utils';
+} from '../utils/helper.js';
+import { BytesLike, formatBytes32String, parseBytes32String } from 'ethers/lib/utils.js';
 import {
   BlockInfo,
   TransactionOptions,
@@ -21,25 +21,39 @@ import {
   TeeOfferOption,
   BlockchainId,
   TeeOfferOptionRaw,
-} from '../types';
-import { BlockchainConnector, BlockchainEventsListener } from '../connectors';
-import Superpro from './Superpro';
-import TxManager from '../utils/TxManager';
+} from '../types/index.js';
+import { BlockchainConnector, BlockchainEventsListener } from '../connectors/index.js';
+import Superpro from './Superpro.js';
+import TxManager from '../utils/TxManager.js';
 import { EventLog } from 'web3-eth-contract';
-import StaticModel from './StaticModel';
+import StaticModel from './StaticModel.js';
+import {
+  WssSubscriptionOnDataFn,
+  WssSubscriptionOnErrorFn,
+} from '../connectors/BlockchainEventsListener.js';
+import TCB from '../models/TCB.js';
+import { INACTIVE_TCB_PERIOD, TEE_OFFER_SELECT_FRESH_SIZE } from '../constants.js';
+import { createMemoryCache } from '../utils/cache/index.js';
+import Consensus from './Consensus.js';
+import TeeOffer from '../models/TeeOffer.js';
+
+const inactivePeriod = (timeInMs: number): number => Date.now() - new Date(timeInMs).valueOf();
+const inactivePredicate = (timeInMs: number): boolean =>
+  inactivePeriod(timeInMs) > INACTIVE_TCB_PERIOD;
 
 class TeeOffers {
+  private static cache = createMemoryCache();
   private static coresDenominator?: number;
 
   private static readonly logger = rootLogger.child({ className: 'TeeOffers' });
 
-  public static teeOffers: BlockchainId[] = [];
+  static teeOffers: BlockchainId[] = [];
 
-  public static get address(): string {
+  static get address(): string {
     return Superpro.address;
   }
 
-  public static async packHardwareInfo(hw: HardwareInfo): Promise<HardwareInfo> {
+  static async packHardwareInfo(hw: HardwareInfo): Promise<HardwareInfo> {
     const denominator = await TeeOffers.getDenominator();
     hw.slotInfo.cpuCores *= denominator;
     hw.slotInfo.gpuCores *= denominator;
@@ -47,13 +61,13 @@ class TeeOffers {
     return hw;
   }
 
-  public static async unpackHardwareInfo(hw: HardwareInfo): Promise<HardwareInfo> {
+  static async unpackHardwareInfo(hw: HardwareInfo): Promise<HardwareInfo> {
     const coresDenominator = await TeeOffers.getDenominator();
     hw.slotInfo = unpackSlotInfo(hw.slotInfo, coresDenominator);
     return hw;
   }
 
-  public static async getDenominator(): Promise<number> {
+  static async getDenominator(): Promise<number> {
     if (!this.coresDenominator) {
       const contract = BlockchainConnector.getInstance().getContract();
       this.coresDenominator = Number(await contract.methods.getCpuDenominator().call());
@@ -65,22 +79,22 @@ class TeeOffers {
   /**
    * Function for fetching list of all TEE offers addresses
    */
-  public static async getAll(): Promise<BlockchainId[]> {
+  static async getAll(): Promise<BlockchainId[]> {
     const contract = BlockchainConnector.getInstance().getContract();
 
     const count = Number(await contract.methods.getOffersTotalCount().call());
 
-    const teeOfffersSet = new Set(this.teeOffers);
+    const teeOffersSet = new Set(this.teeOffers);
 
-    for (let offerId = teeOfffersSet.size + 1; offerId <= count; ++offerId) {
+    for (let offerId = teeOffersSet.size + 1; offerId <= count; ++offerId) {
       const offerType = (
         await contract.methods.getOfferType(offerId).call()
       ).toString() as OfferType;
       if (offerType === OfferType.TeeOffer) {
-        teeOfffersSet.add(offerId.toString());
+        teeOffersSet.add(offerId.toString());
       }
     }
-    this.teeOffers = Array.from(teeOfffersSet);
+    this.teeOffers = Array.from(teeOffersSet);
 
     return this.teeOffers;
   }
@@ -91,7 +105,7 @@ class TeeOffers {
    * @param teeOfferInfo - data of new TEE offer
    * @param transactionOptions - object what contains alternative action account or gas limit (optional)
    */
-  public static async create(
+  static async create(
     providerAuthorityAccount: string,
     teeOfferInfo: TeeOfferInfo,
     // slotInfo: SlotInfo,
@@ -119,7 +133,7 @@ class TeeOffers {
     );
   }
 
-  public static async getByExternalId(
+  static async getByExternalId(
     filter: {
       externalId: string;
       creator?: string;
@@ -136,21 +150,21 @@ class TeeOffers {
 
   /**
    * Function for fetching TEE offer id by TEE deviceId
-   * @param deviceId - unque TEE device id (unparsed, from blockchain)
+   * @param deviceId - unique TEE device id (unparsed, from blockchain)
    * @returns TEE offer id
    */
-  public static getByDeviceId(deviceId: string): Promise<BlockchainId> {
+  static getByDeviceId(deviceId: string): Promise<BlockchainId> {
     const contract = BlockchainConnector.getInstance().getContract();
 
-    const fromattedDeviceId = packDeviceId(deviceId);
+    const formattedDeviceId = packDeviceId(deviceId);
 
-    return contract.methods.getTeeOfferByDeviceId(fromattedDeviceId).call();
+    return contract.methods.getTeeOfferByDeviceId(formattedDeviceId).call();
   }
 
   /**
    * Function for fetching total count of tee offer slots
    */
-  public static async getSlotsCount(): Promise<number> {
+  static async getSlotsCount(): Promise<number> {
     const contract = BlockchainConnector.getInstance().getContract();
 
     return Number(await contract.methods.getTeeOffersSlotsCountTotal().call());
@@ -160,7 +174,7 @@ class TeeOffers {
    * Function for fetching whether tee offer option exists or not
    * @param optionId - Option ID
    */
-  public static isOptionExists(optionId: BlockchainId): Promise<boolean> {
+  static isOptionExists(optionId: BlockchainId): Promise<boolean> {
     const contract = BlockchainConnector.getInstance().getContract();
 
     return contract.methods.isOptionExists(optionId).call();
@@ -169,7 +183,7 @@ class TeeOffers {
   /**
    * Function for fetching total count of options
    */
-  public static async getOptionsCount(): Promise<number> {
+  static async getOptionsCount(): Promise<number> {
     const contract = BlockchainConnector.getInstance().getContract();
 
     return Number(await contract.methods.getOptionsCount().call());
@@ -179,7 +193,7 @@ class TeeOffers {
    * Function for fetching tee offer option by id
    * @param optionId - Option ID
    */
-  public static async getOptionById(optionId: BlockchainId): Promise<TeeOfferOption> {
+  static async getOptionById(optionId: BlockchainId): Promise<TeeOfferOption> {
     const contract = BlockchainConnector.getInstance().getContract();
 
     return await contract.methods
@@ -188,7 +202,7 @@ class TeeOffers {
       .then((option) => convertTeeOfferOptionFromRaw(option as TeeOfferOptionRaw));
   }
 
-  public static async getSlotByExternalId(
+  static async getSlotByExternalId(
     filter: { externalId: string; creator?: string; offerId?: BlockchainId },
     fromBlock?: number | string,
     toBlock?: number | string,
@@ -200,7 +214,7 @@ class TeeOffers {
     return founded as TeeSlotAddedEvent;
   }
 
-  public static async getOptionByExternalId(
+  static async getOptionByExternalId(
     filter: {
       externalId: string;
       creator?: string;
@@ -222,12 +236,10 @@ class TeeOffers {
    * @param callback - function for processing created order
    * @returns unsubscribe - unsubscribe function from event
    */
-  public static onSlotAdded(callback: onTeeSlotAddedCallback, creator?: string): () => void {
-    const contract = BlockchainEventsListener.getInstance().getContract();
+  static onSlotAdded(callback: onTeeSlotAddedCallback, creator?: string): () => void {
+    const listener = BlockchainEventsListener.getInstance();
     const logger = this.logger.child({ method: 'onTeeSlotAdded' });
-
-    const subscription = contract.events.TeeSlotAdded();
-    subscription.on('data', (event: EventLog): void => {
+    const onData: WssSubscriptionOnDataFn = (event: EventLog): void => {
       const parsedEvent = cleanWeb3Data(event.returnValues);
       if (creator && parsedEvent.creator != creator) {
         return;
@@ -242,12 +254,15 @@ class TeeOffers {
           hash: <string>event.blockHash,
         },
       );
-    });
-    subscription.on('error', (error: Error) => {
+    };
+    const onError: WssSubscriptionOnErrorFn = (error: Error) => {
       logger.warn(error);
+    };
+    return listener.subscribeEvent({
+      onError,
+      onData,
+      event: 'TeeSlotAdded',
     });
-
-    return () => subscription.unsubscribe();
   }
 
   /**
@@ -255,12 +270,10 @@ class TeeOffers {
    * @param callback - function for processing created order
    * @returns unsubscribe - unsubscribe function from event
    */
-  public static onSlotUpdated(callback: onTeeSlotUpdatedCallback): () => void {
-    const contract = BlockchainEventsListener.getInstance().getContract();
+  static onSlotUpdated(callback: onTeeSlotUpdatedCallback): () => void {
+    const listener = BlockchainEventsListener.getInstance();
     const logger = this.logger.child({ method: 'onTeeSlotUpdated' });
-
-    const subscription = contract.events.TeeSlotUpdated();
-    subscription.on('data', (event: EventLog): void => {
+    const onData: WssSubscriptionOnDataFn = (event: EventLog): void => {
       const parsedEvent = cleanWeb3Data(event.returnValues);
       callback(
         <BlockchainId>parsedEvent.offerId,
@@ -270,12 +283,15 @@ class TeeOffers {
           hash: <string>event.blockHash,
         },
       );
-    });
-    subscription.on('error', (error: Error) => {
+    };
+    const onError: WssSubscriptionOnErrorFn = (error: Error) => {
       logger.warn(error);
+    };
+    return listener.subscribeEvent({
+      onError,
+      onData,
+      event: 'TeeSlotUpdated',
     });
-
-    return () => subscription.unsubscribe();
   }
 
   /**
@@ -283,12 +299,10 @@ class TeeOffers {
    * @param callback - function for processing created order
    * @returns unsubscribe - unsubscribe function from event
    */
-  public static onSlotDeleted(callback: onTeeSlotDeletedCallback): () => void {
-    const contract = BlockchainEventsListener.getInstance().getContract();
+  static onSlotDeleted(callback: onTeeSlotDeletedCallback): () => void {
+    const listener = BlockchainEventsListener.getInstance();
     const logger = this.logger.child({ method: 'onTeeSlotDeleted' });
-
-    const subscription = contract.events.TeeSlotDeleted();
-    subscription.on('data', (event: EventLog): void => {
+    const onData: WssSubscriptionOnDataFn = (event: EventLog): void => {
       const parsedEvent = cleanWeb3Data(event.returnValues);
       callback(
         <BlockchainId>parsedEvent.offerId,
@@ -298,12 +312,15 @@ class TeeOffers {
           hash: <string>event.blockHash,
         },
       );
-    });
-    subscription.on('error', (error: Error) => {
+    };
+    const onError: WssSubscriptionOnErrorFn = (error: Error) => {
       logger.warn(error);
+    };
+    return listener.subscribeEvent({
+      onError,
+      onData,
+      event: 'TeeSlotDeleted',
     });
-
-    return () => subscription.unsubscribe();
   }
 
   /**
@@ -312,12 +329,10 @@ class TeeOffers {
    * @param callback - function for processing created order
    * @returns unsubscribe - unsubscribe function from event
    */
-  public static onOptionAdded(callback: onTeeOptionAddedCallback, creator?: string): () => void {
-    const contract = BlockchainEventsListener.getInstance().getContract();
+  static onOptionAdded(callback: onTeeOptionAddedCallback, creator?: string): () => void {
+    const listener = BlockchainEventsListener.getInstance();
     const logger = this.logger.child({ method: 'onTeeOptionAddedCallback' });
-
-    const subscription = contract.events.OptionAdded();
-    subscription.on('data', (event: EventLog): void => {
+    const onData: WssSubscriptionOnDataFn = (event: EventLog): void => {
       const parsedEvent = cleanWeb3Data(event.returnValues);
       if (creator && parsedEvent.creator != creator) {
         return;
@@ -332,12 +347,15 @@ class TeeOffers {
           hash: <string>event.blockHash,
         },
       );
-    });
-    subscription.on('error', (error: Error): void => {
+    };
+    const onError: WssSubscriptionOnErrorFn = (error: Error) => {
       logger.warn(error);
+    };
+    return listener.subscribeEvent({
+      onError,
+      onData,
+      event: 'OptionAdded',
     });
-
-    return () => subscription.unsubscribe();
   }
 
   /**
@@ -346,15 +364,13 @@ class TeeOffers {
    * @param callback - function for processing created order
    * @returns unsubscribe - unsubscribe function from event
    */
-  public static onOptionUpdated(
+  static onOptionUpdated(
     callback: onTeeOptionUpdatedCallback,
     teeOfferId?: BlockchainId,
   ): () => void {
-    const contract = BlockchainEventsListener.getInstance().getContract();
+    const listener = BlockchainEventsListener.getInstance();
     const logger = this.logger.child({ method: 'onTeeOptionUpdatedCallback' });
-
-    const subscription = contract.events.OptionUpdated();
-    subscription.on('data', (event: EventLog): void => {
+    const onData: WssSubscriptionOnDataFn = (event: EventLog): void => {
       const parsedEvent = cleanWeb3Data(event.returnValues);
       if (teeOfferId && event.returnValues.teeOfferId != convertBigIntToString(teeOfferId)) {
         return;
@@ -367,12 +383,15 @@ class TeeOffers {
           hash: <string>event.blockHash,
         },
       );
-    });
-    subscription.on('error', (error: Error) => {
+    };
+    const onError: WssSubscriptionOnErrorFn = (error: Error) => {
       logger.warn(error);
+    };
+    return listener.subscribeEvent({
+      onError,
+      onData,
+      event: 'OptionUpdated',
     });
-
-    return () => subscription.unsubscribe();
   }
 
   /**
@@ -381,15 +400,13 @@ class TeeOffers {
    * @param callback - function for processing created order
    * @returns unsubscribe - unsubscribe function from event
    */
-  public static onOptionDeleted(
+  static onOptionDeleted(
     callback: onTeeOptionDeletedCallback,
     teeOfferId?: BlockchainId,
   ): () => void {
-    const contract = BlockchainEventsListener.getInstance().getContract();
+    const listener = BlockchainEventsListener.getInstance();
     const logger = this.logger.child({ method: 'onTeeOptionDeletedCallback' });
-
-    const subscription = contract.events.OptionDeleted();
-    subscription.on('data', (event: EventLog): void => {
+    const onData: WssSubscriptionOnDataFn = (event: EventLog): void => {
       const parsedEvent = cleanWeb3Data(event.returnValues);
       if (teeOfferId && parsedEvent.teeOfferId != convertBigIntToString(teeOfferId)) {
         return;
@@ -402,12 +419,15 @@ class TeeOffers {
           hash: <string>event.blockHash,
         },
       );
-    });
-    subscription.on('error', (error: Error) => {
+    };
+    const onError: WssSubscriptionOnErrorFn = (error: Error) => {
       logger.warn(error);
+    };
+    return listener.subscribeEvent({
+      onError,
+      onData,
+      event: 'OptionDeleted',
     });
-
-    return () => subscription.unsubscribe();
   }
 
   /**
@@ -415,12 +435,10 @@ class TeeOffers {
    * @param callback - function for processing created TEE offer
    * @returns unsubscribe - unsubscribe function from event
    */
-  public static onCreated(callback: onTeeOfferCreatedCallback): () => void {
-    const contract = BlockchainEventsListener.getInstance().getContract();
+  static onCreated(callback: onTeeOfferCreatedCallback): () => void {
+    const listener = BlockchainEventsListener.getInstance();
     const logger = this.logger.child({ method: 'onTeeOfferCreated' });
-
-    const subscription = contract.events.TeeOfferCreated();
-    subscription.on('data', (event: EventLog): void => {
+    const onData: WssSubscriptionOnDataFn = (event: EventLog): void => {
       const parsedEvent = cleanWeb3Data(event.returnValues);
       callback(
         <BlockchainId>parsedEvent.offerId,
@@ -431,20 +449,21 @@ class TeeOffers {
           hash: <string>event.blockHash,
         },
       );
-    });
-    subscription.on('error', (error: Error) => {
+    };
+    const onError: WssSubscriptionOnErrorFn = (error: Error) => {
       logger.warn(error);
+    };
+    return listener.subscribeEvent({
+      onError,
+      onData,
+      event: 'TeeOfferCreated',
     });
-
-    return () => subscription.unsubscribe();
   }
 
-  public static onViolationRateChanged(callback: onTeeViolationRateChangedCallback): () => void {
-    const contract = BlockchainEventsListener.getInstance().getContract();
+  static onViolationRateChanged(callback: onTeeViolationRateChangedCallback): () => void {
+    const listener = BlockchainEventsListener.getInstance();
     const logger = this.logger.child({ method: 'onTeeOfferViolationRateChanged' });
-
-    const subscription = contract.events.TeeOfferViolationRateChanged();
-    subscription.on('data', (event: EventLog): void => {
+    const onData: WssSubscriptionOnDataFn = (event: EventLog): void => {
       const parsedEvent = cleanWeb3Data(event.returnValues);
       callback(
         <BlockchainId>parsedEvent.offerId,
@@ -455,12 +474,50 @@ class TeeOffers {
           hash: <string>event.blockHash,
         },
       );
-    });
-    subscription.on('error', (error: Error) => {
+    };
+    const onError: WssSubscriptionOnErrorFn = (error: Error) => {
       logger.warn(error);
+    };
+    return listener.subscribeEvent({
+      onError,
+      onData,
+      event: 'TeeOfferViolationRateChanged',
     });
+  }
 
-    return () => subscription.unsubscribe();
+  static getMostRecentlyActive(
+    size = TEE_OFFER_SELECT_FRESH_SIZE,
+    force = false,
+  ): Promise<BlockchainId[]> {
+    const key = `${this.getMostRecentlyActive.name}:${size}`;
+    const ttl = 5 * 60;
+
+    return this.cache.wrap<BlockchainId[]>(
+      key,
+      async () => {
+        const tcbsCount = await Consensus.getTcbsCount();
+        const result = new Set<BlockchainId>();
+
+        for (let tcbId = tcbsCount; tcbId > Math.max(0, tcbsCount - size); tcbId--) {
+          const tcb = await new TCB(tcbId.toString()).get();
+          if (!tcb || !tcb.timeAdded) {
+            continue;
+          }
+          if (inactivePredicate(tcb.timeAdded * 1000)) {
+            break; // there is no need to continue search, timeAdded of next tcbs will be older
+          }
+          const offerId = (await new TCB(tcbId.toString()).getUtilityData()).teeOfferId;
+          const isVerified = await new TeeOffer(offerId).isTeeOfferVerifying();
+
+          if (isVerified) {
+            result.add(offerId);
+          }
+        }
+
+        return [...result];
+      },
+      { ttl, force },
+    );
   }
 }
 

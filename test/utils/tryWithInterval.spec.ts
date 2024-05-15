@@ -1,4 +1,4 @@
-import { tryWithInterval } from '../../src/utils/helpers';
+import { tryWithInterval } from '../../src/utils/helpers/index.js';
 
 describe('tryWithInterval', () => {
   let retryInterval: number;

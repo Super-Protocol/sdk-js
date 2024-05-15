@@ -1,8 +1,15 @@
-import { CryptoAlgorithm, ECIESEncryption, Encryption } from '@super-protocol/dto-js';
-import crypto from 'crypto';
+import {
+  CryptoAlgorithm,
+  ECIESEncryption,
+  Encoding,
+  Encryption,
+  EncryptionKey,
+} from '@super-protocol/dto-js';
+import crypto, { generateKeyPair } from 'crypto';
+import { AsymmetricKeys } from '../types.js';
 
 class ECIES {
-  public static async encrypt(content: string, encryption: Encryption): Promise<ECIESEncryption> {
+  static encrypt(content: string, encryption: Encryption): ECIESEncryption {
     if (!encryption.key) throw Error('Encryption key is not provided');
 
     const ecdh = crypto.createECDH('secp256k1');
@@ -14,8 +21,8 @@ class ECIES {
 
     const hash = crypto.createHash('sha512').update(pk).digest();
 
-    const cipherKey = hash.slice(0, 32),
-      macKey = hash.slice(32);
+    const cipherKey = hash.subarray(0, 32),
+      macKey = hash.subarray(32);
     const iv = crypto.randomBytes(16);
 
     const cipher = crypto.createCipheriv('aes-256-cbc', cipherKey, iv);
@@ -34,7 +41,7 @@ class ECIES {
     };
   }
 
-  public static async decrypt(encryption: ECIESEncryption): Promise<string> {
+  static decrypt(encryption: ECIESEncryption): string {
     if (!encryption.key) throw Error('Decryption key is not provided');
 
     const iv = Buffer.from(encryption.iv, encryption.encoding),
@@ -49,8 +56,8 @@ class ECIES {
 
     const hash = crypto.createHash('sha512').update(pk).digest();
 
-    const cipherKey = hash.slice(0, 32),
-      macKey = hash.slice(32);
+    const cipherKey = hash.subarray(0, 32),
+      macKey = hash.subarray(32);
     const m = crypto
       .createHmac('sha256', macKey)
       .update(Buffer.concat([iv, epk, ct]))
@@ -64,6 +71,45 @@ class ECIES {
     const result = Buffer.concat([pt, decipher.final()]);
 
     return result.toString('binary');
+  }
+
+  public static getPublicFromPrivate(privateKey: Pick<EncryptionKey, 'key' | 'encoding'>): string {
+    const ecdh = crypto.createECDH('secp256k1');
+    ecdh.setPrivateKey(Buffer.from(privateKey.key, privateKey.encoding));
+
+    return ecdh.getPublicKey(privateKey.encoding);
+  }
+
+  static getPublicKeyEncryption = (encryption: EncryptionKey): EncryptionKey => {
+    if (encryption.algo !== CryptoAlgorithm.ECIES) {
+      throw Error('Only ECIES result encryption is supported');
+    }
+    if (encryption.encoding !== Encoding.base64) {
+      throw new Error('Only base64 result encryption is supported');
+    }
+    if (!encryption.key) {
+      throw new Error('Encryption private key is not provided');
+    }
+
+    return {
+      algo: encryption.algo,
+      encoding: encryption.encoding,
+      key: this.getPublicFromPrivate(encryption),
+    };
+  };
+
+  static generateKeys(namedCurve = 'secp256k1'): Promise<AsymmetricKeys> {
+    return new Promise<AsymmetricKeys>((resolve, reject) => {
+      generateKeyPair('ec', { namedCurve }, (err, publicKey, privateKey) => {
+        if (err) {
+          return reject(err);
+        }
+        resolve({
+          publicKey: publicKey.export({ type: 'spki', format: 'der' }),
+          privateKey: privateKey.export({ type: 'pkcs8', format: 'der' }),
+        });
+      });
+    });
   }
 }
 

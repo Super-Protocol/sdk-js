@@ -1,3 +1,13 @@
+declare module 'pkijs' {
+  interface AbstractCryptoEngine {
+    generateKey(
+      algorithm: 'Ed25519',
+      extractable: boolean,
+      keyUsages: ReadonlyArray<'sign' | 'verify'>,
+    ): Promise<CryptoKeyPair>;
+  }
+}
+
 export type TeeDataBlockType = {
   format: 'lzma' | 'gzip' | 'raw';
   userData: {

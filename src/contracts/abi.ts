@@ -1642,6 +1642,19 @@ export const abi = [
         "type": "function"
     },
     {
+        "inputs": [],
+        "name": "getTcbsCount",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
         "inputs": [
             {
                 "internalType": "uint256[]",
@@ -1797,7 +1810,7 @@ export const abi = [
                 "type": "uint256"
             }
         ],
-        "name": "isTeeOfferVerifying",
+        "name": "isTeeOfferVerified",
         "outputs": [
             {
                 "internalType": "bool",
@@ -7829,25 +7842,6 @@ export const abi = [
     {
         "inputs": [
             {
-                "internalType": "uint256",
-                "name": "teeOfferId",
-                "type": "uint256"
-            }
-        ],
-        "name": "getLastTeeBenchmark",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
                 "internalType": "bytes32",
                 "name": "deviceId",
                 "type": "bytes32"
@@ -9677,7 +9671,7 @@ export const abi = [
                 "type": "uint256"
             }
         ],
-        "name": "isTeeOfferVerifying",
+        "name": "isTeeOfferVerified",
         "outputs": [
             {
                 "internalType": "bool",

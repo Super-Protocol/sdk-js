@@ -65,6 +65,19 @@ class Offer {
   }
 
   /**
+   * Function for fetching offer status from blockchain
+   */
+  @incrementMethodCall()
+  public async isBaseImage(): Promise<boolean> {
+    const info = this.offerInfo ?? (await this.getInfo());
+    if (info.offerType !== OfferType.Solution || !Boolean(info.resultResource)) {
+      return false;
+    }
+    const isRestrictedBySolution = await this.isRestrictedByOfferType(OfferType.Solution);
+    return !isRestrictedBySolution;
+  }
+
+  /**
    * Updates name in offer info
    * @param name - new name
    * @param transactionOptions - object what contains alternative action account or gas limit (optional)

@@ -15,6 +15,9 @@ import ECIES from './nodejs/ECIES.js';
 import RSAHybrid from './nodejs/RSA-Hybrid.js';
 import NativeCrypto from './nodejs/NativeCrypto.js';
 import { Readable } from 'stream';
+import crypto, { BinaryToTextEncoding } from 'crypto';
+import { HashAlgorithm } from '@super-protocol/dto-js';
+import { CryptoKeyType } from './types.js';
 
 class Crypto {
   /**
@@ -52,7 +55,7 @@ class Crypto {
    * @param key – key that will be used to encrypt data
    * @returns {Promise<Encryption>} - encryption info
    */
-  public static async encryptStream(
+  static async encryptStream(
     inputStream: fs.ReadStream,
     outputStream: fs.WriteStream,
     encryption: Encryption,
@@ -99,7 +102,7 @@ class Crypto {
    * @param outputStream - stream where the decrypted data will be written
    * @param encryption – encryption info
    */
-  public static async decryptStream(
+  static async decryptStream(
     inputStream: fs.ReadStream,
     outputStream: fs.WriteStream,
     encryption: Encryption,
@@ -126,34 +129,90 @@ class Crypto {
    * @param hashInfo - information about hash algorithm and encoding
    * @returns Hash structure with hash itself hash algorithm and encoding
    */
-  public static async createHash(content: Buffer, hashInfo: Omit<Hash, 'hash'>): Promise<Hash>;
+  static async createHash(content: Buffer, hashInfo: Omit<Hash, 'hash'>): Promise<Hash>;
   /**
    * Create hash from stream
    * @param inputStream - readable stream
    * @param hashInfo - information about hash algorithm and encoding
    * @returns Hash structure with hash itself hash algorithm and encoding
    */
-  public static async createHash(
-    inputStream: Readable,
-    hashInfo: Omit<Hash, 'hash'>,
-  ): Promise<Hash>;
-  public static async createHash(
-    param1: Buffer | Readable,
-    hashInfo: Omit<Hash, 'hash'>,
-  ): Promise<Hash> {
+  static async createHash(inputStream: Readable, hashInfo: Omit<Hash, 'hash'>): Promise<Hash>;
+  static async createHash(param1: Buffer | Readable, hashInfo: Omit<Hash, 'hash'>): Promise<Hash> {
     const { algo, encoding } = hashInfo;
     return Buffer.isBuffer(param1)
       ? NativeCrypto.createHashFromBuffer(param1, algo, encoding)
       : await NativeCrypto.createHashFromStream(param1, algo, encoding);
   }
 
-  public static getPublicKey(privateKey: EncryptionKey): EncryptionKey {
+  static getPublicKey(privateKey: EncryptionKey): EncryptionKey {
     switch (privateKey.algo) {
       case CryptoAlgorithm.ECIES:
         return ECIES.getPublicKeyEncryption(privateKey);
       default:
         throw Error(`${privateKey.algo} algorithm not supported`);
     }
+  }
+
+  static async generateKeys<T extends CryptoAlgorithm>(algo: T): Promise<CryptoKeyType<T>> {
+    switch (algo) {
+      case CryptoAlgorithm.ECIES:
+        return (await ECIES.generateKeys()) as CryptoKeyType<T>;
+      case CryptoAlgorithm.AES:
+        return AES.generateKeys() as CryptoKeyType<T>;
+      default:
+        throw Error(`${algo} algorithm not supported`);
+    }
+  }
+
+  static sign(params: {
+    data: Buffer | string;
+    privateKey: string | Buffer;
+    outputFormat?: BinaryToTextEncoding;
+    algo?: HashAlgorithm;
+  }): string {
+    const { data, outputFormat = 'base64', algo = HashAlgorithm.SHA256 } = params;
+
+    if (!params.privateKey) {
+      throw new Error('sign failed, private key is not assigned');
+    }
+
+    const privateKey = crypto.createPrivateKey({
+      key: params.privateKey,
+      format: 'der',
+      type: 'pkcs8',
+    });
+
+    const signer = crypto.createSign(algo);
+    signer.write(data);
+    signer.end();
+
+    return signer.sign(privateKey, outputFormat);
+  }
+
+  static verify(params: {
+    data: Buffer | string;
+    publicKey: string | Buffer;
+    signatureFormat?: BinaryToTextEncoding;
+    algo?: HashAlgorithm;
+    signature: string;
+  }): boolean {
+    const { data, signature, signatureFormat = 'base64', algo = HashAlgorithm.SHA256 } = params;
+
+    if (!params.publicKey) {
+      throw new Error('verify failed, public key is not assigned');
+    }
+
+    const publicKey = crypto.createPublicKey({
+      key: params.publicKey,
+      format: 'der',
+      type: 'spki',
+    });
+
+    const verifier = crypto.createVerify(algo);
+    verifier.write(data);
+    verifier.end();
+
+    return verifier.verify(publicKey, signature, signatureFormat);
   }
 }
 

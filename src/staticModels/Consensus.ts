@@ -40,16 +40,21 @@ class Consensus {
    * @returns list of tcb ids
    */
   public static async getAllTcbs(): Promise<BlockchainId[]> {
-    const contract = BlockchainConnector.getInstance().getContract();
     const tcbSet = new Set(this.tcbIds ?? []);
 
-    const tcbsCount = Number(await contract.methods.getTcbsCount().call());
+    const tcbsCount = await Consensus.getTcbsCount();
     for (let tcbId = tcbSet.size + 1; tcbId <= tcbsCount; tcbId++) {
       tcbSet.add(tcbId.toString());
     }
     this.tcbIds = Array.from(tcbSet);
 
     return this.tcbIds;
+  }
+
+  public static async getTcbsCount(): Promise<number> {
+    const contract = BlockchainConnector.getInstance().getContract();
+
+    return Number(await contract.methods.getTcbsCount().call());
   }
 
   public static async getEpochTime(

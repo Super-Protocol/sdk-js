@@ -1,6 +1,6 @@
 {
   "name": "@super-protocol/sdk-js",
-  "version": "2.1.10-beta.1",
+  "version": "2.1.11-beta.0",
   "main": "dist/cjs/index.js",
   "module": "dist/mjs/index.js",
   "exports": {

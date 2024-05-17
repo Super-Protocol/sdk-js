@@ -85,8 +85,8 @@ class OfferResources {
     requestOfferId: BlockchainId,
     requestOfferVersion: number = 0,
     resultInfo: string,
-    resultInfoSignatureBySecretKey: string,
-    signedTime: string,
+    resultInfoSignatureBySecretKey: string, // hex
+    signedTime: number,
     transactionOptions?: TransactionOptions,
   ): Promise<void> {
     const contract = BlockchainConnector.getInstance().getContract();

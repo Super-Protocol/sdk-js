@@ -4,6 +4,8 @@ import {
   BlockchainId,
   TransactionOptions,
   LoaderSecretPublicKey,
+  PublicKey,
+  Signature,
 } from '../types/index.js';
 import { cleanWeb3Data } from '../utils/helper.js';
 import TxManager from '../utils/TxManager.js';
@@ -28,8 +30,8 @@ class LoaderSecretPublicKeys {
 
   public static async set(
     teeOfferId: BlockchainId,
-    signature: string,
-    secretPublicKey: string,
+    signature: Signature,
+    secretPublicKey: PublicKey,
     signedTime: number,
     transactionOptions?: TransactionOptions,
   ): Promise<void> {
@@ -50,7 +52,7 @@ class LoaderSecretPublicKeys {
       const parsedEvent = cleanWeb3Data(event.returnValues);
       callback(
         <BlockchainId>parsedEvent.teeOfferId,
-        <string>parsedEvent.secretPublicKey,
+        <PublicKey>cleanWeb3Data(parsedEvent.secretPublicKey),
         <BlockInfo>{
           index: Number(event.blockNumber),
           hash: <string>event.blockHash,
@@ -70,7 +72,7 @@ class LoaderSecretPublicKeys {
 
 export type onLoaderSecretPublicKeySessionUpdatedCallback = (
   teeOfferId: BlockchainId,
-  secretPublicKey: string,
+  secretPublicKey: PublicKey,
   block?: BlockInfo,
 ) => void;
 

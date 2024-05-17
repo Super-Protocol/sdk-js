@@ -15,14 +15,14 @@ export type Signature = {
 };
 
 export type LoaderSecretPublicKey = {
-  secretPublicKey: string;
-  signature: string;
+  secretPublicKey: PublicKey;
+  signature: Signature;
   signedTime: number;
   timestamp?: number;
 };
 
 export type LoaderSession = {
-  sessionPublicKey: string;
+  sessionPublicKey: PublicKey;
   signature: string;
   timestamp?: number;
   signedTime: number;
@@ -44,7 +44,7 @@ export type OfferResource = {
   offerVersion?: number;
   signedTime: number;
   timestamp?: number;
-  signature: string;
+  signature: Signature;
   signedEncryptedData: string;
 };
 

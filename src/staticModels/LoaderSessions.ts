@@ -4,6 +4,7 @@ import {
   TransactionOptions,
   LoaderSession,
   SecretRequest,
+  PublicKey,
   BlockInfo,
 } from '../types/index.js';
 import { cleanWeb3Data } from '../utils/helper.js';
@@ -41,7 +42,7 @@ class LoaderSessions {
 
   public static async set(
     teeOfferIssuerId: BlockchainId,
-    sessionPublicKey: string,
+    sessionPublicKey: PublicKey,
     signature: string,
     signedTime: number,
     transactionOptions?: TransactionOptions,
@@ -57,7 +58,7 @@ class LoaderSessions {
   public static async setSessionAndRequestSecret(
     request: SecretRequest,
     teeOfferIssuerId: BlockchainId,
-    sessionPublicKey: string,
+    sessionPublicKey: PublicKey,
     signature: string,
     signedTime: number,
     transactionOptions?: TransactionOptions,
@@ -96,7 +97,7 @@ class LoaderSessions {
       callback(
         <BlockchainId>parsedEvent.loader,
         <BlockchainId>parsedEvent.keeperOfferId,
-        <string>parsedEvent.publicSessionsKey,
+        <PublicKey>cleanWeb3Data(parsedEvent.publicSessionsKey),
         <BlockInfo>{
           index: Number(event.blockNumber),
           hash: <string>event.blockHash,
@@ -117,7 +118,7 @@ class LoaderSessions {
 export type onLoaderSessionKeyUpdatedCallback = (
   loader: BlockchainId,
   teeOfferkeeperId: BlockchainId,
-  publicSessionsKey: string,
+  publicSessionsKey: PublicKey,
   block?: BlockInfo,
 ) => void;
 

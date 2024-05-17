@@ -40,7 +40,7 @@ class SecretRequests {
       );
   }
 
-  public static async add(
+  public static async set(
     request: SecretRequest,
     transactionOptions?: TransactionOptions,
   ): Promise<void> {
@@ -50,7 +50,7 @@ class SecretRequests {
     request.offerVersion ?? 0;
     request.timestamp ?? 0;
 
-    await TxManager.execute(contract.methods.addSecretRequest(request), transactionOptions);
+    await TxManager.execute(contract.methods.setSecretRequest(request), transactionOptions);
   }
 
   public static async clear(

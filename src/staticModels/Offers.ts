@@ -248,10 +248,11 @@ class Offers implements StaticModel {
     const listener = BlockchainEventsListener.getInstance();
     const logger = this.logger.child({ method: 'onOfferEnabled' });
     const onData: WssSubscriptionOnDataFn = (event: EventLog): void => {
+      const parsedEvent = cleanWeb3Data(event.returnValues);
       callback(
-        <string>event.returnValues.providerAuth,
-        <BlockchainId>event.returnValues.offerId,
-        <OfferType>event.returnValues.offerType,
+        <string>parsedEvent.providerAuth,
+        <BlockchainId>parsedEvent.offerId,
+        <OfferType>parsedEvent.offerType,
         <BlockInfo>{
           index: Number(event.blockNumber),
           hash: <string>event.blockHash,

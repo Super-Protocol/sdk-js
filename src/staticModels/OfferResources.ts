@@ -92,8 +92,6 @@ class OfferResources {
     const contract = BlockchainConnector.getInstance().getContract();
     checkIfActionAccountInitialized(transactionOptions);
 
-    // TODO: resultInfoSignatureBySecretKey
-
     await TxManager.execute(
       contract.methods.createResourceOrder(
         requestOfferId,

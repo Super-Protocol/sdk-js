@@ -2,8 +2,8 @@
 import { CryptoAlgorithm } from '@super-protocol/dto-js';
 
 export type AsymmetricKeys = {
-  publicKey: Buffer;
-  privateKey: Buffer;
+  publicKey: JsonWebKey;
+  privateKey: JsonWebKey;
 };
 
 export type SymmetricKey = Buffer;

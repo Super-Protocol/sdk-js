@@ -166,7 +166,7 @@ class Crypto {
 
   static sign(params: {
     data: Buffer | string;
-    privateKey: string | Buffer;
+    privateKey: JsonWebKey;
     outputFormat?: BinaryToTextEncoding;
     algo?: HashAlgorithm;
   }): string {
@@ -177,9 +177,8 @@ class Crypto {
     }
 
     const privateKey = crypto.createPrivateKey({
-      key: params.privateKey,
-      format: 'der',
-      type: 'pkcs8',
+      key: params.privateKey as any,
+      format: 'jwk',
     });
 
     const signer = crypto.createSign(algo);
@@ -191,7 +190,7 @@ class Crypto {
 
   static verify(params: {
     data: Buffer | string;
-    publicKey: string | Buffer;
+    publicKey: JsonWebKey;
     signatureFormat?: BinaryToTextEncoding;
     algo?: HashAlgorithm;
     signature: string;
@@ -203,9 +202,8 @@ class Crypto {
     }
 
     const publicKey = crypto.createPublicKey({
-      key: params.publicKey,
-      format: 'der',
-      type: 'spki',
+      key: params.publicKey as any,
+      format: 'jwk',
     });
 
     const verifier = crypto.createVerify(algo);

@@ -1,5 +1,19 @@
 import { BlockchainId, TokenAmount } from './Web3.js';
 
+export type PublicKey = {
+  kty: string;
+  crv: string;
+  pointX: Uint8Array; // bytes32
+  pointY: Uint8Array; // bytes32
+};
+
+export type Signature = {
+  der: string;
+  r: Uint8Array; // bytes32
+  s: Uint8Array; // bytes32
+  v: number;
+};
+
 export type LoaderSecretPublicKey = {
   secretPublicKey: string;
   signature: string;

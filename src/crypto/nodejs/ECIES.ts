@@ -104,10 +104,7 @@ class ECIES {
         if (err) {
           return reject(err);
         }
-        resolve({
-          publicKey: publicKey.export({ format: 'jwk' }),
-          privateKey: privateKey.export({ format: 'jwk' }),
-        });
+        resolve({ publicKey, privateKey });
       });
     });
   }

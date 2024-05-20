@@ -4,6 +4,7 @@ import { PublicKey, Signature } from './../types/index.js';
 import { Signature as SigHelper } from './../tee/helpers.js';
 import { CryptoKeyType } from '../crypto/types.js';
 import { ethers } from 'ethers';
+import { KeyObject } from 'crypto';
 
 type SignedData = {
   signedTime: number; // timestamp in sec
@@ -11,11 +12,13 @@ type SignedData = {
 };
 
 export class CryptoKeysTransformer {
-  static getStructuredPrivateKeyFromJwk(privateKeyJwk: JsonWebKey): string {
+  static getStructuredPrivateKeyFromKeyObj(privateKeyObj: KeyObject): string {
+    const privateKeyJwk = privateKeyObj.export({ format: 'jwk' });
     return Buffer.from(privateKeyJwk.d!, 'base64url').toString('hex');
   }
 
-  static getStructuredPublicKeyFromJwk(publicKeyJwk: JsonWebKey): PublicKey {
+  static getStructuredPublicKeyFromKeyObj(publicKeyObj: KeyObject): PublicKey {
+    const publicKeyJwk = publicKeyObj.export({ format: 'jwk' });
     return {
       kty: publicKeyJwk.kty!,
       crv: publicKeyJwk.crv!,

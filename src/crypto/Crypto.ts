@@ -15,7 +15,7 @@ import ECIES from './nodejs/ECIES.js';
 import RSAHybrid from './nodejs/RSA-Hybrid.js';
 import NativeCrypto from './nodejs/NativeCrypto.js';
 import { Readable } from 'stream';
-import crypto, { BinaryToTextEncoding } from 'crypto';
+import crypto, { BinaryToTextEncoding, KeyObject } from 'crypto';
 import { HashAlgorithm } from '@super-protocol/dto-js';
 import { CryptoKeyType } from './types.js';
 
@@ -166,7 +166,7 @@ class Crypto {
 
   static sign(params: {
     data: Buffer | string;
-    privateKey: JsonWebKey;
+    privateKey: KeyObject;
     outputFormat?: BinaryToTextEncoding;
     algo?: HashAlgorithm;
   }): string {
@@ -176,21 +176,16 @@ class Crypto {
       throw new Error('sign failed, private key is not assigned');
     }
 
-    const privateKey = crypto.createPrivateKey({
-      key: params.privateKey as any,
-      format: 'jwk',
-    });
-
     const signer = crypto.createSign(algo);
     signer.write(data);
     signer.end();
 
-    return signer.sign(privateKey, outputFormat);
+    return signer.sign(params.privateKey, outputFormat);
   }
 
   static verify(params: {
     data: Buffer | string;
-    publicKey: JsonWebKey;
+    publicKey: KeyObject;
     signatureFormat?: BinaryToTextEncoding;
     algo?: HashAlgorithm;
     signature: string;
@@ -201,16 +196,11 @@ class Crypto {
       throw new Error('verify failed, public key is not assigned');
     }
 
-    const publicKey = crypto.createPublicKey({
-      key: params.publicKey as any,
-      format: 'jwk',
-    });
-
     const verifier = crypto.createVerify(algo);
     verifier.write(data);
     verifier.end();
 
-    return verifier.verify(publicKey, signature, signatureFormat);
+    return verifier.verify(params.publicKey, signature, signatureFormat);
   }
 }
 

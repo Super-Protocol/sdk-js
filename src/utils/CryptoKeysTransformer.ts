@@ -10,7 +10,7 @@ type SignedData = {
   signature: Signature;
 };
 
-export class CryptoKeysTrasnformer {
+export class CryptoKeysTransformer {
   static getStructuredPrivateKeyFromJwk(privateKeyJwk: JsonWebKey): string {
     return Buffer.from(privateKeyJwk.d!, 'base64url').toString('hex');
   }
@@ -57,10 +57,10 @@ export class CryptoKeysTrasnformer {
 
     const signatureOrigin = Crypto.sign({
       data: msg,
-      privateKey: keys.privateKey,
+      privateKey: keys.privateKey as any,
       outputFormat: 'hex',
     });
-    const signature = CryptoKeysTrasnformer.parseDerSignature(signatureOrigin);
+    const signature = CryptoKeysTransformer.parseDerSignature(signatureOrigin);
 
     return {
       signedTime,

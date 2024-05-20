@@ -41,7 +41,7 @@ class OfferResources {
     const contract = BlockchainConnector.getInstance().getContract();
 
     return contract.methods
-      .getOfferRecourcesByOfferVersion(offerId, version)
+      .getOfferResourcesByOfferVersion(offerId, version)
       .call()
       .then((resources: unknown[] | void) =>
         resources!.map((resource) => cleanWeb3Data(resource) as OfferResource),
@@ -57,7 +57,7 @@ class OfferResources {
     const contract = BlockchainConnector.getInstance().getContract();
 
     return contract.methods
-      .getOfferRecource(teeOfferIssuerId, teeOfferKeeperId, offerId, version)
+      .getOfferResource(teeOfferIssuerId, teeOfferKeeperId, offerId, version)
       .call()
       .then((resource) => cleanWeb3Data(resource) as OfferResource);
   }

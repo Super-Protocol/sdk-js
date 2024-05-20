@@ -9010,7 +9010,7 @@ export const abi = [
                 "type": "uint64"
             }
         ],
-        "name": "getOfferRecource",
+        "name": "getOfferResource",
         "outputs": [
             {
                 "components": [
@@ -9103,7 +9103,7 @@ export const abi = [
                 "type": "uint64"
             }
         ],
-        "name": "getOfferRecourcesByOfferVersion",
+        "name": "getOfferResourcesByOfferVersion",
         "outputs": [
             {
                 "components": [
@@ -9489,7 +9489,7 @@ export const abi = [
                     },
                     {
                         "internalType": "uint32",
-                        "name": "distributionreplicationFactor",
+                        "name": "distributionReplicationFactor",
                         "type": "uint32"
                     },
                     {

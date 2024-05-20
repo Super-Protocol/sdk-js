@@ -18,13 +18,13 @@ export type LoaderSecretPublicKey = {
   secretPublicKey: PublicKey;
   signature: Signature;
   signedTime: number;
-  timestamp?: number;
+  timestamp: number;
 };
 
 export type LoaderSession = {
   sessionPublicKey: PublicKey;
   signature: string;
-  timestamp?: number;
+  timestamp: number;
   signedTime: number;
 };
 
@@ -33,7 +33,7 @@ export type SecretRequest = {
   secretKeeperId: BlockchainId;
   offerId: BlockchainId;
   offerVersion?: number;
-  timestamp?: number;
+  timestamp: number;
 };
 
 export type OfferResource = {
@@ -43,7 +43,7 @@ export type OfferResource = {
   storageOrderId: BlockchainId;
   offerVersion?: number;
   signedTime: number;
-  timestamp?: number;
+  timestamp: number;
   signature: Signature;
   signedEncryptedData: string;
 };
@@ -51,7 +51,7 @@ export type OfferResource = {
 export type OfferStorageAllocated = {
   teeOfferIssuerId: BlockchainId;
   storageOrderId: BlockchainId;
-  distributionreplicationFactor: number;
+  distributionReplicationFactor: number;
   timestamp: number;
 };
 
@@ -61,7 +61,8 @@ export type OfferStorageRequest = {
   storageOfferId: BlockchainId;
   storageSlotId: BlockchainId;
   deposit: TokenAmount;
+  orderId: BlockchainId;
   offerVersion?: number;
   replicationFactor: number;
-  timestamp?: number;
+  timestamp: number;
 };

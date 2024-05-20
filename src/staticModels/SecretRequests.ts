@@ -47,8 +47,8 @@ class SecretRequests {
     const contract = BlockchainConnector.getInstance().getContract();
     checkIfActionAccountInitialized(transactionOptions);
 
-    request.offerVersion ?? 0;
-    request.timestamp ?? 0;
+    request.offerVersion = request.offerVersion ?? 0;
+    request.timestamp = 0;
 
     await TxManager.execute(contract.methods.setSecretRequest(request), transactionOptions);
   }

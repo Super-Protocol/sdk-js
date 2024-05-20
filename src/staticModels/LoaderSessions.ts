@@ -65,8 +65,8 @@ class LoaderSessions {
   ): Promise<void> {
     const contract = BlockchainConnector.getInstance().getContract();
 
-    request.offerVersion ?? 0;
-    request.timestamp ?? 0;
+    request.offerVersion = request.offerVersion ?? 0;
+    request.timestamp = 0;
 
     await TxManager.execute(
       contract.methods.setLoaderSessionAndRequestSecret(

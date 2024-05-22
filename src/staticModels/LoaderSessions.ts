@@ -56,7 +56,7 @@ class LoaderSessions {
   }
 
   public static async setSessionAndRequestSecret(
-    request: SecretRequest,
+    request: Omit<SecretRequest, 'timestamp'>,
     teeOfferIssuerId: BlockchainId,
     sessionPublicKey: PublicKey,
     signature: string,
@@ -65,12 +65,13 @@ class LoaderSessions {
   ): Promise<void> {
     const contract = BlockchainConnector.getInstance().getContract();
 
-    request.offerVersion = request.offerVersion ?? 0;
-    request.timestamp = 0;
-
     await TxManager.execute(
       contract.methods.setLoaderSessionAndRequestSecret(
-        request,
+        {
+          ...request,
+          offerVersion: request.offerVersion ?? 0,
+          timestamp: 0,
+        },
         sessionPublicKey,
         signature,
         teeOfferIssuerId,

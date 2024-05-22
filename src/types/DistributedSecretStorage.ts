@@ -61,7 +61,7 @@ export type OfferStorageRequest = {
   storageOfferId: BlockchainId;
   storageSlotId: BlockchainId;
   deposit: TokenAmount;
-  orderId: BlockchainId;
+  orderId?: BlockchainId;
   offerVersion?: number;
   replicationFactor: number;
   timestamp: number;

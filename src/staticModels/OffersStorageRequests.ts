@@ -47,16 +47,20 @@ class OffersStorageRequests {
   }
 
   public static async set(
-    request: OfferStorageRequest,
+    request: Omit<OfferStorageRequest, 'orderId' | 'timestamp'>,
     transactionOptions?: TransactionOptions,
   ): Promise<void> {
     const contract = BlockchainConnector.getInstance().getContract();
     checkIfActionAccountInitialized(transactionOptions);
 
-    request.offerVersion = request.offerVersion ?? 0;
-    request.timestamp = 0;
-
-    await TxManager.execute(contract.methods.setOffersStorageRequest(request), transactionOptions);
+    await TxManager.execute(
+      contract.methods.setOffersStorageRequest({
+        ...request,
+        offerVersion: request.offerVersion ?? 0,
+        timestamp: 0,
+      }),
+      transactionOptions,
+    );
   }
 
   public static async cancel(

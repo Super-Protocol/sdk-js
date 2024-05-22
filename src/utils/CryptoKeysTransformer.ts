@@ -4,7 +4,7 @@ import { PublicKey, Signature } from './../types/index.js';
 import { Signature as SigHelper } from './../tee/helpers.js';
 import { CryptoKeyType } from '../crypto/types.js';
 import { ethers } from 'ethers';
-import { KeyObject } from 'crypto';
+import { KeyObject, createPrivateKey, createPublicKey } from 'crypto';
 
 type SignedData = {
   signedTime: number; // timestamp in sec
@@ -69,5 +69,42 @@ export class CryptoKeysTransformer {
       signedTime,
       signature,
     };
+  }
+
+  static privateKeyObjToDer(key: KeyObject): Buffer {
+    return key.export({ type: 'pkcs8', format: 'der' });
+  }
+
+  static publicKeyObjToDer(key: KeyObject): Buffer {
+    return key.export({ type: 'spki', format: 'der' });
+  }
+
+  static keyObjectsToDer({
+    privateKey,
+    publicKey,
+  }: {
+    privateKey: KeyObject;
+    publicKey: KeyObject;
+  }): { privateKey: Buffer; publicKey: Buffer } {
+    return {
+      privateKey: CryptoKeysTransformer.privateKeyObjToDer(privateKey),
+      publicKey: CryptoKeysTransformer.publicKeyObjToDer(publicKey),
+    };
+  }
+
+  static privateDerToKeyObj(key: Buffer): KeyObject {
+    return createPrivateKey({
+      key,
+      type: 'pkcs8',
+      format: 'der',
+    });
+  }
+
+  static publicDerToKeyObj(key: Buffer): KeyObject {
+    return createPublicKey({
+      key,
+      type: 'spki',
+      format: 'der',
+    });
   }
 }

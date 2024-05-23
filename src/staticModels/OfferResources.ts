@@ -1,5 +1,11 @@
 import { BlockchainConnector, BlockchainEventsListener } from '../connectors/index.js';
-import { BlockchainId, TransactionOptions, BlockInfo, OfferResource } from '../types/index.js';
+import {
+  BlockchainId,
+  TransactionOptions,
+  BlockInfo,
+  OfferResource,
+  Signature,
+} from '../types/index.js';
 import { checkIfActionAccountInitialized, cleanWeb3Data } from '../utils/helper.js';
 import TxManager from '../utils/TxManager.js';
 import { EventLog } from 'web3-eth-contract';
@@ -69,23 +75,27 @@ class OfferResources {
   }
 
   public static async set(
-    offerResource: OfferResource,
+    offerResource: Omit<OfferResource, 'timestamp'>,
     transactionOptions?: TransactionOptions,
   ): Promise<void> {
     const contract = BlockchainConnector.getInstance().getContract();
     checkIfActionAccountInitialized(transactionOptions);
 
-    offerResource.offerVersion ?? 0;
-    offerResource.timestamp ?? 0;
-
-    await TxManager.execute(contract.methods.setOfferResource(offerResource), transactionOptions);
+    await TxManager.execute(
+      contract.methods.setOfferResource({
+        ...offerResource,
+        offerVersion: offerResource.offerVersion ?? 0,
+        timestamp: 0,
+      }),
+      transactionOptions,
+    );
   }
 
   public static async createOrder(
     requestOfferId: BlockchainId,
     requestOfferVersion: number = 0,
     resultInfo: string,
-    resultInfoSignatureBySecretKey: string, // hex
+    resultInfoSignatureBySecretKey: Signature,
     signedTime: number,
     transactionOptions?: TransactionOptions,
   ): Promise<void> {

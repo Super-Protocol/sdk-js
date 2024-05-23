@@ -1,5 +1,5 @@
 import Crypto from '../crypto/index.js';
-import { CryptoAlgorithm } from '@super-protocol/dto-js';
+import { CryptoAlgorithm, Encoding } from '@super-protocol/dto-js';
 import { PublicKey, Signature } from './../types/index.js';
 import { Signature as SigHelper } from './../tee/helpers.js';
 import { CryptoKeyType } from '../crypto/types.js';
@@ -60,7 +60,7 @@ export class CryptoKeysTransformer {
 
     const signatureOrigin = Crypto.sign({
       data: msg,
-      privateKey: keys.privateKey as any,
+      privateKey: keys.privateKey,
       outputFormat: 'hex',
     });
     const signature = CryptoKeysTransformer.parseDerSignature(signatureOrigin);
@@ -105,6 +105,23 @@ export class CryptoKeysTransformer {
       key,
       type: 'spki',
       format: 'der',
+    });
+  }
+
+  static getKeyObjFromStructuredPublicKey(key: PublicKey): KeyObject {
+    const replace = (data: string): string => data.replace(/=/g, '');
+    const transform = (data: Uint8Array): string =>
+      replace(Buffer.from(data).toString(Encoding.base64));
+    const jwk = {
+      crv: key.crv,
+      kty: key.kty,
+      x: transform(key.pointX),
+      y: transform(key.pointY),
+    };
+
+    return createPublicKey({
+      key: jwk,
+      format: 'jwk',
     });
   }
 }

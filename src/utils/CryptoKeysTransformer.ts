@@ -58,6 +58,11 @@ export class CryptoKeysTransformer {
     return Buffer.concat([data, signedTimeBuffer]);
   }
 
+  static appendBigIntToBuffer(val: bigint, data: Buffer): Buffer {
+    const hexedOrderId = ethers.utils.hexZeroPad(ethers.utils.hexlify(val), 32).slice(2);
+    return Buffer.concat([data, Buffer.from(hexedOrderId, Encoding.hex)]);
+  }
+
   static sign(privateKey: KeyObject, data: Buffer): SignedData {
     const signedTime = Math.floor(Date.now() / 1000);
 

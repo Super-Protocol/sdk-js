@@ -64,7 +64,7 @@ export class CryptoKeysTransformer {
     const signatureOrigin = Crypto.sign({
       data: CryptoKeysTransformer.appendNumberToBuffer(signedTime, data),
       privateKey,
-      outputFormat: 'hex',
+      outputFormat: Encoding.hex,
     });
     const signature = CryptoKeysTransformer.parseDerSignature(signatureOrigin);
 
@@ -84,6 +84,7 @@ export class CryptoKeysTransformer {
       data: CryptoKeysTransformer.appendNumberToBuffer(signedTime, data),
       publicKey,
       signature,
+      signatureFormat: Encoding.hex,
     });
   }
 

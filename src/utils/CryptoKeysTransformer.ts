@@ -51,15 +51,20 @@ export class CryptoKeysTransformer {
     };
   }
 
+  static appendNumberToBuffer(val: number, data: Buffer): Buffer {
+    const signedTimeBuffer = Buffer.alloc(4);
+    signedTimeBuffer.writeUInt32BE(val, 0);
+
+    return Buffer.concat([data, signedTimeBuffer]);
+  }
+
   static sign(privateKey: KeyObject, data: Buffer): SignedData {
     const signedTime = Math.floor(Date.now() / 1000);
-    const signedTimeBuffer = Buffer.alloc(4);
-    signedTimeBuffer.writeUInt32BE(signedTime, 0);
-    const msg = Buffer.concat([data, signedTimeBuffer]);
 
     const signatureOrigin = Crypto.sign({
-      data: msg,
+      data: CryptoKeysTransformer.appendNumberToBuffer(signedTime, data),
       privateKey,
+      outputFormat: 'hex',
     });
     const signature = CryptoKeysTransformer.parseDerSignature(signatureOrigin);
 
@@ -75,12 +80,8 @@ export class CryptoKeysTransformer {
     signature: string,
     signedTime: number,
   ): boolean {
-    const signedTimeBuffer = Buffer.alloc(4);
-    signedTimeBuffer.writeUInt32BE(signedTime, 0);
-    const msg = Buffer.concat([data, signedTimeBuffer]);
-
     return Crypto.verify({
-      data: msg,
+      data: CryptoKeysTransformer.appendNumberToBuffer(signedTime, data),
       publicKey,
       signature,
     });

@@ -1,8 +1,7 @@
 import Crypto from '../crypto/index.js';
-import { CryptoAlgorithm, Encoding } from '@super-protocol/dto-js';
+import { Encoding } from '@super-protocol/dto-js';
 import { PublicKey, Signature } from './../types/index.js';
 import { Signature as SigHelper } from './../tee/helpers.js';
-import { CryptoKeyType } from '../crypto/types.js';
 import { ethers } from 'ethers';
 import { KeyObject, createPrivateKey, createPublicKey } from 'crypto';
 
@@ -52,7 +51,7 @@ export class CryptoKeysTransformer {
     };
   }
 
-  static sign(keys: CryptoKeyType<CryptoAlgorithm.ECIES>, data: Buffer): SignedData {
+  static sign(privateKey: KeyObject, data: Buffer): SignedData {
     const signedTime = Math.floor(Date.now() / 1000);
     const signedTimeBuffer = Buffer.alloc(4);
     signedTimeBuffer.writeUInt32BE(signedTime, 0);
@@ -60,8 +59,7 @@ export class CryptoKeysTransformer {
 
     const signatureOrigin = Crypto.sign({
       data: msg,
-      privateKey: keys.privateKey,
-      outputFormat: 'hex',
+      privateKey,
     });
     const signature = CryptoKeysTransformer.parseDerSignature(signatureOrigin);
 
@@ -69,6 +67,23 @@ export class CryptoKeysTransformer {
       signedTime,
       signature,
     };
+  }
+
+  static verify(
+    publicKey: KeyObject,
+    data: Buffer,
+    signature: string,
+    signedTime: number,
+  ): boolean {
+    const signedTimeBuffer = Buffer.alloc(4);
+    signedTimeBuffer.writeUInt32BE(signedTime, 0);
+    const msg = Buffer.concat([data, signedTimeBuffer]);
+
+    return Crypto.verify({
+      data: msg,
+      publicKey,
+      signature,
+    });
   }
 
   static privateKeyObjToDer(key: KeyObject): Buffer {

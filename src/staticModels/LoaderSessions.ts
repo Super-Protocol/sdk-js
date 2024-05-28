@@ -31,13 +31,18 @@ class LoaderSessions {
     return contract.methods.getDisabledLoaders().call();
   }
 
-  public static get(teeOfferId: BlockchainId): Promise<LoaderSession> {
+  public static async get(teeOfferId: BlockchainId): Promise<LoaderSession | undefined> {
     const contract = BlockchainConnector.getInstance().getContract();
-
-    return contract.methods
+    const loaderSession = await contract.methods
       .getLoaderSession(teeOfferId)
       .call()
       .then((session) => cleanWeb3Data(session) as LoaderSession);
+
+    if (Number(loaderSession.timestamp) === 0) {
+      return undefined;
+    }
+
+    return loaderSession;
   }
 
   public static async set(
@@ -117,7 +122,7 @@ class LoaderSessions {
 
 export type onLoaderSessionKeyUpdatedCallback = (
   loader: BlockchainId,
-  teeOfferkeeperId: BlockchainId,
+  teeOfferKeeperId: BlockchainId,
   publicSessionsKey: PublicKey,
   block?: BlockInfo,
 ) => void;

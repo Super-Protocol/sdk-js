@@ -15,16 +15,21 @@ class OffersStorageAllocated {
     return contract.methods.getUsedStorageOrders().call();
   }
 
-  public static getByOfferVersion(
+  public static async getByOfferVersion(
     offerId: BlockchainId,
     offerVersion: number = 0,
-  ): Promise<OfferStorageAllocated> {
+  ): Promise<OfferStorageAllocated | undefined> {
     const contract = BlockchainConnector.getInstance().getContract();
-
-    return contract.methods
+    const allocated = await contract.methods
       .getStorageOrdersAllocated(offerId, offerVersion)
       .call()
       .then((allocated) => cleanWeb3Data(allocated) as OfferStorageAllocated);
+
+    if (Number(allocated.timestamp) === 0) {
+      return undefined;
+    }
+
+    return allocated;
   }
 }
 

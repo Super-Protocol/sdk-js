@@ -34,16 +34,21 @@ class OffersStorageRequests {
       );
   }
 
-  public static getByOfferVersion(
+  public static async getByOfferVersion(
     offerId: BlockchainId,
     offerVersion: number = 0,
-  ): Promise<OfferStorageRequest> {
+  ): Promise<OfferStorageRequest | undefined> {
     const contract = BlockchainConnector.getInstance().getContract();
-
-    return contract.methods
+    const storageRequest = await contract.methods
       .getOffersStorageRequestsByOfferVersion(offerId, offerVersion)
       .call()
       .then((allocated) => cleanWeb3Data(allocated) as OfferStorageRequest);
+
+    if (Number(storageRequest.timestamp) === 0) {
+      return undefined;
+    }
+
+    return storageRequest;
   }
 
   public static async set(

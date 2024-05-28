@@ -54,18 +54,23 @@ class OfferResources {
       );
   }
 
-  public static get(
+  public static async get(
     teeOfferIssuerId: BlockchainId,
     teeOfferKeeperId: BlockchainId,
     offerId: BlockchainId,
     version: number = 0,
-  ): Promise<OfferResource> {
+  ): Promise<OfferResource | undefined> {
     const contract = BlockchainConnector.getInstance().getContract();
-
-    return contract.methods
+    const resource = await contract.methods
       .getOfferResource(teeOfferIssuerId, teeOfferKeeperId, offerId, version)
       .call()
       .then((resource) => cleanWeb3Data(resource) as OfferResource);
+
+    if (Number(resource.timestamp) === 0) {
+      return undefined;
+    }
+
+    return resource;
   }
 
   public static async getCountByKeeperId(teeOfferKeeperId: BlockchainId): Promise<number> {

@@ -19,13 +19,18 @@ import {
 class LoaderSecretPublicKeys {
   private static readonly logger = rootLogger.child({ className: 'LoaderSecretPublicKeys' });
 
-  public static get(teeOfferId: BlockchainId): Promise<LoaderSecretPublicKey> {
+  public static async get(teeOfferId: BlockchainId): Promise<LoaderSecretPublicKey | undefined> {
     const contract = BlockchainConnector.getInstance().getContract();
-
-    return contract.methods
+    const secretPublicKey = await contract.methods
       .getLoaderSecretPublicKey(teeOfferId)
       .call()
       .then((secretKey) => cleanWeb3Data(secretKey) as LoaderSecretPublicKey);
+
+    if (Number(secretPublicKey.timestamp) === 0) {
+      return undefined;
+    }
+
+    return secretPublicKey;
   }
 
   public static async set(

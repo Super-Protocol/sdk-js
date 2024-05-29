@@ -67,16 +67,20 @@ class SecretRequests {
   }
 
   public static async cancel(
-    request: SecretRequest,
+    request: Omit<SecretRequest, 'timestamp'>,
     transactionOptions?: TransactionOptions,
   ): Promise<void> {
     const contract = BlockchainConnector.getInstance().getContract();
     checkIfActionAccountInitialized(transactionOptions);
 
-    request.offerVersion ?? 0;
-    request.timestamp ?? 0;
-
-    await TxManager.execute(contract.methods.cancelSecretRequest(request), transactionOptions);
+    await TxManager.execute(
+      contract.methods.cancelSecretRequest({
+        ...request,
+        offerVersion: request.offerVersion ?? 0,
+        timestamp: 0,
+      }),
+      transactionOptions,
+    );
   }
 
   public static onSecretRequestCreated(callback: onSecretRequestCreatedCallback): () => void {

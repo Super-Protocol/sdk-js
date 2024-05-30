@@ -146,4 +146,19 @@ export class CryptoKeysTransformer {
       format: 'jwk',
     });
   }
+
+  static preparePublicKeyToSign(publicKey: Buffer | KeyObject): Buffer {
+    const toKeyObj = (publicKey: Buffer | KeyObject): KeyObject => {
+      if (publicKey instanceof Buffer) {
+        return CryptoKeysTransformer.publicDerToKeyObj(publicKey);
+      }
+
+      return publicKey;
+    };
+
+    const keyObj = toKeyObj(publicKey);
+    const structuredPublicKey = CryptoKeysTransformer.getStructuredPublicKeyFromKeyObj(keyObj);
+
+    return CryptoKeysTransformer.getBufferFromTransformedPublicKey(structuredPublicKey);
+  }
 }

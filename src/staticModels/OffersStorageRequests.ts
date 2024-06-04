@@ -62,6 +62,7 @@ class OffersStorageRequests {
       contract.methods.setOffersStorageRequest({
         ...request,
         offerVersion: request.offerVersion ?? 0,
+        orderId: 0,
         timestamp: 0,
       }),
       transactionOptions,

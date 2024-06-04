@@ -131,14 +131,17 @@ export class CryptoKeysTransformer {
   }
 
   static getKeyObjFromStructuredPublicKey(key: PublicKey): KeyObject {
-    const replace = (data: string): string => data.replace(/=/g, '');
-    const transform = (data: Uint8Array): string =>
-      replace(Buffer.from(data).toString(Encoding.base64));
+    const hexToBase64Url = (data: Uint8Array): string => {
+      const hex = Buffer.from(data).toString(Encoding.hex);
+      const buffer = Buffer.from(hex.replace(/^0x/, ''), 'hex');
+
+      return buffer.toString('base64url');
+    };
     const jwk = {
       crv: key.crv,
       kty: key.kty,
-      x: transform(key.pointX),
-      y: transform(key.pointY),
+      x: hexToBase64Url(key.pointX),
+      y: hexToBase64Url(key.pointY),
     };
 
     return createPublicKey({

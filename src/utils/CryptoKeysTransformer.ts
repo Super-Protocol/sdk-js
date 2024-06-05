@@ -131,8 +131,8 @@ export class CryptoKeysTransformer {
   }
 
   static getKeyObjFromStructuredPublicKey(key: PublicKey): KeyObject {
-    const hexToBase64Url = (data: Uint8Array | string): string => {
-      const hex = typeof data === 'string' ? data : Buffer.from(data).toString(Encoding.hex);
+    const hexToBase64Url = (data: Uint8Array): string => {
+      const hex = Buffer.from(data).toString(Encoding.hex);
       const buffer = Buffer.from(hex.replace(/^0x/, ''), 'hex');
 
       return buffer.toString('base64url');

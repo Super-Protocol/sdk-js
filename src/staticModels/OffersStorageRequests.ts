@@ -5,7 +5,11 @@ import {
   OfferStorageRequest,
   TransactionOptions,
 } from '../types/index.js';
-import { checkIfActionAccountInitialized, cleanWeb3Data } from '../utils/helper.js';
+import {
+  checkIfActionAccountInitialized,
+  cleanWeb3Data,
+  convertOfferStorageRequestFromRaw,
+} from '../utils/helper.js';
 import TxManager from '../utils/TxManager.js';
 import { EventLog } from 'web3-eth-contract';
 import rootLogger from '../logger.js';
@@ -29,8 +33,10 @@ class OffersStorageRequests {
     return contract.methods
       .getOffersStorageRequestsByIssuerId(teeOfferIssuerId)
       .call()
-      .then((allocatedList: unknown[] | void) =>
-        allocatedList!.map((allocated) => cleanWeb3Data(allocated) as OfferStorageRequest),
+      .then((storageRequestList: unknown[] | void) =>
+        storageRequestList!.map((storageRequest) =>
+          convertOfferStorageRequestFromRaw(storageRequest as OfferStorageRequest),
+        ),
       );
   }
 
@@ -42,7 +48,7 @@ class OffersStorageRequests {
     const storageRequest = await contract.methods
       .getOffersStorageRequestsByOfferVersion(offerId, offerVersion)
       .call()
-      .then((allocated) => cleanWeb3Data(allocated) as OfferStorageRequest);
+      .then((sRequest) => convertOfferStorageRequestFromRaw(sRequest as OfferStorageRequest));
 
     if (Number(storageRequest.timestamp) === 0) {
       return undefined;

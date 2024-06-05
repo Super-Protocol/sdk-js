@@ -1,6 +1,6 @@
 import { BlockchainConnector } from '../connectors/index.js';
 import { BlockchainId, OfferStorageAllocated } from '../types/index.js';
-import { cleanWeb3Data } from '../utils/helper.js';
+import { convertOfferStorageAllocatedFromRaw } from '../utils/helper.js';
 
 class OffersStorageAllocated {
   public getNewStorageOrders(): Promise<BlockchainId[]> {
@@ -23,7 +23,7 @@ class OffersStorageAllocated {
     const allocated = await contract.methods
       .getStorageOrdersAllocated(offerId, offerVersion)
       .call()
-      .then((allocated) => cleanWeb3Data(allocated) as OfferStorageAllocated);
+      .then((allocated) => convertOfferStorageAllocatedFromRaw(allocated as OfferStorageAllocated));
 
     if (Number(allocated.timestamp) === 0) {
       return undefined;

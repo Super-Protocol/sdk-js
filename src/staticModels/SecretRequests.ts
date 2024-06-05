@@ -1,6 +1,10 @@
 import { BlockchainConnector, BlockchainEventsListener } from '../connectors/index.js';
 import { BlockchainId, BlockInfo, SecretRequest, TransactionOptions } from '../types/index.js';
-import { checkIfActionAccountInitialized, cleanWeb3Data } from '../utils/helper.js';
+import {
+  checkIfActionAccountInitialized,
+  cleanWeb3Data,
+  convertSecretRequestFromRaw,
+} from '../utils/helper.js';
 import TxManager from '../utils/TxManager.js';
 import { EventLog } from 'web3-eth-contract';
 import rootLogger from '../logger.js';
@@ -25,7 +29,7 @@ class SecretRequests {
       .getSecretRequestsByKeeperId(teeOfferIssuerId)
       .call()
       .then((requests: unknown[] | void) =>
-        requests!.map((request) => cleanWeb3Data(request) as SecretRequest),
+        requests!.map((request) => convertSecretRequestFromRaw(request as SecretRequest)),
       );
   }
 
@@ -36,7 +40,7 @@ class SecretRequests {
       .getSecretRequestsByRequestorId(teeOfferRequestorId)
       .call()
       .then((requests: unknown[] | void) =>
-        requests!.map((request) => cleanWeb3Data(request) as SecretRequest),
+        requests!.map((request) => convertSecretRequestFromRaw(request as SecretRequest)),
       );
   }
 

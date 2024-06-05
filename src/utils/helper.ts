@@ -8,12 +8,15 @@ import {
   LoaderSecretPublicKey,
   LoaderSession,
   OfferResource,
+  OfferStorageAllocated,
+  OfferStorageRequest,
   OptionInfo,
   OptionInfoRaw,
   OrderUsage,
   OrderUsageRaw,
   PriceType,
   PublicKey,
+  SecretRequest,
   Signature,
   SlotUsage,
   TcbPublicData,
@@ -189,9 +192,9 @@ function transformSignatureFromRaw(signature: Signature): Signature {
 }
 
 export function convertLoaderSecretPublicKeyFromRaw(
-  loaderSecretPublicKey: LoaderSecretPublicKey,
+  loaderSecretPublicKeyRaw: LoaderSecretPublicKey,
 ): LoaderSecretPublicKey {
-  loaderSecretPublicKey = cleanWeb3Data(loaderSecretPublicKey);
+  const loaderSecretPublicKey = cleanWeb3Data({ ...loaderSecretPublicKeyRaw });
   const secretPublicKey = transformPublicKeyFromRaw(loaderSecretPublicKey.secretPublicKey);
   const signature = transformSignatureFromRaw(loaderSecretPublicKey.signature);
 
@@ -199,26 +202,68 @@ export function convertLoaderSecretPublicKeyFromRaw(
     ...loaderSecretPublicKey,
     secretPublicKey,
     signature,
+    signedTime: Number(loaderSecretPublicKey.signedTime),
+    timestamp: Number(loaderSecretPublicKey.timestamp),
   };
 }
 
-export function convertLoaderSessionFromRaw(loaderSession: LoaderSession): LoaderSession {
-  loaderSession = cleanWeb3Data(loaderSession);
+export function convertLoaderSessionFromRaw(loaderSessionRaw: LoaderSession): LoaderSession {
+  const loaderSession = cleanWeb3Data({ ...loaderSessionRaw });
   const sessionPublicKey = transformPublicKeyFromRaw(loaderSession.sessionPublicKey);
 
   return {
     ...loaderSession,
     sessionPublicKey,
+    signedTime: Number(loaderSession.signedTime),
+    timestamp: Number(loaderSession.timestamp),
   };
 }
 
-export function convertOfferResourceRaw(offerResource: OfferResource): OfferResource {
-  offerResource = cleanWeb3Data(offerResource);
+export function convertOfferResourceFromRaw(offerResourceRaw: OfferResource): OfferResource {
+  const offerResource = cleanWeb3Data({ ...offerResourceRaw });
   const signature = transformSignatureFromRaw(offerResource.signature);
 
   return {
     ...offerResource,
     signature,
+    offerVersion: Number(offerResource.offerVersion),
+    signedTime: Number(offerResource.signedTime),
+    timestamp: Number(offerResource.timestamp),
+  };
+}
+
+export function convertSecretRequestFromRaw(secretRequestRaw: SecretRequest): SecretRequest {
+  const secretRequest = cleanWeb3Data({ ...secretRequestRaw });
+
+  return {
+    ...secretRequest,
+    offerVersion: Number(secretRequest.offerVersion),
+    timestamp: Number(secretRequest.timestamp),
+  };
+}
+
+export function convertOfferStorageAllocatedFromRaw(
+  offerStorageAllocatedRaw: OfferStorageAllocated,
+): OfferStorageAllocated {
+  const offerStorageAllocated = cleanWeb3Data({ ...offerStorageAllocatedRaw });
+
+  return {
+    ...offerStorageAllocated,
+    distributionReplicationFactor: Number(offerStorageAllocated.distributionReplicationFactor),
+    timestamp: Number(offerStorageAllocated.timestamp),
+  };
+}
+
+export function convertOfferStorageRequestFromRaw(
+  offerStorageRequestRaw: OfferStorageRequest,
+): OfferStorageRequest {
+  const offerStorageRequest = cleanWeb3Data({ ...offerStorageRequestRaw });
+
+  return {
+    ...offerStorageRequest,
+    replicationFactor: Number(offerStorageRequest.replicationFactor),
+    offerVersion: Number(offerStorageRequest.offerVersion),
+    timestamp: Number(offerStorageRequest.timestamp),
   };
 }
 

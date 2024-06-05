@@ -6,7 +6,7 @@ import {
   OfferResource,
   Signature,
 } from '../types/index.js';
-import { checkIfActionAccountInitialized, cleanWeb3Data } from '../utils/helper.js';
+import { checkIfActionAccountInitialized, cleanWeb3Data, convertOfferResourceRaw } from '../utils/helper.js';
 import TxManager from '../utils/TxManager.js';
 import { EventLog } from 'web3-eth-contract';
 import rootLogger from '../logger.js';
@@ -25,7 +25,7 @@ class OfferResources {
       .getOfferResourcesByKeeperId(teeOfferKeeperId)
       .call()
       .then((resources: unknown[] | void) =>
-        resources!.map((resource) => cleanWeb3Data(resource) as OfferResource),
+        resources!.map((resource) => convertOfferResourceRaw(resource as OfferResource)),
       );
   }
 
@@ -36,7 +36,7 @@ class OfferResources {
       .getOfferResourcesByIssuerId(teeOfferIssuerId)
       .call()
       .then((resources: unknown[] | void) =>
-        resources!.map((resource) => cleanWeb3Data(resource) as OfferResource),
+        resources!.map((resource) => convertOfferResourceRaw(resource as OfferResource)),
       );
   }
 
@@ -50,7 +50,7 @@ class OfferResources {
       .getOfferResourcesByOfferVersion(offerId, version)
       .call()
       .then((resources: unknown[] | void) =>
-        resources!.map((resource) => cleanWeb3Data(resource) as OfferResource),
+        resources!.map((resource) => convertOfferResourceRaw(resource as OfferResource)),
       );
   }
 
@@ -64,7 +64,7 @@ class OfferResources {
     const resource = await contract.methods
       .getOfferResource(teeOfferIssuerId, teeOfferKeeperId, offerId, version)
       .call()
-      .then((resource) => cleanWeb3Data(resource) as OfferResource);
+      .then((resource) => convertOfferResourceRaw(resource as OfferResource));
 
     if (Number(resource.timestamp) === 0) {
       return undefined;

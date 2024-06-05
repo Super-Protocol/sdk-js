@@ -7,7 +7,7 @@ import {
   PublicKey,
   BlockInfo,
 } from '../types/index.js';
-import { cleanWeb3Data } from '../utils/helper.js';
+import { cleanWeb3Data, convertLoaderSessionFromRaw } from '../utils/helper.js';
 import TxManager from '../utils/TxManager.js';
 import { EventLog } from 'web3-eth-contract';
 import rootLogger from '../logger.js';
@@ -36,7 +36,7 @@ class LoaderSessions {
     const loaderSession = await contract.methods
       .getLoaderSession(teeOfferId)
       .call()
-      .then((session) => cleanWeb3Data(session) as LoaderSession);
+      .then((session) => convertLoaderSessionFromRaw(session as LoaderSession));
 
     if (Number(loaderSession.timestamp) === 0) {
       return undefined;

@@ -7,7 +7,7 @@ import {
   PublicKey,
   Signature,
 } from '../types/index.js';
-import { cleanWeb3Data } from '../utils/helper.js';
+import { cleanWeb3Data, convertLoaderSecretPublicKeyFromRaw } from '../utils/helper.js';
 import TxManager from '../utils/TxManager.js';
 import { EventLog } from 'web3-eth-contract';
 import rootLogger from '../logger.js';
@@ -24,7 +24,7 @@ class LoaderSecretPublicKeys {
     const secretPublicKey = await contract.methods
       .getLoaderSecretPublicKey(teeOfferId)
       .call()
-      .then((secretKey) => cleanWeb3Data(secretKey) as LoaderSecretPublicKey);
+      .then((secretKey) => convertLoaderSecretPublicKeyFromRaw(secretKey as LoaderSecretPublicKey));
 
     if (Number(secretPublicKey.timestamp) === 0) {
       return undefined;

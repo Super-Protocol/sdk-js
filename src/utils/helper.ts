@@ -5,11 +5,16 @@ import { Web3BatchRequest } from 'web3-core';
 import { Monitoring } from './Monitoring.js';
 import { SlotInfo } from '../types/SlotInfo.js';
 import {
+  LoaderSecretPublicKey,
+  LoaderSession,
+  OfferResource,
   OptionInfo,
   OptionInfoRaw,
   OrderUsage,
   OrderUsageRaw,
   PriceType,
+  PublicKey,
+  Signature,
   SlotUsage,
   TcbPublicData,
   TeeOfferOption,
@@ -19,6 +24,7 @@ import {
   ValueOfferSlotRaw,
 } from '../types/index.js';
 import { BLOCKCHAIN_BATCH_REQUEST_TIMEOUT } from '../constants.js';
+import { ethers } from 'ethers';
 
 /**
  * Function for checking if provider action account initialized (required for set methods)
@@ -157,6 +163,62 @@ export function convertTeeOfferOptionFromRaw(option: TeeOfferOptionRaw): TeeOffe
     ...option,
     info: convertOptionInfoFromRaw(option.info),
     usage: formatUsage(option.usage),
+  };
+}
+
+function transformPublicKeyFromRaw(publicKey: PublicKey): PublicKey {
+  return {
+    ...publicKey,
+    pointX:
+      typeof publicKey.pointX === 'string'
+        ? publicKey.pointX
+        : ethers.utils.arrayify(publicKey.pointX),
+    pointY:
+      typeof publicKey.pointY === 'string'
+        ? publicKey.pointY
+        : ethers.utils.arrayify(publicKey.pointY),
+  };
+}
+
+function transformSignatureFromRaw(signature: Signature): Signature {
+  return {
+    ...signature,
+    r: typeof signature.r === 'string' ? signature.r : ethers.utils.arrayify(signature.r),
+    s: typeof signature.s === 'string' ? signature.s : ethers.utils.arrayify(signature.s),
+  };
+}
+
+export function convertLoaderSecretPublicKeyFromRaw(
+  loaderSecretPublicKey: LoaderSecretPublicKey,
+): LoaderSecretPublicKey {
+  loaderSecretPublicKey = cleanWeb3Data(loaderSecretPublicKey);
+  const secretPublicKey = transformPublicKeyFromRaw(loaderSecretPublicKey.secretPublicKey);
+  const signature = transformSignatureFromRaw(loaderSecretPublicKey.signature);
+
+  return {
+    ...loaderSecretPublicKey,
+    secretPublicKey,
+    signature,
+  };
+}
+
+export function convertLoaderSessionFromRaw(loaderSession: LoaderSession): LoaderSession {
+  loaderSession = cleanWeb3Data(loaderSession);
+  const sessionPublicKey = transformPublicKeyFromRaw(loaderSession.sessionPublicKey);
+
+  return {
+    ...loaderSession,
+    sessionPublicKey,
+  };
+}
+
+export function convertOfferResourceRaw(offerResource: OfferResource): OfferResource {
+  offerResource = cleanWeb3Data(offerResource);
+  const signature = transformSignatureFromRaw(offerResource.signature);
+
+  return {
+    ...offerResource,
+    signature,
   };
 }
 

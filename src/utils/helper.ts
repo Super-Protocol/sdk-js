@@ -171,20 +171,20 @@ function transformPublicKeyFromRaw(publicKey: PublicKey): PublicKey {
     ...publicKey,
     pointX:
       typeof publicKey.pointX === 'string'
-        ? publicKey.pointX
-        : ethers.utils.arrayify(publicKey.pointX),
+        ? ethers.utils.arrayify(publicKey.pointX)
+        : publicKey.pointX,
     pointY:
       typeof publicKey.pointY === 'string'
-        ? publicKey.pointY
-        : ethers.utils.arrayify(publicKey.pointY),
+        ? ethers.utils.arrayify(publicKey.pointY)
+        : publicKey.pointY,
   };
 }
 
 function transformSignatureFromRaw(signature: Signature): Signature {
   return {
     ...signature,
-    r: typeof signature.r === 'string' ? signature.r : ethers.utils.arrayify(signature.r),
-    s: typeof signature.s === 'string' ? signature.s : ethers.utils.arrayify(signature.s),
+    r: typeof signature.r === 'string' ? ethers.utils.arrayify(signature.r) : signature.r,
+    s: typeof signature.s === 'string' ? ethers.utils.arrayify(signature.s) : signature.s,
   };
 }
 

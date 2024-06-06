@@ -11,6 +11,17 @@ type SignedData = {
 };
 
 export class CryptoKeysTransformer {
+  private static padTo32Bytes(bytes: string): Uint8Array {
+    const array = ethers.utils.arrayify('0x' + bytes);
+    if (array.length === 32) {
+      return array;
+    }
+    const padded = new Uint8Array(32);
+    padded.set(array, 32 - array.length);
+
+    return padded;
+  }
+
   static getStructuredPrivateKeyFromKeyObj(privateKeyObj: KeyObject): string {
     const privateKeyJwk = privateKeyObj.export({ format: 'jwk' });
     return Buffer.from(privateKeyJwk.d!, 'base64url').toString('hex');
@@ -42,10 +53,12 @@ export class CryptoKeysTransformer {
 
   static parseDerSignature(derSignature: string): Signature {
     const { r, s } = SigHelper.importFromDER(derSignature);
+    const rBytes32 = this.padTo32Bytes(r);
+    const sBytes32 = this.padTo32Bytes(s);
 
     return {
-      r: ethers.utils.arrayify('0x' + r),
-      s: ethers.utils.arrayify('0x' + s),
+      r: rBytes32,
+      s: sBytes32,
       der: derSignature,
       v: 27,
     };

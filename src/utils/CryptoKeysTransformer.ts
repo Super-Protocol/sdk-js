@@ -1,6 +1,6 @@
 import Crypto from '../crypto/index.js';
 import { Encoding } from '@super-protocol/dto-js';
-import { PublicKey, Signature } from './../types/index.js';
+import { PublicKey, Signature } from '../types/index.js';
 import { Signature as SigHelper } from './../tee/helpers.js';
 import { ethers } from 'ethers';
 import { KeyObject, createPrivateKey, createPublicKey } from 'crypto';
@@ -195,6 +195,23 @@ export class CryptoKeysTransformer {
     };
 
     return createPublicKey({ key: jwk, format: 'jwk' });
+  }
+
+  static ecdhPrivateKeyToKeyObj(key: Buffer, publicKey: Buffer): KeyObject {
+    const dBuffer = key;
+
+    const xBuffer = publicKey.subarray(1, 33);
+    const yBuffer = publicKey.subarray(33);
+
+    const jwk = {
+      kty: 'EC',
+      crv: 'secp256k1',
+      x: xBuffer.toString('base64'),
+      y: yBuffer.toString('base64'),
+      d: dBuffer.toString('base64'),
+    };
+
+    return createPrivateKey({ key: jwk, format: 'jwk' });
   }
 
   static keyObjToEcdhPublicKey(keyObj: KeyObject): Buffer {

@@ -177,4 +177,32 @@ export class CryptoKeysTransformer {
 
     return CryptoKeysTransformer.getBufferFromTransformedPublicKey(structuredPublicKey);
   }
+
+  static keyObjToEcdhPrivateKey(key: KeyObject): Buffer {
+    const jwk = key.export({ format: 'jwk' });
+    return Buffer.from(jwk.d!, Encoding.base64);
+  }
+
+  static ecdhPublicKeyToKeyObj(key: Buffer): KeyObject {
+    const xBuffer = key.subarray(1, 33); // X coordinate (skip the first byte, which is the 0x04 prefix)
+    const yBuffer = key.subarray(33); // Y coordinate
+
+    const jwk = {
+      kty: 'EC',
+      crv: 'secp256k1',
+      x: xBuffer.toString(Encoding.base64),
+      y: yBuffer.toString(Encoding.base64),
+    };
+
+    return createPublicKey({ key: jwk, format: 'jwk' });
+  }
+
+  static keyObjToEcdhPublicKey(keyObj: KeyObject): Buffer {
+    const jwk = keyObj.export({ format: 'jwk' });
+
+    const xBuffer = Buffer.from(jwk.x!, 'base64');
+    const yBuffer = Buffer.from(jwk.y!, 'base64');
+
+    return Buffer.concat([Buffer.from([0x04]), xBuffer, yBuffer]);
+  }
 }

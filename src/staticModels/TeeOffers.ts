@@ -514,7 +514,7 @@ class TeeOffers {
           }
         }
 
-        return [...result];
+        return [...result].map(String);
       },
       { ttl, force },
     );

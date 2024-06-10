@@ -56,7 +56,7 @@ class LoaderSecretPublicKeys {
     const onData: WssSubscriptionOnDataFn = (event: EventLog): void => {
       const parsedEvent = cleanWeb3Data(event.returnValues);
       callback(
-        <BlockchainId>parsedEvent.teeOfferId,
+        <BlockchainId>parsedEvent.teeOfferIssuerId,
         <PublicKey>cleanWeb3Data(parsedEvent.secretPublicKey),
         <BlockInfo>{
           index: Number(event.blockNumber),

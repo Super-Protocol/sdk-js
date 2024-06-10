@@ -143,9 +143,9 @@ class OfferResources {
       const parsedEvent = cleanWeb3Data(event.returnValues);
       callback(
         <BlockchainId>parsedEvent.offerId,
-        <number>parsedEvent.version,
-        <BlockchainId>parsedEvent.keeperId,
-        <BlockchainId>parsedEvent.issuerId,
+        <number>parsedEvent.offerVersion,
+        <BlockchainId>parsedEvent.teeOfferKeeperId,
+        <BlockchainId>parsedEvent.teeOfferIssuerId,
         <string>parsedEvent.transactionHash,
         <BlockInfo>{
           index: Number(event.blockNumber),

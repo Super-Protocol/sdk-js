@@ -101,8 +101,7 @@ class LoaderSessions {
     const onData: WssSubscriptionOnDataFn = (event: EventLog): void => {
       const parsedEvent = cleanWeb3Data(event.returnValues);
       callback(
-        <BlockchainId>parsedEvent.loader,
-        <BlockchainId>parsedEvent.keeperOfferId,
+        <BlockchainId>parsedEvent.teeOfferIssuerId,
         <PublicKey>cleanWeb3Data(parsedEvent.publicSessionsKey),
         <BlockInfo>{
           index: Number(event.blockNumber),
@@ -122,8 +121,7 @@ class LoaderSessions {
 }
 
 export type onLoaderSessionKeyUpdatedCallback = (
-  loader: BlockchainId,
-  teeOfferKeeperId: BlockchainId,
+  teeOfferIssuerId: BlockchainId,
   publicSessionsKey: PublicKey,
   block?: BlockInfo,
 ) => void;

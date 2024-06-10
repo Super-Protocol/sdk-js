@@ -7,6 +7,7 @@ export { Config } from './connectors/BaseConnector.js';
 export { default as BlockchainEventsListener } from './connectors/BlockchainEventsListener.js';
 
 export { default as Crypto } from './crypto/index.js';
+export * from './crypto/index.js';
 
 export { default as TIIGenerator } from './TIIGenerator.js';
 export * from './TIIGenerator.js';

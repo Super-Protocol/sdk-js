@@ -94,6 +94,7 @@ class OfferResources {
       contract.methods.setOfferResource({
         ...offerResource,
         offerVersion: offerResource.offerVersion ?? 0,
+        solutionHash: offerResource.solutionHash ?? '',
         timestamp: 0,
       }),
       transactionOptions,

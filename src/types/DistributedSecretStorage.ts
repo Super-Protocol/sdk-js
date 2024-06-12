@@ -48,7 +48,7 @@ export type OfferResource = {
   signature: Signature;
   signedEncryptedData: string;
   offerType: OfferType;
-  solutionHash: string;
+  solutionHash?: string;
 };
 
 export type OfferStorageAllocated = {

@@ -1,3 +1,4 @@
+import { OfferType } from './Offer.js';
 import { BlockchainId, TokenAmount } from './Web3.js';
 
 export type PublicKey = {
@@ -46,6 +47,8 @@ export type OfferResource = {
   timestamp: number;
   signature: Signature;
   signedEncryptedData: string;
+  offerType: OfferType;
+  solutionHash: string;
 };
 
 export type OfferStorageAllocated = {

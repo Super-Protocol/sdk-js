@@ -9080,104 +9080,21 @@ export const abi = [
                         "internalType": "string",
                         "name": "signedEncryptedData",
                         "type": "string"
+                    },
+                    {
+                        "internalType": "enum OfferType",
+                        "name": "offerType",
+                        "type": "uint8"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "solutionHash",
+                        "type": "string"
                     }
                 ],
                 "internalType": "struct OfferResource",
                 "name": "",
                 "type": "tuple"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint64",
-                "name": "version",
-                "type": "uint64"
-            }
-        ],
-        "name": "getOfferResourcesByOfferVersion",
-        "outputs": [
-            {
-                "components": [
-                    {
-                        "internalType": "uint256",
-                        "name": "offerId",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "teeOfferIssuerId",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "teeOfferKeeperId",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "storageOrderId",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint64",
-                        "name": "offerVersion",
-                        "type": "uint64"
-                    },
-                    {
-                        "internalType": "uint32",
-                        "name": "timestamp",
-                        "type": "uint32"
-                    },
-                    {
-                        "internalType": "uint32",
-                        "name": "signedTime",
-                        "type": "uint32"
-                    },
-                    {
-                        "components": [
-                            {
-                                "internalType": "string",
-                                "name": "der",
-                                "type": "string"
-                            },
-                            {
-                                "internalType": "bytes32",
-                                "name": "r",
-                                "type": "bytes32"
-                            },
-                            {
-                                "internalType": "bytes32",
-                                "name": "s",
-                                "type": "bytes32"
-                            },
-                            {
-                                "internalType": "uint8",
-                                "name": "v",
-                                "type": "uint8"
-                            }
-                        ],
-                        "internalType": "struct Signature",
-                        "name": "signature",
-                        "type": "tuple"
-                    },
-                    {
-                        "internalType": "string",
-                        "name": "signedEncryptedData",
-                        "type": "string"
-                    }
-                ],
-                "internalType": "struct OfferResource[]",
-                "name": "",
-                "type": "tuple[]"
             }
         ],
         "stateMutability": "view",
@@ -9260,6 +9177,16 @@ export const abi = [
                     {
                         "internalType": "string",
                         "name": "signedEncryptedData",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "enum OfferType",
+                        "name": "offerType",
+                        "type": "uint8"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "solutionHash",
                         "type": "string"
                     }
                 ],
@@ -9349,6 +9276,119 @@ export const abi = [
                         "internalType": "string",
                         "name": "signedEncryptedData",
                         "type": "string"
+                    },
+                    {
+                        "internalType": "enum OfferType",
+                        "name": "offerType",
+                        "type": "uint8"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "solutionHash",
+                        "type": "string"
+                    }
+                ],
+                "internalType": "struct OfferResource[]",
+                "name": "",
+                "type": "tuple[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "offerId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint64",
+                "name": "version",
+                "type": "uint64"
+            }
+        ],
+        "name": "getOfferResourcesByOfferVersion",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "uint256",
+                        "name": "offerId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "teeOfferIssuerId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "teeOfferKeeperId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "storageOrderId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "offerVersion",
+                        "type": "uint64"
+                    },
+                    {
+                        "internalType": "uint32",
+                        "name": "timestamp",
+                        "type": "uint32"
+                    },
+                    {
+                        "internalType": "uint32",
+                        "name": "signedTime",
+                        "type": "uint32"
+                    },
+                    {
+                        "components": [
+                            {
+                                "internalType": "string",
+                                "name": "der",
+                                "type": "string"
+                            },
+                            {
+                                "internalType": "bytes32",
+                                "name": "r",
+                                "type": "bytes32"
+                            },
+                            {
+                                "internalType": "bytes32",
+                                "name": "s",
+                                "type": "bytes32"
+                            },
+                            {
+                                "internalType": "uint8",
+                                "name": "v",
+                                "type": "uint8"
+                            }
+                        ],
+                        "internalType": "struct Signature",
+                        "name": "signature",
+                        "type": "tuple"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "signedEncryptedData",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "enum OfferType",
+                        "name": "offerType",
+                        "type": "uint8"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "solutionHash",
+                        "type": "string"
                     }
                 ],
                 "internalType": "struct OfferResource[]",
@@ -9373,6 +9413,30 @@ export const abi = [
                 "internalType": "uint256",
                 "name": "",
                 "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "offerId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint32",
+                "name": "offerVersion",
+                "type": "uint32"
+            }
+        ],
+        "name": "getReplicationFactorFulfilled",
+        "outputs": [
+            {
+                "internalType": "uint32",
+                "name": "",
+                "type": "uint32"
             }
         ],
         "stateMutability": "view",
@@ -9447,6 +9511,16 @@ export const abi = [
                     {
                         "internalType": "string",
                         "name": "signedEncryptedData",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "enum OfferType",
+                        "name": "offerType",
+                        "type": "uint8"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "solutionHash",
                         "type": "string"
                     }
                 ],

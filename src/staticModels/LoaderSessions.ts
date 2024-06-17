@@ -86,13 +86,13 @@ class LoaderSessions {
     );
   }
 
-  public static async disableLoader(
+  public static async removeLoaderKeys(
     teeOfferId: BlockchainId,
     transactionOptions?: TransactionOptions,
   ): Promise<void> {
     const contract = BlockchainConnector.getInstance().getContract();
 
-    await TxManager.execute(contract.methods.disableLoader(teeOfferId), transactionOptions);
+    await TxManager.execute(contract.methods.removeLoaderKeys(teeOfferId), transactionOptions);
   }
 
   public static onLoaderSessionKeyUpdated(callback: onLoaderSessionKeyUpdatedCallback): () => void {

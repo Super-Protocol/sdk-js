@@ -8625,7 +8625,7 @@ export const abi = [
                 "type": "uint256"
             }
         ],
-        "name": "disableLoader",
+        "name": "removeLoaderKeys",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"

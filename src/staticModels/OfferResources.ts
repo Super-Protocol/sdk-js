@@ -133,8 +133,8 @@ class OfferResources {
     checkIfActionAccountInitialized(transactionOptions);
 
     const options: TransactionOptions = {
-      ...transactionOptions,
       gas: AMOY_TX_COST_LIMIT,
+      ...transactionOptions,
     };
 
     await TxManager.execute(contract.methods.clearOfferResources(teeOfferKeeperId), options);

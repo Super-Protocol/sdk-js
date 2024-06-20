@@ -12,6 +12,7 @@ import {
   WssSubscriptionOnDataFn,
   WssSubscriptionOnErrorFn,
 } from '../connectors/BlockchainEventsListener.js';
+import { AMOY_TX_COST_LIMIT } from '../constants.js';
 
 class SecretRequests {
   private static readonly logger = rootLogger.child({ className: 'SecretRequests' });
@@ -63,6 +64,7 @@ class SecretRequests {
   ): Promise<void> {
     const contract = BlockchainConnector.getInstance().getContract();
     checkIfActionAccountInitialized(transactionOptions);
+    transactionOptions!.gas = AMOY_TX_COST_LIMIT;
 
     await TxManager.execute(
       contract.methods.clearSecretRequests(teeOfferKeeperId),

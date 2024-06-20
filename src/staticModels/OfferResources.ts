@@ -131,12 +131,13 @@ class OfferResources {
   ): Promise<void> {
     const contract = BlockchainConnector.getInstance().getContract();
     checkIfActionAccountInitialized(transactionOptions);
-    transactionOptions!.gas = AMOY_TX_COST_LIMIT;
 
-    await TxManager.execute(
-      contract.methods.clearOfferResources(teeOfferKeeperId),
-      transactionOptions,
-    );
+    const options: TransactionOptions = {
+      ...transactionOptions,
+      gas: AMOY_TX_COST_LIMIT,
+    };
+
+    await TxManager.execute(contract.methods.clearOfferResources(teeOfferKeeperId), options);
   }
 
   public static onOfferResourceCreated(callback: onOfferResourceCreatedCallback): () => void {

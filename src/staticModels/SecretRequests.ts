@@ -64,12 +64,13 @@ class SecretRequests {
   ): Promise<void> {
     const contract = BlockchainConnector.getInstance().getContract();
     checkIfActionAccountInitialized(transactionOptions);
-    transactionOptions!.gas = AMOY_TX_COST_LIMIT;
 
-    await TxManager.execute(
-      contract.methods.clearSecretRequests(teeOfferKeeperId),
-      transactionOptions,
-    );
+    const options: TransactionOptions = {
+      ...transactionOptions,
+      gas: AMOY_TX_COST_LIMIT,
+    };
+
+    await TxManager.execute(contract.methods.clearSecretRequests(teeOfferKeeperId), options);
   }
 
   public static async cancel(

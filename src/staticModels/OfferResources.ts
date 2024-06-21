@@ -18,7 +18,7 @@ import {
   WssSubscriptionOnDataFn,
   WssSubscriptionOnErrorFn,
 } from '../connectors/BlockchainEventsListener.js';
-import { AMOY_TX_COST_LIMIT } from '../constants.js';
+import { AMOY_TX_GAS_LIMIT } from '../constants.js';
 
 class OfferResources {
   private static readonly logger = rootLogger.child({ className: 'OfferResources' });
@@ -131,7 +131,7 @@ class OfferResources {
   ): Promise<void> {
     const contract = BlockchainConnector.getInstance().getContract();
     checkIfActionAccountInitialized(transactionOptions);
-    transactionOptions!.gas = AMOY_TX_COST_LIMIT;
+    transactionOptions!.gas = AMOY_TX_GAS_LIMIT;
 
     await TxManager.execute(
       contract.methods.clearOfferResources(teeOfferKeeperId),

@@ -429,9 +429,10 @@ class TeeOffer {
     return TeeOffer.contract.methods.getInitializedTcbId(this.id).call();
   }
 
-  public async isTcbCreationAvailable(): Promise<boolean> {
+  public async isTcbCreationAvailable(deviceId: string): Promise<boolean> {
+    const formattedDeviceId = formatBytes32String(deviceId);
     const { offerNotBlocked, newEpochStarted, halfEpochPassed, benchmarkVerified } =
-      await TeeOffer.contract.methods.isTcbCreationAvailable(this.id).call();
+      await TeeOffer.contract.methods.isTcbCreationAvailable(this.id, formattedDeviceId).call();
 
     return offerNotBlocked && newEpochStarted && halfEpochPassed && benchmarkVerified;
   }

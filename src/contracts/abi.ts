@@ -1101,6 +1101,11 @@ export const abi = [
                 "internalType": "uint256",
                 "name": "teeOfferId",
                 "type": "uint256"
+            },
+            {
+                "internalType": "bytes32",
+                "name": "deviceId",
+                "type": "bytes32"
             }
         ],
         "name": "isTcbCreationAvailable",
@@ -8618,19 +8623,6 @@ export const abi = [
         "type": "event"
     },
     {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "teeOfferId",
-                "type": "uint256"
-            }
-        ],
-        "name": "removeLoaderKeys",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
         "inputs": [],
         "name": "getDisabledLoaders",
         "outputs": [
@@ -8717,6 +8709,19 @@ export const abi = [
             }
         ],
         "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "teeOfferId",
+                "type": "uint256"
+            }
+        ],
+        "name": "removeLoaderKeys",
+        "outputs": [],
+        "stateMutability": "nonpayable",
         "type": "function"
     },
     {
@@ -8977,13 +8982,7 @@ export const abi = [
             }
         ],
         "name": "createResourceOrder",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
-            }
-        ],
+        "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
     },

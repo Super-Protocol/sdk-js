@@ -3,18 +3,6 @@ import { BlockchainId, OfferStorageAllocated } from '../types/index.js';
 import { convertOfferStorageAllocatedFromRaw } from '../utils/helper.js';
 
 class OffersStorageAllocated {
-  public getNewStorageOrders(): Promise<BlockchainId[]> {
-    const contract = BlockchainConnector.getInstance().getContract();
-
-    return contract.methods.getNewStorageOrders().call();
-  }
-
-  public static getUsedStorageOrders(): Promise<BlockchainId[]> {
-    const contract = BlockchainConnector.getInstance().getContract();
-
-    return contract.methods.getUsedStorageOrders().call();
-  }
-
   public static async getByOfferVersion(
     offerId: BlockchainId,
     offerVersion: number = 0,
@@ -28,6 +16,18 @@ class OffersStorageAllocated {
     if (Number(allocated.timestamp) === 0) {
       return undefined;
     }
+
+    return allocated;
+  }
+
+  public static async getByIssuerId(teeOfferIssuerId: BlockchainId): Promise<OffersStorageAllocated[]> {
+    const contract = BlockchainConnector.getInstance().getContract();
+    const allocated = await contract.methods
+      .getStorageOrdersAllocatedByIssuer(teeOfferIssuerId)
+      .call()
+      .then((allocatedOffers: unknown[] | void) =>
+        allocatedOffers!.map((allocated) => convertOfferStorageAllocatedFromRaw(allocated as OfferStorageAllocated)),
+      );
 
     return allocated;
   }

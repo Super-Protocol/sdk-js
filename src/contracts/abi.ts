@@ -7170,7 +7170,7 @@ export const abi = [
                 "type": "uint256"
             }
         ],
-        "name": "confisacateAllRewards",
+        "name": "confiscateAllRewards",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
@@ -9569,11 +9569,72 @@ export const abi = [
                         "internalType": "uint32",
                         "name": "timestamp",
                         "type": "uint32"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "offerVersion",
+                        "type": "uint64"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "offerId",
+                        "type": "uint256"
                     }
                 ],
                 "internalType": "struct OfferStorageAllocated",
                 "name": "",
                 "type": "tuple"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "teeOfferIssurId",
+                "type": "uint256"
+            }
+        ],
+        "name": "getStorageOrdersAllocatedByIssuer",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "uint256",
+                        "name": "teeOfferIssuerId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "storageOrderId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint32",
+                        "name": "distributionReplicationFactor",
+                        "type": "uint32"
+                    },
+                    {
+                        "internalType": "uint32",
+                        "name": "timestamp",
+                        "type": "uint32"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "offerVersion",
+                        "type": "uint64"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "offerId",
+                        "type": "uint256"
+                    }
+                ],
+                "internalType": "struct OfferStorageAllocated[]",
+                "name": "",
+                "type": "tuple[]"
             }
         ],
         "stateMutability": "view",

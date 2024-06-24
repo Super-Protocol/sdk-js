@@ -56,6 +56,8 @@ export type OfferStorageAllocated = {
   storageOrderId: BlockchainId;
   distributionReplicationFactor: number;
   timestamp: number;
+  offerVersion: number;
+  offerId: BlockchainId;
 };
 
 export type OfferStorageRequest = {

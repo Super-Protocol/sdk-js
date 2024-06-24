@@ -32,7 +32,7 @@ import {
   SlotUsage,
   SlotInfo,
 } from '../types/index.js';
-import { formatBytes32String, hexZeroPad } from 'ethers/lib/utils.js';
+import { formatBytes32String } from 'ethers/lib/utils.js';
 import TeeOffers from '../staticModels/TeeOffers.js';
 import { TCB } from '../models/index.js';
 import { TeeConfirmationBlock, GetTcbRequest, TcbVerifiedStatus } from '@super-protocol/dto-js';

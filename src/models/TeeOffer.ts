@@ -433,16 +433,17 @@ class TeeOffer {
     if (!deviceId) {
       const actualTcbId = await this.getActualTcbId();
       if (BigInt(actualTcbId) == BigInt(0)) {
-        deviceId = '';
+        deviceId = formatBytes32String('');
       } else {
         const tcb = new TCB(actualTcbId);
-        deviceId = (await tcb.getPublicData()).deviceId;
+        deviceId = '0x' + (await tcb.getPublicData()).deviceId;
       }
+    } else {
+      deviceId = formatBytes32String(deviceId!);
     }
 
-    const formattedDeviceId = formatBytes32String(deviceId!);
     const { offerNotBlocked, newEpochStarted, halfEpochPassed, benchmarkVerified } =
-      await TeeOffer.contract.methods.isTcbCreationAvailable(this.id, formattedDeviceId).call();
+      cleanWeb3Data(await TeeOffer.contract.methods.isTcbCreationAvailable(this.id, deviceId).call());
 
     return offerNotBlocked && newEpochStarted && halfEpochPassed && benchmarkVerified;
   }

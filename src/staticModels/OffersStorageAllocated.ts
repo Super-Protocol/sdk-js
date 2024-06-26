@@ -20,7 +20,7 @@ class OffersStorageAllocated {
     return allocated;
   }
 
-  public static async getByIssuerId(teeOfferIssuerId: BlockchainId): Promise<OffersStorageAllocated[]> {
+  public static async getByIssuerId(teeOfferIssuerId: BlockchainId): Promise<OfferStorageAllocated[]> {
     const contract = BlockchainConnector.getInstance().getContract();
     const allocated = await contract.methods
       .getStorageOrdersAllocatedByIssuer(teeOfferIssuerId)

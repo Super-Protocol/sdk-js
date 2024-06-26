@@ -440,7 +440,7 @@ class TeeOffer {
         deviceId = formatBytes32String('');
       } else {
         const tcb = new TCB(actualTcbId);
-        deviceId = '0x' + (await tcb.getPublicData()).deviceId;
+        deviceId = packDeviceId((await tcb.getPublicData()).deviceId);
       }
     } else {
       deviceId = packDeviceId(deviceId);

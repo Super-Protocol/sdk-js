@@ -38,13 +38,13 @@ class TCB {
   ): Promise<TransactionReceipt> {
     checkIfActionAccountInitialized(transactionOptions);
 
-    const fromattedDeviceId = packDeviceId(publicData.deviceId);
+    const formattedDeviceId = packDeviceId(publicData.deviceId);
     return TxManager.execute(
       TCB.contract.methods.setTcbData(
         this.tcbId,
         publicData.benchmark,
         publicData.properties,
-        fromattedDeviceId,
+        formattedDeviceId,
         quote,
         publicKey,
       ),

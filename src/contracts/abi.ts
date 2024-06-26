@@ -1069,6 +1069,11 @@ export const abi = [
                 "internalType": "uint256",
                 "name": "teeOfferId",
                 "type": "uint256"
+            },
+            {
+                "internalType": "bytes32",
+                "name": "newDeviceId",
+                "type": "bytes32"
             }
         ],
         "name": "initializeTcb",

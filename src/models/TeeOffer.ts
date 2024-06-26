@@ -439,11 +439,12 @@ class TeeOffer {
         deviceId = '0x' + (await tcb.getPublicData()).deviceId;
       }
     } else {
-      deviceId = formatBytes32String(deviceId!);
+      deviceId = `0x${deviceId}`;
     }
 
-    const { offerNotBlocked, newEpochStarted, halfEpochPassed, benchmarkVerified } =
-      cleanWeb3Data(await TeeOffer.contract.methods.isTcbCreationAvailable(this.id, deviceId).call());
+    const { offerNotBlocked, newEpochStarted, halfEpochPassed, benchmarkVerified } = cleanWeb3Data(
+      await TeeOffer.contract.methods.isTcbCreationAvailable(this.id, deviceId).call(),
+    );
 
     return offerNotBlocked && newEpochStarted && halfEpochPassed && benchmarkVerified;
   }

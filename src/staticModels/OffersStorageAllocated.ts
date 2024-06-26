@@ -20,13 +20,17 @@ class OffersStorageAllocated {
     return allocated;
   }
 
-  public static async getByIssuerId(teeOfferIssuerId: BlockchainId): Promise<OfferStorageAllocated[]> {
+  public static async getByIssuerId(
+    teeOfferIssuerId: BlockchainId,
+  ): Promise<OfferStorageAllocated[]> {
     const contract = BlockchainConnector.getInstance().getContract();
     const allocated = await contract.methods
       .getStorageOrdersAllocatedByIssuer(teeOfferIssuerId)
       .call()
       .then((allocatedOffers: unknown[] | void) =>
-        allocatedOffers!.map((allocated) => convertOfferStorageAllocatedFromRaw(allocated as OfferStorageAllocated)),
+        allocatedOffers!.map((allocated) =>
+          convertOfferStorageAllocatedFromRaw(allocated as OfferStorageAllocated),
+        ),
       );
 
     return allocated;

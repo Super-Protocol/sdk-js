@@ -245,10 +245,16 @@ class TeeOffer {
   }
 
   @incrementMethodCall()
-  private async initializeTcb(deviceId: string, transactionOptions?: TransactionOptions): Promise<void> {
+  private async initializeTcb(
+    deviceId: string,
+    transactionOptions?: TransactionOptions,
+  ): Promise<void> {
     checkIfActionAccountInitialized();
 
-    await TxManager.execute(TeeOffer.contract.methods.initializeTcb(this.id, deviceId), transactionOptions);
+    await TxManager.execute(
+      TeeOffer.contract.methods.initializeTcb(this.id, deviceId),
+      transactionOptions,
+    );
   }
 
   @incrementMethodCall()
@@ -433,21 +439,11 @@ class TeeOffer {
     return TeeOffer.contract.methods.getInitializedTcbId(this.id).call();
   }
 
-  public async isTcbCreationAvailable(deviceId?: string): Promise<boolean> {
-    if (!deviceId) {
-      const actualTcbId = await this.getActualTcbId();
-      if (BigInt(actualTcbId) == BigInt(0)) {
-        deviceId = formatBytes32String('');
-      } else {
-        const tcb = new TCB(actualTcbId);
-        deviceId = packDeviceId((await tcb.getPublicData()).deviceId);
-      }
-    } else {
-      deviceId = packDeviceId(deviceId);
-    }
-
+  public async isTcbCreationAvailable(deviceId: string): Promise<boolean> {
     const { offerNotBlocked, newEpochStarted, halfEpochPassed, benchmarkVerified } = cleanWeb3Data(
-      await TeeOffer.contract.methods.isTcbCreationAvailable(this.id, deviceId).call(),
+      await TeeOffer.contract.methods
+        .isTcbCreationAvailable(this.id, packDeviceId(deviceId))
+        .call(),
     );
 
     return offerNotBlocked && newEpochStarted && halfEpochPassed && benchmarkVerified;

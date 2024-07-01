@@ -34,9 +34,11 @@ class OffersStorageRequests {
       .getOffersStorageRequestsByIssuerId(teeOfferIssuerId)
       .call()
       .then((storageRequestList: unknown[] | void) =>
-        storageRequestList!.map((storageRequest) =>
-          convertOfferStorageRequestFromRaw(storageRequest as OfferStorageRequest),
-        ),
+        storageRequestList!
+          .map((storageRequest) =>
+            convertOfferStorageRequestFromRaw(storageRequest as OfferStorageRequest),
+          )
+          .filter((storageRequest) => Number(storageRequest.timestamp) !== 0),
       );
   }
 

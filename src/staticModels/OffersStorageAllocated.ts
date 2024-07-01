@@ -28,9 +28,11 @@ class OffersStorageAllocated {
       .getStorageOrdersAllocatedByIssuer(teeOfferIssuerId)
       .call()
       .then((allocatedOffers: unknown[] | void) =>
-        allocatedOffers!.map((allocated) =>
-          convertOfferStorageAllocatedFromRaw(allocated as OfferStorageAllocated),
-        ),
+        allocatedOffers!
+          .map((allocated) =>
+            convertOfferStorageAllocatedFromRaw(allocated as OfferStorageAllocated),
+          )
+          .filter((allocated) => Number(allocated.timestamp) !== 0),
       );
 
     return allocated;

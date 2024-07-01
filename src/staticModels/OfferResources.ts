@@ -30,7 +30,9 @@ class OfferResources {
       .getOfferResourcesByKeeperId(teeOfferKeeperId)
       .call()
       .then((resources: unknown[] | void) =>
-        resources!.map((resource) => convertOfferResourceFromRaw(resource as OfferResource)),
+        resources!
+          .map((resource) => convertOfferResourceFromRaw(resource as OfferResource))
+          .filter((resource) => Number(resource.timestamp) !== 0),
       );
   }
 
@@ -41,7 +43,9 @@ class OfferResources {
       .getOfferResourcesByIssuerId(teeOfferIssuerId)
       .call()
       .then((resources: unknown[] | void) =>
-        resources!.map((resource) => convertOfferResourceFromRaw(resource as OfferResource)),
+        resources!
+          .map((resource) => convertOfferResourceFromRaw(resource as OfferResource))
+          .filter((resource) => Number(resource.timestamp) !== 0),
       );
   }
 

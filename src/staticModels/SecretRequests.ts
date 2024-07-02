@@ -30,9 +30,7 @@ class SecretRequests {
       .getSecretRequestsByKeeperId(teeOfferIssuerId)
       .call()
       .then((requests: unknown[] | void) =>
-        requests!
-          .map((request) => convertSecretRequestFromRaw(request as SecretRequest))
-          .filter((request) => Number(request.timestamp) !== 0),
+        requests!.map((request) => convertSecretRequestFromRaw(request as SecretRequest)),
       );
   }
 
@@ -43,9 +41,7 @@ class SecretRequests {
       .getSecretRequestsByRequestorId(teeOfferRequestorId)
       .call()
       .then((requests: unknown[] | void) =>
-        requests!
-          .map((request) => convertSecretRequestFromRaw(request as SecretRequest))
-          .filter((request) => Number(request.timestamp) !== 0),
+        requests!.map((request) => convertSecretRequestFromRaw(request as SecretRequest)),
       );
   }
 

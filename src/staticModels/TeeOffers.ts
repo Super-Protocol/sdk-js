@@ -495,6 +495,7 @@ class TeeOffers {
     return this.cache.wrap<BlockchainId[]>(
       key,
       async () => {
+        const offerIsVerifiedMap = new Map<string, boolean>();
         const tcbsCount = await Consensus.getTcbsCount();
         const result = new Set<BlockchainId>();
 
@@ -507,9 +508,14 @@ class TeeOffers {
             break; // there is no need to continue search, timeAdded of next tcbs will be older
           }
           const offerId = (await new TCB(tcbId.toString()).getUtilityData()).teeOfferId;
-          const isVerified = await new TeeOffer(offerId).isTeeOfferVerifying();
 
-          if (isVerified) {
+          // It does not matter if older TCBs of the offer are verified. We are only interested in the last TCB of the offer.
+          if (!offerIsVerifiedMap.has(offerId)) {
+            const isVerified = await new TeeOffer(offerId).isTeeOfferVerifying();
+            offerIsVerifiedMap.set(offerId, isVerified);
+          }
+
+          if (offerIsVerifiedMap.get(offerId)) {
             result.add(offerId);
           }
         }

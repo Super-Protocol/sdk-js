@@ -1,4 +1,5 @@
 /* eslint-disable prettier/prettier */
+import { StorageAccessCredentials } from '@super-protocol/dto-js';
 import {
   S3Credentials,
   StorageCredentials,
@@ -6,15 +7,15 @@ import {
   StorjCredentials,
 } from '@super-protocol/dto-js';
 
-type StorageCredentialsType<T extends StorageType> =
+type StorageCredentialsType<T extends StorageType | unknown > =
     T extends StorageType.StorJ ? StorageCredentials<StorjCredentials> :
     T extends StorageType.S3 ? StorageCredentials<S3Credentials>:
-    never;
+    StorageCredentials<StorageAccessCredentials>;
 
-export const parseStorageCredentials = <T extends StorageType = StorageType.StorJ>(
+export const parseStorageCredentials = <T extends StorageType | unknown = unknown>(
   decryptedCredentials: string,
 ): StorageCredentialsType<T> => {
-  const credentials: StorageCredentials = JSON.parse(decryptedCredentials);
+  const credentials: StorageCredentials<string> = JSON.parse(decryptedCredentials);
 
   return {
     storageType: credentials.storageType,

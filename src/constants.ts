@@ -22,9 +22,3 @@ export const ZERO_HASH: Hash = {
   algo: HashAlgorithm.SHA256,
   encoding: Encoding.base64,
 };
-export const HOUR_IN_MS = 60 * 60 * 1000;
-export const INACTIVE_TEE_OFFER_PERIOD_IN_HOURS = Number(
-  process.env.INACTIVE_PERIOD_TEE_OFFER_IN_HOURS ?? 25,
-);
-export const INACTIVE_TCB_PERIOD = INACTIVE_TEE_OFFER_PERIOD_IN_HOURS * HOUR_IN_MS;
-export const TEE_OFFER_SELECT_FRESH_SIZE = Number(process.env.TEE_OFFER_SELECT_FRESH_SIZE ?? 100);

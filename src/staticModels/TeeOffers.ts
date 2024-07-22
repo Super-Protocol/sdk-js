@@ -31,18 +31,8 @@ import {
   WssSubscriptionOnDataFn,
   WssSubscriptionOnErrorFn,
 } from '../connectors/BlockchainEventsListener.js';
-import TCB from '../models/TCB.js';
-import { INACTIVE_TCB_PERIOD, TEE_OFFER_SELECT_FRESH_SIZE } from '../constants.js';
-import { createMemoryCache } from '../utils/cache/index.js';
-import Consensus from './Consensus.js';
-import TeeOffer from '../models/TeeOffer.js';
-
-const inactivePeriod = (timeInMs: number): number => Date.now() - new Date(timeInMs).valueOf();
-const inactivePredicate = (timeInMs: number): boolean =>
-  inactivePeriod(timeInMs) > INACTIVE_TCB_PERIOD;
 
 class TeeOffers {
-  private static cache = createMemoryCache();
   private static coresDenominator?: number;
 
   private static readonly logger = rootLogger.child({ className: 'TeeOffers' });
@@ -483,47 +473,6 @@ class TeeOffers {
       onData,
       event: 'TeeOfferViolationRateChanged',
     });
-  }
-
-  static getMostRecentlyActive(
-    size = TEE_OFFER_SELECT_FRESH_SIZE,
-    force = false,
-  ): Promise<BlockchainId[]> {
-    const key = `${this.getMostRecentlyActive.name}:${size}`;
-    const ttl = 5 * 60;
-
-    return this.cache.wrap<BlockchainId[]>(
-      key,
-      async () => {
-        const offerIsVerifiedMap = new Map<string, boolean>();
-        const tcbsCount = await Consensus.getTcbsCount();
-        const result = new Set<BlockchainId>();
-
-        for (let tcbId = tcbsCount; tcbId > Math.max(0, tcbsCount - size); tcbId--) {
-          const tcb = await new TCB(tcbId.toString()).get();
-          if (!tcb || !tcb.timeAdded) {
-            continue;
-          }
-          if (inactivePredicate(tcb.timeAdded * 1000)) {
-            break; // there is no need to continue search, timeAdded of next tcbs will be older
-          }
-          const offerId = (await new TCB(tcbId.toString()).getUtilityData()).teeOfferId;
-
-          // It does not matter if older TCBs of the offer are verified. We are only interested in the last TCB of the offer.
-          if (!offerIsVerifiedMap.has(offerId)) {
-            const isVerified = await new TeeOffer(offerId).isTeeOfferVerifying();
-            offerIsVerifiedMap.set(offerId, isVerified);
-          }
-
-          if (offerIsVerifiedMap.get(offerId)) {
-            result.add(offerId);
-          }
-        }
-
-        return [...result].map(String);
-      },
-      { ttl, force },
-    );
   }
 }
 

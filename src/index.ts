@@ -106,6 +106,7 @@ export { default as StorageAccess } from './types/storage/StorageAccess.js';
 
 export { default as getStorageProvider } from './providers/storage/getStorageProvider.js';
 export { default as IStorageProvider } from './providers/storage/IStorageProvider.js';
+export { parseStorageCredentials } from './providers/storage/parseStorageCredentials.js';
 
 export * from './utils/CryptoKeysTransformer.js';
 export * as helpers from './utils/helpers/index.js';

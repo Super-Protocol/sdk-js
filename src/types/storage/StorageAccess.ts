@@ -1,8 +1,8 @@
-import { StorageType } from '@super-protocol/dto-js';
+import { StorageAccessCredentials, StorageType } from '@super-protocol/dto-js';
 
 type StorageAccess = {
   storageType: StorageType;
-  credentials: any;
+  credentials: StorageAccessCredentials;
   maximumConcurrent?: number;
 };
 

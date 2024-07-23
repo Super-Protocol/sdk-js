@@ -17,36 +17,33 @@ import IStorageProvider, { DownloadConfig } from './IStorageProvider.js';
 import { Readable } from 'stream';
 import StorageObject from '../../types/storage/StorageObject.js';
 import { getStreamChunks } from '../../utils/helpers/getStreamChunks.js';
+import { S3Credentials } from '@super-protocol/dto-js';
 
-export type S3ClientConfig = {
-  accessKeyId: string;
-  secretAccessKey: string;
-  endpoint: string;
-  bucket: string;
-  region: string;
+export type S3ClientConfig = S3Credentials & {
+  region?: string;
 };
 
 export class S3StorageProvider implements IStorageProvider {
   private readonly s3Client: S3Client;
   private readonly bucket: string;
   private readonly multipartChunkSizeInBytes = 64 * 1024 * 1024; // 64MB
+  private readonly defaultRegion = 'us-east-1';
 
   constructor(storageAccess: S3ClientConfig) {
-    const { accessKeyId, secretAccessKey, endpoint, bucket, region } = storageAccess;
+    const { accessKeyId, secretKey, endpoint, bucket, region } = storageAccess;
     if (!accessKeyId) throw new Error('Access key id is undefined');
-    if (!secretAccessKey) throw new Error('Secret access is undefined');
+    if (!secretKey) throw new Error('Secret access is undefined');
     if (!endpoint) throw new Error('Endpoint is undefined');
     if (!bucket) throw new Error('Bucket is undefined');
-    if (!region) throw new Error('Region is undefined');
 
     this.bucket = bucket;
 
     this.s3Client = new S3Client({
       credentials: {
         accessKeyId,
-        secretAccessKey,
+        secretAccessKey: secretKey,
       },
-      region,
+      region: region || this.defaultRegion,
       endpoint,
       forcePathStyle: true,
     });
@@ -99,7 +96,10 @@ export class S3StorageProvider implements IStorageProvider {
       const uploadId = multipart.UploadId;
       const parts: Array<CompletedPart> = [];
 
-      for await (const streamChunk of getStreamChunks(inputStream, this.multipartChunkSizeInBytes)) {
+      for await (const streamChunk of getStreamChunks(
+        inputStream,
+        this.multipartChunkSizeInBytes,
+      )) {
         const uploadPartCommand = new UploadPartCommand({
           Body: streamChunk.data,
           Bucket: this.bucket,

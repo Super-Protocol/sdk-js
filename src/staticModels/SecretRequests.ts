@@ -46,16 +46,20 @@ class SecretRequests {
   }
 
   public static async set(
-    request: SecretRequest,
+    request: Omit<SecretRequest, 'timestamp'>,
     transactionOptions?: TransactionOptions,
   ): Promise<void> {
     const contract = BlockchainConnector.getInstance().getContract();
     checkIfActionAccountInitialized(transactionOptions);
 
-    request.offerVersion = request.offerVersion ?? 0;
-    request.timestamp = 0;
-
-    await TxManager.execute(contract.methods.setSecretRequest(request), transactionOptions);
+    await TxManager.execute(
+      contract.methods.setSecretRequest({
+        ...request,
+        offerVersion: request.offerVersion ?? 0,
+        timestamp: 0,
+      }),
+      transactionOptions,
+    );
   }
 
   public static async clear(

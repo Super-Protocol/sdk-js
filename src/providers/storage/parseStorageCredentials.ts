@@ -12,6 +12,14 @@ type StorageCredentialsType<T extends StorageType | unknown > =
     T extends StorageType.S3 ? StorageCredentials<S3Credentials>:
     StorageCredentials<StorageAccessCredentials>;
 
+const tryParseJson = (probablyJson: string): ReturnType<typeof JSON.parse> =>{
+  try {
+    return JSON.parse(probablyJson);
+  } catch  {
+    return probablyJson;
+  }
+};
+
 export const parseStorageCredentials = <T extends StorageType | unknown = unknown>(
   decryptedCredentials: string,
 ): StorageCredentialsType<T> => {
@@ -19,7 +27,7 @@ export const parseStorageCredentials = <T extends StorageType | unknown = unknow
 
   return {
     storageType: credentials.storageType,
-    downloadCredentials: JSON.parse(credentials.downloadCredentials),
-    uploadCredentials: JSON.parse(credentials.uploadCredentials),
+    downloadCredentials: tryParseJson(credentials.downloadCredentials),
+    uploadCredentials: tryParseJson(credentials.uploadCredentials),
   } as StorageCredentialsType<T>;
 };

@@ -4022,6 +4022,30 @@ export const abi = [
                 "internalType": "uint256",
                 "name": "orderId",
                 "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "amount",
+                "type": "uint256"
+            }
+        ],
+        "name": "debitOrderDepositByApp",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "orderId",
+                "type": "uint256"
             }
         ],
         "name": "isOrderProfitAvailable",
@@ -4837,6 +4861,25 @@ export const abi = [
                 "internalType": "struct OrderArgs",
                 "name": "",
                 "type": "tuple"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "orderId",
+                "type": "uint256"
+            }
+        ],
+        "name": "getOrderConsumer",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
             }
         ],
         "stateMutability": "view",
@@ -9094,6 +9137,11 @@ export const abi = [
                         "internalType": "string",
                         "name": "solutionHash",
                         "type": "string"
+                    },
+                    {
+                        "internalType": "bool",
+                        "name": "previousDataCopied",
+                        "type": "bool"
                     }
                 ],
                 "internalType": "struct OfferResource",
@@ -9192,6 +9240,11 @@ export const abi = [
                         "internalType": "string",
                         "name": "solutionHash",
                         "type": "string"
+                    },
+                    {
+                        "internalType": "bool",
+                        "name": "previousDataCopied",
+                        "type": "bool"
                     }
                 ],
                 "internalType": "struct OfferResource[]",
@@ -9290,6 +9343,11 @@ export const abi = [
                         "internalType": "string",
                         "name": "solutionHash",
                         "type": "string"
+                    },
+                    {
+                        "internalType": "bool",
+                        "name": "previousDataCopied",
+                        "type": "bool"
                     }
                 ],
                 "internalType": "struct OfferResource[]",
@@ -9393,6 +9451,11 @@ export const abi = [
                         "internalType": "string",
                         "name": "solutionHash",
                         "type": "string"
+                    },
+                    {
+                        "internalType": "bool",
+                        "name": "previousDataCopied",
+                        "type": "bool"
                     }
                 ],
                 "internalType": "struct OfferResource[]",
@@ -9526,6 +9589,113 @@ export const abi = [
                         "internalType": "string",
                         "name": "solutionHash",
                         "type": "string"
+                    },
+                    {
+                        "internalType": "bool",
+                        "name": "previousDataCopied",
+                        "type": "bool"
+                    }
+                ],
+                "internalType": "struct OfferResource",
+                "name": "resource",
+                "type": "tuple"
+            },
+            {
+                "internalType": "uint32",
+                "name": "n",
+                "type": "uint32"
+            }
+        ],
+        "name": "incrementReplicationFactor",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "uint256",
+                        "name": "offerId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "teeOfferIssuerId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "teeOfferKeeperId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "storageOrderId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "offerVersion",
+                        "type": "uint64"
+                    },
+                    {
+                        "internalType": "uint32",
+                        "name": "timestamp",
+                        "type": "uint32"
+                    },
+                    {
+                        "internalType": "uint32",
+                        "name": "signedTime",
+                        "type": "uint32"
+                    },
+                    {
+                        "components": [
+                            {
+                                "internalType": "string",
+                                "name": "der",
+                                "type": "string"
+                            },
+                            {
+                                "internalType": "bytes32",
+                                "name": "r",
+                                "type": "bytes32"
+                            },
+                            {
+                                "internalType": "bytes32",
+                                "name": "s",
+                                "type": "bytes32"
+                            },
+                            {
+                                "internalType": "uint8",
+                                "name": "v",
+                                "type": "uint8"
+                            }
+                        ],
+                        "internalType": "struct Signature",
+                        "name": "signature",
+                        "type": "tuple"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "signedEncryptedData",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "enum OfferType",
+                        "name": "offerType",
+                        "type": "uint8"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "solutionHash",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "bool",
+                        "name": "previousDataCopied",
+                        "type": "bool"
                     }
                 ],
                 "internalType": "struct OfferResource",
@@ -9782,6 +9952,11 @@ export const abi = [
                         "internalType": "uint32",
                         "name": "timestamp",
                         "type": "uint32"
+                    },
+                    {
+                        "internalType": "bool",
+                        "name": "copyPreviousData",
+                        "type": "bool"
                     }
                 ],
                 "internalType": "struct OfferStorageRequest[]",
@@ -9853,6 +10028,11 @@ export const abi = [
                         "internalType": "uint32",
                         "name": "timestamp",
                         "type": "uint32"
+                    },
+                    {
+                        "internalType": "bool",
+                        "name": "copyPreviousData",
+                        "type": "bool"
                     }
                 ],
                 "internalType": "struct OfferStorageRequest",
@@ -9911,6 +10091,11 @@ export const abi = [
                         "internalType": "uint32",
                         "name": "timestamp",
                         "type": "uint32"
+                    },
+                    {
+                        "internalType": "bool",
+                        "name": "copyPreviousData",
+                        "type": "bool"
                     }
                 ],
                 "internalType": "struct OfferStorageRequest",

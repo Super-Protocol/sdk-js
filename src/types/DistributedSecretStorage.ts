@@ -49,6 +49,7 @@ export type OfferResource = {
   signedEncryptedData: string;
   offerType: OfferType;
   solutionHash?: string;
+  previousDataCopied: boolean;
 };
 
 export type OfferStorageAllocated = {
@@ -70,4 +71,5 @@ export type OfferStorageRequest = {
   offerVersion?: number;
   replicationFactor: number;
   timestamp: number;
+  copyPreviousData: boolean;
 };

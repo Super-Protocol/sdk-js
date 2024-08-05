@@ -10,10 +10,10 @@ import { BlockchainId } from '../types/index.js';
 import Crypto from '../crypto/index.js';
 
 export class TeeBlockVerifier {
-  static verifiedTlbHashes: Map<string, string> = new Map();
-  static verifiedTcbs: Set<BlockchainId> = new Set();
+  private static readonly verifiedTlbHashes: Map<string, string> = new Map();
+  private static readonly verifiedTcbs: Set<BlockchainId> = new Set();
 
-  private static async checkQuote(
+  static async checkQuote(
     quote: Uint8Array,
     dataBlob: Uint8Array,
     sgxApiUrl: string,
@@ -45,7 +45,7 @@ export class TeeBlockVerifier {
     }
   }
 
-  public static async verifyTcb(
+  static async verifyTcb(
     tcb: TCB,
     quoteString: string,
     pubKey: string,
@@ -83,7 +83,7 @@ export class TeeBlockVerifier {
     );
   }
 
-  public static async verifyTlb(
+  static async verifyTlb(
     tlb: TLBlockUnserializeResultType,
     tlbString: string,
     offerId: string,

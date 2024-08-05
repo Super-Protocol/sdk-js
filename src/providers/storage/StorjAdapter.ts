@@ -1,13 +1,14 @@
 import StorageAccess from '../../types/storage/StorageAccess.js';
 import logger, { Logger } from '../../logger.js';
 import StorageAdapter, { StorageAdapterConfig, CacheEvents } from './StorageAdapter.js';
+import { StorjCredentials } from '@super-protocol/dto-js';
 
 export type StorjConfig = StorageAdapterConfig;
 
 export default class StorjAdapter<V extends object> {
   private storageAdapter: StorageAdapter<V>;
   private readonly logger?: Logger | null;
-  constructor(storageAccess: StorageAccess, config: StorjConfig) {
+  constructor(storageAccess: StorageAccess<StorjCredentials>, config: StorjConfig) {
     const { showLogs = true } = config || {};
     this.logger = showLogs ? logger.child({ class: StorjAdapter.name }) : null;
     this.storageAdapter = new StorageAdapter(storageAccess, config);

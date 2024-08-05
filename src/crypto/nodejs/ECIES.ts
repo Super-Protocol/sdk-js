@@ -104,10 +104,7 @@ class ECIES {
         if (err) {
           return reject(err);
         }
-        resolve({
-          publicKey: publicKey.export({ type: 'spki', format: 'der' }),
-          privateKey: privateKey.export({ type: 'pkcs8', format: 'der' }),
-        });
+        resolve({ publicKey, privateKey });
       });
     });
   }

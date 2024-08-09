@@ -70,10 +70,11 @@ class Offer {
   @incrementMethodCall()
   public async isBaseImage(): Promise<boolean> {
     const info = this.offerInfo ?? (await this.getInfo());
-    if (info.offerType !== OfferType.Solution || !Boolean(info.resultResource)) {
+    if (info.offerType !== OfferType.Solution) {
       return false;
     }
-    const isRestrictedBySolution = await this.isRestrictedByOfferType(OfferType.Solution);
+
+    const isRestrictedBySolution = this.offerInfo?.restrictions.types.includes(OfferType.Solution);
     return !isRestrictedBySolution;
   }
 
@@ -134,7 +135,9 @@ class Offer {
     const { info } = await Offer.contract.methods.getValueOffer(this.id).call();
     this.offerInfo = cleanWeb3Data(info) as OfferInfo;
 
-    const offerRestrictions = await Offer.contract.methods.getOfferInitialRestrictions(this.id).call();
+    const offerRestrictions = await Offer.contract.methods
+      .getOfferInitialRestrictions(this.id)
+      .call();
     this.offerInfo.restrictions = cleanWeb3Data(offerRestrictions) as OfferRestrictions;
 
     return this.offerInfo;
@@ -275,7 +278,13 @@ class Offer {
     const slots: ValueOfferSlotRaw[] = await Offer.contract.methods
       .getValueOfferSlots(this.id, begin, end)
       .call()
-      .then((slots) => slots.map((slot) => transformComplexObject(slot)));
+      .then((slots) => {
+        const a = slots.map((slot) => transformComplexObject(slot));
+        return a;
+      })
+      .catch((err) => {
+        throw err;
+      });
 
     const coresDenominator = await TeeOffers.getDenominator();
 

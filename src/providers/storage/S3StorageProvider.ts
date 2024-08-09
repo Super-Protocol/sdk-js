@@ -36,6 +36,11 @@ export class S3StorageProvider implements IStorageProvider {
     if (!secretKey) throw new Error('Secret access is undefined');
     if (!endpoint) throw new Error('Endpoint is undefined');
     if (!bucket) throw new Error('Bucket is undefined');
+    if (prefix.startsWith('/') || !prefix.endsWith('/')) {
+      throw new Error(
+        `Prefix is invalid: it must not start with "/" and must end with "/" (prefix=${prefix})`,
+      );
+    }
 
     this.bucket = bucket;
     this.prefix = prefix;

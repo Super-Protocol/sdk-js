@@ -26,17 +26,19 @@ export type S3ClientConfig = S3Credentials & {
 export class S3StorageProvider implements IStorageProvider {
   private readonly s3Client: S3Client;
   private readonly bucket: string;
+  private readonly prefix: string;
   private readonly multipartChunkSizeInBytes = 64 * 1024 * 1024; // 64MB
   private readonly defaultRegion = 'us-east-1';
 
   constructor(storageAccess: S3ClientConfig) {
-    const { accessKeyId, secretKey, endpoint, bucket, region } = storageAccess;
+    const { accessKeyId, secretKey, endpoint, bucket, region, prefix } = storageAccess;
     if (!accessKeyId) throw new Error('Access key id is undefined');
     if (!secretKey) throw new Error('Secret access is undefined');
     if (!endpoint) throw new Error('Endpoint is undefined');
     if (!bucket) throw new Error('Bucket is undefined');
 
     this.bucket = bucket;
+    this.prefix = prefix;
 
     this.s3Client = new S3Client({
       credentials: {
@@ -49,6 +51,10 @@ export class S3StorageProvider implements IStorageProvider {
     });
   }
 
+  private applyPrefix(key: string): string {
+    return `${this.prefix}${key}`;
+  }
+
   async uploadFile(
     inputStream: Readable,
     remotePath: string,
@@ -57,14 +63,16 @@ export class S3StorageProvider implements IStorageProvider {
   ): Promise<void> {
     // For performance & cost optimization
     // https://docs.storj.io/dcs/api-reference/s3-compatible-gateway/multipart-upload/multipart-part-size
+    const key = this.applyPrefix(remotePath);
+
     if (contentLength >= this.multipartChunkSizeInBytes) {
-      return this.multipartUpload(inputStream, remotePath, contentLength, progressListener);
+      return this.multipartUpload(inputStream, key, contentLength, progressListener);
     }
 
     const putObjectCommand = new PutObjectCommand({
       Body: inputStream,
       Bucket: this.bucket,
-      Key: remotePath,
+      Key: key,
       ContentLength: contentLength,
     });
 
@@ -81,9 +89,11 @@ export class S3StorageProvider implements IStorageProvider {
     contentLength: number,
     progressListener?: ((total: number, current: number) => void) | undefined,
   ): Promise<void> {
+    const key = this.applyPrefix(remotePath);
+
     const createMultipartUploadCommand = new CreateMultipartUploadCommand({
       Bucket: this.bucket,
-      Key: remotePath,
+      Key: key,
     });
 
     const multipart = await this.s3Client.send(createMultipartUploadCommand);
@@ -103,7 +113,7 @@ export class S3StorageProvider implements IStorageProvider {
         const uploadPartCommand = new UploadPartCommand({
           Body: streamChunk.data,
           Bucket: this.bucket,
-          Key: remotePath,
+          Key: key,
           UploadId: uploadId,
           PartNumber: streamChunk.partNumber,
         });
@@ -123,7 +133,7 @@ export class S3StorageProvider implements IStorageProvider {
 
       const completeMultipartUploadCommand = new CompleteMultipartUploadCommand({
         Bucket: this.bucket,
-        Key: remotePath,
+        Key: key,
         UploadId: multipart.UploadId,
         MultipartUpload: { Parts: parts },
       });
@@ -132,7 +142,7 @@ export class S3StorageProvider implements IStorageProvider {
     } catch (uploadingError) {
       const abortMultipartUploadCommand = new AbortMultipartUploadCommand({
         Bucket: this.bucket,
-        Key: remotePath,
+        Key: key,
         UploadId: multipart.UploadId,
       });
 
@@ -143,9 +153,11 @@ export class S3StorageProvider implements IStorageProvider {
   }
 
   async deleteObject(remotePath: string): Promise<void> {
+    const key = this.applyPrefix(remotePath);
+
     const deleteObjectCommand = new DeleteObjectCommand({
       Bucket: this.bucket,
-      Key: remotePath,
+      Key: key,
     });
     await this.s3Client.send(deleteObjectCommand);
   }
@@ -155,9 +167,11 @@ export class S3StorageProvider implements IStorageProvider {
     config: DownloadConfig,
     progressListener?: ((total: number, current: number) => void) | undefined,
   ): Promise<Readable> {
+    const key = this.applyPrefix(remotePath);
+
     const getObjectParams: GetObjectCommandInput = {
       Bucket: this.bucket,
-      Key: remotePath,
+      Key: key,
     };
 
     if (config) {
@@ -188,18 +202,20 @@ export class S3StorageProvider implements IStorageProvider {
   }
 
   async listObjects(remotePath: string): Promise<StorageObject[]> {
-    const prefix = remotePath.endsWith('/') ? remotePath : `${remotePath}/`;
+    const key = this.applyPrefix(
+      remotePath.endsWith('/') || remotePath === '' ? remotePath : `${remotePath}/`,
+    );
 
     const listObjectsCommand = new ListObjectsV2Command({
       Bucket: this.bucket,
-      Prefix: prefix,
+      Prefix: key,
     });
     const listObjects = await this.s3Client.send(listObjectsCommand);
 
     let result: StorageObject[] = [];
     if (listObjects.Contents) {
       result = listObjects.Contents.map((object) => ({
-        name: object.Key || '',
+        name: object.Key?.replace(this.prefix, '') || '',
         createdAt: object.LastModified || new Date(),
         size: object.Size || 0,
       }));
@@ -209,9 +225,11 @@ export class S3StorageProvider implements IStorageProvider {
   }
 
   private async getMetadata(remotePath: string): Promise<HeadObjectCommandOutput> {
+    const key = this.applyPrefix(remotePath);
+
     const headObjectCommand = new HeadObjectCommand({
       Bucket: this.bucket,
-      Key: remotePath,
+      Key: key,
     });
 
     return await this.s3Client.send(headObjectCommand);

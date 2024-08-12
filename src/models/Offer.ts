@@ -278,13 +278,7 @@ class Offer {
     const slots: ValueOfferSlotRaw[] = await Offer.contract.methods
       .getValueOfferSlots(this.id, begin, end)
       .call()
-      .then((slots) => {
-        const a = slots.map((slot) => transformComplexObject(slot));
-        return a;
-      })
-      .catch((err) => {
-        throw err;
-      });
+      .then((slots) => slots.map((slot) => transformComplexObject(slot)));
 
     const coresDenominator = await TeeOffers.getDenominator();
 

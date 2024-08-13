@@ -20,7 +20,7 @@
     "lint:fix": "eslint --ext .ts . --fix",
     "build:cjs": "tsc -p ./tsconfig.cjs.json && echo '{\"type\": \"commonjs\"}' > dist/cjs/package.json",
     "build:mjs": "tsc -p ./tsconfig.mjs.json && echo '{\"type\": \"module\"}' > dist/mjs/package.json",
-    "build": "rm -rf ./build && npm run build:cjs && npm run build:mjs",
+    "build": "rm -rf ./dist && npm run build:cjs && npm run build:mjs",
     "prepare": "npm run build",
     "docs": "typedoc src/index.ts --excludePrivate --plugin typedoc-plugin-markdown --out ./auto-docs",
     "docs-cleanup": "rm -rf auto-docs",

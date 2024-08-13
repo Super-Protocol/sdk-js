@@ -1,9 +1,11 @@
 import { S3Credentials, StorjCredentials, StringifiedCredentials } from '@super-protocol/dto-js';
-import {
+import type {
   AccessResultStruct as Access,
   ProjectResultStruct as Project,
+  Uplink,
+  Permission,
+  SharePrefix,
 } from '@super-protocol/uplink-nodejs';
-import * as storj from '@super-protocol/uplink-nodejs';
 
 export enum CredentialsPermissions {
   read,
@@ -15,14 +17,12 @@ export enum CredentialsPermissions {
 export class StorjCredentialsManager {
   private accessToken: string;
   private bucket: string;
-  private _uplink: storj.Uplink;
-  private _access?: Access;
-  private _project?: Project;
+  private access?: Access;
+  private project?: Project;
 
   constructor(storageConfig: Pick<StorjCredentials, 'token' | 'bucket'>) {
     this.accessToken = storageConfig.token;
     this.bucket = storageConfig.bucket;
-    this._uplink = new storj.Uplink();
   }
 
   getStorageId(entity: string, entityId: string): string {
@@ -43,6 +43,7 @@ export class StorjCredentialsManager {
       listPerm = permissions.includes(CredentialsPermissions.list),
       deletePerm = permissions.includes(CredentialsPermissions.delete);
 
+    const storj = await this.lazyStorj();
     const perm = new storj.Permission(readPerm, writePerm, deletePerm, listPerm, 0, 0);
     const sharePrefix = new storj.SharePrefix(this.bucket, prefix + '/');
     const access = await this.lazyAccess();
@@ -84,34 +85,43 @@ export class StorjCredentialsManager {
     credentialString: StringifiedCredentials<StorjCredentials>,
   ): Promise<void> {
     const credentials: StorjCredentials = JSON.parse(credentialString);
-    const access = await this.parseAccess(credentials.token);
+    const storj = await this.lazyStorj();
+    const uplink = new storj.Uplink();
+    const access = await uplink.parseAccess(credentials.token);
     const project = await this.lazyProject();
 
     await project.revokeAccess(access);
   }
 
-  private parseAccess(access: string): Promise<Access> {
-    return this._uplink.parseAccess(access);
+  private async lazyStorj(): Promise<{
+    Uplink: typeof Uplink;
+    Permission: typeof Permission;
+    SharePrefix: typeof SharePrefix;
+  }> {
+    return await require('@super-protocol/uplink-nodejs');
   }
 
   private async lazyAccess(): Promise<Access> {
-    if (this._access) {
-      return this._access;
+    if (this.access) {
+      return this.access;
     }
 
-    this._access = await this.parseAccess(this.accessToken);
+    const storj = await this.lazyStorj();
+    const uplink = new storj.Uplink();
 
-    return this._access!;
+    this.access = await uplink.parseAccess(this.accessToken);
+
+    return this.access;
   }
 
   private async lazyProject(): Promise<Project> {
-    if (this._project) {
-      return this._project;
+    if (this.project) {
+      return this.project;
     }
 
     const access = await this.lazyAccess();
-    this._project = await access.openProject();
+    this.project = await access.openProject();
 
-    return this._project;
+    return this.project;
   }
 }

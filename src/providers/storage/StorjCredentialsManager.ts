@@ -17,10 +17,8 @@ export enum CredentialsPermissions {
 export class StorjCredentialsManager {
   private accessToken: string;
   private bucket: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private _storj?: any;
-  private _access?: Access;
-  private _project?: Project;
+  private access?: Access;
+  private project?: Project;
 
   constructor(storageConfig: Pick<StorjCredentials, 'token' | 'bucket'>) {
     this.accessToken = storageConfig.token;
@@ -100,34 +98,30 @@ export class StorjCredentialsManager {
     Permission: typeof Permission;
     SharePrefix: typeof SharePrefix;
   }> {
-    if (!this._storj) {
-      this._storj = await require('@super-protocol/uplink-nodejs');
-    }
-
-    return this._storj;
+    return await require('@super-protocol/uplink-nodejs');
   }
 
   private async lazyAccess(): Promise<Access> {
-    if (this._access) {
-      return this._access;
+    if (this.access) {
+      return this.access;
     }
 
     const storj = await this.lazyStorj();
     const uplink = new storj.Uplink();
 
-    this._access = await uplink.parseAccess(this.accessToken);
+    this.access = await uplink.parseAccess(this.accessToken);
 
-    return this._access;
+    return this.access;
   }
 
   private async lazyProject(): Promise<Project> {
-    if (this._project) {
-      return this._project;
+    if (this.project) {
+      return this.project;
     }
 
     const access = await this.lazyAccess();
-    this._project = await access.openProject();
+    this.project = await access.openProject();
 
-    return this._project;
+    return this.project;
   }
 }

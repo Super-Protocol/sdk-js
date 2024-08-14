@@ -7,6 +7,8 @@ import {
   intelCrlDer,
   tcbData,
   qeIdentityData,
+  tdxTcbData,
+  tdxQeIdentityData,
 } from './examples.js';
 
 jest.mock('axios', () => ({
@@ -14,12 +16,18 @@ jest.mock('axios', () => ({
     switch (url) {
       case 'https://pccs.superprotocol.io/sgx/certification/v4/pckcrl?ca=platform&encoding=pem':
         return Promise.resolve(platformCrlResult);
-      case 'https://pccs.superprotocol.io/sgx/certification/v4/rootcacrl':
+      case 'https://pccs.superprotocol.io/sgx/certification/v4/crl?uri=https://certificates.trustedservices.intel.com/IntelSGXRootCA.der':
         return Promise.resolve(intelCrlDer);
       case 'https://pccs.superprotocol.io/sgx/certification/v4/tcb?fmspc=30606a000000':
         return Promise.resolve(tcbData);
-      default:
+      case 'https://pccs.superprotocol.io/tdx/certification/v4/tcb?fmspc=b0c06f000000':
+        return Promise.resolve(tdxTcbData);
+      case 'https://pccs.superprotocol.io/sgx/certification/v4/qe/identity':
         return Promise.resolve(qeIdentityData);
+      case 'https://pccs.superprotocol.io/tdx/certification/v4/qe/identity':
+        return Promise.resolve(tdxQeIdentityData);
+      default:
+        return Promise.resolve({});
     }
   },
 }));
@@ -58,6 +66,13 @@ describe('Quote validator', () => {
       const res = await validator.validate(quoteBuffer);
       expect(res).toBeDefined();
       expect(res.quoteValidationStatus).toEqual(QuoteValidationStatuses.Error);
+    });
+
+    test('tdx quote', async () => {
+      const quoteBuffer = Buffer.from(testQuotes.tdxQuote, 'base64');
+      const res = await validator.validate(quoteBuffer);
+      expect(res).toBeDefined();
+      expect(res.quoteValidationStatus).toEqual(QuoteValidationStatuses.UpToDate);
     });
   });
 

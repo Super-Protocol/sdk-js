@@ -6,8 +6,14 @@ import { formatter } from 'js-encoding-utils';
 import { CertificateRevocationList } from 'pkijs';
 import { fromBER } from 'asn1js';
 import _ from 'lodash';
-import { TeeSgxParser } from './QuoteParser.js';
-import { TeeSgxQuoteDataType, TeeSgxReportDataType } from './types.js';
+import { TeeSgxParser, TeeTdxParser, TeeParser } from './QuoteParser.js';
+import {
+  TeeSgxQuoteDataType,
+  TeeSgxReportDataType,
+  QuoteType,
+  TeeTdxQuoteDataType,
+  TeeQuoteBase,
+} from './types.js';
 import rootLogger from '../logger.js';
 import { IQEIdentity, ITcbData } from './interface.js';
 import { TeeQuoteValidatorError } from './errors.js';
@@ -42,12 +48,14 @@ export class QuoteValidator {
   private readonly isDefault: boolean;
   private readonly baseUrl: string;
   private readonly teeSgxParser: TeeSgxParser;
+  private readonly teeTdxParser: TeeTdxParser;
   private logger: typeof rootLogger;
 
   constructor(baseUrl: string) {
     this.isDefault = baseUrl === INTEL_BASE_SGX_URL;
     this.baseUrl = `${baseUrl}/sgx/certification/v4`;
     this.teeSgxParser = new TeeSgxParser();
+    this.teeTdxParser = new TeeTdxParser();
     this.logger = rootLogger.child({ className: QuoteValidator.name });
   }
 
@@ -151,7 +159,7 @@ export class QuoteValidator {
   }
 
   private async getCertificates(
-    quote: TeeSgxQuoteDataType,
+    quote: TeeQuoteBase,
   ): Promise<{ pckCert: Certificate; rootCertPem: string }> {
     const platformCrlResult = await axios.get(`${this.baseUrl}/pckcrl?ca=platform&encoding=pem`);
     const platformChain = decodeURIComponent(platformCrlResult.headers['sgx-pck-crl-issuer-chain']);
@@ -179,8 +187,7 @@ export class QuoteValidator {
       throw new TeeQuoteValidatorError('Wrong Intel root certificate public key');
     }
 
-    const certificatePems: string[] = this.splitChain(quote.qeCertificationData.toString()); // [pck, platform, root]
-    const pckCert = Certificate.fromPEM(Buffer.from(certificatePems[0]));
+    const pckCert = Certificate.fromPEM(Buffer.from(quote.certificates.device.pem));
     const certType = quote.qeCertificationDataType;
 
     if (!this.checkValidDate(pckCert.validFrom.valueOf(), pckCert.validTo.valueOf())) {
@@ -189,7 +196,7 @@ export class QuoteValidator {
     if (certType !== 5) {
       throw new TeeQuoteValidatorError(`Unsupported certification data type: ${certType}`);
     }
-    if (rootFetchedPem !== certificatePems[2]) {
+    if (rootFetchedPem !== quote.certificates.root.pem) {
       throw new TeeQuoteValidatorError("Invalid SGX root certificate in quote's certificate chain");
     }
 
@@ -203,20 +210,17 @@ export class QuoteValidator {
       pckCert.serialNumber,
     ];
 
-    if (this.isDefault) {
-      const intelCrlDer = await axios.get(INTEL_SGX_ROOT_CA_URL, {
-        responseType: 'arraybuffer',
-      });
-      const intelCrlAsn = fromBER(Buffer.from(intelCrlDer.data));
-      this.checkCertificatesInCrl(
-        new CertificateRevocationList({ schema: intelCrlAsn.result }),
-        certIds,
-      );
-    } else {
-      const intelCrlDer = await axios.get(`${this.baseUrl}/rootcacrl`);
-      const intelCrl = this.getCrl(intelCrlDer.data);
-      this.checkCertificatesInCrl(intelCrl, certIds);
-    }
+    const caCrlUrl = this.isDefault
+      ? INTEL_SGX_ROOT_CA_URL
+      : `${this.baseUrl}/crl?uri=${INTEL_SGX_ROOT_CA_URL}`;
+    const intelCrlDer = await axios.get(caCrlUrl, {
+      responseType: 'arraybuffer',
+    });
+    const intelCrlAsn = fromBER(Buffer.from(intelCrlDer.data));
+    this.checkCertificatesInCrl(
+      new CertificateRevocationList({ schema: intelCrlAsn.result }),
+      certIds,
+    );
 
     const platformCrl = this.getCrl(platformCrlResult.data);
     this.checkCertificatesInCrl(platformCrl, certIds);
@@ -225,7 +229,7 @@ export class QuoteValidator {
   }
 
   private async verifyQeReportSignature(
-    quote: TeeSgxQuoteDataType,
+    quote: TeeQuoteBase,
     pckPublicKey: Buffer,
   ): Promise<boolean> {
     const signature = Buffer.from(quote.qeReportSignature);
@@ -235,7 +239,7 @@ export class QuoteValidator {
   }
 
   private async verifyQeReportData(
-    quote: TeeSgxQuoteDataType,
+    quote: TeeQuoteBase,
     report: TeeSgxReportDataType,
   ): Promise<boolean> {
     const qeAuthData = quote.qeAuthenticationData;
@@ -247,11 +251,19 @@ export class QuoteValidator {
     return result === 0;
   }
 
-  private async verifyEnclaveReportSignature(quote: TeeSgxQuoteDataType): Promise<boolean> {
+  private async verifyEnclaveReportSignature(
+    quote: TeeQuoteBase
+  ): Promise<boolean> {
     const key = Buffer.from(quote.ecdsaAttestationKey);
     const headerBuffer = Buffer.from(quote.rawHeader);
-    const reportBuffer = Buffer.from(quote.report);
-    const expected = quote.isvEnclaveReportSignature;
+    const reportBuffer =
+      quote.quoteType === QuoteType.SGX
+        ? Buffer.from((quote as TeeSgxQuoteDataType).report)
+        : Buffer.from((quote as TeeTdxQuoteDataType).tdQuoteBody);
+    const expected =
+      quote.quoteType === QuoteType.SGX
+        ? Buffer.from((quote as TeeSgxQuoteDataType).isvEnclaveReportSignature)
+        : Buffer.from((quote as TeeTdxQuoteDataType).quoteSignature);
 
     const calculatedHash = await this.getSha256Hash(Buffer.concat([headerBuffer, reportBuffer]));
 
@@ -269,9 +281,9 @@ export class QuoteValidator {
   }
 
   private async validateQuoteStructure(
-    quote: TeeSgxQuoteDataType,
+    quote: TeeQuoteBase,
     report: TeeSgxReportDataType,
-    pckPublicKey: Buffer,
+    pckPublicKey: Buffer
   ): Promise<void> {
     if (!(await this.verifyQeReportSignature(quote, pckPublicKey))) {
       throw new TeeQuoteValidatorError('Wrong QE report signature');
@@ -313,8 +325,16 @@ export class QuoteValidator {
     return targetType === asn1.Type.OCTETSTRING ? result : parseInt(result, 16).toString();
   }
 
-  private async getTcbInfo(fmspc: string, rootCertPem: string): Promise<ITcbData> {
-    const tcbData = await axios.get(`${this.baseUrl}/tcb?fmspc=${fmspc}`);
+  private async getTcbInfo(
+    fmspc: string,
+    rootCertPem: string,
+    quoteType: QuoteType,
+  ): Promise<ITcbData> {
+    let tcbUrl = `${this.baseUrl}/tcb?fmspc=${fmspc}`;
+    if (quoteType === QuoteType.TDX) {
+      tcbUrl = tcbUrl.replace('sgx/certification', 'tdx/certification');
+    }
+    const tcbData = await axios.get(tcbUrl);
     const tcbInfoHeader = 'tcb-info-issuer-chain';
     const tcbInfoChain = this.splitChain(decodeURIComponent(tcbData.headers[tcbInfoHeader])); // [tcb, root]
     if (tcbInfoChain[1] !== rootCertPem) {
@@ -340,8 +360,12 @@ export class QuoteValidator {
     return tcbData.data as ITcbData;
   }
 
-  private async getQEIdentity(rootCertPem: string): Promise<IQEIdentity> {
-    const qeIdentityData = await axios.get(`${this.baseUrl}/qe/identity`);
+  private async getQEIdentity(rootCertPem: string, quoteType: QuoteType): Promise<IQEIdentity> {
+    let qeIdentityUrl = `${this.baseUrl}/qe/identity`;
+    if (quoteType === QuoteType.TDX) {
+      qeIdentityUrl = qeIdentityUrl.replace('sgx/certification', 'tdx/certification');
+    }
+    const qeIdentityData = await axios.get(qeIdentityUrl);
     const qeIdentityHeader = 'sgx-enclave-identity-issuer-chain';
     const qeIdentityChain = this.splitChain(
       decodeURIComponent(qeIdentityData.headers[qeIdentityHeader]),
@@ -473,8 +497,12 @@ export class QuoteValidator {
 
   public async validate(quoteBuffer: Buffer): Promise<ValidationResult> {
     try {
-      const quote: TeeSgxQuoteDataType = this.teeSgxParser.parseQuote(quoteBuffer);
-      const report: TeeSgxReportDataType = this.teeSgxParser.parseReport(quote.qeReport);
+      const quoteType = TeeParser.determineQuoteType(quoteBuffer);
+      const quote =
+        quoteType.type === QuoteType.SGX
+          ? this.teeSgxParser.parseQuote(quoteBuffer)
+          : this.teeTdxParser.parseQuote(quoteBuffer);
+      const report = this.teeSgxParser.parseReport(quote.qeReport);
 
       const { pckCert, rootCertPem } = await this.getCertificates(quote);
 
@@ -485,8 +513,8 @@ export class QuoteValidator {
       const fmspc = this.getDataFromExtension(sgxExtensionData, FMSPC_OID, asn1.Type.OCTETSTRING);
       const pceId = this.getDataFromExtension(sgxExtensionData, PCEID_OID, asn1.Type.OCTETSTRING);
 
-      const tcbData = await this.getTcbInfo(fmspc, rootCertPem);
-      const qeIdentity = await this.getQEIdentity(rootCertPem);
+      const tcbData = await this.getTcbInfo(fmspc, rootCertPem, quoteType.type);
+      const qeIdentity = await this.getQEIdentity(rootCertPem, quoteType.type);
 
       const qeIdentityStatus = this.getQEIdentityStatus(report, qeIdentity);
       const tcbStatus = this.getTcbStatus(fmspc, pceId, tcbData, sgxExtensionData);
@@ -510,10 +538,24 @@ export class QuoteValidator {
   }
 
   public async isQuoteHasUserData(quoteBuffer: Buffer, userDataBuffer: Buffer): Promise<boolean> {
-    const quote: TeeSgxQuoteDataType = this.teeSgxParser.parseQuote(quoteBuffer);
-    const report: TeeSgxReportDataType = this.teeSgxParser.parseReport(quote.report);
+    const quoteType = TeeParser.determineQuoteType(quoteBuffer);
+    const quote =
+      quoteType.type === QuoteType.SGX
+        ? this.teeSgxParser.parseQuote(quoteBuffer)
+        : this.teeTdxParser.parseQuote(quoteBuffer);
+
+    let slicedQuoteData: Uint8Array | Buffer;
     const userDataHash = await this.getSha256Hash(userDataBuffer);
-    const slicedQuoteData = report.userData.slice(0, userDataHash.length);
+    if (quoteType.type === QuoteType.SGX) {
+      slicedQuoteData = this.teeSgxParser
+        .parseReport((quote as TeeSgxQuoteDataType).report)
+        .userData.slice(0, userDataHash.length);
+    } else {
+      slicedQuoteData = this.teeTdxParser
+        .parseBody((quote as TeeTdxQuoteDataType).tdQuoteBody)
+        .reportData.slice(0, userDataHash.length);
+    }
+
     const compareResult = Buffer.compare(slicedQuoteData, userDataHash);
 
     return compareResult === 0;

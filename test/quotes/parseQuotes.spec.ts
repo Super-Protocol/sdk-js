@@ -146,3 +146,14 @@ describe('Determine qoute type', () => {
     expect(type.version).toEqual(4);
   });
 });
+
+describe('Extract tee hash from quote', () => {
+  it('should be success to get sgx mrenclave', () => {
+    const quoteBuffer = Buffer.from(testQuotes.testQuote, 'base64');
+    expect(TeeParser.getMrEnclave(quoteBuffer).toString('hex')).toEqual('4d42d7b15b5acbcab74d10fa9192829af91c1a2b3d341bfe0fa7a02b547b34f0');
+  });
+  it('should be success to get tdx hash', () => {
+    const quoteBuffer = Buffer.from(testQuotes.tdxQuote, 'base64');
+    expect(TeeParser.getMrEnclave(quoteBuffer).toString('hex')).toEqual('88e1e4d6b200c9ca3dab427e7c464dc4147943cdba6f17e94bf073e292cdca18');
+  });
+});

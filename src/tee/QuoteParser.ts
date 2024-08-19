@@ -14,6 +14,7 @@ import {
   QuoteType,
 } from './types.js';
 import { splitChain, Signature } from './helpers.js';
+import * as crypto from 'crypto';
 
 export abstract class TeeParser {
   protected extractRS(cert: pkijs.Certificate): { r: string; s: string; derSignature: string } {
@@ -77,6 +78,31 @@ export abstract class TeeParser {
     }
 
     return { type, version };
+  }
+
+  public static getMrEnclave(quote: BinaryType): BinaryType {
+    const teeType = TeeParser.determineQuoteType(quote);
+    switch (teeType.type) {
+      case QuoteType.SGX:
+          const sgxParser = new TeeSgxParser();
+          const parsedSgxQuote = sgxParser.parseQuote(quote);
+          const parsedReport = sgxParser.parseReport(parsedSgxQuote.report);
+          return parsedReport.mrEnclave;
+      case QuoteType.TDX:
+          const tdxParser = new TeeTdxParser();
+          const parsedTdxQuote = tdxParser.parseQuote(quote);
+          const tdBody = tdxParser.parseBody(parsedTdxQuote.tdQuoteBody);
+          const hash = crypto.createHash('sha256');
+          hash.update(tdBody.tdAttributes);
+          hash.update(tdBody.mrTd);
+          hash.update(tdBody.rtmr0);
+          hash.update(tdBody.rtmr1);
+          hash.update(tdBody.rtmr2);
+          hash.update(tdBody.rtmr3);
+          return hash.digest();
+      default:
+        throw new TeeQuoteParserError(`Unknown quote type`);
+    }
   }
 }
 

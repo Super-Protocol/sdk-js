@@ -17,6 +17,7 @@ import { splitChain, Signature } from './helpers.js';
 import * as crypto from 'crypto';
 
 export abstract class TeeParser {
+  static readonly reportDataHashSize = 32; /* 64 in report, but we need 32 only for sha256 hash */
   protected extractRS(cert: pkijs.Certificate): { r: string; s: string; derSignature: string } {
     const derSignature = Buffer.from(cert.signatureValue.valueBlock.valueHexView).toString('hex');
     const parsedSignature = Signature.importFromDER(derSignature);
@@ -84,22 +85,22 @@ export abstract class TeeParser {
     const teeType = TeeParser.determineQuoteType(quote);
     switch (teeType.type) {
       case QuoteType.SGX:
-          const sgxParser = new TeeSgxParser();
-          const parsedSgxQuote = sgxParser.parseQuote(quote);
-          const parsedReport = sgxParser.parseReport(parsedSgxQuote.report);
-          return parsedReport.mrEnclave;
+        const sgxParser = new TeeSgxParser();
+        const parsedSgxQuote = sgxParser.parseQuote(quote);
+        const parsedReport = sgxParser.parseReport(parsedSgxQuote.report);
+        return parsedReport.mrEnclave;
       case QuoteType.TDX:
-          const tdxParser = new TeeTdxParser();
-          const parsedTdxQuote = tdxParser.parseQuote(quote);
-          const tdBody = tdxParser.parseBody(parsedTdxQuote.tdQuoteBody);
-          const hash = crypto.createHash('sha256');
-          hash.update(tdBody.tdAttributes);
-          hash.update(tdBody.mrTd);
-          hash.update(tdBody.rtmr0);
-          hash.update(tdBody.rtmr1);
-          hash.update(tdBody.rtmr2);
-          hash.update(tdBody.rtmr3);
-          return hash.digest();
+        const tdxParser = new TeeTdxParser();
+        const parsedTdxQuote = tdxParser.parseQuote(quote);
+        const tdBody = tdxParser.parseBody(parsedTdxQuote.tdQuoteBody);
+        const hash = crypto.createHash('sha256');
+        hash.update(tdBody.tdAttributes);
+        hash.update(tdBody.mrTd);
+        hash.update(tdBody.rtmr0);
+        hash.update(tdBody.rtmr1);
+        hash.update(tdBody.rtmr2);
+        hash.update(tdBody.rtmr3);
+        return hash.digest();
       default:
         throw new TeeQuoteParserError(`Unknown quote type`);
     }
@@ -127,7 +128,6 @@ export class TeeSgxParser extends TeeParser {
   static readonly reportDataOffset =
     TeeSgxParser.reportIsvSvnOffset + TeeSgxParser.reportIsvSvnSize + /* reserved */ 60;
   static readonly reportUserDataSize = 64;
-  static readonly reportUserDataSHA256Size = 32; /* 64 in report, but we need 32 only for sha256 hash */
   static readonly ecdsaP256SignatureSize = 64;
   static readonly ecdsaP256PublicKeySize = 64;
 
@@ -270,7 +270,7 @@ export class TeeSgxParser extends TeeParser {
       reportIsvSvnSize,
       reportDataOffset,
       reportUserDataSize,
-      reportUserDataSHA256Size,
+      reportDataHashSize
     } = TeeSgxParser;
 
     if (data.length < reportSize) {
@@ -291,7 +291,10 @@ export class TeeSgxParser extends TeeParser {
       .slice(reportIsvSvnOffset, reportIsvSvnOffset + reportIsvSvnSize)
       .readUInt16LE(0);
     const userData = report.slice(reportDataOffset, reportDataOffset + reportUserDataSize);
-    const dataHash = report.slice(reportDataOffset, reportDataOffset + reportUserDataSHA256Size);
+    const dataHash = report.slice(
+      reportDataOffset,
+      reportDataOffset + reportDataHashSize,
+    );
 
     return {
       cpuSvn,
@@ -520,6 +523,7 @@ export class TeeTdxParser extends TeeParser {
       bodyRtmr2Size,
       bodyRtmr3Size,
       bodyReportDataSize,
+      reportDataHashSize
     } = TeeTdxParser;
 
     const bodyRemainder = { data: Blob.from(data) };
@@ -544,7 +548,7 @@ export class TeeTdxParser extends TeeParser {
     const rtmr2 = this.getDataAndAdvance(bodyRemainder, bodyRtmr2Size);
     const rtmr3 = this.getDataAndAdvance(bodyRemainder, bodyRtmr3Size);
     const reportData = this.getDataAndAdvance(bodyRemainder, bodyReportDataSize);
-
+    const dataHash = reportData.slice(0, reportDataHashSize);
     return {
       teeTcbSvn,
       mrSeam,
@@ -561,6 +565,7 @@ export class TeeTdxParser extends TeeParser {
       rtmr2,
       rtmr3,
       reportData,
+      dataHash,
     };
   }
 }

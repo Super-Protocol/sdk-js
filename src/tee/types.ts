@@ -135,4 +135,5 @@ export type TeeTdxBodyType = {
   rtmr2: BinaryType;
   rtmr3: BinaryType;
   reportData: BinaryType;
+  dataHash: BinaryType;
 };

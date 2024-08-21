@@ -39,6 +39,9 @@ describe('TeeSgxParser', () => {
     expect(parsedQeReport.dataHash.toString('hex')).toEqual(
       '9ec3dea3a4103b3d8a0ca899d4cd42043ebd7827636f845a128e7bf3a67608cb',
     );
+    expect(parsedReport.userData.slice(0, TeeParser.reportDataHashSize)).toEqual(
+      parsedReport.dataHash,
+    );
   });
 
   it('shoud be success to verify quote', () => {
@@ -103,6 +106,9 @@ describe('TeeTdxParser', () => {
     expect(parsedTdxBody.rtmr3.toString('hex')).toEqual(
       '2c607bda56e155ca41c9a1c81edcc0555436b4995f22ee06c050925aaabdc218c641a188d8dfdd3bf59b1ccd68baba3c',
     );
+    expect(parsedTdxBody.reportData.slice(0, TeeParser.reportDataHashSize)).toEqual(
+      parsedTdxBody.dataHash,
+    );
   });
 
   it('shoud be success to verify quote', () => {
@@ -150,10 +156,14 @@ describe('Determine qoute type', () => {
 describe('Extract tee hash from quote', () => {
   it('should be success to get sgx mrenclave', () => {
     const quoteBuffer = Buffer.from(testQuotes.testQuote, 'base64');
-    expect(TeeParser.getMrEnclave(quoteBuffer).toString('hex')).toEqual('4d42d7b15b5acbcab74d10fa9192829af91c1a2b3d341bfe0fa7a02b547b34f0');
+    expect(TeeParser.getMrEnclave(quoteBuffer).toString('hex')).toEqual(
+      '4d42d7b15b5acbcab74d10fa9192829af91c1a2b3d341bfe0fa7a02b547b34f0',
+    );
   });
   it('should be success to get tdx hash', () => {
     const quoteBuffer = Buffer.from(testQuotes.tdxQuote, 'base64');
-    expect(TeeParser.getMrEnclave(quoteBuffer).toString('hex')).toEqual('88e1e4d6b200c9ca3dab427e7c464dc4147943cdba6f17e94bf073e292cdca18');
+    expect(TeeParser.getMrEnclave(quoteBuffer).toString('hex')).toEqual(
+      '88e1e4d6b200c9ca3dab427e7c464dc4147943cdba6f17e94bf073e292cdca18',
+    );
   });
 });

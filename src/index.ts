@@ -120,6 +120,7 @@ export { Web3TransactionRevertedByEvmError } from './utils/TxManager.js';
 
 import './polyfills.js';
 
+export { QuoteType } from './tee/types.js';
 export { TeeSgxParser, TeeTdxParser, TeeParser } from './tee/QuoteParser.js';
 export { QuoteValidator } from './tee/QuoteValidator.js';
 export * from './tee/statuses.js';

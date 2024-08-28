@@ -6,12 +6,15 @@ import getStorageProvider from './getStorageProvider.js';
 import IStorageProvider from './IStorageProvider.js';
 import logger, { Logger } from '../../logger.js';
 import Crypto from '../../crypto/Crypto.js';
+import { IStorageKeyValueAdapter } from './types.js';
 
 export interface StorageKeyValueAdapterConfig {
   showLogs?: boolean;
 }
 
-export default class StorageKeyValueAdapter<V extends object> {
+export default class StorageKeyValueAdapter<V extends object>
+  implements IStorageKeyValueAdapter<V>
+{
   private readonly storageProvider: IStorageProvider;
   private readonly logger?: Logger | null;
 
@@ -31,7 +34,7 @@ export default class StorageKeyValueAdapter<V extends object> {
     return JSON.parse(await Crypto.decrypt(encryption));
   }
 
-  public async encrypt(data: V | null, key: string): Promise<Encryption> {
+  encrypt(data: V | null, key: string): Promise<Encryption> {
     if (data === undefined) throw new Error('Data cannot be empty!');
     if (!key) throw new Error('Private cannot be empty!');
 
@@ -61,7 +64,7 @@ export default class StorageKeyValueAdapter<V extends object> {
     });
   }
 
-  private async storageUpload(key: string, value: V | null, privateKey: string) {
+  private async storageUpload(key: string, value: V | null, privateKey: string): Promise<void> {
     try {
       const encryptedValue = await this.encrypt(value, privateKey);
       const buffer = Buffer.from(JSON.stringify(encryptedValue));
@@ -73,7 +76,7 @@ export default class StorageKeyValueAdapter<V extends object> {
     }
   }
 
-  private async storageDelete(key: string) {
+  private async storageDelete(key: string): Promise<void> {
     try {
       await this.storageProvider.deleteObject(key);
       this.logger?.info({ data: key }, 'Success deleting from storage');
@@ -90,9 +93,7 @@ export default class StorageKeyValueAdapter<V extends object> {
 
       if (!downloaded) return null;
 
-      const decryptedValue = await this.decrypt(JSON.parse(downloaded), privateKey);
-
-      return decryptedValue;
+      return await this.decrypt(JSON.parse(downloaded), privateKey);
     } catch (err) {
       this.logger?.info(
         {
@@ -129,19 +130,19 @@ export default class StorageKeyValueAdapter<V extends object> {
     }
   }
 
-  async set(key: string, value: V | null, privateKey: string) {
+  set(key: string, value: V | null, privateKey: string): Promise<void> {
     return this.storageUpload(key, value, privateKey);
   }
 
-  async delete(key: string) {
+  delete(key: string): Promise<void> {
     return this.storageDelete(key);
   }
 
-  async get(key: string, privateKey: string): Promise<V | null> {
+  get(key: string, privateKey: string): Promise<V | null> {
     return this.storageDownload(key, privateKey);
   }
 
-  async listFiles(key: string) {
+  listFiles(key: string): Promise<StorageObject[]> {
     return this.storageListFiles(key);
   }
 }

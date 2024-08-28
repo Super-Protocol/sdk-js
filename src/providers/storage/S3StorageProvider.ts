@@ -18,9 +18,11 @@ import { Readable } from 'stream';
 import StorageObject from '../../types/storage/StorageObject.js';
 import { getStreamChunks } from '../../utils/helpers/getStreamChunks.js';
 import { S3Credentials } from '@super-protocol/dto-js';
+import path from 'path';
 
-export type S3ClientConfig = S3Credentials & {
+export type S3ClientConfig = Omit<S3Credentials, 'prefix'> & {
   region?: string;
+  prefix?: string;
 };
 
 export class S3StorageProvider implements IStorageProvider {
@@ -36,14 +38,14 @@ export class S3StorageProvider implements IStorageProvider {
     if (!secretKey) throw new Error('Secret access is undefined');
     if (!endpoint) throw new Error('Endpoint is undefined');
     if (!bucket) throw new Error('Bucket is undefined');
-    if (prefix.startsWith('/') || !prefix.endsWith('/')) {
+    if (prefix && (prefix.startsWith('/') || !prefix.endsWith('/'))) {
       throw new Error(
         `Prefix is invalid: it must not start with "/" and must end with "/" (prefix=${prefix})`,
       );
     }
 
     this.bucket = bucket;
-    this.prefix = prefix;
+    this.prefix = prefix || '';
 
     this.s3Client = new S3Client({
       credentials: {
@@ -57,7 +59,7 @@ export class S3StorageProvider implements IStorageProvider {
   }
 
   private applyPrefix(key: string): string {
-    return `${this.prefix}${key}`;
+    return path.join(this.prefix, '/', key);
   }
 
   async uploadFile(

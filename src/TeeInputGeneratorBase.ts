@@ -26,8 +26,9 @@ export default class TeeInputGeneratorBase {
 
         if (offerInfo.offerType === OfferType.Solution) {
           const isBaseImage = await offer.isBaseImage();
+          const isPublic = await offer.isOfferPublic();
 
-          if (isBaseImage) {
+          if (isBaseImage && isPublic) {
             anyLinkage = offerInfo.linkage;
             imageHashes.push(offerInfo.hash ? JSON.parse(offerInfo.hash) : ZERO_HASH);
           } else {

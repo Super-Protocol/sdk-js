@@ -222,7 +222,7 @@ export class S3StorageProvider implements IStorageProvider {
     let result: StorageObject[] = [];
     if (listObjects.Contents) {
       result = listObjects.Contents.map((object) => ({
-        name: object.Key?.replace(this.prefix, '') || '',
+        name: object.Key?.substring(this.prefix.length) || '',
         createdAt: object.LastModified || new Date(),
         size: object.Size || 0,
       }));

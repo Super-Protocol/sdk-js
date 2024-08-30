@@ -14,6 +14,21 @@ export class TeeBlockVerifier {
   private static readonly verifiedTlbHashes: Map<string, string> = new Map();
   private static readonly verifiedTcbs: Set<BlockchainId> = new Set();
 
+  private static checkMrSigner(quote: Buffer): void {
+    const { type: quoteType } = TeeSgxParser.determineQuoteType(quote);
+
+    if (quoteType !== QuoteType.SGX) {
+      return;
+    }
+
+    const parser = new TeeSgxParser();
+    const parsedQuote = parser.parseQuote(quote);
+    const report = parser.parseReport(parsedQuote.report);
+    if (report.mrSigner.toString('hex') !== config.TEE_LOADER_TRUSTED_MRSIGNER) {
+      throw new Error('Quote has invalid MR signer');
+    }
+  }
+
   static async checkQuote(
     quote: Uint8Array,
     dataBlob: Uint8Array,
@@ -38,7 +53,7 @@ export class TeeBlockVerifier {
       throw new Error('Quote has invalid user data');
     }
 
-    checkMrSigner(quoteBuffer);
+    this.checkMrSigner(quoteBuffer);
   }
 
   static async verifyTcb(
@@ -117,20 +132,5 @@ export class TeeBlockVerifier {
       tlbHash.hash,
       `TLB hash of offer ${offerId} added to the cache. Cache size: ${this.verifiedTlbHashes.size}, cache limit: ${config.TLB_CACHE_SIZE}`,
     );
-  }
-}
-
-function checkMrSigner(quote: Buffer): void {
-  const { type: quoteType } = TeeSgxParser.determineQuoteType(quote);
-
-  if (quoteType !== QuoteType.SGX) {
-    return;
-  }
-
-  const parser = new TeeSgxParser();
-  const parsedQuote = parser.parseQuote(quote);
-  const report = parser.parseReport(parsedQuote.report);
-  if (report.mrSigner.toString('hex') !== config.TEE_LOADER_TRUSTED_MRSIGNER) {
-    throw new Error('Quote has invalid MR signer');
   }
 }

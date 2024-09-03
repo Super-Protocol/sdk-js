@@ -9,6 +9,7 @@ import { QuoteValidationStatuses } from './statuses.js';
 import { BlockchainId } from '../types/index.js';
 import Crypto from '../crypto/index.js';
 import { QuoteType } from './types.js';
+import { TEE_LOADER_TRUSTED_MRSIGNER } from '../constants.js';
 
 export class TeeBlockVerifier {
   private static readonly verifiedTlbHashes: Map<string, string> = new Map();
@@ -24,7 +25,7 @@ export class TeeBlockVerifier {
     const parser = new TeeSgxParser();
     const parsedQuote = parser.parseQuote(quote);
     const report = parser.parseReport(parsedQuote.report);
-    if (report.mrSigner.toString('hex') !== config.TEE_LOADER_TRUSTED_MRSIGNER) {
+    if (report.mrSigner.toString('hex') !== TEE_LOADER_TRUSTED_MRSIGNER.toString('hex')) {
       throw new Error('Quote has invalid MR signer');
     }
   }

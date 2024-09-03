@@ -133,3 +133,4 @@ export { default as BrowserEventProvider } from './analytics/eventProviders/Brow
 export { default as AxiosTransport } from './analytics/transports/AxiosTransport.js';
 export { default as FetchTransport } from './analytics/transports/FetchTransport.js';
 export * from './utils/cache/index.js';
+export * from './errors/index.js';

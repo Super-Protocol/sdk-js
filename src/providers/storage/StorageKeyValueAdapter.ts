@@ -10,33 +10,46 @@ import { IStorageKeyValueAdapter } from './types.js';
 
 export interface StorageKeyValueAdapterConfig {
   showLogs?: boolean;
+  hasEncryption?: boolean;
 }
 
 export default class StorageKeyValueAdapter<V extends object>
   implements IStorageKeyValueAdapter<V>
 {
+  private readonly hasEncryption: boolean;
   private readonly storageProvider: IStorageProvider;
   private readonly logger?: Logger | null;
 
   constructor(storageAccess: StorageAccess, config?: StorageKeyValueAdapterConfig) {
-    if (!storageAccess?.credentials) throw new Error('Credentials is empty');
-    const { showLogs = true } = config || {};
+    if (!storageAccess?.credentials) {
+      throw new Error('Credentials is empty');
+    }
+    const { showLogs = true, hasEncryption = true } = config || {};
+    this.hasEncryption = hasEncryption;
     this.logger = showLogs ? logger.child({ class: StorageKeyValueAdapter.name }) : null;
     this.storageProvider = getStorageProvider(storageAccess);
   }
 
-  public async decrypt(encryption: Encryption, key: string): Promise<V | null> {
-    if (!encryption) return null;
-    if (!key) throw new Error('Key cannot be empty!');
+  protected async decrypt(encryption: Encryption, key: string): Promise<V | null> {
+    if (!encryption) {
+      return null;
+    }
+    if (!key) {
+      throw new Error('Key cannot be empty!');
+    }
 
     encryption.key = key;
 
     return JSON.parse(await Crypto.decrypt(encryption));
   }
 
-  encrypt(data: V | null, key: string): Promise<Encryption> {
-    if (data === undefined) throw new Error('Data cannot be empty!');
-    if (!key) throw new Error('Private cannot be empty!');
+  protected encrypt(data: V | null, key: string): Promise<Encryption> {
+    if (data === undefined) {
+      throw new Error('Data cannot be empty!');
+    }
+    if (!key) {
+      throw new Error('Private cannot be empty!');
+    }
 
     return Crypto.encrypt(JSON.stringify(data), {
       algo: CryptoAlgorithm.AES,
@@ -64,9 +77,14 @@ export default class StorageKeyValueAdapter<V extends object>
     });
   }
 
-  private async storageUpload(key: string, value: V | null, privateKey: string): Promise<void> {
+  private async storageUpload(key: string, value: V | null, privateKey?: string): Promise<void> {
+    if (this.hasEncryption && !privateKey) {
+      throw new Error('Invalid private key');
+    }
+
     try {
-      const encryptedValue = await this.encrypt(value, privateKey);
+      const encryptedValue =
+        this.hasEncryption && privateKey ? await this.encrypt(value, privateKey) : value;
       const buffer = Buffer.from(JSON.stringify(encryptedValue));
       await this.storageProvider.uploadFile(Readable.from(buffer), key, buffer.byteLength);
       this.logger?.info({ data: key }, 'Success uploading to storage');
@@ -86,14 +104,22 @@ export default class StorageKeyValueAdapter<V extends object>
     }
   }
 
-  private async storageDownload(key: string, privateKey: string): Promise<V | null> {
+  private async storageDownload(key: string, privateKey?: string): Promise<V | null> {
+    if (this.hasEncryption && !privateKey) {
+      throw new Error('Invalid private key');
+    }
+
     try {
       const downloaded = await this.downloadFromStorage(key);
       this.logger?.info({ key }, 'Success download data from storage');
 
-      if (!downloaded) return null;
+      if (!downloaded) {
+        return null;
+      }
 
-      return await this.decrypt(JSON.parse(downloaded), privateKey);
+      const value = JSON.parse(downloaded);
+
+      return this.hasEncryption && privateKey ? await this.decrypt(value, privateKey) : value;
     } catch (err) {
       this.logger?.info(
         {
@@ -130,7 +156,7 @@ export default class StorageKeyValueAdapter<V extends object>
     }
   }
 
-  set(key: string, value: V | null, privateKey: string): Promise<void> {
+  set(key: string, value: V | null, privateKey?: string): Promise<void> {
     return this.storageUpload(key, value, privateKey);
   }
 
@@ -138,7 +164,7 @@ export default class StorageKeyValueAdapter<V extends object>
     return this.storageDelete(key);
   }
 
-  get(key: string, privateKey: string): Promise<V | null> {
+  get(key: string, privateKey?: string): Promise<V | null> {
     return this.storageDownload(key, privateKey);
   }
 

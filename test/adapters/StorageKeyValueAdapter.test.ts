@@ -1,12 +1,13 @@
 import StorageKeyValueAdapter from '../../src/providers/storage/StorageKeyValueAdapter.js';
 import StorageProviderMock, { getDefaultListObjectMock } from '../mocks/StorageProvider.mock.js';
 import { S3StorageAdapterConfig, aesKey } from './utils.js';
+import { IStorageProvider } from '../../src/index.js';
 
 const data = { message: 'I am a secret data!' };
 
 jest.mock(
   '../../src/providers/storage/getStorageProvider',
-  jest.fn(() => () => new StorageProviderMock()),
+  jest.fn(() => (): IStorageProvider => new StorageProviderMock()),
 );
 
 describe('StorageKeyValueAdapter', () => {
@@ -14,8 +15,10 @@ describe('StorageKeyValueAdapter', () => {
     showLogs: false,
   });
   test('encrypt/decrypt', async () => {
-    const encrypted = await storageKeyValueAdapter.encrypt(data, aesKey);
-    const decrypted = await storageKeyValueAdapter.decrypt(encrypted, aesKey);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const encrypted = await (storageKeyValueAdapter as any).encrypt(data, aesKey);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const decrypted = await (storageKeyValueAdapter as any).decrypt(encrypted, aesKey);
     expect(decrypted).toEqual(data);
     expect(encrypted).not.toContain(data);
   });

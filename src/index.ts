@@ -90,6 +90,7 @@ export {
   StorageMetadataReaderConfig,
 } from './providers/storage/StorageMetadataReader.js';
 export { default as StorageKeyValueAdapter } from './providers/storage/StorageKeyValueAdapter.js';
+export { IStorageKeyValueAdapter, IStorageAdapter } from './providers/storage/types.js';
 export {
   default as StorageAdapter,
   CacheEvents,

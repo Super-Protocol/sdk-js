@@ -7,7 +7,7 @@ import StorageContentWriter, { ContentWriterType } from './StorageContentWriter.
 import StorageMetadataReader from './StorageMetadataReader.js';
 import StorageAccess from '../../types/storage/StorageAccess.js';
 import logger, { Logger } from '../../logger.js';
-import { CacheRecord, Performance } from './types.js';
+import { CacheRecord, IStorageAdapter, Performance } from './types.js';
 import PubSub from '../../utils/PubSub.js';
 
 export interface LRUCacheConfig {
@@ -22,6 +22,8 @@ export interface StorageAdapterConfig {
   readMetadataConcurrency?: number;
   performance?: Performance;
   showLogs?: boolean;
+  hasEncryption?: boolean;
+  instanceId?: string;
 }
 
 export enum CacheEvents {
@@ -31,7 +33,7 @@ export enum CacheEvents {
 
 const DEFAULT_READ_METADATA_CONCURRENCY = 16;
 
-export default class StorageAdapter<V extends object> {
+export default class StorageAdapter<V extends object> implements IStorageAdapter<V> {
   private readonly logger?: Logger | null;
   private readonly storageKeyValueAdapter: StorageKeyValueAdapter<V>;
   private readonly cache: LRUCache<string, Map<string, CacheRecord<V>>>;
@@ -57,12 +59,17 @@ export default class StorageAdapter<V extends object> {
       readMetadataConcurrency,
       performance,
       showLogs = true,
+      hasEncryption = true,
+      instanceId,
     } = config;
     this.logger = showLogs ? logger.child({ class: StorageAdapter.name }) : null;
     this.performance = performance;
-    this.instanceId = this.generateHash();
+    this.instanceId = instanceId ?? this.generateHash();
     this.readInterval = readInterval;
-    this.storageKeyValueAdapter = new StorageKeyValueAdapter(storageAccess, { showLogs });
+    this.storageKeyValueAdapter = new StorageKeyValueAdapter(storageAccess, {
+      showLogs,
+      hasEncryption,
+    });
     this.cache = new LRUCache(lruCache);
     this.metadataReader = new StorageMetadataReader({
       storageKeyValueAdapter: this.storageKeyValueAdapter,
@@ -118,7 +125,9 @@ export default class StorageAdapter<V extends object> {
 
   private getEncryptionKey(key: string, encryptionKeyBuffer?: Buffer): string | null {
     if (!this.encryptionKeys.has(key)) {
-      if (!encryptionKeyBuffer) return null;
+      if (!encryptionKeyBuffer) {
+        return null;
+      }
       const encryptionKey = encryptionKeyBuffer.toString('base64');
       this.encryptionKeys.set(key, encryptionKey);
 
@@ -128,17 +137,16 @@ export default class StorageAdapter<V extends object> {
     return this.encryptionKeys.get(key) || null;
   }
 
-  set(key: string, value: V, encryptionKeyBuffer: Buffer): void {
+  set(key: string, value: V, encryptionKeyBuffer?: Buffer): void {
     if (this.contentWriter.storageWrites.get(key)?.type === ContentWriterType.NEEDS_DELETE) {
       throw new Error('Object has been deleted');
     }
     const encryptionKey = this.getEncryptionKey(key, encryptionKeyBuffer);
-    if (!encryptionKey) throw new Error('Encryption key required');
     this.setByInstance(key, this.instanceId, {
       value,
       modifiedTs: Number.MAX_SAFE_INTEGER,
     });
-    this.contentWriter.set(key, ContentWriterType.NEEDS_UPLOAD, encryptionKey);
+    this.contentWriter.set(key, ContentWriterType.NEEDS_UPLOAD, encryptionKey || undefined);
   }
 
   private setByInstance(key: string, instanceId: string, value: CacheRecord<V>): void {
@@ -163,10 +171,7 @@ export default class StorageAdapter<V extends object> {
   }
 
   // the first value is always the current instance, if key exists
-  public async get(key: string, encryptionKeyBuffer: Buffer): Promise<(V | null)[] | null> {
-    if (!encryptionKeyBuffer) {
-      throw new Error('Encryption key required');
-    }
+  async get(key: string, encryptionKeyBuffer?: Buffer): Promise<(V | null)[] | null> {
     if (
       this.contentWriter.storageWrites.get(key)?.type === ContentWriterType.NEEDS_DELETE ||
       !(await this.has(key))
@@ -174,13 +179,10 @@ export default class StorageAdapter<V extends object> {
       return null;
     }
     const encryptionKey = this.getEncryptionKey(key, encryptionKeyBuffer);
-    if (!encryptionKey) {
-      throw new Error('Encryption key required');
-    }
     if (this.cacheHasNullInstances(key)) {
       await this.getQueue(key).add(async () => {
         if (this.cacheHasNullInstances(key)) {
-          await this.fetchNullValues(key, encryptionKey);
+          await this.fetchNullValues(key, encryptionKey || undefined);
         }
       });
     }
@@ -221,7 +223,7 @@ export default class StorageAdapter<V extends object> {
     );
   }
 
-  private async fetchNullValues(key: string, encryptionKey: string): Promise<void> {
+  private async fetchNullValues(key: string, encryptionKey?: string): Promise<void> {
     const promises: Promise<void>[] = [];
 
     this.cache.get(key)?.forEach((instance, instanceId) => {

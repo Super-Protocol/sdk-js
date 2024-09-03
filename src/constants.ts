@@ -22,3 +22,7 @@ export const ZERO_HASH: Hash = {
   algo: HashAlgorithm.SHA256,
   encoding: Encoding.base64,
 };
+export const TEE_LOADER_TRUSTED_MRSIGNER = Buffer.from(
+  '4a5cb479b8a30fa3821b88aa29bad04788ea006a9e09925bf3ec36398fc9d64b',
+  'hex',
+);

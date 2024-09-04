@@ -144,6 +144,11 @@ class TIIGenerator extends TeeInputGeneratorBase {
         algo: hash.algo as HashAlgorithm,
         encoding: Encoding.base64,
       })),
+      imageHashes: decoded.imageHashes.map((hash) => ({
+        hash: Buffer.from(hash.hash).toString(Encoding.base64),
+        algo: hash.algo as HashAlgorithm,
+        encoding: Encoding.base64,
+      })),
       linkage: {
         encoding: Encoding.base64,
         mrenclave: Buffer.from(decoded.mrenclave).toString(Encoding.base64),

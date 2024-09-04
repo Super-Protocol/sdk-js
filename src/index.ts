@@ -90,6 +90,7 @@ export {
   StorageMetadataReaderConfig,
 } from './providers/storage/StorageMetadataReader.js';
 export { default as StorageKeyValueAdapter } from './providers/storage/StorageKeyValueAdapter.js';
+export { IStorageKeyValueAdapter, IStorageAdapter } from './providers/storage/types.js';
 export {
   default as StorageAdapter,
   CacheEvents,
@@ -133,3 +134,4 @@ export { default as BrowserEventProvider } from './analytics/eventProviders/Brow
 export { default as AxiosTransport } from './analytics/transports/AxiosTransport.js';
 export { default as FetchTransport } from './analytics/transports/FetchTransport.js';
 export * from './utils/cache/index.js';
+export * from './errors/index.js';

@@ -26,7 +26,7 @@ const DEFAULT_CACHE_EXPIRATION_TS = 5 * 60 * 1000;
 interface StorageWriteRecord {
   type: ContentWriterType;
   index: number;
-  encryptionKey: string;
+  encryptionKey?: string;
 }
 
 export default class StorageContentWriter<K extends string, V extends object> {
@@ -65,7 +65,7 @@ export default class StorageContentWriter<K extends string, V extends object> {
     });
   }
 
-  private async actualizeCacheDelete(key: K, encryptionKey: string): Promise<void> {
+  private async actualizeCacheDelete(key: K, encryptionKey?: string): Promise<void> {
     const objects = await this.storageKeyValueAdapter.listFiles(key);
     const objectsToDelete = objects.filter(
       (object) => !object.name.endsWith(this.objectDeletedFlag),
@@ -86,8 +86,8 @@ export default class StorageContentWriter<K extends string, V extends object> {
 
   private async actualizeCacheUpload(
     key: K,
-    encryptionKey: string,
     cache: LRUCache<K, Map<string, CacheRecord<V>>>,
+    encryptionKey?: string,
   ): Promise<void> {
     const instances = cache.get(key);
     const instance = instances?.get(this.instanceId);
@@ -123,19 +123,19 @@ export default class StorageContentWriter<K extends string, V extends object> {
 
     if (this.storageWrites.size) {
       Array.from(this.storageWrites.entries()).forEach(([key, { type, index, encryptionKey }]) => {
-        this.queueWriteContent.add(async () => {
+        void this.queueWriteContent.add(async () => {
           try {
             switch (type) {
               case ContentWriterType.NEEDS_DELETE:
                 await this.actualizeCacheDelete(key, encryptionKey);
                 break;
               case ContentWriterType.NEEDS_UPLOAD:
-                await this.actualizeCacheUpload(key, encryptionKey, cache);
+                await this.actualizeCacheUpload(key, cache, encryptionKey);
                 break;
               default:
                 break;
             }
-            // delete only if the current index is up to date
+            // delete only if the current index is up-to-date
             if (index === this.storageWrites.get(key)?.index) {
               this.storageWrites.delete(key);
             }
@@ -217,7 +217,7 @@ export default class StorageContentWriter<K extends string, V extends object> {
     this.timeout = null;
   }
 
-  public set(key: K, type: ContentWriterType, encryptionKey: string): void {
+  public set(key: K, type: ContentWriterType, encryptionKey?: string): void {
     const oldValue = this.storageWrites.get(key);
     this.storageWrites.set(key, {
       type,

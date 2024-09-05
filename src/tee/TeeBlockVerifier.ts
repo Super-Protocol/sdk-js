@@ -8,10 +8,27 @@ import { QuoteValidator } from './QuoteValidator.js';
 import { QuoteValidationStatuses } from './statuses.js';
 import { BlockchainId } from '../types/index.js';
 import Crypto from '../crypto/index.js';
+import { QuoteType } from './types.js';
+import { TEE_LOADER_TRUSTED_MRSIGNER } from '../constants.js';
 
 export class TeeBlockVerifier {
   private static readonly verifiedTlbHashes: Map<string, string> = new Map();
   private static readonly verifiedTcbs: Set<BlockchainId> = new Set();
+
+  private static checkMrSigner(quote: Buffer): void {
+    const { type: quoteType } = TeeSgxParser.determineQuoteType(quote);
+
+    if (quoteType !== QuoteType.SGX) {
+      return;
+    }
+
+    const parser = new TeeSgxParser();
+    const parsedQuote = parser.parseQuote(quote);
+    const report = parser.parseReport(parsedQuote.report);
+    if (report.mrSigner.toString('hex') !== TEE_LOADER_TRUSTED_MRSIGNER.toString('hex')) {
+      throw new Error('Quote has invalid MR signer');
+    }
+  }
 
   static async checkQuote(
     quote: Uint8Array,
@@ -37,12 +54,7 @@ export class TeeBlockVerifier {
       throw new Error('Quote has invalid user data');
     }
 
-    const parser = new TeeSgxParser();
-    const parsedQuote = parser.parseQuote(quote);
-    const report = parser.parseReport(parsedQuote.report);
-    if (report.mrSigner.toString('hex') !== config.TEE_LOADER_TRUSTED_MRSIGNER) {
-      throw new Error('Quote has invalid MR signer');
-    }
+    this.checkMrSigner(quoteBuffer);
   }
 
   static async verifyTcb(

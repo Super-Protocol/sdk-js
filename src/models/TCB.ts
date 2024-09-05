@@ -2,7 +2,13 @@ import { Contract, TransactionReceipt } from 'web3';
 import { abi } from '../contracts/abi.js';
 import TxManager from '../utils/TxManager.js';
 import { BlockchainConnector } from '../connectors/index.js';
-import { BlockchainId, TcbData, TcbPublicData, TcbUtilityData, TransactionOptions } from '../types/index.js';
+import {
+  BlockchainId,
+  TcbData,
+  TcbPublicData,
+  TcbUtilityData,
+  TransactionOptions,
+} from '../types/index.js';
 import { TcbVerifiedStatus } from '@super-protocol/dto-js';
 import { checkIfActionAccountInitialized, cleanWeb3Data, packDeviceId } from '../utils/helper.js';
 import Consensus from '../staticModels/Consensus.js';
@@ -71,12 +77,21 @@ class TCB {
     publicKey: string,
     transactionOptions?: TransactionOptions,
   ): Promise<void> {
+    const logger = TCB.logger.child({
+      deviceId: publicData.deviceId,
+      method: 'apply',
+    });
+
     try {
+      logger.debug('apply tcb marks');
       await this.applyTcbMarks(publicData.checkingTcbMarks, transactionOptions);
+      logger.debug('set tcb data');
       await this.setTcbData(publicData, quote, publicKey, transactionOptions);
+      logger.debug('add to supply');
       await this.addToSupply(transactionOptions);
-    } catch (error) {
-      TCB.logger.debug({ error }, 'Adding TCB to blockchain failed');
+      logger.debug('apply is done');
+    } catch (err) {
+      logger.error({ err }, 'Failed to add TCB to blockchain');
     }
   }
 

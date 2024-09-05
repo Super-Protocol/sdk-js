@@ -32,6 +32,8 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - run: npm run prepare
+      - name: Check ESM build
+        run: node -e "import('./dist/mjs/index.js')"
       - run: npm run test
 
   publish:

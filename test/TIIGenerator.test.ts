@@ -109,17 +109,21 @@ jest.mock('../src/models/TeeOffer', () => {
 });
 
 jest.mock('../src/tee/QuoteValidator', () => {
+  const QuoteValidatorMock = jest.fn().mockImplementation(() => {
+    return {
+      isDefault: false,
+      baseUrl: 'https://pccs.superprotocol.io',
+      validate: (): ValidationResult => ({
+        quoteValidationStatus: QuoteValidationStatuses.UpToDate,
+        description: 'The Quote verification passed and is at the latest TCB level.',
+      }),
+      isQuoteHasUserData: (): boolean => true,
+    };
+  });
+
   return {
-    QuoteValidator: jest.fn().mockImplementation(() => {
-      return {
-        isDefault: false,
-        baseUrl: 'https://pccs.superprotocol.io',
-        validate: (): ValidationResult => ({
-          quoteValidationStatus: QuoteValidationStatuses.UpToDate,
-          description: 'The Quote verification passed and is at the latest TCB level.',
-        }),
-        isQuoteHasUserData: (): boolean => true,
-      };
+    QuoteValidator: Object.assign(QuoteValidatorMock, {
+      checkSignature: () => Promise.resolve(),
     }),
   };
 });

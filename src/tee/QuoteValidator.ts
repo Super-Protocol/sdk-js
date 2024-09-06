@@ -1,4 +1,5 @@
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
+import { tryWithInterval } from '../utils/helpers/index.js';
 import elliptic from 'elliptic';
 import forge from 'node-forge';
 import { Certificate, Extension } from '@fidm/x509';
@@ -20,6 +21,7 @@ import { TeeQuoteValidatorError } from './errors.js';
 import { QEIdentityStatuses, TCBStatuses, QuoteValidationStatuses } from './statuses.js';
 import { Encoding, HashAlgorithm } from '@super-protocol/dto-js';
 import Crypto from '../crypto/index.js';
+import { TEE_LOADER_TRUSTED_MRSIGNER, TEE_LOADER_TRUSTED_CERTIFICATE } from '../constants.js';
 
 const { ec } = elliptic;
 const { util, asn1 } = forge;
@@ -44,6 +46,11 @@ export interface ValidationResult {
   error?: unknown;
 }
 
+export type GetMrEnclaveSignatureFn = (mrEnclave: Buffer) => Promise<Buffer>;
+export type CheckSignatureOptions = {
+  getMrEnclaveSignature: GetMrEnclaveSignatureFn;
+};
+
 export class QuoteValidator {
   private readonly isDefault: boolean;
   private readonly baseUrl: string;
@@ -57,6 +64,86 @@ export class QuoteValidator {
     this.teeSgxParser = new TeeSgxParser();
     this.teeTdxParser = new TeeTdxParser();
     this.logger = rootLogger.child({ className: QuoteValidator.name });
+  }
+
+  static async getSignature(
+    mrEnclave: Buffer,
+    options?: {
+      baseURL?: string;
+      retryMax?: number;
+      retryInterval?: number;
+    },
+  ): Promise<Buffer> {
+    const baseURL =
+      options?.baseURL ?? 'https://github.com/Super-Protocol/sp-kata-containers/releases/download';
+    const retryMax = options?.retryMax ?? 3;
+    const retryInterval = options?.retryInterval ?? 1000;
+
+    const axiosInstance = axios.create({ baseURL });
+    const response = await tryWithInterval<AxiosResponse>({
+      checkResult(response) {
+        return { isResultOk: response.status === 200 };
+      },
+      handler() {
+        return axiosInstance.get(`/mrenclave-${mrEnclave.toString('hex')}/MRENCLAVE.sign`, {
+          responseType: 'arraybuffer',
+        });
+      },
+      checkError(err) {
+        return { retryable: axios.isAxiosError(err) };
+      },
+      retryInterval,
+      retryMax,
+    });
+
+    return Buffer.from(response.data);
+  }
+
+  static async checkSignature(
+    quote: Buffer,
+    options: CheckSignatureOptions = { getMrEnclaveSignature: QuoteValidator.getSignature },
+  ): Promise<void> {
+    const { getMrEnclaveSignature } = options;
+    const { type: quoteType } = TeeSgxParser.determineQuoteType(quote);
+
+    switch (quoteType) {
+      case QuoteType.SGX: {
+        const parser = new TeeSgxParser();
+        const parsedQuote = parser.parseQuote(quote);
+        const report = parser.parseReport(parsedQuote.report);
+        if (report.mrSigner.toString('hex') !== TEE_LOADER_TRUSTED_MRSIGNER.toString('hex')) {
+          throw new Error('Quote has invalid MR signer');
+        }
+        break;
+      }
+      case QuoteType.TDX: {
+        const mrEnclave = TeeParser.getMrEnclave(quote);
+        const cert = forge.pki.certificateFromPem(TEE_LOADER_TRUSTED_CERTIFICATE);
+        forge.pki.verifyCertificateChain(forge.pki.createCaStore([cert]), [cert]);
+
+        const publicKey = cert.publicKey;
+        if (
+          !Object.prototype.hasOwnProperty.call(publicKey, 'n') ||
+          !Object.prototype.hasOwnProperty.call(publicKey, 'e')
+        ) {
+          throw new Error('Expected RSA private key inside certificate');
+        }
+        const signature = await getMrEnclaveSignature(Buffer.from(mrEnclave));
+
+        const md = forge.md.sha256.create();
+        md.update(String.fromCharCode.apply(null, [...mrEnclave]));
+
+        const isValid = (publicKey as forge.pki.rsa.PublicKey).verify(
+          md.digest().bytes(),
+          String.fromCharCode.apply(null, [...signature]),
+        );
+        if (!isValid) {
+          throw new Error('TDX signature is invalid.');
+        }
+
+        break;
+      }
+    }
   }
 
   private splitChain(chain: string): string[] {
@@ -251,9 +338,7 @@ export class QuoteValidator {
     return result === 0;
   }
 
-  private async verifyEnclaveReportSignature(
-    quote: TeeQuoteBase
-  ): Promise<boolean> {
+  private async verifyEnclaveReportSignature(quote: TeeQuoteBase): Promise<boolean> {
     const key = Buffer.from(quote.ecdsaAttestationKey);
     const headerBuffer = Buffer.from(quote.rawHeader);
     const reportBuffer =
@@ -283,7 +368,7 @@ export class QuoteValidator {
   private async validateQuoteStructure(
     quote: TeeQuoteBase,
     report: TeeSgxReportDataType,
-    pckPublicKey: Buffer
+    pckPublicKey: Buffer,
   ): Promise<void> {
     if (!(await this.verifyQeReportSignature(quote, pckPublicKey))) {
       throw new TeeQuoteValidatorError('Wrong QE report signature');

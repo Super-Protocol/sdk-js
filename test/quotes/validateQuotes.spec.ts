@@ -1,4 +1,4 @@
-import { QuoteValidator } from '../../src/tee/QuoteValidator.js';
+import { GetMrEnclaveSignatureFn, QuoteValidator } from '../../src/tee/QuoteValidator.js';
 import { QuoteValidationStatuses } from '../../src/tee/statuses.js';
 import {
   testQuotes,
@@ -148,6 +148,39 @@ describe('Quote validator', () => {
       );
       expect(res).toBeDefined();
       expect(res).toEqual(false);
+    });
+  });
+
+  describe('Validation tests for TDX sign', () => {
+    const quoteBuffer = Buffer.from(testQuotes.tdxQuoteSigned, 'base64');
+    const buildGetMrEnclaveSignature = (sign: string): GetMrEnclaveSignatureFn => {
+      return () => {
+        return Promise.resolve(Buffer.from(sign, 'base64'));
+      };
+    };
+
+    test('Valid sign', async () => {
+      const getMrEnclaveSignature = buildGetMrEnclaveSignature(testQuotes.validTdxSign);
+
+      await expect(
+        QuoteValidator.checkSignature(quoteBuffer, { getMrEnclaveSignature }),
+      ).resolves.not.toThrow();
+    });
+
+    test('Invalid sign', async () => {
+      const getMrEnclaveSignature = buildGetMrEnclaveSignature(testQuotes.invalidTdxSign);
+
+      await expect(
+        QuoteValidator.checkSignature(quoteBuffer, { getMrEnclaveSignature }),
+      ).rejects.toThrow(/TDX signature is invalid/);
+    });
+
+    test('Invalid key sign', async () => {
+      const getMrEnclaveSignature = buildGetMrEnclaveSignature(testQuotes.invalidTdxSignAnotherKey);
+
+      await expect(
+        QuoteValidator.checkSignature(quoteBuffer, { getMrEnclaveSignature }),
+      ).rejects.toThrow(/Encryption block is invalid/);
     });
   });
 });

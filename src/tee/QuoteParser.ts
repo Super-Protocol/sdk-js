@@ -270,7 +270,7 @@ export class TeeSgxParser extends TeeParser {
       reportIsvSvnSize,
       reportDataOffset,
       reportUserDataSize,
-      reportDataHashSize
+      reportDataHashSize,
     } = TeeSgxParser;
 
     if (data.length < reportSize) {
@@ -291,10 +291,7 @@ export class TeeSgxParser extends TeeParser {
       .slice(reportIsvSvnOffset, reportIsvSvnOffset + reportIsvSvnSize)
       .readUInt16LE(0);
     const userData = report.slice(reportDataOffset, reportDataOffset + reportUserDataSize);
-    const dataHash = report.slice(
-      reportDataOffset,
-      reportDataOffset + reportDataHashSize,
-    );
+    const dataHash = report.slice(reportDataOffset, reportDataOffset + reportDataHashSize);
 
     return {
       cpuSvn,
@@ -523,7 +520,7 @@ export class TeeTdxParser extends TeeParser {
       bodyRtmr2Size,
       bodyRtmr3Size,
       bodyReportDataSize,
-      reportDataHashSize
+      reportDataHashSize,
     } = TeeTdxParser;
 
     const bodyRemainder = { data: Blob.from(data) };

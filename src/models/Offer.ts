@@ -57,7 +57,7 @@ class Offer {
   }
 
   /**
-   * Function for fetching offer status from blockchain
+   * Checks if the offer is enabled
    */
   @incrementMethodCall()
   public isEnabled(): Promise<boolean> {
@@ -65,7 +65,7 @@ class Offer {
   }
 
   /**
-   * Function for fetching offer status from blockchain
+   * Checks if the offer is base image
    */
   @incrementMethodCall()
   public async isBaseImage(): Promise<boolean> {
@@ -76,6 +76,15 @@ class Offer {
 
     const isRestrictedBySolution = this.offerInfo?.restrictions.types.includes(OfferType.Solution);
     return !isRestrictedBySolution;
+  }
+
+  /**
+   * Checks if the offer has public data
+   */
+  @incrementMethodCall()
+  public async isOfferPublic(): Promise<boolean> {
+    const info = this.offerInfo ?? (await this.getInfo());
+    return Boolean(info.resultResource);
   }
 
   /**

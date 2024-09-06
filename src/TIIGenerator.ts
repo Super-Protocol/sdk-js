@@ -1,5 +1,4 @@
 import nodeGzip from 'node-gzip';
-import _ from 'lodash';
 
 import { Compression, Compression_TYPE } from './proto/Compression.js';
 import { TRI } from './proto/TRI.js';
@@ -27,6 +26,7 @@ class TIIGenerator extends TeeInputGeneratorBase {
   public static async generateByOffer({
     offerId,
     solutionHashes,
+    imageHashes,
     linkageString,
     resource,
     args,
@@ -49,6 +49,10 @@ class TIIGenerator extends TeeInputGeneratorBase {
     const mac = (encryption as any).authTag || (encryption as EncryptionWithMacIV).mac;
     const rawTri = {
       solutionHashes: solutionHashes.map((hash) => ({
+        algo: hash.algo,
+        hash: Buffer.from(hash.hash, hash.encoding),
+      })),
+      imageHashes: imageHashes.map((hash) => ({
         algo: hash.algo,
         hash: Buffer.from(hash.hash, hash.encoding),
       })),
@@ -99,13 +103,14 @@ class TIIGenerator extends TeeInputGeneratorBase {
     const parentOrder: Order = new Order(parentOrderId);
     const parentOrderInfo: OrderInfo = await parentOrder.getOrderInfo();
 
-    const { solutionHashes, linkage } = await this.getOffersHashesAndLinkage(
+    const { solutionHashes, imageHashes, linkage } = await this.getOffersHashesAndLinkage(
       parentOrderInfo.args.inputOffers,
     );
 
     return this.generateByOffer({
       offerId: parentOrderInfo.offerId,
       solutionHashes,
+      imageHashes,
       linkageString: linkage,
       resource,
       args,
@@ -135,6 +140,11 @@ class TIIGenerator extends TeeInputGeneratorBase {
 
     return {
       solutionHashes: decoded.solutionHashes.map((hash) => ({
+        hash: Buffer.from(hash.hash).toString(Encoding.base64),
+        algo: hash.algo as HashAlgorithm,
+        encoding: Encoding.base64,
+      })),
+      imageHashes: decoded.imageHashes.map((hash) => ({
         hash: Buffer.from(hash.hash).toString(Encoding.base64),
         algo: hash.algo as HashAlgorithm,
         encoding: Encoding.base64,
@@ -177,6 +187,7 @@ class TIIGenerator extends TeeInputGeneratorBase {
 export type GenerateByOfferParams = {
   offerId: BlockchainId;
   solutionHashes: Hash[];
+  imageHashes: Hash[];
   linkageString: string | undefined;
   resource: Resource;
   args: any;

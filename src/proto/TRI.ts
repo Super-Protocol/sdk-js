@@ -24,6 +24,7 @@ export interface TRI {
   args: string;
   encryption: Encryption | undefined;
   mrsigner: Uint8Array;
+  imageHashes: Hash[];
 }
 
 function createBaseEncryption(): Encryption {
@@ -264,6 +265,7 @@ function createBaseTRI(): TRI {
     args: "",
     encryption: undefined,
     mrsigner: new Uint8Array(0),
+    imageHashes: [],
   };
 }
 
@@ -283,6 +285,9 @@ export const TRI = {
     }
     if (message.mrsigner.length !== 0) {
       writer.uint32(42).bytes(message.mrsigner);
+    }
+    for (const v of message.imageHashes) {
+      Hash.encode(v!, writer.uint32(50).fork()).ldelim();
     }
     return writer;
   },
@@ -329,6 +334,13 @@ export const TRI = {
 
           message.mrsigner = reader.bytes();
           continue;
+        case 6:
+          if (tag !== 50) {
+            break;
+          }
+
+          message.imageHashes.push(Hash.decode(reader, reader.uint32()));
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -347,6 +359,9 @@ export const TRI = {
       args: isSet(object.args) ? globalThis.String(object.args) : "",
       encryption: isSet(object.encryption) ? Encryption.fromJSON(object.encryption) : undefined,
       mrsigner: isSet(object.mrsigner) ? bytesFromBase64(object.mrsigner) : new Uint8Array(0),
+      imageHashes: globalThis.Array.isArray(object?.imageHashes)
+        ? object.imageHashes.map((e: any) => Hash.fromJSON(e))
+        : [],
     };
   },
 
@@ -367,6 +382,9 @@ export const TRI = {
     if (message.mrsigner.length !== 0) {
       obj.mrsigner = base64FromBytes(message.mrsigner);
     }
+    if (message.imageHashes?.length) {
+      obj.imageHashes = message.imageHashes.map((e) => Hash.toJSON(e));
+    }
     return obj;
   },
 
@@ -382,6 +400,7 @@ export const TRI = {
       ? Encryption.fromPartial(object.encryption)
       : undefined;
     message.mrsigner = object.mrsigner ?? new Uint8Array(0);
+    message.imageHashes = object.imageHashes?.map((e) => Hash.fromPartial(e)) || [];
     return message;
   },
 };

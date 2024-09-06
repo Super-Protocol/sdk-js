@@ -154,6 +154,7 @@ describe('TIIGenerator', () => {
           mrenclave: '',
           mrsigner: '',
         }),
+        imageHashes: [],
         resource,
         args: {},
         encryption: {

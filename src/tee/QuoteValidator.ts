@@ -123,7 +123,7 @@ export class QuoteValidator {
           cert,
         ]);
         if (!isCertValid) {
-          throw new InvalidSignatureError('Trusted cert is invalid');
+          throw new Error('Trusted cert is invalid');
         }
 
         const publicKey = cert.publicKey;

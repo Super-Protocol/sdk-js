@@ -17,7 +17,7 @@ import {
 } from './types.js';
 import rootLogger from '../logger.js';
 import { IQEIdentity, ITcbData } from './interface.js';
-import { TeeQuoteValidatorError } from './errors.js';
+import { InvalidSignatureError, TeeQuoteValidatorError } from './errors.js';
 import { QEIdentityStatuses, TCBStatuses, QuoteValidationStatuses } from './statuses.js';
 import { Encoding, HashAlgorithm } from '@super-protocol/dto-js';
 import Crypto from '../crypto/index.js';
@@ -112,7 +112,7 @@ export class QuoteValidator {
         const parsedQuote = parser.parseQuote(quote);
         const report = parser.parseReport(parsedQuote.report);
         if (report.mrSigner.toString('hex') !== TEE_LOADER_TRUSTED_MRSIGNER.toString('hex')) {
-          throw new Error('Quote has invalid MR signer');
+          throw new InvalidSignatureError('Quote has an invalid MR signer');
         }
         break;
       }
@@ -138,7 +138,7 @@ export class QuoteValidator {
           String.fromCharCode.apply(null, [...signature]),
         );
         if (!isValid) {
-          throw new Error('TDX signature is invalid.');
+          throw new InvalidSignatureError('TDX signature is invalid');
         }
 
         break;

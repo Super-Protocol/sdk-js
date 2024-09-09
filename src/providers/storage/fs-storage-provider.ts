@@ -1,11 +1,9 @@
-import { Readable } from 'stream';
+import stream from 'stream';
+import fs from 'fs';
+import * as path from 'path';
 import StorageObject from '../../types/storage/StorageObject.js';
 import IStorageProvider, { DownloadConfig } from './IStorageProvider.js';
-import { createReadStream, createWriteStream, Stats } from 'node:fs';
 import { FSCredentials } from '@super-protocol/dto-js';
-import * as path from 'node:path';
-import { Writable } from 'node:stream';
-import { readdir, rm, stat } from 'node:fs/promises';
 import { access, constants as FS_CONSTANTS, mkdir } from 'fs/promises';
 import { NotFoundError } from '../../errors/index.js';
 
@@ -23,8 +21,8 @@ export class FSStorageProvider implements IStorageProvider {
   }
 
   private writeWithProgress(
-    inputStream: Readable,
-    outputStream: Writable,
+    inputStream: stream.Readable,
+    outputStream: stream.Writable,
     contentLength: number,
     progressListener?: (total: number, current: number) => void,
   ): Promise<void> {
@@ -53,7 +51,7 @@ export class FSStorageProvider implements IStorageProvider {
   }
 
   async uploadFile(
-    inputStream: Readable,
+    inputStream: stream.Readable,
     remotePath: string,
     contentLength: number,
     progressListener?: ((total: number, current: number) => void) | undefined,
@@ -65,7 +63,7 @@ export class FSStorageProvider implements IStorageProvider {
     const fullPath = this.getFullPath(remotePath);
     await this.ensureDirectoryExists(path.dirname(fullPath));
 
-    const outputStream = createWriteStream(fullPath);
+    const outputStream = fs.createWriteStream(fullPath);
     await this.writeWithProgress(inputStream, outputStream, contentLength, progressListener);
   }
 
@@ -73,18 +71,18 @@ export class FSStorageProvider implements IStorageProvider {
     remotePath: string,
     config: DownloadConfig,
     progressListener?: ((total: number, current: number) => void) | undefined,
-  ): Promise<Readable> {
+  ): Promise<stream.Readable> {
     const offset = config.offset ?? 0;
     const filePath = this.getFullPath(remotePath);
-    let stats: Stats;
+    let stats: fs.Stats;
     try {
-      stats = await stat(filePath);
+      stats = await fs.promises.stat(filePath);
     } catch {
       throw new NotFoundError(`File does not exist: ${filePath}`);
     }
     const total = offset + (config.length ?? 0) || stats.size;
     let current = offset;
-    const readStream = createReadStream(filePath, {
+    const readStream = fs.createReadStream(filePath, {
       start: offset,
       end: total,
     });
@@ -100,7 +98,7 @@ export class FSStorageProvider implements IStorageProvider {
   }
 
   async deleteObject(remotePath: string): Promise<void> {
-    await rm(this.getFullPath(remotePath), { force: true });
+    await fs.promises.rm(this.getFullPath(remotePath), { force: true });
   }
 
   private async ensureDirectoryExists(directory: string, createIfNotExists = true): Promise<void> {
@@ -118,31 +116,33 @@ export class FSStorageProvider implements IStorageProvider {
   async listObjects(remotePath: string): Promise<StorageObject[]> {
     const fullPath = this.getFullPath(remotePath);
     await this.ensureDirectoryExists(fullPath);
-    const dirents = await readdir(fullPath, { withFileTypes: true });
+    const dirents = await fs.promises.readdir(fullPath, { withFileTypes: true });
 
     return Promise.all(
       dirents.map(async (dirent) => {
         const direntPath = path.join(fullPath, dirent.name);
-        const direntStat = await stat(direntPath);
+        const direntStat = await fs.promises.stat(direntPath);
         return {
           name: dirent.name,
           size: direntStat.size,
           isFolder: dirent.isDirectory(),
           createdAt: direntStat.birthtime,
-          ...(dirent.isDirectory() && { childrenCount: (await readdir(direntPath)).length }),
+          ...(dirent.isDirectory() && {
+            childrenCount: (await fs.promises.readdir(direntPath)).length,
+          }),
         };
       }),
     );
   }
 
   async getObjectSize(remotePath: string): Promise<number> {
-    const fileStat = await stat(this.getFullPath(remotePath));
+    const fileStat = await fs.promises.stat(this.getFullPath(remotePath));
 
     return fileStat.size;
   }
 
   async getLastModified(remotePath: string): Promise<Date | null> {
-    const fileStat = await stat(this.getFullPath(remotePath));
+    const fileStat = await fs.promises.stat(this.getFullPath(remotePath));
 
     return fileStat.mtime;
   }

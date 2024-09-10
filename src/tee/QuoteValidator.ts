@@ -17,7 +17,7 @@ import {
 } from './types.js';
 import rootLogger from '../logger.js';
 import { IQEIdentity, ITcbData } from './interface.js';
-import { TeeQuoteValidatorError } from './errors.js';
+import { InvalidSignatureError, TeeQuoteValidatorError } from './errors.js';
 import { QEIdentityStatuses, TCBStatuses, QuoteValidationStatuses } from './statuses.js';
 import { Encoding, HashAlgorithm } from '@super-protocol/dto-js';
 import Crypto from '../crypto/index.js';
@@ -112,33 +112,40 @@ export class QuoteValidator {
         const parsedQuote = parser.parseQuote(quote);
         const report = parser.parseReport(parsedQuote.report);
         if (report.mrSigner.toString('hex') !== TEE_LOADER_TRUSTED_MRSIGNER.toString('hex')) {
-          throw new Error('Quote has invalid MR signer');
+          throw new InvalidSignatureError('Quote has an invalid MR signer');
         }
         break;
       }
       case QuoteType.TDX: {
         const mrEnclave = TeeParser.getMrEnclave(quote);
         const cert = forge.pki.certificateFromPem(TEE_LOADER_TRUSTED_CERTIFICATE);
-        forge.pki.verifyCertificateChain(forge.pki.createCaStore([cert]), [cert]);
+        const isCertValid = forge.pki.verifyCertificateChain(forge.pki.createCaStore([cert]), [
+          cert,
+        ]);
+        if (!isCertValid) {
+          throw new Error('Trusted cert is invalid');
+        }
 
         const publicKey = cert.publicKey;
         if (
           !Object.prototype.hasOwnProperty.call(publicKey, 'n') ||
           !Object.prototype.hasOwnProperty.call(publicKey, 'e')
         ) {
-          throw new Error('Expected RSA private key inside certificate');
+          throw new InvalidSignatureError('Expected RSA private key inside certificate');
         }
+
+        const digest = forge.md.sha256
+          .create()
+          .update(String.fromCharCode(...mrEnclave))
+          .digest();
         const signature = await getMrEnclaveSignature(Buffer.from(mrEnclave));
 
-        const md = forge.md.sha256.create();
-        md.update(String.fromCharCode.apply(null, [...mrEnclave]));
-
-        const isValid = (publicKey as forge.pki.rsa.PublicKey).verify(
-          md.digest().bytes(),
-          String.fromCharCode.apply(null, [...signature]),
+        const isSignatureValid = (publicKey as forge.pki.rsa.PublicKey).verify(
+          digest.bytes(),
+          String.fromCharCode(...signature),
         );
-        if (!isValid) {
-          throw new Error('TDX signature is invalid.');
+        if (!isSignatureValid) {
+          throw new InvalidSignatureError('TDX signature is invalid');
         }
 
         break;

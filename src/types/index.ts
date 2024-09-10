@@ -20,3 +20,4 @@ export * from './TeeOfferOption.js';
 export * from './TeeOfferSlot.js';
 export * from './ValueOfferSlot.js';
 export * from './Web3.js';
+export * from './DistributedSecretStorage.js';

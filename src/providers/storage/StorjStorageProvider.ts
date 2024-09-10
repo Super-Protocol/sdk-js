@@ -129,7 +129,7 @@ export default class StorJStorageProvider implements IStorageProvider {
     for (const key in Object.keys(objects)) {
       const value = objects[key];
       result.push({
-        name: value.key,
+        name: value.key.substring(this.prefix.length),
         size: value.system.content_length,
         isFolder: value.is_prefix == 1,
         childrenCount: value.custom.count,

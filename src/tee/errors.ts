@@ -1,5 +1,9 @@
-export class TLBlockSerializerError extends Error {}
+import { BaseError } from '../errors/index.js';
 
-export class TeeQuoteParserError extends Error {}
+export class TLBlockSerializerError extends BaseError {}
 
-export class TeeQuoteValidatorError extends Error {}
+export class TeeQuoteParserError extends BaseError {}
+
+export class TeeQuoteValidatorError extends BaseError {}
+
+export class InvalidSignatureError extends BaseError {}

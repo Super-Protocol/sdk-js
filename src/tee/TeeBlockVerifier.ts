@@ -3,17 +3,16 @@ import { TLBlockSerializerV1, TLBlockUnserializeResultType } from '@super-protoc
 import logger from '../logger.js';
 import { config } from '../config.js';
 import { TCB } from '../models/index.js';
-import { TeeSgxParser } from './QuoteParser.js';
 import { QuoteValidator } from './QuoteValidator.js';
 import { QuoteValidationStatuses } from './statuses.js';
 import { BlockchainId } from '../types/index.js';
 import Crypto from '../crypto/index.js';
 
 export class TeeBlockVerifier {
-  static verifiedTlbHashes: Map<string, string> = new Map();
-  static verifiedTcbs: Set<BlockchainId> = new Set();
+  private static readonly verifiedTlbHashes: Map<string, string> = new Map();
+  private static readonly verifiedTcbs: Set<BlockchainId> = new Set();
 
-  private static async checkQuote(
+  static async checkQuote(
     quote: Uint8Array,
     dataBlob: Uint8Array,
     sgxApiUrl: string,
@@ -37,15 +36,10 @@ export class TeeBlockVerifier {
       throw new Error('Quote has invalid user data');
     }
 
-    const parser = new TeeSgxParser();
-    const parsedQuote = parser.parseQuote(quote);
-    const report = parser.parseReport(parsedQuote.report);
-    if (report.mrSigner.toString('hex') !== config.TEE_LOADER_TRUSTED_MRSIGNER) {
-      throw new Error('Quote has invalid MR signer');
-    }
+    await QuoteValidator.checkSignature(quoteBuffer);
   }
 
-  public static async verifyTcb(
+  static async verifyTcb(
     tcb: TCB,
     quoteString: string,
     pubKey: string,
@@ -83,7 +77,7 @@ export class TeeBlockVerifier {
     );
   }
 
-  public static async verifyTlb(
+  static async verifyTlb(
     tlb: TLBlockUnserializeResultType,
     tlbString: string,
     offerId: string,

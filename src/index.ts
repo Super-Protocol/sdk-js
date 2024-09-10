@@ -7,6 +7,7 @@ export { Config } from './connectors/BaseConnector.js';
 export { default as BlockchainEventsListener } from './connectors/BlockchainEventsListener.js';
 
 export { default as Crypto } from './crypto/index.js';
+export * from './crypto/index.js';
 
 export { default as TIIGenerator } from './TIIGenerator.js';
 export * from './TIIGenerator.js';
@@ -47,6 +48,24 @@ export * from './staticModels/Marks.js';
 export { default as Deposits } from './staticModels/Deposits.js';
 export * from './staticModels/Deposits.js';
 
+export { default as LoaderSessions } from './staticModels/LoaderSessions.js';
+export * from './staticModels/LoaderSessions.js';
+
+export { default as LoaderSecretsPublicKeys } from './staticModels/LoaderSecretsPublicKeys.js';
+export * from './staticModels/LoaderSecretsPublicKeys.js';
+
+export { default as OfferResources } from './staticModels/OfferResources.js';
+export * from './staticModels/OfferResources.js';
+
+export { default as OffersStorageAllocated } from './staticModels/OffersStorageAllocated.js';
+export * from './staticModels/OffersStorageAllocated.js';
+
+export { default as OffersStorageRequests } from './staticModels/OffersStorageRequests.js';
+export * from './staticModels/OffersStorageRequests.js';
+
+export { default as SecretRequests } from './staticModels/SecretRequests.js';
+export * from './staticModels/SecretRequests.js';
+
 export { default as Order } from './models/Order.js';
 export * from './models/Order.js';
 
@@ -62,24 +81,7 @@ export * from './models/Offer.js';
 export { default as TCB } from './models/TCB.js';
 export * from './models/TCB.js';
 
-export * from './types/Offer.js';
-export * from './types/Marks.js';
-export * from './types/Order.js';
-export * from './types/TeeOfferInfo.js';
-export * from './types/HardwareInfo.js';
-export * from './types/SlotInfo.js';
-export * from './types/SlotUsage.js';
-export * from './types/OptionInfo.js';
-export * from './types/OrderUsage.js';
-export * from './types/TeeOfferInfo.js';
-export * from './types/TeeOfferOption.js';
-export * from './types/TeeOfferSlot.js';
-export * from './types/ValueOfferSlot.js';
-export * from './types/Provider.js';
-export * from './types/Superpro.js';
-export * from './types/Consensus.js';
-export * from './types/Origins.js';
-export * from './types/Web3.js';
+export * from './types/index.js';
 
 export * as ChunkedStorageProvider from './providers/storage/ChunksDownloadDecorator.js';
 export { default as StorjAdapter, StorjConfig } from './providers/storage/StorjAdapter.js';
@@ -88,6 +90,7 @@ export {
   StorageMetadataReaderConfig,
 } from './providers/storage/StorageMetadataReader.js';
 export { default as StorageKeyValueAdapter } from './providers/storage/StorageKeyValueAdapter.js';
+export { IStorageKeyValueAdapter, IStorageAdapter } from './providers/storage/types.js';
 export {
   default as StorageAdapter,
   CacheEvents,
@@ -104,7 +107,13 @@ export { default as StorageAccess } from './types/storage/StorageAccess.js';
 
 export { default as getStorageProvider } from './providers/storage/getStorageProvider.js';
 export { default as IStorageProvider } from './providers/storage/IStorageProvider.js';
+export { parseStorageCredentials } from './providers/storage/parseStorageCredentials.js';
+export {
+  CredentialsPermissions,
+  StorjCredentialsManager,
+} from './providers/storage/StorjCredentialsManager.js';
 
+export * from './utils/CryptoKeysTransformer.js';
 export * as helpers from './utils/helpers/index.js';
 export * as constants from './constants.js';
 
@@ -112,7 +121,9 @@ export { Web3TransactionRevertedByEvmError } from './utils/TxManager.js';
 
 import './polyfills.js';
 
-export { TeeSgxParser } from './tee/QuoteParser.js';
+export * from './tee/errors.js';
+export { QuoteType } from './tee/types.js';
+export { TeeSgxParser, TeeTdxParser, TeeParser } from './tee/QuoteParser.js';
 export { QuoteValidator } from './tee/QuoteValidator.js';
 export * from './tee/statuses.js';
 export { TeeBlockVerifier } from './tee/TeeBlockVerifier.js';
@@ -124,3 +135,4 @@ export { default as BrowserEventProvider } from './analytics/eventProviders/Brow
 export { default as AxiosTransport } from './analytics/transports/AxiosTransport.js';
 export { default as FetchTransport } from './analytics/transports/FetchTransport.js';
 export * from './utils/cache/index.js';
+export * from './errors/index.js';

@@ -31,6 +31,7 @@ class RIGenerator extends TeeInputGeneratorBase {
     pccsServiceApiUrl: string;
     solutionHashes: Hash[];
     dataHashes: Hash[];
+    imageHashes: Hash[];
     linkage?: string;
   }): Promise<OrderResultInfo> {
     const resultEncryption = Crypto.getPublicKey(params.encryptionPrivateKey);
@@ -49,6 +50,7 @@ class RIGenerator extends TeeInputGeneratorBase {
       publicKey: resultEncryption,
       solutionHashes: params.solutionHashes || [],
       dataHashes: params.dataHashes || [],
+      imageHashes: params.imageHashes || [],
       linkage: params.linkage ?? '',
     };
 

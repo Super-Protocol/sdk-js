@@ -5,11 +5,19 @@ import { Web3BatchRequest } from 'web3-core';
 import { Monitoring } from './Monitoring.js';
 import { SlotInfo } from '../types/SlotInfo.js';
 import {
+  LoaderSecretPublicKey,
+  LoaderSession,
+  OfferResource,
+  OfferStorageAllocated,
+  OfferStorageRequest,
   OptionInfo,
   OptionInfoRaw,
   OrderUsage,
   OrderUsageRaw,
   PriceType,
+  PublicKey,
+  SecretRequest,
+  Signature,
   SlotUsage,
   TcbPublicData,
   TeeOfferOption,
@@ -19,6 +27,7 @@ import {
   ValueOfferSlotRaw,
 } from '../types/index.js';
 import { BLOCKCHAIN_BATCH_REQUEST_TIMEOUT } from '../constants.js';
+import { ethers } from 'ethers';
 
 /**
  * Function for checking if provider action account initialized (required for set methods)
@@ -157,6 +166,104 @@ export function convertTeeOfferOptionFromRaw(option: TeeOfferOptionRaw): TeeOffe
     ...option,
     info: convertOptionInfoFromRaw(option.info),
     usage: formatUsage(option.usage),
+  };
+}
+
+function transformPublicKeyFromRaw(publicKey: PublicKey): PublicKey {
+  return {
+    ...publicKey,
+    pointX:
+      typeof publicKey.pointX === 'string'
+        ? ethers.utils.arrayify(publicKey.pointX)
+        : publicKey.pointX,
+    pointY:
+      typeof publicKey.pointY === 'string'
+        ? ethers.utils.arrayify(publicKey.pointY)
+        : publicKey.pointY,
+  };
+}
+
+function transformSignatureFromRaw(signature: Signature): Signature {
+  return {
+    ...signature,
+    r: typeof signature.r === 'string' ? ethers.utils.arrayify(signature.r) : signature.r,
+    s: typeof signature.s === 'string' ? ethers.utils.arrayify(signature.s) : signature.s,
+  };
+}
+
+export function convertLoaderSecretPublicKeyFromRaw(
+  loaderSecretPublicKeyRaw: LoaderSecretPublicKey,
+): LoaderSecretPublicKey {
+  const loaderSecretPublicKey = cleanWeb3Data({ ...loaderSecretPublicKeyRaw });
+  const secretPublicKey = transformPublicKeyFromRaw(loaderSecretPublicKey.secretPublicKey);
+  const signature = transformSignatureFromRaw(loaderSecretPublicKey.signature);
+
+  return {
+    ...loaderSecretPublicKey,
+    secretPublicKey,
+    signature,
+    signedTime: Number(loaderSecretPublicKey.signedTime),
+    timestamp: Number(loaderSecretPublicKey.timestamp),
+  };
+}
+
+export function convertLoaderSessionFromRaw(loaderSessionRaw: LoaderSession): LoaderSession {
+  const loaderSession = cleanWeb3Data({ ...loaderSessionRaw });
+  const sessionPublicKey = transformPublicKeyFromRaw(loaderSession.sessionPublicKey);
+
+  return {
+    ...loaderSession,
+    sessionPublicKey,
+    signedTime: Number(loaderSession.signedTime),
+    timestamp: Number(loaderSession.timestamp),
+  };
+}
+
+export function convertOfferResourceFromRaw(offerResourceRaw: OfferResource): OfferResource {
+  const offerResource = cleanWeb3Data({ ...offerResourceRaw });
+  const signature = transformSignatureFromRaw(offerResource.signature);
+
+  return {
+    ...offerResource,
+    signature,
+    offerVersion: Number(offerResource.offerVersion),
+    signedTime: Number(offerResource.signedTime),
+    timestamp: Number(offerResource.timestamp),
+  };
+}
+
+export function convertSecretRequestFromRaw(secretRequestRaw: SecretRequest): SecretRequest {
+  const secretRequest = cleanWeb3Data({ ...secretRequestRaw });
+
+  return {
+    ...secretRequest,
+    offerVersion: Number(secretRequest.offerVersion),
+    timestamp: Number(secretRequest.timestamp),
+  };
+}
+
+export function convertOfferStorageAllocatedFromRaw(
+  offerStorageAllocatedRaw: OfferStorageAllocated,
+): OfferStorageAllocated {
+  const offerStorageAllocated = cleanWeb3Data({ ...offerStorageAllocatedRaw });
+
+  return {
+    ...offerStorageAllocated,
+    distributionReplicationFactor: Number(offerStorageAllocated.distributionReplicationFactor),
+    timestamp: Number(offerStorageAllocated.timestamp),
+  };
+}
+
+export function convertOfferStorageRequestFromRaw(
+  offerStorageRequestRaw: OfferStorageRequest,
+): OfferStorageRequest {
+  const offerStorageRequest = cleanWeb3Data({ ...offerStorageRequestRaw });
+
+  return {
+    ...offerStorageRequest,
+    replicationFactor: Number(offerStorageRequest.replicationFactor),
+    offerVersion: Number(offerStorageRequest.offerVersion),
+    timestamp: Number(offerStorageRequest.timestamp),
   };
 }
 

@@ -1,9 +1,10 @@
 /* eslint-disable prettier/prettier */
 import { CryptoAlgorithm } from '@super-protocol/dto-js';
+import { KeyObject } from 'crypto';
 
 export type AsymmetricKeys = {
-  publicKey: Buffer;
-  privateKey: Buffer;
+  publicKey: KeyObject;
+  privateKey: KeyObject;
 };
 
 export type SymmetricKey = Buffer;

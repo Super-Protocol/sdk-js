@@ -102,6 +102,28 @@ class OfferResources {
     );
   }
 
+  public static async increaseReplicationFactor(
+    offerResource: Omit<OfferResource, 'timestamp'>,
+    n: number,
+    transactionOptions?: TransactionOptions,
+  ): Promise<void> {
+    const contract = BlockchainConnector.getInstance().getContract();
+    checkIfActionAccountInitialized(transactionOptions);
+
+    await TxManager.execute(
+      contract.methods.increaseReplicationFactor(
+        {
+          ...offerResource,
+          offerVersion: offerResource.offerVersion ?? 0,
+          solutionHash: offerResource.solutionHash ?? '',
+          timestamp: 0,
+        },
+        n,
+      ),
+      transactionOptions,
+    );
+  }
+
   public static async createOrder(
     requestOfferId: BlockchainId,
     requestOfferVersion: number = 0,

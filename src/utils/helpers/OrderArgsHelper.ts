@@ -1,23 +1,15 @@
 import _ from 'lodash';
 import { Readable } from 'stream';
-import { Encryption, ResourceType, StorageProviderResource } from '@super-protocol/dto-js';
+import {
+  Encryption,
+  ResourceType,
+  StorageProviderResource,
+  TeeOrderEncryptedArgs,
+  TeeOrderEncryptedArgsConfiguration,
+} from '@super-protocol/dto-js';
 import Crypto from '../../crypto/index.js';
 import getStorageProvider from '../../providers/storage/getStorageProvider.js';
 import StorageAccess from '../../types/storage/StorageAccess.js';
-
-// TODO: @super-protocol/dto-js
-type TeeOrderEncryptedArgsConfiguration = {
-  solution: Record<string, unknown>;
-  data: Array<Record<string, unknown>>;
-};
-
-// TODO: @super-protocol/dto-js
-export type TeeOrderEncryptedArgs = {
-  data: string[];
-  image: string[];
-  solution: string[];
-  configuration?: Partial<TeeOrderEncryptedArgsConfiguration>;
-};
 
 const isStringArray = (item: unknown): item is string[] =>
   Array.isArray(item) && item.every(_.isString);

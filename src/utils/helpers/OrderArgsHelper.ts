@@ -10,6 +10,7 @@ import {
 import Crypto from '../../crypto/index.js';
 import getStorageProvider from '../../providers/storage/getStorageProvider.js';
 import StorageAccess from '../../types/storage/StorageAccess.js';
+import { isNodeJS } from '../helper.js';
 
 const isStringArray = (item: unknown): item is string[] =>
   Array.isArray(item) && item.every(_.isString);
@@ -95,18 +96,28 @@ export class OrderArgsHelper {
     const string2Stream = (
       data: string,
     ): {
-      stream: Readable;
+      stream: Readable | Blob;
       size: number;
     } => {
       const buffer = Buffer.from(data);
-      const stream = new Readable();
-      stream.push(buffer);
-      stream.push(null);
 
-      return {
-        stream,
-        size: buffer.length,
-      };
+      if (isNodeJS()) {
+        const stream = new Readable();
+        stream.push(buffer);
+        stream.push(null);
+
+        return {
+          stream,
+          size: buffer.length,
+        };
+      } else {
+        const blob = new Blob([buffer]);
+
+        return {
+          stream: blob,
+          size: blob.size,
+        };
+      }
     };
 
     const encryptedData = await OrderArgsHelper.encryptOrderArgs(args, encryption);

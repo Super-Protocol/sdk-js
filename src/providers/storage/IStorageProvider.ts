@@ -7,7 +7,7 @@ export type DownloadConfig = {
 };
 export default interface IStorageProvider {
   uploadFile(
-    inputStream: stream.Readable,
+    inputStream: stream.Readable | Blob,
     remotePath: string,
     contentLength: number,
     progressListener?: (total: number, current: number) => void,

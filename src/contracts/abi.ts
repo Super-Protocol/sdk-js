@@ -1,10667 +1,10630 @@
-export const Approval = 'Approval' as const;export const Transfer = 'Transfer' as const;export const RewardsClaimed = 'RewardsClaimed' as const;export const TcbBenchmarkChanged = 'TcbBenchmarkChanged' as const;export const TcbCompleted = 'TcbCompleted' as const;export const TcbInitialized = 'TcbInitialized' as const;export const TcbBanned = 'TcbBanned' as const;export const DepositPartLocked = 'DepositPartLocked' as const;export const DepositPartUnlocked = 'DepositPartUnlocked' as const;export const DepositReplenished = 'DepositReplenished' as const;export const DepositWithdrawn = 'DepositWithdrawn' as const;export const OfferCreated = 'OfferCreated' as const;export const OfferDisabled = 'OfferDisabled' as const;export const OfferEnabled = 'OfferEnabled' as const;export const TeeOfferCreated = 'TeeOfferCreated' as const;export const TeeOfferViolationRateChanged = 'TeeOfferViolationRateChanged' as const;export const OrdersGroupCreated = 'OrdersGroupCreated' as const;export const OrderCreated = 'OrderCreated' as const;export const OrderStatusUpdated = 'OrderStatusUpdated' as const;export const OrderAwaitingPaymentChanged = 'OrderAwaitingPaymentChanged' as const;export const OrderDepositRefilled = 'OrderDepositRefilled' as const;export const OrderOptionsDepositSpentChanged = 'OrderOptionsDepositSpentChanged' as const;export const OrderProfitUnlocked = 'OrderProfitUnlocked' as const;export const OrderChangeWithdrawn = 'OrderChangeWithdrawn' as const;export const OrderEncryptedResultUpdated = 'OrderEncryptedResultUpdated' as const;export const OrderProfitWithdrawn = 'OrderProfitWithdrawn' as const;export const OrderStarted = 'OrderStarted' as const;export const OrderOptionsChangeRequested = 'OrderOptionsChangeRequested' as const;export const OrderOptionsChanged = 'OrderOptionsChanged' as const;export const OrderSlotCountUpdateRequested = 'OrderSlotCountUpdateRequested' as const;export const OrderSlotCountUpdated = 'OrderSlotCountUpdated' as const;export const ProviderModified = 'ProviderModified' as const;export const ProviderRegistered = 'ProviderRegistered' as const;export const ProviderSecurityDepoRefilled = 'ProviderSecurityDepoRefilled' as const;export const ProviderSecurityDepoUnlocked = 'ProviderSecurityDepoUnlocked' as const;export const ProviderViolationRateIncremented = 'ProviderViolationRateIncremented' as const;export const OptionAdded = 'OptionAdded' as const;export const OptionDeleted = 'OptionDeleted' as const;export const OptionUpdated = 'OptionUpdated' as const;export const TeeSlotAdded = 'TeeSlotAdded' as const;export const TeeSlotDeleted = 'TeeSlotDeleted' as const;export const TeeSlotUpdated = 'TeeSlotUpdated' as const;export const TcbRewardUnlocked = 'TcbRewardUnlocked' as const;export const WarningMessage = 'WarningMessage' as const;export const ValueSlotAdded = 'ValueSlotAdded' as const;export const ValueSlotDeleted = 'ValueSlotDeleted' as const;export const ValueSlotUpdated = 'ValueSlotUpdated' as const;export const DiamondCut = 'DiamondCut' as const;export const OwnershipTransferred = 'OwnershipTransferred' as const;export const LoaderSecretPublicKeySessionUpdated = 'LoaderSecretPublicKeySessionUpdated' as const;export const LoaderSessionKeyUpdated = 'LoaderSessionKeyUpdated' as const;export const OfferResourceCreated = 'OfferResourceCreated' as const;export const OrderResourceCreated = 'OrderResourceCreated' as const;export const OfferStorageRequestCanceled = 'OfferStorageRequestCanceled' as const;export const OfferStorageRequestCreated = 'OfferStorageRequestCreated' as const;export const SecretRequestCreated = 'SecretRequestCreated' as const;
+export const Approval = 'Approval' as const; export const Transfer = 'Transfer' as const; export const RewardsClaimed = 'RewardsClaimed' as const; export const TcbBenchmarkChanged = 'TcbBenchmarkChanged' as const; export const TcbCompleted = 'TcbCompleted' as const; export const TcbInitialized = 'TcbInitialized' as const; export const TcbBanned = 'TcbBanned' as const; export const DepositPartLocked = 'DepositPartLocked' as const; export const DepositPartUnlocked = 'DepositPartUnlocked' as const; export const DepositReplenished = 'DepositReplenished' as const; export const DepositWithdrawn = 'DepositWithdrawn' as const; export const OfferCreated = 'OfferCreated' as const; export const OfferDisabled = 'OfferDisabled' as const; export const OfferEnabled = 'OfferEnabled' as const; export const TeeOfferCreated = 'TeeOfferCreated' as const; export const TeeOfferViolationRateChanged = 'TeeOfferViolationRateChanged' as const; export const OrdersGroupCreated = 'OrdersGroupCreated' as const; export const OrderCreated = 'OrderCreated' as const; export const OrderStatusUpdated = 'OrderStatusUpdated' as const; export const OrderAwaitingPaymentChanged = 'OrderAwaitingPaymentChanged' as const; export const OrderDepositRefilled = 'OrderDepositRefilled' as const; export const OrderOptionsDepositSpentChanged = 'OrderOptionsDepositSpentChanged' as const; export const OrderProfitUnlocked = 'OrderProfitUnlocked' as const; export const OrderChangeWithdrawn = 'OrderChangeWithdrawn' as const; export const OrderEncryptedResultUpdated = 'OrderEncryptedResultUpdated' as const; export const OrderProfitWithdrawn = 'OrderProfitWithdrawn' as const; export const OrderStarted = 'OrderStarted' as const; export const OrderOptionsChangeRequested = 'OrderOptionsChangeRequested' as const; export const OrderOptionsChanged = 'OrderOptionsChanged' as const; export const OrderSlotCountUpdateRequested = 'OrderSlotCountUpdateRequested' as const; export const OrderSlotCountUpdated = 'OrderSlotCountUpdated' as const; export const ProviderModified = 'ProviderModified' as const; export const ProviderRegistered = 'ProviderRegistered' as const; export const ProviderSecurityDepoRefilled = 'ProviderSecurityDepoRefilled' as const; export const ProviderSecurityDepoUnlocked = 'ProviderSecurityDepoUnlocked' as const; export const ProviderViolationRateIncremented = 'ProviderViolationRateIncremented' as const; export const OptionAdded = 'OptionAdded' as const; export const OptionDeleted = 'OptionDeleted' as const; export const OptionUpdated = 'OptionUpdated' as const; export const TeeSlotAdded = 'TeeSlotAdded' as const; export const TeeSlotDeleted = 'TeeSlotDeleted' as const; export const TeeSlotUpdated = 'TeeSlotUpdated' as const; export const TcbRewardUnlocked = 'TcbRewardUnlocked' as const; export const WarningMessage = 'WarningMessage' as const; export const ValueSlotAdded = 'ValueSlotAdded' as const; export const ValueSlotDeleted = 'ValueSlotDeleted' as const; export const ValueSlotUpdated = 'ValueSlotUpdated' as const; export const DiamondCut = 'DiamondCut' as const; export const OwnershipTransferred = 'OwnershipTransferred' as const; export const LoaderSecretPublicKeySessionUpdated = 'LoaderSecretPublicKeySessionUpdated' as const; export const LoaderSessionKeyUpdated = 'LoaderSessionKeyUpdated' as const; export const OfferResourceCreated = 'OfferResourceCreated' as const; export const OrderResourceCreated = 'OrderResourceCreated' as const; export const OfferStorageRequestCanceled = 'OfferStorageRequestCanceled' as const; export const OfferStorageRequestCreated = 'OfferStorageRequestCreated' as const; export const SecretRequestCreated = 'SecretRequestCreated' as const;
 export type AbiEvent = typeof Approval | typeof Transfer | typeof RewardsClaimed | typeof TcbBenchmarkChanged | typeof TcbCompleted | typeof TcbInitialized | typeof TcbBanned | typeof DepositPartLocked | typeof DepositPartUnlocked | typeof DepositReplenished | typeof DepositWithdrawn | typeof OfferCreated | typeof OfferDisabled | typeof OfferEnabled | typeof TeeOfferCreated | typeof TeeOfferViolationRateChanged | typeof OrdersGroupCreated | typeof OrderCreated | typeof OrderStatusUpdated | typeof OrderAwaitingPaymentChanged | typeof OrderDepositRefilled | typeof OrderOptionsDepositSpentChanged | typeof OrderProfitUnlocked | typeof OrderChangeWithdrawn | typeof OrderEncryptedResultUpdated | typeof OrderProfitWithdrawn | typeof OrderStarted | typeof OrderOptionsChangeRequested | typeof OrderOptionsChanged | typeof OrderSlotCountUpdateRequested | typeof OrderSlotCountUpdated | typeof ProviderModified | typeof ProviderRegistered | typeof ProviderSecurityDepoRefilled | typeof ProviderSecurityDepoUnlocked | typeof ProviderViolationRateIncremented | typeof OptionAdded | typeof OptionDeleted | typeof OptionUpdated | typeof TeeSlotAdded | typeof TeeSlotDeleted | typeof TeeSlotUpdated | typeof TcbRewardUnlocked | typeof WarningMessage | typeof ValueSlotAdded | typeof ValueSlotDeleted | typeof ValueSlotUpdated | typeof DiamondCut | typeof OwnershipTransferred | typeof LoaderSecretPublicKeySessionUpdated | typeof LoaderSessionKeyUpdated | typeof OfferResourceCreated | typeof OrderResourceCreated | typeof OfferStorageRequestCanceled | typeof OfferStorageRequestCreated | typeof SecretRequestCreated;
 export const abi = [
     {
-        "anonymous": false,
-        "inputs": [
+        anonymous: false,
+        inputs: [
             {
-                "indexed": true,
-                "internalType": "address",
-                "name": "owner",
-                "type": "address"
+                indexed: true,
+                internalType: 'address',
+                name: 'owner',
+                type: 'address'
             },
             {
-                "indexed": true,
-                "internalType": "address",
-                "name": "spender",
-                "type": "address"
+                indexed: true,
+                internalType: 'address',
+                name: 'spender',
+                type: 'address'
             },
             {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "value",
-                "type": "uint256"
+                indexed: false,
+                internalType: 'uint256',
+                name: 'value',
+                type: 'uint256'
             }
         ],
-        "name": "Approval",
-        "type": "event"
+        name: 'Approval',
+        type: 'event'
     },
     {
-        "anonymous": false,
-        "inputs": [
+        anonymous: false,
+        inputs: [
             {
-                "indexed": true,
-                "internalType": "address",
-                "name": "from",
-                "type": "address"
+                indexed: true,
+                internalType: 'address',
+                name: 'from',
+                type: 'address'
             },
             {
-                "indexed": true,
-                "internalType": "address",
-                "name": "to",
-                "type": "address"
+                indexed: true,
+                internalType: 'address',
+                name: 'to',
+                type: 'address'
             },
             {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "value",
-                "type": "uint256"
+                indexed: false,
+                internalType: 'uint256',
+                name: 'value',
+                type: 'uint256'
             }
         ],
-        "name": "Transfer",
-        "type": "event"
+        name: 'Transfer',
+        type: 'event'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "address",
-                "name": "owner",
-                "type": "address"
+                internalType: 'address',
+                name: 'owner',
+                type: 'address'
             },
             {
-                "internalType": "address",
-                "name": "spender",
-                "type": "address"
+                internalType: 'address',
+                name: 'spender',
+                type: 'address'
             }
         ],
-        "name": "allowance",
-        "outputs": [
+        name: 'allowance',
+        outputs: [
             {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "address",
-                "name": "spender",
-                "type": "address"
+                internalType: 'address',
+                name: 'spender',
+                type: 'address'
             },
             {
-                "internalType": "uint256",
-                "name": "amount",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'amount',
+                type: 'uint256'
             }
         ],
-        "name": "approve",
-        "outputs": [
+        name: 'approve',
+        outputs: [
             {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
+                internalType: 'bool',
+                name: '',
+                type: 'bool'
             }
         ],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "address",
-                "name": "account",
-                "type": "address"
+                internalType: 'address',
+                name: 'account',
+                type: 'address'
             }
         ],
-        "name": "balanceOf",
-        "outputs": [
+        name: 'balanceOf',
+        outputs: [
             {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [],
-        "name": "decimals",
-        "outputs": [
+        inputs: [],
+        name: 'decimals',
+        outputs: [
             {
-                "internalType": "uint8",
-                "name": "",
-                "type": "uint8"
+                internalType: 'uint8',
+                name: '',
+                type: 'uint8'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "address",
-                "name": "spender",
-                "type": "address"
+                internalType: 'address',
+                name: 'spender',
+                type: 'address'
             },
             {
-                "internalType": "uint256",
-                "name": "subtractedValue",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'subtractedValue',
+                type: 'uint256'
             }
         ],
-        "name": "decreaseAllowance",
-        "outputs": [
+        name: 'decreaseAllowance',
+        outputs: [
             {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
+                internalType: 'bool',
+                name: '',
+                type: 'bool'
             }
         ],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "address",
-                "name": "spender",
-                "type": "address"
+                internalType: 'address',
+                name: 'spender',
+                type: 'address'
             },
             {
-                "internalType": "uint256",
-                "name": "addedValue",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'addedValue',
+                type: 'uint256'
             }
         ],
-        "name": "increaseAllowance",
-        "outputs": [
+        name: 'increaseAllowance',
+        outputs: [
             {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
+                internalType: 'bool',
+                name: '',
+                type: 'bool'
             }
         ],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [],
-        "name": "name",
-        "outputs": [
+        inputs: [],
+        name: 'name',
+        outputs: [
             {
-                "internalType": "string",
-                "name": "",
-                "type": "string"
+                internalType: 'string',
+                name: '',
+                type: 'string'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [],
-        "name": "symbol",
-        "outputs": [
+        inputs: [],
+        name: 'symbol',
+        outputs: [
             {
-                "internalType": "string",
-                "name": "",
-                "type": "string"
+                internalType: 'string',
+                name: '',
+                type: 'string'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [],
-        "name": "totalSupply",
-        "outputs": [
+        inputs: [],
+        name: 'totalSupply',
+        outputs: [
             {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "address",
-                "name": "to",
-                "type": "address"
+                internalType: 'address',
+                name: 'to',
+                type: 'address'
             },
             {
-                "internalType": "uint256",
-                "name": "amount",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'amount',
+                type: 'uint256'
             }
         ],
-        "name": "transfer",
-        "outputs": [
+        name: 'transfer',
+        outputs: [
             {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
+                internalType: 'bool',
+                name: '',
+                type: 'bool'
             }
         ],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "address",
-                "name": "from",
-                "type": "address"
+                internalType: 'address',
+                name: 'from',
+                type: 'address'
             },
             {
-                "internalType": "address",
-                "name": "to",
-                "type": "address"
+                internalType: 'address',
+                name: 'to',
+                type: 'address'
             },
             {
-                "internalType": "uint256",
-                "name": "amount",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'amount',
+                type: 'uint256'
             }
         ],
-        "name": "transferFrom",
-        "outputs": [
+        name: 'transferFrom',
+        outputs: [
             {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
+                internalType: 'bool',
+                name: '',
+                type: 'bool'
             }
         ],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "amount",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'amount',
+                type: 'uint256'
             }
         ],
-        "name": "burn",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'burn',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "address",
-                "name": "account",
-                "type": "address"
+                internalType: 'address',
+                name: 'account',
+                type: 'address'
             },
             {
-                "internalType": "uint256",
-                "name": "amount",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'amount',
+                type: 'uint256'
             }
         ],
-        "name": "burnFrom",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'burnFrom',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "begin",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'begin',
+                type: 'uint256'
             },
             {
-                "internalType": "uint256",
-                "name": "end",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'end',
+                type: 'uint256'
             }
         ],
-        "name": "getListOfActiveOffersRange",
-        "outputs": [
+        name: 'getListOfActiveOffersRange',
+        outputs: [
             {
-                "internalType": "uint256[]",
-                "name": "",
-                "type": "uint256[]"
+                internalType: 'uint256[]',
+                name: '',
+                type: 'uint256[]'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [],
-        "name": "getListOfActiveOffersSize",
-        "outputs": [
+        inputs: [],
+        name: 'getListOfActiveOffersSize',
+        outputs: [
             {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'offerId',
+                type: 'uint256'
             }
         ],
-        "name": "onOfferDisabled",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'onOfferDisabled',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'offerId',
+                type: 'uint256'
             }
         ],
-        "name": "onOfferEnabled",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'onOfferEnabled',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "begin",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'begin',
+                type: 'uint256'
             },
             {
-                "internalType": "uint256",
-                "name": "end",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'end',
+                type: 'uint256'
             }
         ],
-        "name": "getListOfActiveOrdersRange",
-        "outputs": [
+        name: 'getListOfActiveOrdersRange',
+        outputs: [
             {
-                "internalType": "uint256[]",
-                "name": "",
-                "type": "uint256[]"
+                internalType: 'uint256[]',
+                name: '',
+                type: 'uint256[]'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [],
-        "name": "getListOfActiveOrdersSize",
-        "outputs": [
+        inputs: [],
+        name: 'getListOfActiveOrdersSize',
+        outputs: [
             {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'offerId',
+                type: 'uint256'
             }
         ],
-        "name": "getOfferActiveOrdersCount",
-        "outputs": [
+        name: 'getOfferActiveOrdersCount',
+        outputs: [
             {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'offerId',
+                type: 'uint256'
             },
             {
-                "internalType": "uint256",
-                "name": "begin",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'begin',
+                type: 'uint256'
             },
             {
-                "internalType": "uint256",
-                "name": "end",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'end',
+                type: 'uint256'
             }
         ],
-        "name": "getOfferActiveOrdersRange",
-        "outputs": [
+        name: 'getOfferActiveOrdersRange',
+        outputs: [
             {
-                "internalType": "uint256[]",
-                "name": "",
-                "type": "uint256[]"
+                internalType: 'uint256[]',
+                name: '',
+                type: 'uint256[]'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [],
-        "name": "getWorkingOffersCount",
-        "outputs": [
+        inputs: [],
+        name: 'getWorkingOffersCount',
+        outputs: [
             {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "begin",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'begin',
+                type: 'uint256'
             },
             {
-                "internalType": "uint256",
-                "name": "end",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'end',
+                type: 'uint256'
             }
         ],
-        "name": "getWorkingOffersRange",
-        "outputs": [
+        name: 'getWorkingOffersRange',
+        outputs: [
             {
-                "internalType": "uint256[]",
-                "name": "",
-                "type": "uint256[]"
+                internalType: 'uint256[]',
+                name: '',
+                type: 'uint256[]'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'orderId',
+                type: 'uint256'
             },
             {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'offerId',
+                type: 'uint256'
             }
         ],
-        "name": "onOrderActivated",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'onOrderActivated',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'orderId',
+                type: 'uint256'
             },
             {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'offerId',
+                type: 'uint256'
             }
         ],
-        "name": "onOrderDeactivated",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'onOrderDeactivated',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "anonymous": false,
-        "inputs": [
+        anonymous: false,
+        inputs: [
             {
-                "indexed": true,
-                "internalType": "uint256",
-                "name": "tcbId",
-                "type": "uint256"
+                indexed: true,
+                internalType: 'uint256',
+                name: 'tcbId',
+                type: 'uint256'
             },
             {
-                "indexed": true,
-                "internalType": "uint256",
-                "name": "amount",
-                "type": "uint256"
+                indexed: true,
+                internalType: 'uint256',
+                name: 'amount',
+                type: 'uint256'
             },
             {
-                "indexed": true,
-                "internalType": "address",
-                "name": "claimer",
-                "type": "address"
+                indexed: true,
+                internalType: 'address',
+                name: 'claimer',
+                type: 'address'
             }
         ],
-        "name": "RewardsClaimed",
-        "type": "event"
+        name: 'RewardsClaimed',
+        type: 'event'
     },
     {
-        "anonymous": false,
-        "inputs": [
+        anonymous: false,
+        inputs: [
             {
-                "indexed": true,
-                "internalType": "uint256",
-                "name": "tcbId",
-                "type": "uint256"
+                indexed: true,
+                internalType: 'uint256',
+                name: 'tcbId',
+                type: 'uint256'
             },
             {
-                "indexed": true,
-                "internalType": "address",
-                "name": "provider",
-                "type": "address"
+                indexed: true,
+                internalType: 'address',
+                name: 'provider',
+                type: 'address'
             }
         ],
-        "name": "TcbBenchmarkChanged",
-        "type": "event"
+        name: 'TcbBenchmarkChanged',
+        type: 'event'
     },
     {
-        "anonymous": false,
-        "inputs": [
+        anonymous: false,
+        inputs: [
             {
-                "indexed": true,
-                "internalType": "uint256",
-                "name": "tcbId",
-                "type": "uint256"
+                indexed: true,
+                internalType: 'uint256',
+                name: 'tcbId',
+                type: 'uint256'
             },
             {
-                "indexed": true,
-                "internalType": "address",
-                "name": "provider",
-                "type": "address"
+                indexed: true,
+                internalType: 'address',
+                name: 'provider',
+                type: 'address'
             }
         ],
-        "name": "TcbCompleted",
-        "type": "event"
+        name: 'TcbCompleted',
+        type: 'event'
     },
     {
-        "anonymous": false,
-        "inputs": [
+        anonymous: false,
+        inputs: [
             {
-                "indexed": true,
-                "internalType": "uint256",
-                "name": "tcbId",
-                "type": "uint256"
+                indexed: true,
+                internalType: 'uint256',
+                name: 'tcbId',
+                type: 'uint256'
             },
             {
-                "indexed": true,
-                "internalType": "address",
-                "name": "provider",
-                "type": "address"
+                indexed: true,
+                internalType: 'address',
+                name: 'provider',
+                type: 'address'
             }
         ],
-        "name": "TcbInitialized",
-        "type": "event"
+        name: 'TcbInitialized',
+        type: 'event'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "tcbId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'tcbId',
+                type: 'uint256'
             }
         ],
-        "name": "addTcbToSupply",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'addTcbToSupply',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "enum TcbVerifiedStatus[]",
-                "name": "marks",
-                "type": "uint8[]"
+                internalType: 'enum TcbVerifiedStatus[]',
+                name: 'marks',
+                type: 'uint8[]'
             },
             {
-                "internalType": "uint256",
-                "name": "tcbId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'tcbId',
+                type: 'uint256'
             }
         ],
-        "name": "applyTcbMarks",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'applyTcbMarks',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "tcbId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'tcbId',
+                type: 'uint256'
             }
         ],
-        "name": "assignLastBlocksToCheck",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'assignLastBlocksToCheck',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "tcbId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'tcbId',
+                type: 'uint256'
             }
         ],
-        "name": "assignSuspiciousBlocksToCheck",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'assignSuspiciousBlocksToCheck',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "tcbId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'tcbId',
+                type: 'uint256'
             }
         ],
-        "name": "claimRewards",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'claimRewards',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "teeOfferId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'teeOfferId',
+                type: 'uint256'
             }
         ],
-        "name": "getActualTcbId",
-        "outputs": [
+        name: 'getActualTcbId',
+        outputs: [
             {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [],
-        "name": "getConsensusConstants",
-        "outputs": [
+        inputs: [],
+        name: 'getConsensusConstants',
+        outputs: [
             {
-                "internalType": "uint8",
-                "name": "",
-                "type": "uint8"
+                internalType: 'uint8',
+                name: '',
+                type: 'uint8'
             },
             {
-                "internalType": "uint8",
-                "name": "",
-                "type": "uint8"
+                internalType: 'uint8',
+                name: '',
+                type: 'uint8'
             },
             {
-                "internalType": "uint8",
-                "name": "",
-                "type": "uint8"
+                internalType: 'uint8',
+                name: '',
+                type: 'uint8'
             },
             {
-                "internalType": "uint8",
-                "name": "",
-                "type": "uint8"
+                internalType: 'uint8',
+                name: '',
+                type: 'uint8'
             },
             {
-                "internalType": "uint8",
-                "name": "",
-                "type": "uint8"
+                internalType: 'uint8',
+                name: '',
+                type: 'uint8'
             },
             {
-                "internalType": "uint32",
-                "name": "",
-                "type": "uint32"
+                internalType: 'uint32',
+                name: '',
+                type: 'uint32'
             }
         ],
-        "stateMutability": "pure",
-        "type": "function"
+        stateMutability: 'pure',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "index",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'index',
+                type: 'uint256'
             }
         ],
-        "name": "getEpoch",
-        "outputs": [
+        name: 'getEpoch',
+        outputs: [
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "uint256",
-                        "name": "reward",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'reward',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "benchmark",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'benchmark',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "penaltyBenchmark",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'penaltyBenchmark',
+                        type: 'uint256'
                     }
                 ],
-                "internalType": "struct Epoch",
-                "name": "",
-                "type": "tuple"
+                internalType: 'struct Epoch',
+                name: '',
+                type: 'tuple'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "tcbTime",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'tcbTime',
+                type: 'uint256'
             }
         ],
-        "name": "getEpochTime",
-        "outputs": [
+        name: 'getEpochTime',
+        outputs: [
             {
-                "internalType": "uint256",
-                "name": "epochStart",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'epochStart',
+                type: 'uint256'
             },
             {
-                "internalType": "uint256",
-                "name": "epochEnd",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'epochEnd',
+                type: 'uint256'
             },
             {
-                "internalType": "uint256",
-                "name": "epochIndex",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'epochIndex',
+                type: 'uint256'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "teeOfferId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'teeOfferId',
+                type: 'uint256'
             }
         ],
-        "name": "getInitializedTcbId",
-        "outputs": [
+        name: 'getInitializedTcbId',
+        outputs: [
             {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [],
-        "name": "getLastBlockTable",
-        "outputs": [
+        inputs: [],
+        name: 'getLastBlockTable',
+        outputs: [
             {
-                "internalType": "uint256[]",
-                "name": "",
-                "type": "uint256[]"
+                internalType: 'uint256[]',
+                name: '',
+                type: 'uint256[]'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [],
-        "name": "getLastBlockTableSize",
-        "outputs": [
+        inputs: [],
+        name: 'getLastBlockTableSize',
+        outputs: [
             {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [],
-        "name": "getSuspiciousBlockTable",
-        "outputs": [
+        inputs: [],
+        name: 'getSuspiciousBlockTable',
+        outputs: [
             {
-                "internalType": "uint256[]",
-                "name": "",
-                "type": "uint256[]"
+                internalType: 'uint256[]',
+                name: '',
+                type: 'uint256[]'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [],
-        "name": "getSuspiciousBlockTableSize",
-        "outputs": [
+        inputs: [],
+        name: 'getSuspiciousBlockTableSize',
+        outputs: [
             {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "tcbId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'tcbId',
+                type: 'uint256'
             }
         ],
-        "name": "getTcbById",
-        "outputs": [
+        name: 'getTcbById',
+        outputs: [
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "enum TcbStatus",
-                        "name": "status",
-                        "type": "uint8"
+                        internalType: 'enum TcbStatus',
+                        name: 'status',
+                        type: 'uint8'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "previousTcb",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'previousTcb',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "timeInitialized",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'timeInitialized',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "timeAdded",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'timeAdded',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "lastBlocksTakenAmount",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'lastBlocksTakenAmount',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "suspiciousBlocksTakenAmount",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'suspiciousBlocksTakenAmount',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint16",
-                        "name": "negative",
-                        "type": "uint16"
+                        internalType: 'uint16',
+                        name: 'negative',
+                        type: 'uint16'
                     },
                     {
-                        "internalType": "uint16",
-                        "name": "positive",
-                        "type": "uint16"
+                        internalType: 'uint16',
+                        name: 'positive',
+                        type: 'uint16'
                     },
                     {
-                        "internalType": "bool",
-                        "name": "lastBlocksTaken",
-                        "type": "bool"
+                        internalType: 'bool',
+                        name: 'lastBlocksTaken',
+                        type: 'bool'
                     },
                     {
-                        "internalType": "bool",
-                        "name": "suspiciousBlocksTaken",
-                        "type": "bool"
+                        internalType: 'bool',
+                        name: 'suspiciousBlocksTaken',
+                        type: 'bool'
                     },
                     {
-                        "internalType": "bool",
-                        "name": "checked",
-                        "type": "bool"
+                        internalType: 'bool',
+                        name: 'checked',
+                        type: 'bool'
                     },
                     {
-                        "internalType": "bool",
-                        "name": "rewardClaimed",
-                        "type": "bool"
+                        internalType: 'bool',
+                        name: 'rewardClaimed',
+                        type: 'bool'
                     }
                 ],
-                "internalType": "struct Tcb",
-                "name": "response",
-                "type": "tuple"
+                internalType: 'struct Tcb',
+                name: 'response',
+                type: 'tuple'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "tcbId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'tcbId',
+                type: 'uint256'
             }
         ],
-        "name": "getTcbReward",
-        "outputs": [
+        name: 'getTcbReward',
+        outputs: [
             {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [],
-        "name": "getTcbsCount",
-        "outputs": [
+        inputs: [],
+        name: 'getTcbsCount',
+        outputs: [
             {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256[]",
-                "name": "tcbIds",
-                "type": "uint256[]"
+                internalType: 'uint256[]',
+                name: 'tcbIds',
+                type: 'uint256[]'
             }
         ],
-        "name": "getTcbsPublicData",
-        "outputs": [
+        name: 'getTcbsPublicData',
+        outputs: [
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "uint256[]",
-                        "name": "checkingTcbIds",
-                        "type": "uint256[]"
+                        internalType: 'uint256[]',
+                        name: 'checkingTcbIds',
+                        type: 'uint256[]'
                     },
                     {
-                        "internalType": "enum TcbVerifiedStatus[]",
-                        "name": "checkingTcbMarks",
-                        "type": "uint8[]"
+                        internalType: 'enum TcbVerifiedStatus[]',
+                        name: 'checkingTcbMarks',
+                        type: 'uint8[]'
                     },
                     {
-                        "internalType": "bytes32",
-                        "name": "deviceId",
-                        "type": "bytes32"
+                        internalType: 'bytes32',
+                        name: 'deviceId',
+                        type: 'bytes32'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "benchmark",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'benchmark',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "string",
-                        "name": "properties",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'properties',
+                        type: 'string'
                     }
                 ],
-                "internalType": "struct TcbPublicData[]",
-                "name": "",
-                "type": "tuple[]"
+                internalType: 'struct TcbPublicData[]',
+                name: '',
+                type: 'tuple[]'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256[]",
-                "name": "tcbIds",
-                "type": "uint256[]"
+                internalType: 'uint256[]',
+                name: 'tcbIds',
+                type: 'uint256[]'
             }
         ],
-        "name": "getTcbsUtilityData",
-        "outputs": [
+        name: 'getTcbsUtilityData',
+        outputs: [
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "uint256",
-                        "name": "teeOfferId",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'teeOfferId',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "string",
-                        "name": "pubKey",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'pubKey',
+                        type: 'string'
                     },
                     {
-                        "internalType": "string",
-                        "name": "quote",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'quote',
+                        type: 'string'
                     }
                 ],
-                "internalType": "struct TcbUtilityData[]",
-                "name": "",
-                "type": "tuple[]"
+                internalType: 'struct TcbUtilityData[]',
+                name: '',
+                type: 'tuple[]'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "teeOfferId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'teeOfferId',
+                type: 'uint256'
             },
             {
-                "internalType": "bytes32",
-                "name": "newDeviceId",
-                "type": "bytes32"
+                internalType: 'bytes32',
+                name: 'newDeviceId',
+                type: 'bytes32'
             }
         ],
-        "name": "initializeTcb",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'initializeTcb',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'offerId',
+                type: 'uint256'
             }
         ],
-        "name": "isBenchmarkChangedByLastbBlock",
-        "outputs": [
+        name: 'isBenchmarkChangedByLastbBlock',
+        outputs: [
             {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
+                internalType: 'bool',
+                name: '',
+                type: 'bool'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "teeOfferId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'teeOfferId',
+                type: 'uint256'
             },
             {
-                "internalType": "bytes32",
-                "name": "deviceId",
-                "type": "bytes32"
+                internalType: 'bytes32',
+                name: 'deviceId',
+                type: 'bytes32'
             }
         ],
-        "name": "isTcbCreationAvailable",
-        "outputs": [
+        name: 'isTcbCreationAvailable',
+        outputs: [
             {
-                "internalType": "bool",
-                "name": "offerNotBlocked",
-                "type": "bool"
+                internalType: 'bool',
+                name: 'offerNotBlocked',
+                type: 'bool'
             },
             {
-                "internalType": "bool",
-                "name": "newEpochStarted",
-                "type": "bool"
+                internalType: 'bool',
+                name: 'newEpochStarted',
+                type: 'bool'
             },
             {
-                "internalType": "bool",
-                "name": "halfEpochPassed",
-                "type": "bool"
+                internalType: 'bool',
+                name: 'halfEpochPassed',
+                type: 'bool'
             },
             {
-                "internalType": "bool",
-                "name": "benchmarkVerified",
-                "type": "bool"
+                internalType: 'bool',
+                name: 'benchmarkVerified',
+                type: 'bool'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'offerId',
+                type: 'uint256'
             }
         ],
-        "name": "isTeeOfferVerified",
-        "outputs": [
+        name: 'isTeeOfferVerified',
+        outputs: [
             {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
+                internalType: 'bool',
+                name: '',
+                type: 'bool'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "tcbId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'tcbId',
+                type: 'uint256'
             },
             {
-                "internalType": "uint256",
-                "name": "benchmark",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'benchmark',
+                type: 'uint256'
             },
             {
-                "internalType": "string",
-                "name": "properties",
-                "type": "string"
+                internalType: 'string',
+                name: 'properties',
+                type: 'string'
             },
             {
-                "internalType": "bytes32",
-                "name": "deviceId",
-                "type": "bytes32"
+                internalType: 'bytes32',
+                name: 'deviceId',
+                type: 'bytes32'
             },
             {
-                "internalType": "string",
-                "name": "quote",
-                "type": "string"
+                internalType: 'string',
+                name: 'quote',
+                type: 'string'
             },
             {
-                "internalType": "string",
-                "name": "pubKey",
-                "type": "string"
+                internalType: 'string',
+                name: 'pubKey',
+                type: 'string'
             }
         ],
-        "name": "setTcbData",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'setTcbData',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "tcbId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'tcbId',
+                type: 'uint256'
             },
             {
-                "internalType": "enum TcbStatus",
-                "name": "status",
-                "type": "uint8"
+                internalType: 'enum TcbStatus',
+                name: 'status',
+                type: 'uint8'
             }
         ],
-        "name": "setTcbStatus",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'setTcbStatus',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "anonymous": false,
-        "inputs": [
+        anonymous: false,
+        inputs: [
             {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "tcbId",
-                "type": "uint256"
+                indexed: false,
+                internalType: 'uint256',
+                name: 'tcbId',
+                type: 'uint256'
             },
             {
-                "indexed": true,
-                "internalType": "address",
-                "name": "provider",
-                "type": "address"
+                indexed: true,
+                internalType: 'address',
+                name: 'provider',
+                type: 'address'
             }
         ],
-        "name": "TcbBanned",
-        "type": "event"
+        name: 'TcbBanned',
+        type: 'event'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "tcbId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'tcbId',
+                type: 'uint256'
             }
         ],
-        "name": "addLastBlock",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'addLastBlock',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "tcbId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'tcbId',
+                type: 'uint256'
             }
         ],
-        "name": "addSuspiciousBlock",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'addSuspiciousBlock',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "tcbId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'tcbId',
+                type: 'uint256'
             }
         ],
-        "name": "addTcbToEpoch",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'addTcbToEpoch',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "tcbId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'tcbId',
+                type: 'uint256'
             }
         ],
-        "name": "compareWithThreshold",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'compareWithThreshold',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "intruderTcbId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'intruderTcbId',
+                type: 'uint256'
             }
         ],
-        "name": "compensateEpochDamage",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'compensateEpochDamage',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "tcbId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'tcbId',
+                type: 'uint256'
             }
         ],
-        "name": "findAccomplices",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'findAccomplices',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "compensation",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'compensation',
+                type: 'uint256'
             }
         ],
-        "name": "increaseNextEpochCompensation",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'increaseNextEpochCompensation',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "tcbId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'tcbId',
+                type: 'uint256'
             }
         ],
-        "name": "removeLastBlock",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'removeLastBlock',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "tcbId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'tcbId',
+                type: 'uint256'
             }
         ],
-        "name": "removeSuspiciousBlock",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'removeSuspiciousBlock',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "tcbId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'tcbId',
+                type: 'uint256'
             }
         ],
-        "name": "updateConsensusTables",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'updateConsensusTables',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "anonymous": false,
-        "inputs": [
+        anonymous: false,
+        inputs: [
             {
-                "indexed": true,
-                "internalType": "address",
-                "name": "owner",
-                "type": "address"
+                indexed: true,
+                internalType: 'address',
+                name: 'owner',
+                type: 'address'
             },
             {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "amount",
-                "type": "uint256"
+                indexed: false,
+                internalType: 'uint256',
+                name: 'amount',
+                type: 'uint256'
             },
             {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "totalLocked",
-                "type": "uint256"
+                indexed: false,
+                internalType: 'uint256',
+                name: 'totalLocked',
+                type: 'uint256'
             }
         ],
-        "name": "DepositPartLocked",
-        "type": "event"
+        name: 'DepositPartLocked',
+        type: 'event'
     },
     {
-        "anonymous": false,
-        "inputs": [
+        anonymous: false,
+        inputs: [
             {
-                "indexed": true,
-                "internalType": "address",
-                "name": "owner",
-                "type": "address"
+                indexed: true,
+                internalType: 'address',
+                name: 'owner',
+                type: 'address'
             },
             {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "amount",
-                "type": "uint256"
+                indexed: false,
+                internalType: 'uint256',
+                name: 'amount',
+                type: 'uint256'
             },
             {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "totalLocked",
-                "type": "uint256"
+                indexed: false,
+                internalType: 'uint256',
+                name: 'totalLocked',
+                type: 'uint256'
             }
         ],
-        "name": "DepositPartUnlocked",
-        "type": "event"
+        name: 'DepositPartUnlocked',
+        type: 'event'
     },
     {
-        "anonymous": false,
-        "inputs": [
+        anonymous: false,
+        inputs: [
             {
-                "indexed": true,
-                "internalType": "address",
-                "name": "owner",
-                "type": "address"
+                indexed: true,
+                internalType: 'address',
+                name: 'owner',
+                type: 'address'
             },
             {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "amount",
-                "type": "uint256"
+                indexed: false,
+                internalType: 'uint256',
+                name: 'amount',
+                type: 'uint256'
             },
             {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "totalAmount",
-                "type": "uint256"
+                indexed: false,
+                internalType: 'uint256',
+                name: 'totalAmount',
+                type: 'uint256'
             }
         ],
-        "name": "DepositReplenished",
-        "type": "event"
+        name: 'DepositReplenished',
+        type: 'event'
     },
     {
-        "anonymous": false,
-        "inputs": [
+        anonymous: false,
+        inputs: [
             {
-                "indexed": true,
-                "internalType": "address",
-                "name": "owner",
-                "type": "address"
+                indexed: true,
+                internalType: 'address',
+                name: 'owner',
+                type: 'address'
             },
             {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "amount",
-                "type": "uint256"
+                indexed: false,
+                internalType: 'uint256',
+                name: 'amount',
+                type: 'uint256'
             },
             {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "totalAmount",
-                "type": "uint256"
+                indexed: false,
+                internalType: 'uint256',
+                name: 'totalAmount',
+                type: 'uint256'
             }
         ],
-        "name": "DepositWithdrawn",
-        "type": "event"
+        name: 'DepositWithdrawn',
+        type: 'event'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "address",
-                "name": "depositOwner",
-                "type": "address"
+                internalType: 'address',
+                name: 'depositOwner',
+                type: 'address'
             },
             {
-                "internalType": "uint256",
-                "name": "amount",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'amount',
+                type: 'uint256'
             }
         ],
-        "name": "addProfit",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'addProfit',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "address",
-                "name": "depositOwner",
-                "type": "address"
+                internalType: 'address',
+                name: 'depositOwner',
+                type: 'address'
             },
             {
-                "internalType": "uint256",
-                "name": "amount",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'amount',
+                type: 'uint256'
             }
         ],
-        "name": "confiscateTokensFrom",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'confiscateTokensFrom',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "address",
-                "name": "depositOwner",
-                "type": "address"
+                internalType: 'address',
+                name: 'depositOwner',
+                type: 'address'
             }
         ],
-        "name": "getDepositInfo",
-        "outputs": [
+        name: 'getDepositInfo',
+        outputs: [
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "uint256",
-                        "name": "amount",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'amount',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "totalLocked",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'totalLocked',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "profit",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'profit',
+                        type: 'uint256'
                     }
                 ],
-                "internalType": "struct DepositInfo",
-                "name": "",
-                "type": "tuple"
+                internalType: 'struct DepositInfo',
+                name: '',
+                type: 'tuple'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "address",
-                "name": "depositOwner",
-                "type": "address"
+                internalType: 'address',
+                name: 'depositOwner',
+                type: 'address'
             }
         ],
-        "name": "getLockedTokensAmount",
-        "outputs": [
+        name: 'getLockedTokensAmount',
+        outputs: [
             {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "address",
-                "name": "depositOwner",
-                "type": "address"
+                internalType: 'address',
+                name: 'depositOwner',
+                type: 'address'
             },
             {
-                "internalType": "uint256",
-                "name": "amount",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'amount',
+                type: 'uint256'
             }
         ],
-        "name": "lockDeposit",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'lockDeposit',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "amount",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'amount',
+                type: 'uint256'
             }
         ],
-        "name": "replenish",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'replenish',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "address",
-                "name": "beneficiary",
-                "type": "address"
+                internalType: 'address',
+                name: 'beneficiary',
+                type: 'address'
             },
             {
-                "internalType": "uint256",
-                "name": "amount",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'amount',
+                type: 'uint256'
             }
         ],
-        "name": "replenishFor",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'replenishFor',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "address",
-                "name": "funder",
-                "type": "address"
+                internalType: 'address',
+                name: 'funder',
+                type: 'address'
             },
             {
-                "internalType": "address",
-                "name": "beneficiary",
-                "type": "address"
+                internalType: 'address',
+                name: 'beneficiary',
+                type: 'address'
             },
             {
-                "internalType": "uint256",
-                "name": "amount",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'amount',
+                type: 'uint256'
             }
         ],
-        "name": "replenishForByApp",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'replenishForByApp',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "address",
-                "name": "depositOwner",
-                "type": "address"
+                internalType: 'address',
+                name: 'depositOwner',
+                type: 'address'
             },
             {
-                "internalType": "uint256",
-                "name": "amount",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'amount',
+                type: 'uint256'
             }
         ],
-        "name": "unlockDeposit",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'unlockDeposit',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "amount",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'amount',
+                type: 'uint256'
             }
         ],
-        "name": "withdraw",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'withdraw',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'orderId',
+                type: 'uint256'
             }
         ],
-        "name": "getOrderMark",
-        "outputs": [
+        name: 'getOrderMark',
+        outputs: [
             {
-                "internalType": "enum Mark",
-                "name": "",
-                "type": "uint8"
+                internalType: 'enum Mark',
+                name: '',
+                type: 'uint8'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "address",
-                "name": "provider",
-                "type": "address"
+                internalType: 'address',
+                name: 'provider',
+                type: 'address'
             }
         ],
-        "name": "getProviderMarks",
-        "outputs": [
+        name: 'getProviderMarks',
+        outputs: [
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "uint256",
-                        "name": "positive",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'positive',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "negative",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'negative',
+                        type: 'uint256'
                     }
                 ],
-                "internalType": "struct ProviderMarksCount",
-                "name": "",
-                "type": "tuple"
+                internalType: 'struct ProviderMarksCount',
+                name: '',
+                type: 'tuple'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'orderId',
+                type: 'uint256'
             },
             {
-                "internalType": "enum Mark",
-                "name": "mark",
-                "type": "uint8"
+                internalType: 'enum Mark',
+                name: 'mark',
+                type: 'uint8'
             }
         ],
-        "name": "setOrderMark",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'setOrderMark',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "anonymous": false,
-        "inputs": [
+        anonymous: false,
+        inputs: [
             {
-                "indexed": true,
-                "internalType": "address",
-                "name": "creator",
-                "type": "address"
+                indexed: true,
+                internalType: 'address',
+                name: 'creator',
+                type: 'address'
             },
             {
-                "indexed": true,
-                "internalType": "bytes32",
-                "name": "externalId",
-                "type": "bytes32"
+                indexed: true,
+                internalType: 'bytes32',
+                name: 'externalId',
+                type: 'bytes32'
             },
             {
-                "indexed": true,
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
+                indexed: true,
+                internalType: 'uint256',
+                name: 'offerId',
+                type: 'uint256'
             }
         ],
-        "name": "OfferCreated",
-        "type": "event"
+        name: 'OfferCreated',
+        type: 'event'
     },
     {
-        "anonymous": false,
-        "inputs": [
+        anonymous: false,
+        inputs: [
             {
-                "indexed": true,
-                "internalType": "address",
-                "name": "providerAuth",
-                "type": "address"
+                indexed: true,
+                internalType: 'address',
+                name: 'providerAuth',
+                type: 'address'
             },
             {
-                "indexed": true,
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
+                indexed: true,
+                internalType: 'uint256',
+                name: 'offerId',
+                type: 'uint256'
             },
             {
-                "indexed": true,
-                "internalType": "enum OfferType",
-                "name": "offerType",
-                "type": "uint8"
+                indexed: true,
+                internalType: 'enum OfferType',
+                name: 'offerType',
+                type: 'uint8'
             }
         ],
-        "name": "OfferDisabled",
-        "type": "event"
+        name: 'OfferDisabled',
+        type: 'event'
     },
     {
-        "anonymous": false,
-        "inputs": [
+        anonymous: false,
+        inputs: [
             {
-                "indexed": true,
-                "internalType": "address",
-                "name": "providerAuth",
-                "type": "address"
+                indexed: true,
+                internalType: 'address',
+                name: 'providerAuth',
+                type: 'address'
             },
             {
-                "indexed": true,
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
+                indexed: true,
+                internalType: 'uint256',
+                name: 'offerId',
+                type: 'uint256'
             },
             {
-                "indexed": true,
-                "internalType": "enum OfferType",
-                "name": "offerType",
-                "type": "uint8"
+                indexed: true,
+                internalType: 'enum OfferType',
+                name: 'offerType',
+                type: 'uint8'
             }
         ],
-        "name": "OfferEnabled",
-        "type": "event"
+        name: 'OfferEnabled',
+        type: 'event'
     },
     {
-        "anonymous": false,
-        "inputs": [
+        anonymous: false,
+        inputs: [
             {
-                "indexed": true,
-                "internalType": "address",
-                "name": "creator",
-                "type": "address"
+                indexed: true,
+                internalType: 'address',
+                name: 'creator',
+                type: 'address'
             },
             {
-                "indexed": true,
-                "internalType": "bytes32",
-                "name": "externalId",
-                "type": "bytes32"
+                indexed: true,
+                internalType: 'bytes32',
+                name: 'externalId',
+                type: 'bytes32'
             },
             {
-                "indexed": true,
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
+                indexed: true,
+                internalType: 'uint256',
+                name: 'offerId',
+                type: 'uint256'
             }
         ],
-        "name": "TeeOfferCreated",
-        "type": "event"
+        name: 'TeeOfferCreated',
+        type: 'event'
     },
     {
-        "anonymous": false,
-        "inputs": [
+        anonymous: false,
+        inputs: [
             {
-                "indexed": true,
-                "internalType": "address",
-                "name": "providerAuth",
-                "type": "address"
+                indexed: true,
+                internalType: 'address',
+                name: 'providerAuth',
+                type: 'address'
             },
             {
-                "indexed": true,
-                "internalType": "uint256",
-                "name": "teeOfferId",
-                "type": "uint256"
+                indexed: true,
+                internalType: 'uint256',
+                name: 'teeOfferId',
+                type: 'uint256'
             },
             {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "violationRate",
-                "type": "uint256"
+                indexed: false,
+                internalType: 'uint256',
+                name: 'violationRate',
+                type: 'uint256'
             }
         ],
-        "name": "TeeOfferViolationRateChanged",
-        "type": "event"
+        name: 'TeeOfferViolationRateChanged',
+        type: 'event'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "address",
-                "name": "providerAuth",
-                "type": "address"
+                internalType: 'address',
+                name: 'providerAuth',
+                type: 'address'
             },
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "string",
-                        "name": "name",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'name',
+                        type: 'string'
                     },
                     {
-                        "internalType": "string",
-                        "name": "description",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'description',
+                        type: 'string'
                     },
                     {
-                        "internalType": "string",
-                        "name": "teeType",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'teeType',
+                        type: 'string'
                     },
                     {
-                        "internalType": "string",
-                        "name": "properties",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'properties',
+                        type: 'string'
                     },
                     {
-                        "internalType": "string",
-                        "name": "tlb",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'tlb',
+                        type: 'string'
                     },
                     {
-                        "internalType": "string",
-                        "name": "argsPublicKey",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'argsPublicKey',
+                        type: 'string'
                     }
                 ],
-                "internalType": "struct TeeOfferInfo",
-                "name": "info",
-                "type": "tuple"
+                internalType: 'struct TeeOfferInfo',
+                name: 'info',
+                type: 'tuple'
             },
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "uint64",
-                        "name": "cpuCores",
-                        "type": "uint64"
+                        internalType: 'uint64',
+                        name: 'cpuCores',
+                        type: 'uint64'
                     },
                     {
-                        "internalType": "uint64",
-                        "name": "ram",
-                        "type": "uint64"
+                        internalType: 'uint64',
+                        name: 'ram',
+                        type: 'uint64'
                     },
                     {
-                        "internalType": "uint64",
-                        "name": "diskUsage",
-                        "type": "uint64"
+                        internalType: 'uint64',
+                        name: 'diskUsage',
+                        type: 'uint64'
                     },
                     {
-                        "internalType": "uint64",
-                        "name": "gpuCores",
-                        "type": "uint64"
+                        internalType: 'uint64',
+                        name: 'gpuCores',
+                        type: 'uint64'
+                    },
+                    {
+                        internalType: 'uint64',
+                        name: 'vram',
+                        type: 'uint64'
                     }
                 ],
-                "internalType": "struct SlotInfo",
-                "name": "slotInfo",
-                "type": "tuple"
+                internalType: 'struct SlotInfo',
+                name: 'slotInfo',
+                type: 'tuple'
             },
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "string",
-                        "name": "data",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'data',
+                        type: 'string'
                     }
                 ],
-                "internalType": "struct OptionInfo",
-                "name": "optionInfo",
-                "type": "tuple"
+                internalType: 'struct OptionInfo',
+                name: 'optionInfo',
+                type: 'tuple'
             },
             {
-                "internalType": "bytes32",
-                "name": "externalId",
-                "type": "bytes32"
+                internalType: 'bytes32',
+                name: 'externalId',
+                type: 'bytes32'
             },
             {
-                "internalType": "bool",
-                "name": "enabled",
-                "type": "bool"
+                internalType: 'bool',
+                name: 'enabled',
+                type: 'bool'
             }
         ],
-        "name": "createTeeOffer",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'createTeeOffer',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "address",
-                "name": "providerAuth",
-                "type": "address"
+                internalType: 'address',
+                name: 'providerAuth',
+                type: 'address'
             },
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "string",
-                        "name": "name",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'name',
+                        type: 'string'
                     },
                     {
-                        "internalType": "enum OfferGroup",
-                        "name": "group",
-                        "type": "uint8"
+                        internalType: 'enum OfferGroup',
+                        name: 'group',
+                        type: 'uint8'
                     },
                     {
-                        "internalType": "enum OfferType",
-                        "name": "offerType",
-                        "type": "uint8"
+                        internalType: 'enum OfferType',
+                        name: 'offerType',
+                        type: 'uint8'
                     },
                     {
-                        "internalType": "bool",
-                        "name": "cancelable",
-                        "type": "bool"
+                        internalType: 'bool',
+                        name: 'cancelable',
+                        type: 'bool'
                     },
                     {
-                        "internalType": "string",
-                        "name": "description",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'description',
+                        type: 'string'
                     },
                     {
-                        "internalType": "string",
-                        "name": "input",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'input',
+                        type: 'string'
                     },
                     {
-                        "internalType": "string",
-                        "name": "output",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'output',
+                        type: 'string'
                     },
                     {
-                        "internalType": "string",
-                        "name": "allowedArgs",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'allowedArgs',
+                        type: 'string'
                     },
                     {
-                        "internalType": "address[]",
-                        "name": "allowedAccounts",
-                        "type": "address[]"
+                        internalType: 'address[]',
+                        name: 'allowedAccounts',
+                        type: 'address[]'
                     },
                     {
-                        "internalType": "string",
-                        "name": "argsPublicKey",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'argsPublicKey',
+                        type: 'string'
                     },
                     {
-                        "internalType": "string",
-                        "name": "resultResource",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'resultResource',
+                        type: 'string'
                     },
                     {
-                        "internalType": "string",
-                        "name": "linkage",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'linkage',
+                        type: 'string'
                     },
                     {
-                        "internalType": "string",
-                        "name": "hash",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'hash',
+                        type: 'string'
                     },
                     {
-                        "internalType": "string",
-                        "name": "metadata",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'metadata',
+                        type: 'string'
                     }
                 ],
-                "internalType": "struct ValueOfferInfo",
-                "name": "info",
-                "type": "tuple"
+                internalType: 'struct ValueOfferInfo',
+                name: 'info',
+                type: 'tuple'
             },
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "uint256[]",
-                        "name": "offers",
-                        "type": "uint256[]"
+                        internalType: 'uint256[]',
+                        name: 'offers',
+                        type: 'uint256[]'
                     },
                     {
-                        "internalType": "enum OfferType[]",
-                        "name": "types",
-                        "type": "uint8[]"
+                        internalType: 'enum OfferType[]',
+                        name: 'types',
+                        type: 'uint8[]'
                     }
                 ],
-                "internalType": "struct ValueOfferInitialRestrictions",
-                "name": "initRestrictions",
-                "type": "tuple"
+                internalType: 'struct ValueOfferInitialRestrictions',
+                name: 'initRestrictions',
+                type: 'tuple'
             },
             {
-                "internalType": "bytes32",
-                "name": "externalId",
-                "type": "bytes32"
+                internalType: 'bytes32',
+                name: 'externalId',
+                type: 'bytes32'
             },
             {
-                "internalType": "bool",
-                "name": "enabled",
-                "type": "bool"
+                internalType: 'bool',
+                name: 'enabled',
+                type: 'bool'
             }
         ],
-        "name": "createValueOffer",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'createValueOffer',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'offerId',
+                type: 'uint256'
             }
         ],
-        "name": "disableOffer",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'disableOffer',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'offerId',
+                type: 'uint256'
             }
         ],
-        "name": "enableOffer",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'enableOffer',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'offerId',
+                type: 'uint256'
             },
             {
-                "internalType": "string",
-                "name": "description",
-                "type": "string"
+                internalType: 'string',
+                name: 'description',
+                type: 'string'
             }
         ],
-        "name": "setOfferDescription",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'setOfferDescription',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'offerId',
+                type: 'uint256'
             },
             {
-                "internalType": "string",
-                "name": "name",
-                "type": "string"
+                internalType: 'string',
+                name: 'name',
+                type: 'string'
             }
         ],
-        "name": "setOfferName",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'setOfferName',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'offerId',
+                type: 'uint256'
             },
             {
-                "internalType": "string",
-                "name": "publicKey",
-                "type": "string"
+                internalType: 'string',
+                name: 'publicKey',
+                type: 'string'
             }
         ],
-        "name": "setOfferPublicKey",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'setOfferPublicKey',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'offerId',
+                type: 'uint256'
             },
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "uint64",
-                        "name": "cpuCores",
-                        "type": "uint64"
+                        internalType: 'uint64',
+                        name: 'cpuCores',
+                        type: 'uint64'
                     },
                     {
-                        "internalType": "uint64",
-                        "name": "ram",
-                        "type": "uint64"
+                        internalType: 'uint64',
+                        name: 'ram',
+                        type: 'uint64'
                     },
                     {
-                        "internalType": "uint64",
-                        "name": "diskUsage",
-                        "type": "uint64"
+                        internalType: 'uint64',
+                        name: 'diskUsage',
+                        type: 'uint64'
                     },
                     {
-                        "internalType": "uint64",
-                        "name": "gpuCores",
-                        "type": "uint64"
+                        internalType: 'uint64',
+                        name: 'gpuCores',
+                        type: 'uint64'
+                    },
+                    {
+                        internalType: 'uint64',
+                        name: 'vram',
+                        type: 'uint64'
                     }
                 ],
-                "internalType": "struct SlotInfo",
-                "name": "newSlotInfo",
-                "type": "tuple"
+                internalType: 'struct SlotInfo',
+                name: 'newSlotInfo',
+                type: 'tuple'
             },
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "string",
-                        "name": "data",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'data',
+                        type: 'string'
                     }
                 ],
-                "internalType": "struct OptionInfo",
-                "name": "newOptionInfo",
-                "type": "tuple"
+                internalType: 'struct OptionInfo',
+                name: 'newOptionInfo',
+                type: 'tuple'
             }
         ],
-        "name": "setTeeOfferHardwareInfo",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'setTeeOfferHardwareInfo',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'offerId',
+                type: 'uint256'
             },
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "string",
-                        "name": "name",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'name',
+                        type: 'string'
                     },
                     {
-                        "internalType": "string",
-                        "name": "description",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'description',
+                        type: 'string'
                     },
                     {
-                        "internalType": "string",
-                        "name": "teeType",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'teeType',
+                        type: 'string'
                     },
                     {
-                        "internalType": "string",
-                        "name": "properties",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'properties',
+                        type: 'string'
                     },
                     {
-                        "internalType": "string",
-                        "name": "tlb",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'tlb',
+                        type: 'string'
                     },
                     {
-                        "internalType": "string",
-                        "name": "argsPublicKey",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'argsPublicKey',
+                        type: 'string'
                     }
                 ],
-                "internalType": "struct TeeOfferInfo",
-                "name": "newInfo",
-                "type": "tuple"
+                internalType: 'struct TeeOfferInfo',
+                name: 'newInfo',
+                type: 'tuple'
             }
         ],
-        "name": "setTeeOfferInfo",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'setTeeOfferInfo',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'offerId',
+                type: 'uint256'
             },
             {
-                "internalType": "string",
-                "name": "tlb",
-                "type": "string"
+                internalType: 'string',
+                name: 'tlb',
+                type: 'string'
             }
         ],
-        "name": "setTeeOfferTlb",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'setTeeOfferTlb',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'offerId',
+                type: 'uint256'
             },
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "string",
-                        "name": "name",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'name',
+                        type: 'string'
                     },
                     {
-                        "internalType": "enum OfferGroup",
-                        "name": "group",
-                        "type": "uint8"
+                        internalType: 'enum OfferGroup',
+                        name: 'group',
+                        type: 'uint8'
                     },
                     {
-                        "internalType": "enum OfferType",
-                        "name": "offerType",
-                        "type": "uint8"
+                        internalType: 'enum OfferType',
+                        name: 'offerType',
+                        type: 'uint8'
                     },
                     {
-                        "internalType": "bool",
-                        "name": "cancelable",
-                        "type": "bool"
+                        internalType: 'bool',
+                        name: 'cancelable',
+                        type: 'bool'
                     },
                     {
-                        "internalType": "string",
-                        "name": "description",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'description',
+                        type: 'string'
                     },
                     {
-                        "internalType": "string",
-                        "name": "input",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'input',
+                        type: 'string'
                     },
                     {
-                        "internalType": "string",
-                        "name": "output",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'output',
+                        type: 'string'
                     },
                     {
-                        "internalType": "string",
-                        "name": "allowedArgs",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'allowedArgs',
+                        type: 'string'
                     },
                     {
-                        "internalType": "address[]",
-                        "name": "allowedAccounts",
-                        "type": "address[]"
+                        internalType: 'address[]',
+                        name: 'allowedAccounts',
+                        type: 'address[]'
                     },
                     {
-                        "internalType": "string",
-                        "name": "argsPublicKey",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'argsPublicKey',
+                        type: 'string'
                     },
                     {
-                        "internalType": "string",
-                        "name": "resultResource",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'resultResource',
+                        type: 'string'
                     },
                     {
-                        "internalType": "string",
-                        "name": "linkage",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'linkage',
+                        type: 'string'
                     },
                     {
-                        "internalType": "string",
-                        "name": "hash",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'hash',
+                        type: 'string'
                     },
                     {
-                        "internalType": "string",
-                        "name": "metadata",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'metadata',
+                        type: 'string'
                     }
                 ],
-                "internalType": "struct ValueOfferInfo",
-                "name": "newInfo",
-                "type": "tuple"
+                internalType: 'struct ValueOfferInfo',
+                name: 'newInfo',
+                type: 'tuple'
             },
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "uint256[]",
-                        "name": "offers",
-                        "type": "uint256[]"
+                        internalType: 'uint256[]',
+                        name: 'offers',
+                        type: 'uint256[]'
                     },
                     {
-                        "internalType": "enum OfferType[]",
-                        "name": "types",
-                        "type": "uint8[]"
+                        internalType: 'enum OfferType[]',
+                        name: 'types',
+                        type: 'uint8[]'
                     }
                 ],
-                "internalType": "struct ValueOfferInitialRestrictions",
-                "name": "newRestrictions",
-                "type": "tuple"
+                internalType: 'struct ValueOfferInitialRestrictions',
+                name: 'newRestrictions',
+                type: 'tuple'
             }
         ],
-        "name": "setValueOfferInfo",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'setValueOfferInfo',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "begin",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'begin',
+                type: 'uint256'
             },
             {
-                "internalType": "uint256",
-                "name": "end",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'end',
+                type: 'uint256'
             }
         ],
-        "name": "getTeeOffersRange",
-        "outputs": [
+        name: 'getTeeOffersRange',
+        outputs: [
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "uint256",
-                        "name": "id",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'id',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "address",
-                        "name": "providerAuth",
-                        "type": "address"
+                        internalType: 'address',
+                        name: 'providerAuth',
+                        type: 'address'
                     },
                     {
-                        "components": [
+                        components: [
                             {
-                                "internalType": "string",
-                                "name": "name",
-                                "type": "string"
+                                internalType: 'string',
+                                name: 'name',
+                                type: 'string'
                             },
                             {
-                                "internalType": "string",
-                                "name": "description",
-                                "type": "string"
+                                internalType: 'string',
+                                name: 'description',
+                                type: 'string'
                             },
                             {
-                                "internalType": "string",
-                                "name": "teeType",
-                                "type": "string"
+                                internalType: 'string',
+                                name: 'teeType',
+                                type: 'string'
                             },
                             {
-                                "internalType": "string",
-                                "name": "properties",
-                                "type": "string"
+                                internalType: 'string',
+                                name: 'properties',
+                                type: 'string'
                             },
                             {
-                                "internalType": "string",
-                                "name": "tlb",
-                                "type": "string"
+                                internalType: 'string',
+                                name: 'tlb',
+                                type: 'string'
                             },
                             {
-                                "internalType": "string",
-                                "name": "argsPublicKey",
-                                "type": "string"
+                                internalType: 'string',
+                                name: 'argsPublicKey',
+                                type: 'string'
                             }
                         ],
-                        "internalType": "struct TeeOfferInfo",
-                        "name": "info",
-                        "type": "tuple"
+                        internalType: 'struct TeeOfferInfo',
+                        name: 'info',
+                        type: 'tuple'
                     },
                     {
-                        "internalType": "bool",
-                        "name": "enabled",
-                        "type": "bool"
+                        internalType: 'bool',
+                        name: 'enabled',
+                        type: 'bool'
                     }
                 ],
-                "internalType": "struct TeeOfferData[]",
-                "name": "",
-                "type": "tuple[]"
+                internalType: 'struct TeeOfferData[]',
+                name: '',
+                type: 'tuple[]'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "enum OfferType",
-                "name": "offerType",
-                "type": "uint8"
+                internalType: 'enum OfferType',
+                name: 'offerType',
+                type: 'uint8'
             },
             {
-                "internalType": "uint256",
-                "name": "begin",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'begin',
+                type: 'uint256'
             },
             {
-                "internalType": "uint256",
-                "name": "end",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'end',
+                type: 'uint256'
             }
         ],
-        "name": "getValueOffersRange",
-        "outputs": [
+        name: 'getValueOffersRange',
+        outputs: [
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "uint256",
-                        "name": "id",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'id',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "address",
-                        "name": "providerAuth",
-                        "type": "address"
+                        internalType: 'address',
+                        name: 'providerAuth',
+                        type: 'address'
                     },
                     {
-                        "components": [
+                        components: [
                             {
-                                "internalType": "string",
-                                "name": "name",
-                                "type": "string"
+                                internalType: 'string',
+                                name: 'name',
+                                type: 'string'
                             },
                             {
-                                "internalType": "enum OfferGroup",
-                                "name": "group",
-                                "type": "uint8"
+                                internalType: 'enum OfferGroup',
+                                name: 'group',
+                                type: 'uint8'
                             },
                             {
-                                "internalType": "enum OfferType",
-                                "name": "offerType",
-                                "type": "uint8"
+                                internalType: 'enum OfferType',
+                                name: 'offerType',
+                                type: 'uint8'
                             },
                             {
-                                "internalType": "bool",
-                                "name": "cancelable",
-                                "type": "bool"
+                                internalType: 'bool',
+                                name: 'cancelable',
+                                type: 'bool'
                             },
                             {
-                                "internalType": "string",
-                                "name": "description",
-                                "type": "string"
+                                internalType: 'string',
+                                name: 'description',
+                                type: 'string'
                             },
                             {
-                                "internalType": "string",
-                                "name": "input",
-                                "type": "string"
+                                internalType: 'string',
+                                name: 'input',
+                                type: 'string'
                             },
                             {
-                                "internalType": "string",
-                                "name": "output",
-                                "type": "string"
+                                internalType: 'string',
+                                name: 'output',
+                                type: 'string'
                             },
                             {
-                                "internalType": "string",
-                                "name": "allowedArgs",
-                                "type": "string"
+                                internalType: 'string',
+                                name: 'allowedArgs',
+                                type: 'string'
                             },
                             {
-                                "internalType": "address[]",
-                                "name": "allowedAccounts",
-                                "type": "address[]"
+                                internalType: 'address[]',
+                                name: 'allowedAccounts',
+                                type: 'address[]'
                             },
                             {
-                                "internalType": "string",
-                                "name": "argsPublicKey",
-                                "type": "string"
+                                internalType: 'string',
+                                name: 'argsPublicKey',
+                                type: 'string'
                             },
                             {
-                                "internalType": "string",
-                                "name": "resultResource",
-                                "type": "string"
+                                internalType: 'string',
+                                name: 'resultResource',
+                                type: 'string'
                             },
                             {
-                                "internalType": "string",
-                                "name": "linkage",
-                                "type": "string"
+                                internalType: 'string',
+                                name: 'linkage',
+                                type: 'string'
                             },
                             {
-                                "internalType": "string",
-                                "name": "hash",
-                                "type": "string"
+                                internalType: 'string',
+                                name: 'hash',
+                                type: 'string'
                             },
                             {
-                                "internalType": "string",
-                                "name": "metadata",
-                                "type": "string"
+                                internalType: 'string',
+                                name: 'metadata',
+                                type: 'string'
                             }
                         ],
-                        "internalType": "struct ValueOfferInfo",
-                        "name": "info",
-                        "type": "tuple"
+                        internalType: 'struct ValueOfferInfo',
+                        name: 'info',
+                        type: 'tuple'
                     },
                     {
-                        "internalType": "bool",
-                        "name": "enabled",
-                        "type": "bool"
+                        internalType: 'bool',
+                        name: 'enabled',
+                        type: 'bool'
                     }
                 ],
-                "internalType": "struct ValueOfferData[]",
-                "name": "",
-                "type": "tuple[]"
+                internalType: 'struct ValueOfferData[]',
+                name: '',
+                type: 'tuple[]'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'offerId',
+                type: 'uint256'
             }
         ],
-        "name": "getOfferGroup",
-        "outputs": [
+        name: 'getOfferGroup',
+        outputs: [
             {
-                "internalType": "enum OfferGroup",
-                "name": "",
-                "type": "uint8"
+                internalType: 'enum OfferGroup',
+                name: '',
+                type: 'uint8'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'offerId',
+                type: 'uint256'
             }
         ],
-        "name": "getOfferInitialRestrictions",
-        "outputs": [
+        name: 'getOfferInitialRestrictions',
+        outputs: [
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "uint256[]",
-                        "name": "offers",
-                        "type": "uint256[]"
+                        internalType: 'uint256[]',
+                        name: 'offers',
+                        type: 'uint256[]'
                     },
                     {
-                        "internalType": "enum OfferType[]",
-                        "name": "types",
-                        "type": "uint8[]"
+                        internalType: 'enum OfferType[]',
+                        name: 'types',
+                        type: 'uint8[]'
                     }
                 ],
-                "internalType": "struct ValueOfferInitialRestrictions",
-                "name": "ret",
-                "type": "tuple"
+                internalType: 'struct ValueOfferInitialRestrictions',
+                name: 'ret',
+                type: 'tuple'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'offerId',
+                type: 'uint256'
             },
             {
-                "internalType": "uint256",
-                "name": "slotId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'slotId',
+                type: 'uint256'
             },
             {
-                "internalType": "uint32",
-                "name": "slotCount",
-                "type": "uint32"
+                internalType: 'uint32',
+                name: 'slotCount',
+                type: 'uint32'
             },
             {
-                "internalType": "uint256[]",
-                "name": "optionsIds",
-                "type": "uint256[]"
+                internalType: 'uint256[]',
+                name: 'optionsIds',
+                type: 'uint256[]'
             },
             {
-                "internalType": "uint32[]",
-                "name": "optionsCount",
-                "type": "uint32[]"
+                internalType: 'uint32[]',
+                name: 'optionsCount',
+                type: 'uint32[]'
             }
         ],
-        "name": "getOfferMinDeposit",
-        "outputs": [
+        name: 'getOfferMinDeposit',
+        outputs: [
             {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'offerId',
+                type: 'uint256'
             }
         ],
-        "name": "getOfferOrigins",
-        "outputs": [
+        name: 'getOfferOrigins',
+        outputs: [
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "uint256",
-                        "name": "createdDate",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'createdDate',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "address",
-                        "name": "createdBy",
-                        "type": "address"
+                        internalType: 'address',
+                        name: 'createdBy',
+                        type: 'address'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "modifiedDate",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'modifiedDate',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "address",
-                        "name": "modifiedBy",
-                        "type": "address"
+                        internalType: 'address',
+                        name: 'modifiedBy',
+                        type: 'address'
                     }
                 ],
-                "internalType": "struct Origins",
-                "name": "",
-                "type": "tuple"
+                internalType: 'struct Origins',
+                name: '',
+                type: 'tuple'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'offerId',
+                type: 'uint256'
             }
         ],
-        "name": "getOfferProviderActionAccount",
-        "outputs": [
+        name: 'getOfferProviderActionAccount',
+        outputs: [
             {
-                "internalType": "address",
-                "name": "",
-                "type": "address"
+                internalType: 'address',
+                name: '',
+                type: 'address'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'offerId',
+                type: 'uint256'
             }
         ],
-        "name": "getOfferProviderAuthority",
-        "outputs": [
+        name: 'getOfferProviderAuthority',
+        outputs: [
             {
-                "internalType": "address",
-                "name": "",
-                "type": "address"
+                internalType: 'address',
+                name: '',
+                type: 'address'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'offerId',
+                type: 'uint256'
             }
         ],
-        "name": "getOfferType",
-        "outputs": [
+        name: 'getOfferType',
+        outputs: [
             {
-                "internalType": "enum OfferType",
-                "name": "",
-                "type": "uint8"
+                internalType: 'enum OfferType',
+                name: '',
+                type: 'uint8'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "enum OfferType",
-                "name": "offerType",
-                "type": "uint8"
+                internalType: 'enum OfferType',
+                name: 'offerType',
+                type: 'uint8'
             }
         ],
-        "name": "getOffersCountByType",
-        "outputs": [
+        name: 'getOffersCountByType',
+        outputs: [
             {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [],
-        "name": "getOffersTotalCount",
-        "outputs": [
+        inputs: [],
+        name: 'getOffersTotalCount',
+        outputs: [
             {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'offerId',
+                type: 'uint256'
             }
         ],
-        "name": "getTeeOffer",
-        "outputs": [
+        name: 'getTeeOffer',
+        outputs: [
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "uint256",
-                        "name": "id",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'id',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "address",
-                        "name": "providerAuth",
-                        "type": "address"
+                        internalType: 'address',
+                        name: 'providerAuth',
+                        type: 'address'
                     },
                     {
-                        "components": [
+                        components: [
                             {
-                                "internalType": "string",
-                                "name": "name",
-                                "type": "string"
+                                internalType: 'string',
+                                name: 'name',
+                                type: 'string'
                             },
                             {
-                                "internalType": "string",
-                                "name": "description",
-                                "type": "string"
+                                internalType: 'string',
+                                name: 'description',
+                                type: 'string'
                             },
                             {
-                                "internalType": "string",
-                                "name": "teeType",
-                                "type": "string"
+                                internalType: 'string',
+                                name: 'teeType',
+                                type: 'string'
                             },
                             {
-                                "internalType": "string",
-                                "name": "properties",
-                                "type": "string"
+                                internalType: 'string',
+                                name: 'properties',
+                                type: 'string'
                             },
                             {
-                                "internalType": "string",
-                                "name": "tlb",
-                                "type": "string"
+                                internalType: 'string',
+                                name: 'tlb',
+                                type: 'string'
                             },
                             {
-                                "internalType": "string",
-                                "name": "argsPublicKey",
-                                "type": "string"
+                                internalType: 'string',
+                                name: 'argsPublicKey',
+                                type: 'string'
                             }
                         ],
-                        "internalType": "struct TeeOfferInfo",
-                        "name": "info",
-                        "type": "tuple"
+                        internalType: 'struct TeeOfferInfo',
+                        name: 'info',
+                        type: 'tuple'
                     },
                     {
-                        "internalType": "bool",
-                        "name": "enabled",
-                        "type": "bool"
+                        internalType: 'bool',
+                        name: 'enabled',
+                        type: 'bool'
                     }
                 ],
-                "internalType": "struct TeeOfferData",
-                "name": "ret",
-                "type": "tuple"
+                internalType: 'struct TeeOfferData',
+                name: 'ret',
+                type: 'tuple'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "teeOfferId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'teeOfferId',
+                type: 'uint256'
             }
         ],
-        "name": "getTeeOfferHardwareInfo",
-        "outputs": [
+        name: 'getTeeOfferHardwareInfo',
+        outputs: [
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "uint64",
-                        "name": "cpuCores",
-                        "type": "uint64"
+                        internalType: 'uint64',
+                        name: 'cpuCores',
+                        type: 'uint64'
                     },
                     {
-                        "internalType": "uint64",
-                        "name": "ram",
-                        "type": "uint64"
+                        internalType: 'uint64',
+                        name: 'ram',
+                        type: 'uint64'
                     },
                     {
-                        "internalType": "uint64",
-                        "name": "diskUsage",
-                        "type": "uint64"
+                        internalType: 'uint64',
+                        name: 'diskUsage',
+                        type: 'uint64'
                     },
                     {
-                        "internalType": "uint64",
-                        "name": "gpuCores",
-                        "type": "uint64"
+                        internalType: 'uint64',
+                        name: 'gpuCores',
+                        type: 'uint64'
+                    },
+                    {
+                        internalType: 'uint64',
+                        name: 'vram',
+                        type: 'uint64'
                     }
                 ],
-                "internalType": "struct SlotInfo",
-                "name": "",
-                "type": "tuple"
+                internalType: 'struct SlotInfo',
+                name: '',
+                type: 'tuple'
             },
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "string",
-                        "name": "data",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'data',
+                        type: 'string'
                     }
                 ],
-                "internalType": "struct OptionInfo",
-                "name": "",
-                "type": "tuple"
+                internalType: 'struct OptionInfo',
+                name: '',
+                type: 'tuple'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'offerId',
+                type: 'uint256'
             }
         ],
-        "name": "getTeeOfferLastTlbAddedTime",
-        "outputs": [
+        name: 'getTeeOfferLastTlbAddedTime',
+        outputs: [
             {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'offerId',
+                type: 'uint256'
             }
         ],
-        "name": "getValueOffer",
-        "outputs": [
+        name: 'getValueOffer',
+        outputs: [
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "uint256",
-                        "name": "id",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'id',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "address",
-                        "name": "providerAuth",
-                        "type": "address"
+                        internalType: 'address',
+                        name: 'providerAuth',
+                        type: 'address'
                     },
                     {
-                        "components": [
+                        components: [
                             {
-                                "internalType": "string",
-                                "name": "name",
-                                "type": "string"
+                                internalType: 'string',
+                                name: 'name',
+                                type: 'string'
                             },
                             {
-                                "internalType": "enum OfferGroup",
-                                "name": "group",
-                                "type": "uint8"
+                                internalType: 'enum OfferGroup',
+                                name: 'group',
+                                type: 'uint8'
                             },
                             {
-                                "internalType": "enum OfferType",
-                                "name": "offerType",
-                                "type": "uint8"
+                                internalType: 'enum OfferType',
+                                name: 'offerType',
+                                type: 'uint8'
                             },
                             {
-                                "internalType": "bool",
-                                "name": "cancelable",
-                                "type": "bool"
+                                internalType: 'bool',
+                                name: 'cancelable',
+                                type: 'bool'
                             },
                             {
-                                "internalType": "string",
-                                "name": "description",
-                                "type": "string"
+                                internalType: 'string',
+                                name: 'description',
+                                type: 'string'
                             },
                             {
-                                "internalType": "string",
-                                "name": "input",
-                                "type": "string"
+                                internalType: 'string',
+                                name: 'input',
+                                type: 'string'
                             },
                             {
-                                "internalType": "string",
-                                "name": "output",
-                                "type": "string"
+                                internalType: 'string',
+                                name: 'output',
+                                type: 'string'
                             },
                             {
-                                "internalType": "string",
-                                "name": "allowedArgs",
-                                "type": "string"
+                                internalType: 'string',
+                                name: 'allowedArgs',
+                                type: 'string'
                             },
                             {
-                                "internalType": "address[]",
-                                "name": "allowedAccounts",
-                                "type": "address[]"
+                                internalType: 'address[]',
+                                name: 'allowedAccounts',
+                                type: 'address[]'
                             },
                             {
-                                "internalType": "string",
-                                "name": "argsPublicKey",
-                                "type": "string"
+                                internalType: 'string',
+                                name: 'argsPublicKey',
+                                type: 'string'
                             },
                             {
-                                "internalType": "string",
-                                "name": "resultResource",
-                                "type": "string"
+                                internalType: 'string',
+                                name: 'resultResource',
+                                type: 'string'
                             },
                             {
-                                "internalType": "string",
-                                "name": "linkage",
-                                "type": "string"
+                                internalType: 'string',
+                                name: 'linkage',
+                                type: 'string'
                             },
                             {
-                                "internalType": "string",
-                                "name": "hash",
-                                "type": "string"
+                                internalType: 'string',
+                                name: 'hash',
+                                type: 'string'
                             },
                             {
-                                "internalType": "string",
-                                "name": "metadata",
-                                "type": "string"
+                                internalType: 'string',
+                                name: 'metadata',
+                                type: 'string'
                             }
                         ],
-                        "internalType": "struct ValueOfferInfo",
-                        "name": "info",
-                        "type": "tuple"
+                        internalType: 'struct ValueOfferInfo',
+                        name: 'info',
+                        type: 'tuple'
                     },
                     {
-                        "internalType": "bool",
-                        "name": "enabled",
-                        "type": "bool"
+                        internalType: 'bool',
+                        name: 'enabled',
+                        type: 'bool'
                     }
                 ],
-                "internalType": "struct ValueOfferData",
-                "name": "ret",
-                "type": "tuple"
+                internalType: 'struct ValueOfferData',
+                name: 'ret',
+                type: 'tuple'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'offerId',
+                type: 'uint256'
             }
         ],
-        "name": "isAutoCompleteOffer",
-        "outputs": [
+        name: 'isAutoCompleteOffer',
+        outputs: [
             {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
+                internalType: 'bool',
+                name: '',
+                type: 'bool'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'offerId',
+                type: 'uint256'
             },
             {
-                "internalType": "address",
-                "name": "consumer",
-                "type": "address"
+                internalType: 'address',
+                name: 'consumer',
+                type: 'address'
             }
         ],
-        "name": "isOfferAllowedForConsumer",
-        "outputs": [
+        name: 'isOfferAllowedForConsumer',
+        outputs: [
             {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
+                internalType: 'bool',
+                name: '',
+                type: 'bool'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'offerId',
+                type: 'uint256'
             }
         ],
-        "name": "isOfferCancelable",
-        "outputs": [
+        name: 'isOfferCancelable',
+        outputs: [
             {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
+                internalType: 'bool',
+                name: '',
+                type: 'bool'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'offerId',
+                type: 'uint256'
             }
         ],
-        "name": "isOfferEnabled",
-        "outputs": [
+        name: 'isOfferEnabled',
+        outputs: [
             {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
+                internalType: 'bool',
+                name: '',
+                type: 'bool'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'offerId',
+                type: 'uint256'
             }
         ],
-        "name": "isOfferExists",
-        "outputs": [
+        name: 'isOfferExists',
+        outputs: [
             {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
+                internalType: 'bool',
+                name: '',
+                type: 'bool'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'offerId',
+                type: 'uint256'
             },
             {
-                "internalType": "enum OfferType",
-                "name": "offerType",
-                "type": "uint8"
+                internalType: 'enum OfferType',
+                name: 'offerType',
+                type: 'uint8'
             }
         ],
-        "name": "isOfferRestrictedByOfferType",
-        "outputs": [
+        name: 'isOfferRestrictedByOfferType',
+        outputs: [
             {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
+                internalType: 'bool',
+                name: '',
+                type: 'bool'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'offerId',
+                type: 'uint256'
             },
             {
-                "internalType": "uint256",
-                "name": "otherOfferId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'otherOfferId',
+                type: 'uint256'
             }
         ],
-        "name": "isOfferRestrictionsPermitOtherOffer",
-        "outputs": [
+        name: 'isOfferRestrictionsPermitOtherOffer',
+        outputs: [
             {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
+                internalType: 'bool',
+                name: '',
+                type: 'bool'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'offerId',
+                type: 'uint256'
             }
         ],
-        "name": "isTeeOfferBanned",
-        "outputs": [
+        name: 'isTeeOfferBanned',
+        outputs: [
             {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
+                internalType: 'bool',
+                name: '',
+                type: 'bool'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "anonymous": false,
-        "inputs": [
+        anonymous: false,
+        inputs: [
             {
-                "indexed": true,
-                "internalType": "address",
-                "name": "owner",
-                "type": "address"
+                indexed: true,
+                internalType: 'address',
+                name: 'owner',
+                type: 'address'
             },
             {
-                "indexed": true,
-                "internalType": "uint256",
-                "name": "groupId",
-                "type": "uint256"
+                indexed: true,
+                internalType: 'uint256',
+                name: 'groupId',
+                type: 'uint256'
             }
         ],
-        "name": "OrdersGroupCreated",
-        "type": "event"
+        name: 'OrdersGroupCreated',
+        type: 'event'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "groupId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'groupId',
+                type: 'uint256'
             },
             {
-                "internalType": "uint256[]",
-                "name": "ordersIds",
-                "type": "uint256[]"
+                internalType: 'uint256[]',
+                name: 'ordersIds',
+                type: 'uint256[]'
             }
         ],
-        "name": "addOrdersToGroup",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'addOrdersToGroup',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256[]",
-                "name": "ordersIds",
-                "type": "uint256[]"
+                internalType: 'uint256[]',
+                name: 'ordersIds',
+                type: 'uint256[]'
             }
         ],
-        "name": "createGroupOfOrders",
-        "outputs": [
+        name: 'createGroupOfOrders',
+        outputs: [
             {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
             }
         ],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "groupId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'groupId',
+                type: 'uint256'
             }
         ],
-        "name": "getGroupOrders",
-        "outputs": [
+        name: 'getGroupOrders',
+        outputs: [
             {
-                "internalType": "uint256[]",
-                "name": "",
-                "type": "uint256[]"
+                internalType: 'uint256[]',
+                name: '',
+                type: 'uint256[]'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'orderId',
+                type: 'uint256'
             }
         ],
-        "name": "getOrderGroupId",
-        "outputs": [
+        name: 'getOrderGroupId',
+        outputs: [
             {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "groupId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'groupId',
+                type: 'uint256'
             },
             {
-                "internalType": "uint256[]",
-                "name": "ordersIds",
-                "type": "uint256[]"
+                internalType: 'uint256[]',
+                name: 'ordersIds',
+                type: 'uint256[]'
             }
         ],
-        "name": "removeOrdersFromGroup",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'removeOrdersFromGroup',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "anonymous": false,
-        "inputs": [
+        anonymous: false,
+        inputs: [
             {
-                "indexed": true,
-                "internalType": "address",
-                "name": "consumer",
-                "type": "address"
+                indexed: true,
+                internalType: 'address',
+                name: 'consumer',
+                type: 'address'
             },
             {
-                "indexed": true,
-                "internalType": "bytes32",
-                "name": "externalId",
-                "type": "bytes32"
+                indexed: true,
+                internalType: 'bytes32',
+                name: 'externalId',
+                type: 'bytes32'
             },
             {
-                "indexed": true,
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
+                indexed: true,
+                internalType: 'uint256',
+                name: 'offerId',
+                type: 'uint256'
             },
             {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "parentOrderId",
-                "type": "uint256"
+                indexed: false,
+                internalType: 'uint256',
+                name: 'parentOrderId',
+                type: 'uint256'
             },
             {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
+                indexed: false,
+                internalType: 'uint256',
+                name: 'orderId',
+                type: 'uint256'
             },
             {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "deposit",
-                "type": "uint256"
+                indexed: false,
+                internalType: 'uint256',
+                name: 'deposit',
+                type: 'uint256'
             },
             {
-                "indexed": false,
-                "internalType": "enum OrderStatus",
-                "name": "status",
-                "type": "uint8"
+                indexed: false,
+                internalType: 'enum OrderStatus',
+                name: 'status',
+                type: 'uint8'
             }
         ],
-        "name": "OrderCreated",
-        "type": "event"
+        name: 'OrderCreated',
+        type: 'event'
     },
     {
-        "anonymous": false,
-        "inputs": [
+        anonymous: false,
+        inputs: [
             {
-                "indexed": true,
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
+                indexed: true,
+                internalType: 'uint256',
+                name: 'orderId',
+                type: 'uint256'
             },
             {
-                "indexed": true,
-                "internalType": "enum OrderStatus",
-                "name": "status",
-                "type": "uint8"
+                indexed: true,
+                internalType: 'enum OrderStatus',
+                name: 'status',
+                type: 'uint8'
             }
         ],
-        "name": "OrderStatusUpdated",
-        "type": "event"
+        name: 'OrderStatusUpdated',
+        type: 'event'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "address",
-                "name": "consumer",
-                "type": "address"
+                internalType: 'address',
+                name: 'consumer',
+                type: 'address'
             },
             {
-                "internalType": "uint256",
-                "name": "deposit",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'deposit',
+                type: 'uint256'
             }
         ],
-        "name": "adjustOrderDepositByApp",
-        "outputs": [
+        name: 'adjustOrderDepositByApp',
+        outputs: [
             {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
             }
         ],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "uint256",
-                        "name": "offerId",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'offerId',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "string",
-                        "name": "resultInfo",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'resultInfo',
+                        type: 'string'
                     },
                     {
-                        "internalType": "string",
-                        "name": "encryptedRequirements_DEPRECATED",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'encryptedRequirements_DEPRECATED',
+                        type: 'string'
                     },
                     {
-                        "internalType": "string",
-                        "name": "encryptedArgs_DEPRECATED",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'encryptedArgs_DEPRECATED',
+                        type: 'string'
                     },
                     {
-                        "internalType": "enum OrderStatus",
-                        "name": "status",
-                        "type": "uint8"
+                        internalType: 'enum OrderStatus',
+                        name: 'status',
+                        type: 'uint8'
                     },
                     {
-                        "internalType": "bytes32",
-                        "name": "externalId",
-                        "type": "bytes32"
+                        internalType: 'bytes32',
+                        name: 'externalId',
+                        type: 'bytes32'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "expectedPrice",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'expectedPrice',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "maxPriceSlippage",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'maxPriceSlippage',
+                        type: 'uint256'
                     }
                 ],
-                "internalType": "struct OrderInfo",
-                "name": "info",
-                "type": "tuple"
+                internalType: 'struct OrderInfo',
+                name: 'info',
+                type: 'tuple'
             },
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "uint256",
-                        "name": "slotId",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'slotId',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint32",
-                        "name": "slotCount",
-                        "type": "uint32"
+                        internalType: 'uint32',
+                        name: 'slotCount',
+                        type: 'uint32'
                     },
                     {
-                        "internalType": "uint256[]",
-                        "name": "optionsIds",
-                        "type": "uint256[]"
+                        internalType: 'uint256[]',
+                        name: 'optionsIds',
+                        type: 'uint256[]'
                     },
                     {
-                        "internalType": "uint32[]",
-                        "name": "optionsCount",
-                        "type": "uint32[]"
+                        internalType: 'uint32[]',
+                        name: 'optionsCount',
+                        type: 'uint32[]'
                     }
                 ],
-                "internalType": "struct OrderSlots",
-                "name": "slots",
-                "type": "tuple"
+                internalType: 'struct OrderSlots',
+                name: 'slots',
+                type: 'tuple'
             },
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "uint256[]",
-                        "name": "inputOffers",
-                        "type": "uint256[]"
+                        internalType: 'uint256[]',
+                        name: 'inputOffers',
+                        type: 'uint256[]'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "outputOffer",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'outputOffer',
+                        type: 'uint256'
                     }
                 ],
-                "internalType": "struct OrderArgs",
-                "name": "args",
-                "type": "tuple"
+                internalType: 'struct OrderArgs',
+                name: 'args',
+                type: 'tuple'
             },
             {
-                "internalType": "uint256",
-                "name": "deposit",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'deposit',
+                type: 'uint256'
             },
             {
-                "internalType": "bool",
-                "name": "suspended",
-                "type": "bool"
+                internalType: 'bool',
+                name: 'suspended',
+                type: 'bool'
             }
         ],
-        "name": "createOrder",
-        "outputs": [
+        name: 'createOrder',
+        outputs: [
             {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
             }
         ],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "address",
-                "name": "consumer",
-                "type": "address"
+                internalType: 'address',
+                name: 'consumer',
+                type: 'address'
             },
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "uint256",
-                        "name": "offerId",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'offerId',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "string",
-                        "name": "resultInfo",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'resultInfo',
+                        type: 'string'
                     },
                     {
-                        "internalType": "string",
-                        "name": "encryptedRequirements_DEPRECATED",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'encryptedRequirements_DEPRECATED',
+                        type: 'string'
                     },
                     {
-                        "internalType": "string",
-                        "name": "encryptedArgs_DEPRECATED",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'encryptedArgs_DEPRECATED',
+                        type: 'string'
                     },
                     {
-                        "internalType": "enum OrderStatus",
-                        "name": "status",
-                        "type": "uint8"
+                        internalType: 'enum OrderStatus',
+                        name: 'status',
+                        type: 'uint8'
                     },
                     {
-                        "internalType": "bytes32",
-                        "name": "externalId",
-                        "type": "bytes32"
+                        internalType: 'bytes32',
+                        name: 'externalId',
+                        type: 'bytes32'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "expectedPrice",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'expectedPrice',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "maxPriceSlippage",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'maxPriceSlippage',
+                        type: 'uint256'
                     }
                 ],
-                "internalType": "struct OrderInfo",
-                "name": "info",
-                "type": "tuple"
+                internalType: 'struct OrderInfo',
+                name: 'info',
+                type: 'tuple'
             },
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "uint256",
-                        "name": "slotId",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'slotId',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint32",
-                        "name": "slotCount",
-                        "type": "uint32"
+                        internalType: 'uint32',
+                        name: 'slotCount',
+                        type: 'uint32'
                     },
                     {
-                        "internalType": "uint256[]",
-                        "name": "optionsIds",
-                        "type": "uint256[]"
+                        internalType: 'uint256[]',
+                        name: 'optionsIds',
+                        type: 'uint256[]'
                     },
                     {
-                        "internalType": "uint32[]",
-                        "name": "optionsCount",
-                        "type": "uint32[]"
+                        internalType: 'uint32[]',
+                        name: 'optionsCount',
+                        type: 'uint32[]'
                     }
                 ],
-                "internalType": "struct OrderSlots",
-                "name": "slots",
-                "type": "tuple"
+                internalType: 'struct OrderSlots',
+                name: 'slots',
+                type: 'tuple'
             },
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "uint256[]",
-                        "name": "inputOffers",
-                        "type": "uint256[]"
+                        internalType: 'uint256[]',
+                        name: 'inputOffers',
+                        type: 'uint256[]'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "outputOffer",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'outputOffer',
+                        type: 'uint256'
                     }
                 ],
-                "internalType": "struct OrderArgs",
-                "name": "args",
-                "type": "tuple"
+                internalType: 'struct OrderArgs',
+                name: 'args',
+                type: 'tuple'
             },
             {
-                "internalType": "uint256",
-                "name": "deposit",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'deposit',
+                type: 'uint256'
             },
             {
-                "internalType": "bool",
-                "name": "suspended",
-                "type": "bool"
+                internalType: 'bool',
+                name: 'suspended',
+                type: 'bool'
             }
         ],
-        "name": "createOrderByApp",
-        "outputs": [
+        name: 'createOrderByApp',
+        outputs: [
             {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
             }
         ],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "parentOrderId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'parentOrderId',
+                type: 'uint256'
             },
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "uint256",
-                        "name": "offerId",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'offerId',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "string",
-                        "name": "resultInfo",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'resultInfo',
+                        type: 'string'
                     },
                     {
-                        "internalType": "string",
-                        "name": "encryptedRequirements_DEPRECATED",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'encryptedRequirements_DEPRECATED',
+                        type: 'string'
                     },
                     {
-                        "internalType": "string",
-                        "name": "encryptedArgs_DEPRECATED",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'encryptedArgs_DEPRECATED',
+                        type: 'string'
                     },
                     {
-                        "internalType": "enum OrderStatus",
-                        "name": "status",
-                        "type": "uint8"
+                        internalType: 'enum OrderStatus',
+                        name: 'status',
+                        type: 'uint8'
                     },
                     {
-                        "internalType": "bytes32",
-                        "name": "externalId",
-                        "type": "bytes32"
+                        internalType: 'bytes32',
+                        name: 'externalId',
+                        type: 'bytes32'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "expectedPrice",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'expectedPrice',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "maxPriceSlippage",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'maxPriceSlippage',
+                        type: 'uint256'
                     }
                 ],
-                "internalType": "struct OrderInfo",
-                "name": "suborderInfo",
-                "type": "tuple"
+                internalType: 'struct OrderInfo',
+                name: 'suborderInfo',
+                type: 'tuple'
             },
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "uint256",
-                        "name": "slotId",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'slotId',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint32",
-                        "name": "slotCount",
-                        "type": "uint32"
+                        internalType: 'uint32',
+                        name: 'slotCount',
+                        type: 'uint32'
                     },
                     {
-                        "internalType": "uint256[]",
-                        "name": "optionsIds",
-                        "type": "uint256[]"
+                        internalType: 'uint256[]',
+                        name: 'optionsIds',
+                        type: 'uint256[]'
                     },
                     {
-                        "internalType": "uint32[]",
-                        "name": "optionsCount",
-                        "type": "uint32[]"
+                        internalType: 'uint32[]',
+                        name: 'optionsCount',
+                        type: 'uint32[]'
                     }
                 ],
-                "internalType": "struct OrderSlots",
-                "name": "suborderSlots",
-                "type": "tuple"
+                internalType: 'struct OrderSlots',
+                name: 'suborderSlots',
+                type: 'tuple'
             },
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "uint256[]",
-                        "name": "inputOffers",
-                        "type": "uint256[]"
+                        internalType: 'uint256[]',
+                        name: 'inputOffers',
+                        type: 'uint256[]'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "outputOffer",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'outputOffer',
+                        type: 'uint256'
                     }
                 ],
-                "internalType": "struct OrderArgs",
-                "name": "suborderArgs",
-                "type": "tuple"
+                internalType: 'struct OrderArgs',
+                name: 'suborderArgs',
+                type: 'tuple'
             },
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "bool",
-                        "name": "blockParentOrder",
-                        "type": "bool"
+                        internalType: 'bool',
+                        name: 'blockParentOrder',
+                        type: 'bool'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "deposit",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'deposit',
+                        type: 'uint256'
                     }
                 ],
-                "internalType": "struct SubOrderParams",
-                "name": "params",
-                "type": "tuple"
+                internalType: 'struct SubOrderParams',
+                name: 'params',
+                type: 'tuple'
             }
         ],
-        "name": "createSubOrder",
-        "outputs": [
+        name: 'createSubOrder',
+        outputs: [
             {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
             }
         ],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "address",
-                "name": "sender",
-                "type": "address"
+                internalType: 'address',
+                name: 'sender',
+                type: 'address'
             },
             {
-                "internalType": "uint256",
-                "name": "parentOrderId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'parentOrderId',
+                type: 'uint256'
             },
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "uint256",
-                        "name": "offerId",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'offerId',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "string",
-                        "name": "resultInfo",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'resultInfo',
+                        type: 'string'
                     },
                     {
-                        "internalType": "string",
-                        "name": "encryptedRequirements_DEPRECATED",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'encryptedRequirements_DEPRECATED',
+                        type: 'string'
                     },
                     {
-                        "internalType": "string",
-                        "name": "encryptedArgs_DEPRECATED",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'encryptedArgs_DEPRECATED',
+                        type: 'string'
                     },
                     {
-                        "internalType": "enum OrderStatus",
-                        "name": "status",
-                        "type": "uint8"
+                        internalType: 'enum OrderStatus',
+                        name: 'status',
+                        type: 'uint8'
                     },
                     {
-                        "internalType": "bytes32",
-                        "name": "externalId",
-                        "type": "bytes32"
+                        internalType: 'bytes32',
+                        name: 'externalId',
+                        type: 'bytes32'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "expectedPrice",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'expectedPrice',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "maxPriceSlippage",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'maxPriceSlippage',
+                        type: 'uint256'
                     }
                 ],
-                "internalType": "struct OrderInfo",
-                "name": "suborderInfo",
-                "type": "tuple"
+                internalType: 'struct OrderInfo',
+                name: 'suborderInfo',
+                type: 'tuple'
             },
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "uint256",
-                        "name": "slotId",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'slotId',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint32",
-                        "name": "slotCount",
-                        "type": "uint32"
+                        internalType: 'uint32',
+                        name: 'slotCount',
+                        type: 'uint32'
                     },
                     {
-                        "internalType": "uint256[]",
-                        "name": "optionsIds",
-                        "type": "uint256[]"
+                        internalType: 'uint256[]',
+                        name: 'optionsIds',
+                        type: 'uint256[]'
                     },
                     {
-                        "internalType": "uint32[]",
-                        "name": "optionsCount",
-                        "type": "uint32[]"
+                        internalType: 'uint32[]',
+                        name: 'optionsCount',
+                        type: 'uint32[]'
                     }
                 ],
-                "internalType": "struct OrderSlots",
-                "name": "suborderSlots",
-                "type": "tuple"
+                internalType: 'struct OrderSlots',
+                name: 'suborderSlots',
+                type: 'tuple'
             },
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "uint256[]",
-                        "name": "inputOffers",
-                        "type": "uint256[]"
+                        internalType: 'uint256[]',
+                        name: 'inputOffers',
+                        type: 'uint256[]'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "outputOffer",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'outputOffer',
+                        type: 'uint256'
                     }
                 ],
-                "internalType": "struct OrderArgs",
-                "name": "suborderArgs",
-                "type": "tuple"
+                internalType: 'struct OrderArgs',
+                name: 'suborderArgs',
+                type: 'tuple'
             },
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "bool",
-                        "name": "blockParentOrder",
-                        "type": "bool"
+                        internalType: 'bool',
+                        name: 'blockParentOrder',
+                        type: 'bool'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "deposit",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'deposit',
+                        type: 'uint256'
                     }
                 ],
-                "internalType": "struct SubOrderParams",
-                "name": "params",
-                "type": "tuple"
+                internalType: 'struct SubOrderParams',
+                name: 'params',
+                type: 'tuple'
             }
         ],
-        "name": "createSubOrderByApp",
-        "outputs": [
+        name: 'createSubOrderByApp',
+        outputs: [
             {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
             }
         ],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "anonymous": false,
-        "inputs": [
+        anonymous: false,
+        inputs: [
             {
-                "indexed": true,
-                "internalType": "address",
-                "name": "consumer",
-                "type": "address"
+                indexed: true,
+                internalType: 'address',
+                name: 'consumer',
+                type: 'address'
             },
             {
-                "indexed": true,
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
+                indexed: true,
+                internalType: 'uint256',
+                name: 'orderId',
+                type: 'uint256'
             },
             {
-                "indexed": false,
-                "internalType": "bool",
-                "name": "value",
-                "type": "bool"
+                indexed: false,
+                internalType: 'bool',
+                name: 'value',
+                type: 'bool'
             }
         ],
-        "name": "OrderAwaitingPaymentChanged",
-        "type": "event"
+        name: 'OrderAwaitingPaymentChanged',
+        type: 'event'
     },
     {
-        "anonymous": false,
-        "inputs": [
+        anonymous: false,
+        inputs: [
             {
-                "indexed": true,
-                "internalType": "address",
-                "name": "consumer",
-                "type": "address"
+                indexed: true,
+                internalType: 'address',
+                name: 'consumer',
+                type: 'address'
             },
             {
-                "indexed": true,
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
+                indexed: true,
+                internalType: 'uint256',
+                name: 'orderId',
+                type: 'uint256'
             },
             {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "amount",
-                "type": "uint256"
+                indexed: false,
+                internalType: 'uint256',
+                name: 'amount',
+                type: 'uint256'
             }
         ],
-        "name": "OrderDepositRefilled",
-        "type": "event"
+        name: 'OrderDepositRefilled',
+        type: 'event'
     },
     {
-        "anonymous": false,
-        "inputs": [
+        anonymous: false,
+        inputs: [
             {
-                "indexed": true,
-                "internalType": "address",
-                "name": "consumer",
-                "type": "address"
+                indexed: true,
+                internalType: 'address',
+                name: 'consumer',
+                type: 'address'
             },
             {
-                "indexed": true,
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
+                indexed: true,
+                internalType: 'uint256',
+                name: 'orderId',
+                type: 'uint256'
             },
             {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "value",
-                "type": "uint256"
+                indexed: false,
+                internalType: 'uint256',
+                name: 'value',
+                type: 'uint256'
             }
         ],
-        "name": "OrderOptionsDepositSpentChanged",
-        "type": "event"
+        name: 'OrderOptionsDepositSpentChanged',
+        type: 'event'
     },
     {
-        "anonymous": false,
-        "inputs": [
+        anonymous: false,
+        inputs: [
             {
-                "indexed": true,
-                "internalType": "address",
-                "name": "tokenReceiver",
-                "type": "address"
+                indexed: true,
+                internalType: 'address',
+                name: 'tokenReceiver',
+                type: 'address'
             },
             {
-                "indexed": true,
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
+                indexed: true,
+                internalType: 'uint256',
+                name: 'orderId',
+                type: 'uint256'
             },
             {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "profit",
-                "type": "uint256"
+                indexed: false,
+                internalType: 'uint256',
+                name: 'profit',
+                type: 'uint256'
             }
         ],
-        "name": "OrderProfitUnlocked",
-        "type": "event"
+        name: 'OrderProfitUnlocked',
+        type: 'event'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'orderId',
+                type: 'uint256'
             },
             {
-                "internalType": "uint256",
-                "name": "amount",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'amount',
+                type: 'uint256'
             }
         ],
-        "name": "debitOrderDepositByApp",
-        "outputs": [
+        name: 'debitOrderDepositByApp',
+        outputs: [
             {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
             }
         ],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'orderId',
+                type: 'uint256'
             }
         ],
-        "name": "isOrderProfitAvailable",
-        "outputs": [
+        name: 'isOrderProfitAvailable',
+        outputs: [
             {
-                "internalType": "bool",
-                "name": "available",
-                "type": "bool"
+                internalType: 'bool',
+                name: 'available',
+                type: 'bool'
             },
             {
-                "internalType": "uint256",
-                "name": "profit",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'profit',
+                type: 'uint256'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'orderId',
+                type: 'uint256'
             },
             {
-                "internalType": "uint256",
-                "name": "amount",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'amount',
+                type: 'uint256'
             }
         ],
-        "name": "refillOrder",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'refillOrder',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'orderId',
+                type: 'uint256'
             },
             {
-                "internalType": "bool",
-                "name": "value",
-                "type": "bool"
+                internalType: 'bool',
+                name: 'value',
+                type: 'bool'
             }
         ],
-        "name": "setAwaitingPayment",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'setAwaitingPayment',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'orderId',
+                type: 'uint256'
             },
             {
-                "internalType": "uint256",
-                "name": "value",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'value',
+                type: 'uint256'
             }
         ],
-        "name": "setOptionsDepositSpent",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'setOptionsDepositSpent',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'orderId',
+                type: 'uint256'
             }
         ],
-        "name": "unlockProfit",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'unlockProfit',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256[]",
-                "name": "orderIds",
-                "type": "uint256[]"
+                internalType: 'uint256[]',
+                name: 'orderIds',
+                type: 'uint256[]'
             }
         ],
-        "name": "unlockProfitByList",
-        "outputs": [
+        name: 'unlockProfitByList',
+        outputs: [
             {
-                "internalType": "uint256",
-                "name": "ulockedIndex",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'ulockedIndex',
+                type: 'uint256'
             }
         ],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "anonymous": false,
-        "inputs": [
+        anonymous: false,
+        inputs: [
             {
-                "indexed": true,
-                "internalType": "address",
-                "name": "consumer",
-                "type": "address"
+                indexed: true,
+                internalType: 'address',
+                name: 'consumer',
+                type: 'address'
             },
             {
-                "indexed": true,
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
+                indexed: true,
+                internalType: 'uint256',
+                name: 'orderId',
+                type: 'uint256'
             },
             {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "change",
-                "type": "uint256"
+                indexed: false,
+                internalType: 'uint256',
+                name: 'change',
+                type: 'uint256'
             }
         ],
-        "name": "OrderChangeWithdrawn",
-        "type": "event"
+        name: 'OrderChangeWithdrawn',
+        type: 'event'
     },
     {
-        "anonymous": false,
-        "inputs": [
+        anonymous: false,
+        inputs: [
             {
-                "indexed": true,
-                "internalType": "address",
-                "name": "consumer",
-                "type": "address"
+                indexed: true,
+                internalType: 'address',
+                name: 'consumer',
+                type: 'address'
             },
             {
-                "indexed": true,
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
+                indexed: true,
+                internalType: 'uint256',
+                name: 'orderId',
+                type: 'uint256'
             },
             {
-                "indexed": false,
-                "internalType": "string",
-                "name": "encryptedResult",
-                "type": "string"
+                indexed: false,
+                internalType: 'string',
+                name: 'encryptedResult',
+                type: 'string'
             }
         ],
-        "name": "OrderEncryptedResultUpdated",
-        "type": "event"
+        name: 'OrderEncryptedResultUpdated',
+        type: 'event'
     },
     {
-        "anonymous": false,
-        "inputs": [
+        anonymous: false,
+        inputs: [
             {
-                "indexed": true,
-                "internalType": "address",
-                "name": "tokenReceiver",
-                "type": "address"
+                indexed: true,
+                internalType: 'address',
+                name: 'tokenReceiver',
+                type: 'address'
             },
             {
-                "indexed": true,
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
+                indexed: true,
+                internalType: 'uint256',
+                name: 'orderId',
+                type: 'uint256'
             },
             {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "profit",
-                "type": "uint256"
+                indexed: false,
+                internalType: 'uint256',
+                name: 'profit',
+                type: 'uint256'
             }
         ],
-        "name": "OrderProfitWithdrawn",
-        "type": "event"
+        name: 'OrderProfitWithdrawn',
+        type: 'event'
     },
     {
-        "anonymous": false,
-        "inputs": [
+        anonymous: false,
+        inputs: [
             {
-                "indexed": true,
-                "internalType": "address",
-                "name": "consumer",
-                "type": "address"
+                indexed: true,
+                internalType: 'address',
+                name: 'consumer',
+                type: 'address'
             },
             {
-                "indexed": true,
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
+                indexed: true,
+                internalType: 'uint256',
+                name: 'orderId',
+                type: 'uint256'
             }
         ],
-        "name": "OrderStarted",
-        "type": "event"
+        name: 'OrderStarted',
+        type: 'event'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'orderId',
+                type: 'uint256'
             }
         ],
-        "name": "calculateOrderCurrentPrice",
-        "outputs": [
+        name: 'calculateOrderCurrentPrice',
+        outputs: [
             {
-                "internalType": "uint256",
-                "name": "resultedPrice",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'resultedPrice',
+                type: 'uint256'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'orderId',
+                type: 'uint256'
             }
         ],
-        "name": "cancelOrder",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'cancelOrder',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "address",
-                "name": "consumer",
-                "type": "address"
+                internalType: 'address',
+                name: 'consumer',
+                type: 'address'
             },
             {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'orderId',
+                type: 'uint256'
             }
         ],
-        "name": "cancelOrderByApp",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'cancelOrderByApp',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'orderId',
+                type: 'uint256'
             },
             {
-                "internalType": "enum OrderStatus",
-                "name": "status",
-                "type": "uint8"
+                internalType: 'enum OrderStatus',
+                name: 'status',
+                type: 'uint8'
             },
             {
-                "internalType": "string",
-                "name": "encryptedResult",
-                "type": "string"
+                internalType: 'string',
+                name: 'encryptedResult',
+                type: 'string'
             }
         ],
-        "name": "completeOrder",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'completeOrder',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'orderId',
+                type: 'uint256'
             }
         ],
-        "name": "processOrder",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'processOrder',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'orderId',
+                type: 'uint256'
             }
         ],
-        "name": "startOrder",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'startOrder',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "address",
-                "name": "sender",
-                "type": "address"
+                internalType: 'address',
+                name: 'sender',
+                type: 'address'
             },
             {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'orderId',
+                type: 'uint256'
             }
         ],
-        "name": "startOrderByApp",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'startOrderByApp',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'orderId',
+                type: 'uint256'
             },
             {
-                "internalType": "string",
-                "name": "encryptedResult",
-                "type": "string"
+                internalType: 'string',
+                name: 'encryptedResult',
+                type: 'string'
             }
         ],
-        "name": "updateOrderResult",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'updateOrderResult',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "anonymous": false,
-        "inputs": [
+        anonymous: false,
+        inputs: [
             {
-                "indexed": true,
-                "internalType": "address",
-                "name": "consumer",
-                "type": "address"
+                indexed: true,
+                internalType: 'address',
+                name: 'consumer',
+                type: 'address'
             },
             {
-                "indexed": true,
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
+                indexed: true,
+                internalType: 'uint256',
+                name: 'orderId',
+                type: 'uint256'
             }
         ],
-        "name": "OrderOptionsChangeRequested",
-        "type": "event"
+        name: 'OrderOptionsChangeRequested',
+        type: 'event'
     },
     {
-        "anonymous": false,
-        "inputs": [
+        anonymous: false,
+        inputs: [
             {
-                "indexed": true,
-                "internalType": "address",
-                "name": "consumer",
-                "type": "address"
+                indexed: true,
+                internalType: 'address',
+                name: 'consumer',
+                type: 'address'
             },
             {
-                "indexed": true,
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
+                indexed: true,
+                internalType: 'uint256',
+                name: 'orderId',
+                type: 'uint256'
             }
         ],
-        "name": "OrderOptionsChanged",
-        "type": "event"
+        name: 'OrderOptionsChanged',
+        type: 'event'
     },
     {
-        "anonymous": false,
-        "inputs": [
+        anonymous: false,
+        inputs: [
             {
-                "indexed": true,
-                "internalType": "address",
-                "name": "consumer",
-                "type": "address"
+                indexed: true,
+                internalType: 'address',
+                name: 'consumer',
+                type: 'address'
             },
             {
-                "indexed": true,
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
+                indexed: true,
+                internalType: 'uint256',
+                name: 'orderId',
+                type: 'uint256'
             },
             {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "newSlotCount",
-                "type": "uint256"
+                indexed: false,
+                internalType: 'uint256',
+                name: 'newSlotCount',
+                type: 'uint256'
             }
         ],
-        "name": "OrderSlotCountUpdateRequested",
-        "type": "event"
+        name: 'OrderSlotCountUpdateRequested',
+        type: 'event'
     },
     {
-        "anonymous": false,
-        "inputs": [
+        anonymous: false,
+        inputs: [
             {
-                "indexed": true,
-                "internalType": "address",
-                "name": "consumer",
-                "type": "address"
+                indexed: true,
+                internalType: 'address',
+                name: 'consumer',
+                type: 'address'
             },
             {
-                "indexed": true,
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
+                indexed: true,
+                internalType: 'uint256',
+                name: 'orderId',
+                type: 'uint256'
             },
             {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "newSlotCount",
-                "type": "uint256"
+                indexed: false,
+                internalType: 'uint256',
+                name: 'newSlotCount',
+                type: 'uint256'
             }
         ],
-        "name": "OrderSlotCountUpdated",
-        "type": "event"
+        name: 'OrderSlotCountUpdated',
+        type: 'event'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'orderId',
+                type: 'uint256'
             },
             {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'offerId',
+                type: 'uint256'
             },
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "uint256",
-                        "name": "slotId",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'slotId',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint32",
-                        "name": "slotCount",
-                        "type": "uint32"
+                        internalType: 'uint32',
+                        name: 'slotCount',
+                        type: 'uint32'
                     },
                     {
-                        "internalType": "uint256[]",
-                        "name": "optionsIds",
-                        "type": "uint256[]"
+                        internalType: 'uint256[]',
+                        name: 'optionsIds',
+                        type: 'uint256[]'
                     },
                     {
-                        "internalType": "uint32[]",
-                        "name": "optionsCount",
-                        "type": "uint32[]"
+                        internalType: 'uint32[]',
+                        name: 'optionsCount',
+                        type: 'uint32[]'
                     }
                 ],
-                "internalType": "struct OrderSlots",
-                "name": "orderSlotsSetup",
-                "type": "tuple"
+                internalType: 'struct OrderSlots',
+                name: 'orderSlotsSetup',
+                type: 'tuple'
             }
         ],
-        "name": "setTeeOrderSelectedUsageAndOptions",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'setTeeOrderSelectedUsageAndOptions',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'orderId',
+                type: 'uint256'
             },
             {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'offerId',
+                type: 'uint256'
             },
             {
-                "internalType": "uint256",
-                "name": "slotId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'slotId',
+                type: 'uint256'
             }
         ],
-        "name": "setValueOrderUsage",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'setValueOrderUsage',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'orderId',
+                type: 'uint256'
             }
         ],
-        "name": "calculateOrderOutputReserve",
-        "outputs": [
+        name: 'calculateOrderOutputReserve',
+        outputs: [
             {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'orderId',
+                type: 'uint256'
             }
         ],
-        "name": "calculateOrderTime",
-        "outputs": [
+        name: 'calculateOrderTime',
+        outputs: [
             {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'orderId',
+                type: 'uint256'
             }
         ],
-        "name": "calculateTotalDepositSpent",
-        "outputs": [
+        name: 'calculateTotalDepositSpent',
+        outputs: [
             {
-                "internalType": "uint256",
-                "name": "depositSpent",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'depositSpent',
+                type: 'uint256'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'orderId',
+                type: 'uint256'
             }
         ],
-        "name": "calculateTotalDepositUnspent",
-        "outputs": [
+        name: 'calculateTotalDepositUnspent',
+        outputs: [
             {
-                "internalType": "uint256",
-                "name": "depositUnspent",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'depositUnspent',
+                type: 'uint256'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'orderId',
+                type: 'uint256'
             }
         ],
-        "name": "calculateTotalOrderDeposit",
-        "outputs": [
+        name: 'calculateTotalOrderDeposit',
+        outputs: [
             {
-                "internalType": "uint256",
-                "name": "deposit",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'deposit',
+                type: 'uint256'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "enum OfferGroup",
-                "name": "parentOfferGroup",
-                "type": "uint8"
+                internalType: 'enum OfferGroup',
+                name: 'parentOfferGroup',
+                type: 'uint8'
             },
             {
-                "internalType": "enum OfferGroup",
-                "name": "subOfferGroup",
-                "type": "uint8"
+                internalType: 'enum OfferGroup',
+                name: 'subOfferGroup',
+                type: 'uint8'
             }
         ],
-        "name": "checkOrderAllowedGroup",
-        "outputs": [],
-        "stateMutability": "pure",
-        "type": "function"
+        name: 'checkOrderAllowedGroup',
+        outputs: [],
+        stateMutability: 'pure',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "enum OrderStatus",
-                "name": "prev",
-                "type": "uint8"
+                internalType: 'enum OrderStatus',
+                name: 'prev',
+                type: 'uint8'
             },
             {
-                "internalType": "enum OrderStatus",
-                "name": "next",
-                "type": "uint8"
+                internalType: 'enum OrderStatus',
+                name: 'next',
+                type: 'uint8'
             }
         ],
-        "name": "checkOrderAllowedStatus",
-        "outputs": [
+        name: 'checkOrderAllowedStatus',
+        outputs: [
             {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
+                internalType: 'bool',
+                name: '',
+                type: 'bool'
             }
         ],
-        "stateMutability": "pure",
-        "type": "function"
+        stateMutability: 'pure',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "parentOrderId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'parentOrderId',
+                type: 'uint256'
             },
             {
-                "internalType": "uint256",
-                "name": "subOfferId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'subOfferId',
+                type: 'uint256'
             },
             {
-                "internalType": "enum OfferGroup",
-                "name": "subOfferGroup",
-                "type": "uint8"
+                internalType: 'enum OfferGroup',
+                name: 'subOfferGroup',
+                type: 'uint8'
             }
         ],
-        "name": "checkOrderRestrictions",
-        "outputs": [],
-        "stateMutability": "view",
-        "type": "function"
+        name: 'checkOrderRestrictions',
+        outputs: [],
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'orderId',
+                type: 'uint256'
             }
         ],
-        "name": "getAwaitingPayment",
-        "outputs": [
+        name: 'getAwaitingPayment',
+        outputs: [
             {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
+                internalType: 'bool',
+                name: '',
+                type: 'bool'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'orderId',
+                type: 'uint256'
             }
         ],
-        "name": "getFinalizationDate",
-        "outputs": [
+        name: 'getFinalizationDate',
+        outputs: [
             {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'orderId',
+                type: 'uint256'
             }
         ],
-        "name": "getOptionsDepositSpent",
-        "outputs": [
+        name: 'getOptionsDepositSpent',
+        outputs: [
             {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'orderId',
+                type: 'uint256'
             }
         ],
-        "name": "getOrder",
-        "outputs": [
+        name: 'getOrder',
+        outputs: [
             {
-                "internalType": "address",
-                "name": "",
-                "type": "address"
+                internalType: 'address',
+                name: '',
+                type: 'address'
             },
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "uint256",
-                        "name": "offerId",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'offerId',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "string",
-                        "name": "resultInfo",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'resultInfo',
+                        type: 'string'
                     },
                     {
-                        "internalType": "string",
-                        "name": "encryptedRequirements_DEPRECATED",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'encryptedRequirements_DEPRECATED',
+                        type: 'string'
                     },
                     {
-                        "internalType": "string",
-                        "name": "encryptedArgs_DEPRECATED",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'encryptedArgs_DEPRECATED',
+                        type: 'string'
                     },
                     {
-                        "internalType": "enum OrderStatus",
-                        "name": "status",
-                        "type": "uint8"
+                        internalType: 'enum OrderStatus',
+                        name: 'status',
+                        type: 'uint8'
                     },
                     {
-                        "internalType": "bytes32",
-                        "name": "externalId",
-                        "type": "bytes32"
+                        internalType: 'bytes32',
+                        name: 'externalId',
+                        type: 'bytes32'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "expectedPrice",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'expectedPrice',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "maxPriceSlippage",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'maxPriceSlippage',
+                        type: 'uint256'
                     }
                 ],
-                "internalType": "struct OrderInfo",
-                "name": "",
-                "type": "tuple"
+                internalType: 'struct OrderInfo',
+                name: '',
+                type: 'tuple'
             },
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "string",
-                        "name": "encryptedResult",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'encryptedResult',
+                        type: 'string'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "orderPrice",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'orderPrice',
+                        type: 'uint256'
                     }
                 ],
-                "internalType": "struct OrderResult",
-                "name": "",
-                "type": "tuple"
+                internalType: 'struct OrderResult',
+                name: '',
+                type: 'tuple'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'orderId',
+                type: 'uint256'
             }
         ],
-        "name": "getOrderArgs",
-        "outputs": [
+        name: 'getOrderArgs',
+        outputs: [
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "uint256[]",
-                        "name": "inputOffers",
-                        "type": "uint256[]"
+                        internalType: 'uint256[]',
+                        name: 'inputOffers',
+                        type: 'uint256[]'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "outputOffer",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'outputOffer',
+                        type: 'uint256'
                     }
                 ],
-                "internalType": "struct OrderArgs",
-                "name": "",
-                "type": "tuple"
+                internalType: 'struct OrderArgs',
+                name: '',
+                type: 'tuple'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'orderId',
+                type: 'uint256'
             }
         ],
-        "name": "getOrderConsumer",
-        "outputs": [
+        name: 'getOrderConsumer',
+        outputs: [
             {
-                "internalType": "address",
-                "name": "",
-                "type": "address"
+                internalType: 'address',
+                name: '',
+                type: 'address'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'orderId',
+                type: 'uint256'
             }
         ],
-        "name": "getOrderDeposit",
-        "outputs": [
+        name: 'getOrderDeposit',
+        outputs: [
             {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'orderId',
+                type: 'uint256'
             }
         ],
-        "name": "getOrderOrigins",
-        "outputs": [
+        name: 'getOrderOrigins',
+        outputs: [
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "uint256",
-                        "name": "createdDate",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'createdDate',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "address",
-                        "name": "createdBy",
-                        "type": "address"
+                        internalType: 'address',
+                        name: 'createdBy',
+                        type: 'address'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "modifiedDate",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'modifiedDate',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "address",
-                        "name": "modifiedBy",
-                        "type": "address"
+                        internalType: 'address',
+                        name: 'modifiedBy',
+                        type: 'address'
                     }
                 ],
-                "internalType": "struct Origins",
-                "name": "",
-                "type": "tuple"
+                internalType: 'struct Origins',
+                name: '',
+                type: 'tuple'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'orderId',
+                type: 'uint256'
             }
         ],
-        "name": "getOrderParentOrder",
-        "outputs": [
+        name: 'getOrderParentOrder',
+        outputs: [
             {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'orderId',
+                type: 'uint256'
             }
         ],
-        "name": "getOrderPrice",
-        "outputs": [
+        name: 'getOrderPrice',
+        outputs: [
             {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'orderId',
+                type: 'uint256'
             }
         ],
-        "name": "getOrderSelectedUsage",
-        "outputs": [
+        name: 'getOrderSelectedUsage',
+        outputs: [
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "uint32",
-                        "name": "slotCount",
-                        "type": "uint32"
+                        internalType: 'uint32',
+                        name: 'slotCount',
+                        type: 'uint32'
                     },
                     {
-                        "components": [
+                        components: [
                             {
-                                "internalType": "string",
-                                "name": "data",
-                                "type": "string"
+                                internalType: 'string',
+                                name: 'data',
+                                type: 'string'
                             }
                         ],
-                        "internalType": "struct OptionInfo[]",
-                        "name": "optionInfo",
-                        "type": "tuple[]"
+                        internalType: 'struct OptionInfo[]',
+                        name: 'optionInfo',
+                        type: 'tuple[]'
                     },
                     {
-                        "components": [
+                        components: [
                             {
-                                "internalType": "enum PriceType",
-                                "name": "priceType",
-                                "type": "uint8"
+                                internalType: 'enum PriceType',
+                                name: 'priceType',
+                                type: 'uint8'
                             },
                             {
-                                "internalType": "uint256",
-                                "name": "price",
-                                "type": "uint256"
+                                internalType: 'uint256',
+                                name: 'price',
+                                type: 'uint256'
                             },
                             {
-                                "internalType": "uint64",
-                                "name": "minTimeMinutes",
-                                "type": "uint64"
+                                internalType: 'uint64',
+                                name: 'minTimeMinutes',
+                                type: 'uint64'
                             },
                             {
-                                "internalType": "uint64",
-                                "name": "maxTimeMinutes",
-                                "type": "uint64"
+                                internalType: 'uint64',
+                                name: 'maxTimeMinutes',
+                                type: 'uint64'
                             }
                         ],
-                        "internalType": "struct SlotUsage[]",
-                        "name": "optionUsage",
-                        "type": "tuple[]"
+                        internalType: 'struct SlotUsage[]',
+                        name: 'optionUsage',
+                        type: 'tuple[]'
                     },
                     {
-                        "internalType": "uint256[]",
-                        "name": "optionIds",
-                        "type": "uint256[]"
+                        internalType: 'uint256[]',
+                        name: 'optionIds',
+                        type: 'uint256[]'
                     },
                     {
-                        "internalType": "uint32[]",
-                        "name": "optionsCount",
-                        "type": "uint32[]"
+                        internalType: 'uint32[]',
+                        name: 'optionsCount',
+                        type: 'uint32[]'
                     }
                 ],
-                "internalType": "struct OrderUsage",
-                "name": "",
-                "type": "tuple"
+                internalType: 'struct OrderUsage',
+                name: '',
+                type: 'tuple'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'orderId',
+                type: 'uint256'
             }
         ],
-        "name": "getOrderSelectedUsageSlotInfo",
-        "outputs": [
+        name: 'getOrderSelectedUsageSlotInfo',
+        outputs: [
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "uint64",
-                        "name": "cpuCores",
-                        "type": "uint64"
+                        internalType: 'uint64',
+                        name: 'cpuCores',
+                        type: 'uint64'
                     },
                     {
-                        "internalType": "uint64",
-                        "name": "ram",
-                        "type": "uint64"
+                        internalType: 'uint64',
+                        name: 'ram',
+                        type: 'uint64'
                     },
                     {
-                        "internalType": "uint64",
-                        "name": "diskUsage",
-                        "type": "uint64"
+                        internalType: 'uint64',
+                        name: 'diskUsage',
+                        type: 'uint64'
                     },
                     {
-                        "internalType": "uint64",
-                        "name": "gpuCores",
-                        "type": "uint64"
+                        internalType: 'uint64',
+                        name: 'gpuCores',
+                        type: 'uint64'
+                    },
+                    {
+                        internalType: 'uint64',
+                        name: 'vram',
+                        type: 'uint64'
                     }
                 ],
-                "internalType": "struct SlotInfo",
-                "name": "",
-                "type": "tuple"
+                internalType: 'struct SlotInfo',
+                name: '',
+                type: 'tuple'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'orderId',
+                type: 'uint256'
             }
         ],
-        "name": "getOrderSelectedUsageSlotUsage",
-        "outputs": [
+        name: 'getOrderSelectedUsageSlotUsage',
+        outputs: [
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "enum PriceType",
-                        "name": "priceType",
-                        "type": "uint8"
+                        internalType: 'enum PriceType',
+                        name: 'priceType',
+                        type: 'uint8'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "price",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'price',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint64",
-                        "name": "minTimeMinutes",
-                        "type": "uint64"
+                        internalType: 'uint64',
+                        name: 'minTimeMinutes',
+                        type: 'uint64'
                     },
                     {
-                        "internalType": "uint64",
-                        "name": "maxTimeMinutes",
-                        "type": "uint64"
+                        internalType: 'uint64',
+                        name: 'maxTimeMinutes',
+                        type: 'uint64'
                     }
                 ],
-                "internalType": "struct SlotUsage",
-                "name": "",
-                "type": "tuple"
+                internalType: 'struct SlotUsage',
+                name: '',
+                type: 'tuple'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'orderId',
+                type: 'uint256'
             }
         ],
-        "name": "getOrderSubOrders",
-        "outputs": [
+        name: 'getOrderSubOrders',
+        outputs: [
             {
-                "internalType": "uint256[]",
-                "name": "",
-                "type": "uint256[]"
+                internalType: 'uint256[]',
+                name: '',
+                type: 'uint256[]'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [],
-        "name": "getOrdersCount",
-        "outputs": [
+        inputs: [],
+        name: 'getOrdersCount',
+        outputs: [
             {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'orderId',
+                type: 'uint256'
             }
         ],
-        "name": "getStartDate",
-        "outputs": [
+        name: 'getStartDate',
+        outputs: [
             {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'orderId',
+                type: 'uint256'
             }
         ],
-        "name": "isOrderCompleted",
-        "outputs": [
+        name: 'isOrderCompleted',
+        outputs: [
             {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
+                internalType: 'bool',
+                name: '',
+                type: 'bool'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'orderId',
+                type: 'uint256'
             }
         ],
-        "name": "isOrderProcessing",
-        "outputs": [
+        name: 'isOrderProcessing',
+        outputs: [
             {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
+                internalType: 'bool',
+                name: '',
+                type: 'bool'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'orderId',
+                type: 'uint256'
             }
         ],
-        "name": "isOrderStarted",
-        "outputs": [
+        name: 'isOrderStarted',
+        outputs: [
             {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
+                internalType: 'bool',
+                name: '',
+                type: 'bool'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'orderId',
+                type: 'uint256'
             }
         ],
-        "name": "isOrderValid",
-        "outputs": [
+        name: 'isOrderValid',
+        outputs: [
             {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
+                internalType: 'bool',
+                name: '',
+                type: 'bool'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "anonymous": false,
-        "inputs": [
+        anonymous: false,
+        inputs: [
             {
-                "indexed": true,
-                "internalType": "address",
-                "name": "auth",
-                "type": "address"
+                indexed: true,
+                internalType: 'address',
+                name: 'auth',
+                type: 'address'
             }
         ],
-        "name": "ProviderModified",
-        "type": "event"
+        name: 'ProviderModified',
+        type: 'event'
     },
     {
-        "anonymous": false,
-        "inputs": [
+        anonymous: false,
+        inputs: [
             {
-                "indexed": true,
-                "internalType": "address",
-                "name": "auth",
-                "type": "address"
+                indexed: true,
+                internalType: 'address',
+                name: 'auth',
+                type: 'address'
             }
         ],
-        "name": "ProviderRegistered",
-        "type": "event"
+        name: 'ProviderRegistered',
+        type: 'event'
     },
     {
-        "anonymous": false,
-        "inputs": [
+        anonymous: false,
+        inputs: [
             {
-                "indexed": true,
-                "internalType": "address",
-                "name": "auth",
-                "type": "address"
+                indexed: true,
+                internalType: 'address',
+                name: 'auth',
+                type: 'address'
             },
             {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "amount",
-                "type": "uint256"
+                indexed: false,
+                internalType: 'uint256',
+                name: 'amount',
+                type: 'uint256'
             }
         ],
-        "name": "ProviderSecurityDepoRefilled",
-        "type": "event"
+        name: 'ProviderSecurityDepoRefilled',
+        type: 'event'
     },
     {
-        "anonymous": false,
-        "inputs": [
+        anonymous: false,
+        inputs: [
             {
-                "indexed": true,
-                "internalType": "address",
-                "name": "auth",
-                "type": "address"
+                indexed: true,
+                internalType: 'address',
+                name: 'auth',
+                type: 'address'
             },
             {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "amount",
-                "type": "uint256"
+                indexed: false,
+                internalType: 'uint256',
+                name: 'amount',
+                type: 'uint256'
             }
         ],
-        "name": "ProviderSecurityDepoUnlocked",
-        "type": "event"
+        name: 'ProviderSecurityDepoUnlocked',
+        type: 'event'
     },
     {
-        "anonymous": false,
-        "inputs": [
+        anonymous: false,
+        inputs: [
             {
-                "indexed": true,
-                "internalType": "address",
-                "name": "auth",
-                "type": "address"
+                indexed: true,
+                internalType: 'address',
+                name: 'auth',
+                type: 'address'
             },
             {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "newViolationRate",
-                "type": "uint256"
+                indexed: false,
+                internalType: 'uint256',
+                name: 'newViolationRate',
+                type: 'uint256'
             }
         ],
-        "name": "ProviderViolationRateIncremented",
-        "type": "event"
+        name: 'ProviderViolationRateIncremented',
+        type: 'event'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "address",
-                "name": "providerAuth",
-                "type": "address"
+                internalType: 'address',
+                name: 'providerAuth',
+                type: 'address'
             }
         ],
-        "name": "getProviderActionAccount",
-        "outputs": [
+        name: 'getProviderActionAccount',
+        outputs: [
             {
-                "internalType": "address",
-                "name": "",
-                "type": "address"
+                internalType: 'address',
+                name: '',
+                type: 'address'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "address",
-                "name": "providerAuth",
-                "type": "address"
+                internalType: 'address',
+                name: 'providerAuth',
+                type: 'address'
             }
         ],
-        "name": "getProviderInfo",
-        "outputs": [
+        name: 'getProviderInfo',
+        outputs: [
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "address",
-                        "name": "tokenReceiver",
-                        "type": "address"
+                        internalType: 'address',
+                        name: 'tokenReceiver',
+                        type: 'address'
                     },
                     {
-                        "internalType": "address",
-                        "name": "actionAccount",
-                        "type": "address"
+                        internalType: 'address',
+                        name: 'actionAccount',
+                        type: 'address'
                     },
                     {
-                        "internalType": "string",
-                        "name": "name",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'name',
+                        type: 'string'
                     },
                     {
-                        "internalType": "string",
-                        "name": "description",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'description',
+                        type: 'string'
                     },
                     {
-                        "internalType": "string",
-                        "name": "metadata",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'metadata',
+                        type: 'string'
                     }
                 ],
-                "internalType": "struct ProviderInfo",
-                "name": "",
-                "type": "tuple"
+                internalType: 'struct ProviderInfo',
+                name: '',
+                type: 'tuple'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "address",
-                "name": "providerAuth",
-                "type": "address"
+                internalType: 'address',
+                name: 'providerAuth',
+                type: 'address'
             }
         ],
-        "name": "getProviderOrigins",
-        "outputs": [
+        name: 'getProviderOrigins',
+        outputs: [
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "uint256",
-                        "name": "createdDate",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'createdDate',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "address",
-                        "name": "createdBy",
-                        "type": "address"
+                        internalType: 'address',
+                        name: 'createdBy',
+                        type: 'address'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "modifiedDate",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'modifiedDate',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "address",
-                        "name": "modifiedBy",
-                        "type": "address"
+                        internalType: 'address',
+                        name: 'modifiedBy',
+                        type: 'address'
                     }
                 ],
-                "internalType": "struct Origins",
-                "name": "",
-                "type": "tuple"
+                internalType: 'struct Origins',
+                name: '',
+                type: 'tuple'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "address",
-                "name": "providerAuth",
-                "type": "address"
+                internalType: 'address',
+                name: 'providerAuth',
+                type: 'address'
             }
         ],
-        "name": "getProviderSecurityDeposit",
-        "outputs": [
+        name: 'getProviderSecurityDeposit',
+        outputs: [
             {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "address",
-                "name": "providerAuth",
-                "type": "address"
+                internalType: 'address',
+                name: 'providerAuth',
+                type: 'address'
             }
         ],
-        "name": "getProviderTokenReceiver",
-        "outputs": [
+        name: 'getProviderTokenReceiver',
+        outputs: [
             {
-                "internalType": "address",
-                "name": "",
-                "type": "address"
+                internalType: 'address',
+                name: '',
+                type: 'address'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "address",
-                "name": "providerAuth",
-                "type": "address"
+                internalType: 'address',
+                name: 'providerAuth',
+                type: 'address'
             }
         ],
-        "name": "getProviderViolationRate",
-        "outputs": [
+        name: 'getProviderViolationRate',
+        outputs: [
             {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [],
-        "name": "getProvidersAuths",
-        "outputs": [
+        inputs: [],
+        name: 'getProvidersAuths',
+        outputs: [
             {
-                "internalType": "address[]",
-                "name": "",
-                "type": "address[]"
+                internalType: 'address[]',
+                name: '',
+                type: 'address[]'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [],
-        "name": "getProvidersCount",
-        "outputs": [
+        inputs: [],
+        name: 'getProvidersCount',
+        outputs: [
             {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "address",
-                "name": "providerAuth",
-                "type": "address"
+                internalType: 'address',
+                name: 'providerAuth',
+                type: 'address'
             }
         ],
-        "name": "incrProviderViolationRate",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'incrProviderViolationRate',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "address",
-                "name": "providerAuth",
-                "type": "address"
+                internalType: 'address',
+                name: 'providerAuth',
+                type: 'address'
             }
         ],
-        "name": "isProviderRegistered",
-        "outputs": [
+        name: 'isProviderRegistered',
+        outputs: [
             {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
+                internalType: 'bool',
+                name: '',
+                type: 'bool'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "address",
-                        "name": "tokenReceiver",
-                        "type": "address"
+                        internalType: 'address',
+                        name: 'tokenReceiver',
+                        type: 'address'
                     },
                     {
-                        "internalType": "address",
-                        "name": "actionAccount",
-                        "type": "address"
+                        internalType: 'address',
+                        name: 'actionAccount',
+                        type: 'address'
                     },
                     {
-                        "internalType": "string",
-                        "name": "name",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'name',
+                        type: 'string'
                     },
                     {
-                        "internalType": "string",
-                        "name": "description",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'description',
+                        type: 'string'
                     },
                     {
-                        "internalType": "string",
-                        "name": "metadata",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'metadata',
+                        type: 'string'
                     }
                 ],
-                "internalType": "struct ProviderInfo",
-                "name": "info",
-                "type": "tuple"
+                internalType: 'struct ProviderInfo',
+                name: 'info',
+                type: 'tuple'
             }
         ],
-        "name": "modifyProvider",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'modifyProvider',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "amount",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'amount',
+                type: 'uint256'
             }
         ],
-        "name": "refillProviderSecurityDepo",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'refillProviderSecurityDepo',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "address",
-                "name": "providerAuth",
-                "type": "address"
+                internalType: 'address',
+                name: 'providerAuth',
+                type: 'address'
             },
             {
-                "internalType": "uint256",
-                "name": "amount",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'amount',
+                type: 'uint256'
             }
         ],
-        "name": "refillProviderSecurityDepoFor",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'refillProviderSecurityDepoFor',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "address",
-                        "name": "tokenReceiver",
-                        "type": "address"
+                        internalType: 'address',
+                        name: 'tokenReceiver',
+                        type: 'address'
                     },
                     {
-                        "internalType": "address",
-                        "name": "actionAccount",
-                        "type": "address"
+                        internalType: 'address',
+                        name: 'actionAccount',
+                        type: 'address'
                     },
                     {
-                        "internalType": "string",
-                        "name": "name",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'name',
+                        type: 'string'
                     },
                     {
-                        "internalType": "string",
-                        "name": "description",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'description',
+                        type: 'string'
                     },
                     {
-                        "internalType": "string",
-                        "name": "metadata",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'metadata',
+                        type: 'string'
                     }
                 ],
-                "internalType": "struct ProviderInfo",
-                "name": "info",
-                "type": "tuple"
+                internalType: 'struct ProviderInfo',
+                name: 'info',
+                type: 'tuple'
             }
         ],
-        "name": "registerProvider",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'registerProvider',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "amount",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'amount',
+                type: 'uint256'
             }
         ],
-        "name": "returnProviderSecurityDepo",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'returnProviderSecurityDepo',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "address",
-                "name": "authority",
-                "type": "address"
+                internalType: 'address',
+                name: 'authority',
+                type: 'address'
             },
             {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'orderId',
+                type: 'uint256'
             }
         ],
-        "name": "addLockedOrder",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'addLockedOrder',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "address",
-                "name": "authority",
-                "type": "address"
+                internalType: 'address',
+                name: 'authority',
+                type: 'address'
             },
             {
-                "internalType": "uint256",
-                "name": "tcbId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'tcbId',
+                type: 'uint256'
             }
         ],
-        "name": "addLockedTcb",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'addLockedTcb',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256[]",
-                "name": "orderIds",
-                "type": "uint256[]"
+                internalType: 'uint256[]',
+                name: 'orderIds',
+                type: 'uint256[]'
             }
         ],
-        "name": "getAvaliableOrderRewardsAmount",
-        "outputs": [
+        name: 'getAvaliableOrderRewardsAmount',
+        outputs: [
             {
-                "internalType": "uint256",
-                "name": "amount",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'amount',
+                type: 'uint256'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256[]",
-                "name": "tcbIds",
-                "type": "uint256[]"
+                internalType: 'uint256[]',
+                name: 'tcbIds',
+                type: 'uint256[]'
             }
         ],
-        "name": "getAvaliableTcbRewardsAmount",
-        "outputs": [
+        name: 'getAvaliableTcbRewardsAmount',
+        outputs: [
             {
-                "internalType": "uint256",
-                "name": "amount",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'amount',
+                type: 'uint256'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "address",
-                "name": "authority",
-                "type": "address"
+                internalType: 'address',
+                name: 'authority',
+                type: 'address'
             }
         ],
-        "name": "getOrdersLockedProfitList",
-        "outputs": [
+        name: 'getOrdersLockedProfitList',
+        outputs: [
             {
-                "internalType": "uint256[]",
-                "name": "",
-                "type": "uint256[]"
+                internalType: 'uint256[]',
+                name: '',
+                type: 'uint256[]'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "address",
-                "name": "authority",
-                "type": "address"
+                internalType: 'address',
+                name: 'authority',
+                type: 'address'
             }
         ],
-        "name": "getTcbLockedProfitList",
-        "outputs": [
+        name: 'getTcbLockedProfitList',
+        outputs: [
             {
-                "internalType": "uint256[]",
-                "name": "",
-                "type": "uint256[]"
+                internalType: 'uint256[]',
+                name: '',
+                type: 'uint256[]'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "address",
-                "name": "authority",
-                "type": "address"
+                internalType: 'address',
+                name: 'authority',
+                type: 'address'
             },
             {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'orderId',
+                type: 'uint256'
             }
         ],
-        "name": "removeLockedOrder",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'removeLockedOrder',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "address",
-                "name": "authority",
-                "type": "address"
+                internalType: 'address',
+                name: 'authority',
+                type: 'address'
             },
             {
-                "internalType": "uint256",
-                "name": "tcbId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'tcbId',
+                type: 'uint256'
             }
         ],
-        "name": "removeLockedTcb",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'removeLockedTcb',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "address",
-                "name": "providerAuth",
-                "type": "address"
+                internalType: 'address',
+                name: 'providerAuth',
+                type: 'address'
             },
             {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'offerId',
+                type: 'uint256'
             },
             {
-                "internalType": "enum OfferType",
-                "name": "offerType",
-                "type": "uint8"
+                internalType: 'enum OfferType',
+                name: 'offerType',
+                type: 'uint8'
             }
         ],
-        "name": "addProviderOffer",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'addProviderOffer',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "address",
-                "name": "providerAuth",
-                "type": "address"
+                internalType: 'address',
+                name: 'providerAuth',
+                type: 'address'
             }
         ],
-        "name": "getProviderOffersDisabledTime",
-        "outputs": [
+        name: 'getProviderOffersDisabledTime',
+        outputs: [
             {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "address",
-                "name": "providerAuth",
-                "type": "address"
+                internalType: 'address',
+                name: 'providerAuth',
+                type: 'address'
             }
         ],
-        "name": "getProviderOffersState",
-        "outputs": [
+        name: 'getProviderOffersState',
+        outputs: [
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "uint256",
-                        "name": "teeEnabled",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'teeEnabled',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "valueEnabled",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'valueEnabled',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "disabledTime",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'disabledTime',
+                        type: 'uint256'
                     }
                 ],
-                "internalType": "struct ProviderOffersState",
-                "name": "",
-                "type": "tuple"
+                internalType: 'struct ProviderOffersState',
+                name: '',
+                type: 'tuple'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "address",
-                "name": "providerAuth",
-                "type": "address"
+                internalType: 'address',
+                name: 'providerAuth',
+                type: 'address'
             },
             {
-                "internalType": "uint256",
-                "name": "additional",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'additional',
+                type: 'uint256'
             }
         ],
-        "name": "getProviderRequiredSecDepo",
-        "outputs": [
+        name: 'getProviderRequiredSecDepo',
+        outputs: [
             {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "address",
-                "name": "providerAuth",
-                "type": "address"
+                internalType: 'address',
+                name: 'providerAuth',
+                type: 'address'
             }
         ],
-        "name": "getProviderTeeOffers",
-        "outputs": [
+        name: 'getProviderTeeOffers',
+        outputs: [
             {
-                "internalType": "uint256[]",
-                "name": "",
-                "type": "uint256[]"
+                internalType: 'uint256[]',
+                name: '',
+                type: 'uint256[]'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "address",
-                "name": "providerAuth",
-                "type": "address"
+                internalType: 'address',
+                name: 'providerAuth',
+                type: 'address'
             }
         ],
-        "name": "getProviderValueOffers",
-        "outputs": [
+        name: 'getProviderValueOffers',
+        outputs: [
             {
-                "internalType": "uint256[]",
-                "name": "",
-                "type": "uint256[]"
+                internalType: 'uint256[]',
+                name: '',
+                type: 'uint256[]'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "address",
-                "name": "providerAuth",
-                "type": "address"
+                internalType: 'address',
+                name: 'providerAuth',
+                type: 'address'
             }
         ],
-        "name": "isProviderHasEnabledOffers",
-        "outputs": [
+        name: 'isProviderHasEnabledOffers',
+        outputs: [
             {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
+                internalType: 'bool',
+                name: '',
+                type: 'bool'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "address",
-                "name": "providerAuth",
-                "type": "address"
+                internalType: 'address',
+                name: 'providerAuth',
+                type: 'address'
             }
         ],
-        "name": "isProviderHasEnoughSecurityDeposit",
-        "outputs": [
+        name: 'isProviderHasEnoughSecurityDeposit',
+        outputs: [
             {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
+                internalType: 'bool',
+                name: '',
+                type: 'bool'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "address",
-                "name": "providerAuth",
-                "type": "address"
+                internalType: 'address',
+                name: 'providerAuth',
+                type: 'address'
             },
             {
-                "internalType": "enum OfferType",
-                "name": "offerType",
-                "type": "uint8"
+                internalType: 'enum OfferType',
+                name: 'offerType',
+                type: 'uint8'
             },
             {
-                "internalType": "bool",
-                "name": "enabled",
-                "type": "bool"
+                internalType: 'bool',
+                name: 'enabled',
+                type: 'bool'
             }
         ],
-        "name": "setProviderOfferState",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'setProviderOfferState',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "enum ParamName",
-                "name": "name",
-                "type": "uint8"
+                internalType: 'enum ParamName',
+                name: 'name',
+                type: 'uint8'
             }
         ],
-        "name": "getConfigParam",
-        "outputs": [
+        name: 'getConfigParam',
+        outputs: [
             {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [],
-        "name": "getProtocolIncomeDistribution",
-        "outputs": [
+        inputs: [],
+        name: 'getProtocolIncomeDistribution',
+        outputs: [
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "address",
-                        "name": "recipient",
-                        "type": "address"
+                        internalType: 'address',
+                        name: 'recipient',
+                        type: 'address'
                     },
                     {
-                        "internalType": "uint16",
-                        "name": "amount",
-                        "type": "uint16"
+                        internalType: 'uint16',
+                        name: 'amount',
+                        type: 'uint16'
                     }
                 ],
-                "internalType": "struct ProtocolIncomeRecipient[]",
-                "name": "",
-                "type": "tuple[]"
+                internalType: 'struct ProtocolIncomeRecipient[]',
+                name: '',
+                type: 'tuple[]'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [],
-        "name": "getProtocolIncomePercent",
-        "outputs": [
+        inputs: [],
+        name: 'getProtocolIncomePercent',
+        outputs: [
             {
-                "internalType": "uint32",
-                "name": "",
-                "type": "uint32"
+                internalType: 'uint32',
+                name: '',
+                type: 'uint32'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [],
-        "name": "getProtocolTotalIncomeDistributionRatio",
-        "outputs": [
+        inputs: [],
+        name: 'getProtocolTotalIncomeDistributionRatio',
+        outputs: [
             {
-                "internalType": "uint32",
-                "name": "",
-                "type": "uint32"
+                internalType: 'uint32',
+                name: '',
+                type: 'uint32'
             }
         ],
-        "stateMutability": "pure",
-        "type": "function"
+        stateMutability: 'pure',
+        type: 'function'
     },
     {
-        "inputs": [],
-        "name": "getToken",
-        "outputs": [
+        inputs: [],
+        name: 'getToken',
+        outputs: [
             {
-                "internalType": "contract ISuperproToken",
-                "name": "",
-                "type": "address"
+                internalType: 'contract ISuperproToken',
+                name: '',
+                type: 'address'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "enum ParamName",
-                "name": "name",
-                "type": "uint8"
+                internalType: 'enum ParamName',
+                name: 'name',
+                type: 'uint8'
             },
             {
-                "internalType": "uint256",
-                "name": "value",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'value',
+                type: 'uint256'
             }
         ],
-        "name": "setConfigParam",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'setConfigParam',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "address",
-                        "name": "token",
-                        "type": "address"
+                        internalType: 'address',
+                        name: 'token',
+                        type: 'address'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "orderMinimumDeposit",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'orderMinimumDeposit',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "profitWithdrawDelaySeconds",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'profitWithdrawDelaySeconds',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "minSecurityDeposit",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'minSecurityDeposit',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "stopDelaySeconds",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'stopDelaySeconds',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "teeOfferSecurityDeposit",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'teeOfferSecurityDeposit',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "offerSecurityDeposit",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'offerSecurityDeposit',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "teeRewardPerEpoch",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'teeRewardPerEpoch',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "storageRequestFee",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'storageRequestFee',
+                        type: 'uint256'
                     }
                 ],
-                "internalType": "struct SuperproParams",
-                "name": "params",
-                "type": "tuple"
+                internalType: 'struct SuperproParams',
+                name: 'params',
+                type: 'tuple'
             }
         ],
-        "name": "setConfigParams",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'setConfigParams',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "bool",
-                "name": "isLocked",
-                "type": "bool"
+                internalType: 'bool',
+                name: 'isLocked',
+                type: 'bool'
             }
         ],
-        "name": "setLockData",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'setLockData',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "address",
-                        "name": "recipient",
-                        "type": "address"
+                        internalType: 'address',
+                        name: 'recipient',
+                        type: 'address'
                     },
                     {
-                        "internalType": "uint16",
-                        "name": "amount",
-                        "type": "uint16"
+                        internalType: 'uint16',
+                        name: 'amount',
+                        type: 'uint16'
                     }
                 ],
-                "internalType": "struct ProtocolIncomeRecipient[]",
-                "name": "recipients",
-                "type": "tuple[]"
+                internalType: 'struct ProtocolIncomeRecipient[]',
+                name: 'recipients',
+                type: 'tuple[]'
             }
         ],
-        "name": "setProtocolIncomeDistribution",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'setProtocolIncomeDistribution',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint32",
-                "name": "percent",
-                "type": "uint32"
+                internalType: 'uint32',
+                name: 'percent',
+                type: 'uint32'
             }
         ],
-        "name": "setProtocolIncomePercent",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'setProtocolIncomePercent',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "anonymous": false,
-        "inputs": [
+        anonymous: false,
+        inputs: [
             {
-                "indexed": false,
-                "internalType": "address",
-                "name": "creator",
-                "type": "address"
+                indexed: false,
+                internalType: 'address',
+                name: 'creator',
+                type: 'address'
             },
             {
-                "indexed": true,
-                "internalType": "uint256",
-                "name": "teeOfferId",
-                "type": "uint256"
+                indexed: true,
+                internalType: 'uint256',
+                name: 'teeOfferId',
+                type: 'uint256'
             },
             {
-                "indexed": true,
-                "internalType": "uint256",
-                "name": "optionId",
-                "type": "uint256"
+                indexed: true,
+                internalType: 'uint256',
+                name: 'optionId',
+                type: 'uint256'
             },
             {
-                "indexed": true,
-                "internalType": "bytes32",
-                "name": "externalId",
-                "type": "bytes32"
+                indexed: true,
+                internalType: 'bytes32',
+                name: 'externalId',
+                type: 'bytes32'
             }
         ],
-        "name": "OptionAdded",
-        "type": "event"
+        name: 'OptionAdded',
+        type: 'event'
     },
     {
-        "anonymous": false,
-        "inputs": [
+        anonymous: false,
+        inputs: [
             {
-                "indexed": true,
-                "internalType": "uint256",
-                "name": "teeOfferId",
-                "type": "uint256"
+                indexed: true,
+                internalType: 'uint256',
+                name: 'teeOfferId',
+                type: 'uint256'
             },
             {
-                "indexed": true,
-                "internalType": "uint256",
-                "name": "optionId",
-                "type": "uint256"
+                indexed: true,
+                internalType: 'uint256',
+                name: 'optionId',
+                type: 'uint256'
             }
         ],
-        "name": "OptionDeleted",
-        "type": "event"
+        name: 'OptionDeleted',
+        type: 'event'
     },
     {
-        "anonymous": false,
-        "inputs": [
+        anonymous: false,
+        inputs: [
             {
-                "indexed": true,
-                "internalType": "uint256",
-                "name": "teeOfferId",
-                "type": "uint256"
+                indexed: true,
+                internalType: 'uint256',
+                name: 'teeOfferId',
+                type: 'uint256'
             },
             {
-                "indexed": true,
-                "internalType": "uint256",
-                "name": "optionId",
-                "type": "uint256"
+                indexed: true,
+                internalType: 'uint256',
+                name: 'optionId',
+                type: 'uint256'
             }
         ],
-        "name": "OptionUpdated",
-        "type": "event"
+        name: 'OptionUpdated',
+        type: 'event'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "teeOfferId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'teeOfferId',
+                type: 'uint256'
             },
             {
-                "internalType": "bytes32",
-                "name": "externalId",
-                "type": "bytes32"
+                internalType: 'bytes32',
+                name: 'externalId',
+                type: 'bytes32'
             },
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "string",
-                        "name": "data",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'data',
+                        type: 'string'
                     }
                 ],
-                "internalType": "struct OptionInfo",
-                "name": "info",
-                "type": "tuple"
+                internalType: 'struct OptionInfo',
+                name: 'info',
+                type: 'tuple'
             },
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "enum PriceType",
-                        "name": "priceType",
-                        "type": "uint8"
+                        internalType: 'enum PriceType',
+                        name: 'priceType',
+                        type: 'uint8'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "price",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'price',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint64",
-                        "name": "minTimeMinutes",
-                        "type": "uint64"
+                        internalType: 'uint64',
+                        name: 'minTimeMinutes',
+                        type: 'uint64'
                     },
                     {
-                        "internalType": "uint64",
-                        "name": "maxTimeMinutes",
-                        "type": "uint64"
+                        internalType: 'uint64',
+                        name: 'maxTimeMinutes',
+                        type: 'uint64'
                     }
                 ],
-                "internalType": "struct SlotUsage",
-                "name": "usage",
-                "type": "tuple"
+                internalType: 'struct SlotUsage',
+                name: 'usage',
+                type: 'tuple'
             }
         ],
-        "name": "addOption",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'addOption',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "teeOfferId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'teeOfferId',
+                type: 'uint256'
             },
             {
-                "internalType": "uint256",
-                "name": "optionId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'optionId',
+                type: 'uint256'
             }
         ],
-        "name": "deleteOption",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'deleteOption',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "optionId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'optionId',
+                type: 'uint256'
             }
         ],
-        "name": "getOptionById",
-        "outputs": [
+        name: 'getOptionById',
+        outputs: [
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "uint256",
-                        "name": "id",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'id',
+                        type: 'uint256'
                     },
                     {
-                        "components": [
+                        components: [
                             {
-                                "internalType": "string",
-                                "name": "data",
-                                "type": "string"
+                                internalType: 'string',
+                                name: 'data',
+                                type: 'string'
                             }
                         ],
-                        "internalType": "struct OptionInfo",
-                        "name": "info",
-                        "type": "tuple"
+                        internalType: 'struct OptionInfo',
+                        name: 'info',
+                        type: 'tuple'
                     },
                     {
-                        "components": [
+                        components: [
                             {
-                                "internalType": "enum PriceType",
-                                "name": "priceType",
-                                "type": "uint8"
+                                internalType: 'enum PriceType',
+                                name: 'priceType',
+                                type: 'uint8'
                             },
                             {
-                                "internalType": "uint256",
-                                "name": "price",
-                                "type": "uint256"
+                                internalType: 'uint256',
+                                name: 'price',
+                                type: 'uint256'
                             },
                             {
-                                "internalType": "uint64",
-                                "name": "minTimeMinutes",
-                                "type": "uint64"
+                                internalType: 'uint64',
+                                name: 'minTimeMinutes',
+                                type: 'uint64'
                             },
                             {
-                                "internalType": "uint64",
-                                "name": "maxTimeMinutes",
-                                "type": "uint64"
+                                internalType: 'uint64',
+                                name: 'maxTimeMinutes',
+                                type: 'uint64'
                             }
                         ],
-                        "internalType": "struct SlotUsage",
-                        "name": "usage",
-                        "type": "tuple"
+                        internalType: 'struct SlotUsage',
+                        name: 'usage',
+                        type: 'tuple'
                     }
                 ],
-                "internalType": "struct TeeOfferOption",
-                "name": "",
-                "type": "tuple"
+                internalType: 'struct TeeOfferOption',
+                name: '',
+                type: 'tuple'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [],
-        "name": "getOptionsCount",
-        "outputs": [
+        inputs: [],
+        name: 'getOptionsCount',
+        outputs: [
             {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "teeOfferId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'teeOfferId',
+                type: 'uint256'
             },
             {
-                "internalType": "uint256",
-                "name": "begin",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'begin',
+                type: 'uint256'
             },
             {
-                "internalType": "uint256",
-                "name": "end",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'end',
+                type: 'uint256'
             }
         ],
-        "name": "getTeeOfferOptions",
-        "outputs": [
+        name: 'getTeeOfferOptions',
+        outputs: [
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "uint256",
-                        "name": "id",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'id',
+                        type: 'uint256'
                     },
                     {
-                        "components": [
+                        components: [
                             {
-                                "internalType": "string",
-                                "name": "data",
-                                "type": "string"
+                                internalType: 'string',
+                                name: 'data',
+                                type: 'string'
                             }
                         ],
-                        "internalType": "struct OptionInfo",
-                        "name": "info",
-                        "type": "tuple"
+                        internalType: 'struct OptionInfo',
+                        name: 'info',
+                        type: 'tuple'
                     },
                     {
-                        "components": [
+                        components: [
                             {
-                                "internalType": "enum PriceType",
-                                "name": "priceType",
-                                "type": "uint8"
+                                internalType: 'enum PriceType',
+                                name: 'priceType',
+                                type: 'uint8'
                             },
                             {
-                                "internalType": "uint256",
-                                "name": "price",
-                                "type": "uint256"
+                                internalType: 'uint256',
+                                name: 'price',
+                                type: 'uint256'
                             },
                             {
-                                "internalType": "uint64",
-                                "name": "minTimeMinutes",
-                                "type": "uint64"
+                                internalType: 'uint64',
+                                name: 'minTimeMinutes',
+                                type: 'uint64'
                             },
                             {
-                                "internalType": "uint64",
-                                "name": "maxTimeMinutes",
-                                "type": "uint64"
+                                internalType: 'uint64',
+                                name: 'maxTimeMinutes',
+                                type: 'uint64'
                             }
                         ],
-                        "internalType": "struct SlotUsage",
-                        "name": "usage",
-                        "type": "tuple"
+                        internalType: 'struct SlotUsage',
+                        name: 'usage',
+                        type: 'tuple'
                     }
                 ],
-                "internalType": "struct TeeOfferOption[]",
-                "name": "",
-                "type": "tuple[]"
+                internalType: 'struct TeeOfferOption[]',
+                name: '',
+                type: 'tuple[]'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "teeOfferId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'teeOfferId',
+                type: 'uint256'
             }
         ],
-        "name": "getTeeOfferOptionsCount",
-        "outputs": [
+        name: 'getTeeOfferOptionsCount',
+        outputs: [
             {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "optionId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'optionId',
+                type: 'uint256'
             }
         ],
-        "name": "isOptionExists",
-        "outputs": [
+        name: 'isOptionExists',
+        outputs: [
             {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
+                internalType: 'bool',
+                name: '',
+                type: 'bool'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "teeOfferId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'teeOfferId',
+                type: 'uint256'
             },
             {
-                "internalType": "uint256",
-                "name": "optionId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'optionId',
+                type: 'uint256'
             },
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "string",
-                        "name": "data",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'data',
+                        type: 'string'
                     }
                 ],
-                "internalType": "struct OptionInfo",
-                "name": "info",
-                "type": "tuple"
+                internalType: 'struct OptionInfo',
+                name: 'info',
+                type: 'tuple'
             },
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "enum PriceType",
-                        "name": "priceType",
-                        "type": "uint8"
+                        internalType: 'enum PriceType',
+                        name: 'priceType',
+                        type: 'uint8'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "price",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'price',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint64",
-                        "name": "minTimeMinutes",
-                        "type": "uint64"
+                        internalType: 'uint64',
+                        name: 'minTimeMinutes',
+                        type: 'uint64'
                     },
                     {
-                        "internalType": "uint64",
-                        "name": "maxTimeMinutes",
-                        "type": "uint64"
+                        internalType: 'uint64',
+                        name: 'maxTimeMinutes',
+                        type: 'uint64'
                     }
                 ],
-                "internalType": "struct SlotUsage",
-                "name": "usage",
-                "type": "tuple"
+                internalType: 'struct SlotUsage',
+                name: 'usage',
+                type: 'tuple'
             }
         ],
-        "name": "updateOption",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'updateOption',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "anonymous": false,
-        "inputs": [
+        anonymous: false,
+        inputs: [
             {
-                "indexed": false,
-                "internalType": "address",
-                "name": "creator",
-                "type": "address"
+                indexed: false,
+                internalType: 'address',
+                name: 'creator',
+                type: 'address'
             },
             {
-                "indexed": true,
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
+                indexed: true,
+                internalType: 'uint256',
+                name: 'offerId',
+                type: 'uint256'
             },
             {
-                "indexed": true,
-                "internalType": "uint256",
-                "name": "slotId",
-                "type": "uint256"
+                indexed: true,
+                internalType: 'uint256',
+                name: 'slotId',
+                type: 'uint256'
             },
             {
-                "indexed": true,
-                "internalType": "bytes32",
-                "name": "externalId",
-                "type": "bytes32"
+                indexed: true,
+                internalType: 'bytes32',
+                name: 'externalId',
+                type: 'bytes32'
             }
         ],
-        "name": "TeeSlotAdded",
-        "type": "event"
+        name: 'TeeSlotAdded',
+        type: 'event'
     },
     {
-        "anonymous": false,
-        "inputs": [
+        anonymous: false,
+        inputs: [
             {
-                "indexed": true,
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
+                indexed: true,
+                internalType: 'uint256',
+                name: 'offerId',
+                type: 'uint256'
             },
             {
-                "indexed": true,
-                "internalType": "uint256",
-                "name": "slotId",
-                "type": "uint256"
+                indexed: true,
+                internalType: 'uint256',
+                name: 'slotId',
+                type: 'uint256'
             }
         ],
-        "name": "TeeSlotDeleted",
-        "type": "event"
+        name: 'TeeSlotDeleted',
+        type: 'event'
     },
     {
-        "anonymous": false,
-        "inputs": [
+        anonymous: false,
+        inputs: [
             {
-                "indexed": true,
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
+                indexed: true,
+                internalType: 'uint256',
+                name: 'offerId',
+                type: 'uint256'
             },
             {
-                "indexed": true,
-                "internalType": "uint256",
-                "name": "slotId",
-                "type": "uint256"
+                indexed: true,
+                internalType: 'uint256',
+                name: 'slotId',
+                type: 'uint256'
             }
         ],
-        "name": "TeeSlotUpdated",
-        "type": "event"
+        name: 'TeeSlotUpdated',
+        type: 'event'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "teeOfferId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'teeOfferId',
+                type: 'uint256'
             },
             {
-                "internalType": "bytes32",
-                "name": "externalId",
-                "type": "bytes32"
+                internalType: 'bytes32',
+                name: 'externalId',
+                type: 'bytes32'
             },
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "uint64",
-                        "name": "cpuCores",
-                        "type": "uint64"
+                        internalType: 'uint64',
+                        name: 'cpuCores',
+                        type: 'uint64'
                     },
                     {
-                        "internalType": "uint64",
-                        "name": "ram",
-                        "type": "uint64"
+                        internalType: 'uint64',
+                        name: 'ram',
+                        type: 'uint64'
                     },
                     {
-                        "internalType": "uint64",
-                        "name": "diskUsage",
-                        "type": "uint64"
+                        internalType: 'uint64',
+                        name: 'diskUsage',
+                        type: 'uint64'
                     },
                     {
-                        "internalType": "uint64",
-                        "name": "gpuCores",
-                        "type": "uint64"
+                        internalType: 'uint64',
+                        name: 'gpuCores',
+                        type: 'uint64'
+                    },
+                    {
+                        internalType: 'uint64',
+                        name: 'vram',
+                        type: 'uint64'
                     }
                 ],
-                "internalType": "struct SlotInfo",
-                "name": "info",
-                "type": "tuple"
+                internalType: 'struct SlotInfo',
+                name: 'info',
+                type: 'tuple'
             },
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "enum PriceType",
-                        "name": "priceType",
-                        "type": "uint8"
+                        internalType: 'enum PriceType',
+                        name: 'priceType',
+                        type: 'uint8'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "price",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'price',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint64",
-                        "name": "minTimeMinutes",
-                        "type": "uint64"
+                        internalType: 'uint64',
+                        name: 'minTimeMinutes',
+                        type: 'uint64'
                     },
                     {
-                        "internalType": "uint64",
-                        "name": "maxTimeMinutes",
-                        "type": "uint64"
+                        internalType: 'uint64',
+                        name: 'maxTimeMinutes',
+                        type: 'uint64'
                     }
                 ],
-                "internalType": "struct SlotUsage",
-                "name": "usage",
-                "type": "tuple"
+                internalType: 'struct SlotUsage',
+                name: 'usage',
+                type: 'tuple'
             }
         ],
-        "name": "addTeeOfferSlot",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'addTeeOfferSlot',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "teeOfferId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'teeOfferId',
+                type: 'uint256'
             },
             {
-                "internalType": "uint256",
-                "name": "slotId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'slotId',
+                type: 'uint256'
             }
         ],
-        "name": "deleteTeeOfferSlot",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'deleteTeeOfferSlot',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [],
-        "name": "getCpuDenominator",
-        "outputs": [
+        inputs: [],
+        name: 'getCpuDenominator',
+        outputs: [
             {
-                "internalType": "uint16",
-                "name": "",
-                "type": "uint16"
+                internalType: 'uint16',
+                name: '',
+                type: 'uint16'
             }
         ],
-        "stateMutability": "pure",
-        "type": "function"
+        stateMutability: 'pure',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "teeOfferId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'teeOfferId',
+                type: 'uint256'
             },
             {
-                "internalType": "uint256",
-                "name": "slotId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'slotId',
+                type: 'uint256'
             }
         ],
-        "name": "getTeeOfferSlotById",
-        "outputs": [
+        name: 'getTeeOfferSlotById',
+        outputs: [
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "uint256",
-                        "name": "id",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'id',
+                        type: 'uint256'
                     },
                     {
-                        "components": [
+                        components: [
                             {
-                                "internalType": "uint64",
-                                "name": "cpuCores",
-                                "type": "uint64"
+                                internalType: 'uint64',
+                                name: 'cpuCores',
+                                type: 'uint64'
                             },
                             {
-                                "internalType": "uint64",
-                                "name": "ram",
-                                "type": "uint64"
+                                internalType: 'uint64',
+                                name: 'ram',
+                                type: 'uint64'
                             },
                             {
-                                "internalType": "uint64",
-                                "name": "diskUsage",
-                                "type": "uint64"
+                                internalType: 'uint64',
+                                name: 'diskUsage',
+                                type: 'uint64'
                             },
                             {
-                                "internalType": "uint64",
-                                "name": "gpuCores",
-                                "type": "uint64"
+                                internalType: 'uint64',
+                                name: 'gpuCores',
+                                type: 'uint64'
+                            },
+                            {
+                                internalType: 'uint64',
+                                name: 'vram',
+                                type: 'uint64'
                             }
                         ],
-                        "internalType": "struct SlotInfo",
-                        "name": "info",
-                        "type": "tuple"
+                        internalType: 'struct SlotInfo',
+                        name: 'info',
+                        type: 'tuple'
                     },
                     {
-                        "components": [
+                        components: [
                             {
-                                "internalType": "enum PriceType",
-                                "name": "priceType",
-                                "type": "uint8"
+                                internalType: 'enum PriceType',
+                                name: 'priceType',
+                                type: 'uint8'
                             },
                             {
-                                "internalType": "uint256",
-                                "name": "price",
-                                "type": "uint256"
+                                internalType: 'uint256',
+                                name: 'price',
+                                type: 'uint256'
                             },
                             {
-                                "internalType": "uint64",
-                                "name": "minTimeMinutes",
-                                "type": "uint64"
+                                internalType: 'uint64',
+                                name: 'minTimeMinutes',
+                                type: 'uint64'
                             },
                             {
-                                "internalType": "uint64",
-                                "name": "maxTimeMinutes",
-                                "type": "uint64"
+                                internalType: 'uint64',
+                                name: 'maxTimeMinutes',
+                                type: 'uint64'
                             }
                         ],
-                        "internalType": "struct SlotUsage",
-                        "name": "usage",
-                        "type": "tuple"
+                        internalType: 'struct SlotUsage',
+                        name: 'usage',
+                        type: 'tuple'
                     }
                 ],
-                "internalType": "struct TeeOfferSlot",
-                "name": "",
-                "type": "tuple"
+                internalType: 'struct TeeOfferSlot',
+                name: '',
+                type: 'tuple'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "teeOfferId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'teeOfferId',
+                type: 'uint256'
             },
             {
-                "internalType": "uint256",
-                "name": "begin",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'begin',
+                type: 'uint256'
             },
             {
-                "internalType": "uint256",
-                "name": "end",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'end',
+                type: 'uint256'
             }
         ],
-        "name": "getTeeOfferSlots",
-        "outputs": [
+        name: 'getTeeOfferSlots',
+        outputs: [
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "uint256",
-                        "name": "id",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'id',
+                        type: 'uint256'
                     },
                     {
-                        "components": [
+                        components: [
                             {
-                                "internalType": "uint64",
-                                "name": "cpuCores",
-                                "type": "uint64"
+                                internalType: 'uint64',
+                                name: 'cpuCores',
+                                type: 'uint64'
                             },
                             {
-                                "internalType": "uint64",
-                                "name": "ram",
-                                "type": "uint64"
+                                internalType: 'uint64',
+                                name: 'ram',
+                                type: 'uint64'
                             },
                             {
-                                "internalType": "uint64",
-                                "name": "diskUsage",
-                                "type": "uint64"
+                                internalType: 'uint64',
+                                name: 'diskUsage',
+                                type: 'uint64'
                             },
                             {
-                                "internalType": "uint64",
-                                "name": "gpuCores",
-                                "type": "uint64"
+                                internalType: 'uint64',
+                                name: 'gpuCores',
+                                type: 'uint64'
+                            },
+                            {
+                                internalType: 'uint64',
+                                name: 'vram',
+                                type: 'uint64'
                             }
                         ],
-                        "internalType": "struct SlotInfo",
-                        "name": "info",
-                        "type": "tuple"
+                        internalType: 'struct SlotInfo',
+                        name: 'info',
+                        type: 'tuple'
                     },
                     {
-                        "components": [
+                        components: [
                             {
-                                "internalType": "enum PriceType",
-                                "name": "priceType",
-                                "type": "uint8"
+                                internalType: 'enum PriceType',
+                                name: 'priceType',
+                                type: 'uint8'
                             },
                             {
-                                "internalType": "uint256",
-                                "name": "price",
-                                "type": "uint256"
+                                internalType: 'uint256',
+                                name: 'price',
+                                type: 'uint256'
                             },
                             {
-                                "internalType": "uint64",
-                                "name": "minTimeMinutes",
-                                "type": "uint64"
+                                internalType: 'uint64',
+                                name: 'minTimeMinutes',
+                                type: 'uint64'
                             },
                             {
-                                "internalType": "uint64",
-                                "name": "maxTimeMinutes",
-                                "type": "uint64"
+                                internalType: 'uint64',
+                                name: 'maxTimeMinutes',
+                                type: 'uint64'
                             }
                         ],
-                        "internalType": "struct SlotUsage",
-                        "name": "usage",
-                        "type": "tuple"
+                        internalType: 'struct SlotUsage',
+                        name: 'usage',
+                        type: 'tuple'
                     }
                 ],
-                "internalType": "struct TeeOfferSlot[]",
-                "name": "",
-                "type": "tuple[]"
+                internalType: 'struct TeeOfferSlot[]',
+                name: '',
+                type: 'tuple[]'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "teeOfferId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'teeOfferId',
+                type: 'uint256'
             }
         ],
-        "name": "getTeeOfferSlotsCount",
-        "outputs": [
+        name: 'getTeeOfferSlotsCount',
+        outputs: [
             {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [],
-        "name": "getTeeOffersSlotsCountTotal",
-        "outputs": [
+        inputs: [],
+        name: 'getTeeOffersSlotsCountTotal',
+        outputs: [
             {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "teeOfferId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'teeOfferId',
+                type: 'uint256'
             },
             {
-                "internalType": "uint256",
-                "name": "slotId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'slotId',
+                type: 'uint256'
             }
         ],
-        "name": "isTeeOfferSlotExists",
-        "outputs": [
+        name: 'isTeeOfferSlotExists',
+        outputs: [
             {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
+                internalType: 'bool',
+                name: '',
+                type: 'bool'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "teeOfferId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'teeOfferId',
+                type: 'uint256'
             },
             {
-                "internalType": "uint256",
-                "name": "slotId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'slotId',
+                type: 'uint256'
             },
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "uint64",
-                        "name": "cpuCores",
-                        "type": "uint64"
+                        internalType: 'uint64',
+                        name: 'cpuCores',
+                        type: 'uint64'
                     },
                     {
-                        "internalType": "uint64",
-                        "name": "ram",
-                        "type": "uint64"
+                        internalType: 'uint64',
+                        name: 'ram',
+                        type: 'uint64'
                     },
                     {
-                        "internalType": "uint64",
-                        "name": "diskUsage",
-                        "type": "uint64"
+                        internalType: 'uint64',
+                        name: 'diskUsage',
+                        type: 'uint64'
                     },
                     {
-                        "internalType": "uint64",
-                        "name": "gpuCores",
-                        "type": "uint64"
+                        internalType: 'uint64',
+                        name: 'gpuCores',
+                        type: 'uint64'
+                    },
+                    {
+                        internalType: 'uint64',
+                        name: 'vram',
+                        type: 'uint64'
                     }
                 ],
-                "internalType": "struct SlotInfo",
-                "name": "info",
-                "type": "tuple"
+                internalType: 'struct SlotInfo',
+                name: 'info',
+                type: 'tuple'
             },
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "enum PriceType",
-                        "name": "priceType",
-                        "type": "uint8"
+                        internalType: 'enum PriceType',
+                        name: 'priceType',
+                        type: 'uint8'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "price",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'price',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint64",
-                        "name": "minTimeMinutes",
-                        "type": "uint64"
+                        internalType: 'uint64',
+                        name: 'minTimeMinutes',
+                        type: 'uint64'
                     },
                     {
-                        "internalType": "uint64",
-                        "name": "maxTimeMinutes",
-                        "type": "uint64"
+                        internalType: 'uint64',
+                        name: 'maxTimeMinutes',
+                        type: 'uint64'
                     }
                 ],
-                "internalType": "struct SlotUsage",
-                "name": "usage",
-                "type": "tuple"
+                internalType: 'struct SlotUsage',
+                name: 'usage',
+                type: 'tuple'
             }
         ],
-        "name": "updateTeeOfferSlot",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'updateTeeOfferSlot',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "anonymous": false,
-        "inputs": [
+        anonymous: false,
+        inputs: [
             {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "tcbId",
-                "type": "uint256"
+                indexed: false,
+                internalType: 'uint256',
+                name: 'tcbId',
+                type: 'uint256'
             },
             {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "rewards",
-                "type": "uint256"
+                indexed: false,
+                internalType: 'uint256',
+                name: 'rewards',
+                type: 'uint256'
             }
         ],
-        "name": "TcbRewardUnlocked",
-        "type": "event"
+        name: 'TcbRewardUnlocked',
+        type: 'event'
     },
     {
-        "anonymous": false,
-        "inputs": [
+        anonymous: false,
+        inputs: [
             {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "teeOfferId",
-                "type": "uint256"
+                indexed: false,
+                internalType: 'uint256',
+                name: 'teeOfferId',
+                type: 'uint256'
             },
             {
-                "indexed": false,
-                "internalType": "string",
-                "name": "message",
-                "type": "string"
+                indexed: false,
+                internalType: 'string',
+                name: 'message',
+                type: 'string'
             }
         ],
-        "name": "WarningMessage",
-        "type": "event"
+        name: 'WarningMessage',
+        type: 'event'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "tcbId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'tcbId',
+                type: 'uint256'
             }
         ],
-        "name": "_unlockTcbReward",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: '_unlockTcbReward',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "teeOfferId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'teeOfferId',
+                type: 'uint256'
             },
             {
-                "internalType": "bytes32",
-                "name": "deviceId",
-                "type": "bytes32"
+                internalType: 'bytes32',
+                name: 'deviceId',
+                type: 'bytes32'
             }
         ],
-        "name": "banTeeOffer",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'banTeeOffer',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "teeOfferId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'teeOfferId',
+                type: 'uint256'
             },
             {
-                "internalType": "bytes32",
-                "name": "deviceId",
-                "type": "bytes32"
+                internalType: 'bytes32',
+                name: 'deviceId',
+                type: 'bytes32'
             }
         ],
-        "name": "blockTeeOffer",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'blockTeeOffer',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "teeOfferId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'teeOfferId',
+                type: 'uint256'
             }
         ],
-        "name": "confiscateAllRewards",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'confiscateAllRewards',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "bytes32",
-                "name": "deviceId",
-                "type": "bytes32"
+                internalType: 'bytes32',
+                name: 'deviceId',
+                type: 'bytes32'
             }
         ],
-        "name": "getTeeOfferByDeviceId",
-        "outputs": [
+        name: 'getTeeOfferByDeviceId',
+        outputs: [
             {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "teeOfferId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'teeOfferId',
+                type: 'uint256'
             }
         ],
-        "name": "getTeeOfferViolationRate",
-        "outputs": [
+        name: 'getTeeOfferViolationRate',
+        outputs: [
             {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "teeOfferId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'teeOfferId',
+                type: 'uint256'
             }
         ],
-        "name": "getTeeVerifiedBenchmark",
-        "outputs": [
+        name: 'getTeeVerifiedBenchmark',
+        outputs: [
             {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "teeOfferId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'teeOfferId',
+                type: 'uint256'
             }
         ],
-        "name": "incrTeeOfferViolationRate",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'incrTeeOfferViolationRate',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "tcbId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'tcbId',
+                type: 'uint256'
             }
         ],
-        "name": "isTcbProfitAvailable",
-        "outputs": [
+        name: 'isTcbProfitAvailable',
+        outputs: [
             {
-                "internalType": "bool",
-                "name": "available",
-                "type": "bool"
+                internalType: 'bool',
+                name: 'available',
+                type: 'bool'
             },
             {
-                "internalType": "uint256",
-                "name": "amount",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'amount',
+                type: 'uint256'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "teeOfferId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'teeOfferId',
+                type: 'uint256'
             },
             {
-                "internalType": "uint256",
-                "name": "tcbId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'tcbId',
+                type: 'uint256'
             },
             {
-                "internalType": "uint256",
-                "name": "reward",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'reward',
+                type: 'uint256'
             }
         ],
-        "name": "lockTcbReward",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'lockTcbReward',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "teeOfferId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'teeOfferId',
+                type: 'uint256'
             },
             {
-                "internalType": "bytes32",
-                "name": "deviceId",
-                "type": "bytes32"
+                internalType: 'bytes32',
+                name: 'deviceId',
+                type: 'bytes32'
             }
         ],
-        "name": "setTeeDeviceId",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'setTeeDeviceId',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "tcbId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'tcbId',
+                type: 'uint256'
             }
         ],
-        "name": "unlockTcbReward",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'unlockTcbReward',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256[]",
-                "name": "tcbIds",
-                "type": "uint256[]"
+                internalType: 'uint256[]',
+                name: 'tcbIds',
+                type: 'uint256[]'
             }
         ],
-        "name": "unlockTcbRewardByList",
-        "outputs": [
+        name: 'unlockTcbRewardByList',
+        outputs: [
             {
-                "internalType": "uint256",
-                "name": "ulockedIndex",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'ulockedIndex',
+                type: 'uint256'
             }
         ],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "teeOfferId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'teeOfferId',
+                type: 'uint256'
             },
             {
-                "internalType": "uint256",
-                "name": "benchmark",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'benchmark',
+                type: 'uint256'
             }
         ],
-        "name": "updateVerifiedTeeBenchmark",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'updateVerifiedTeeBenchmark',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "anonymous": false,
-        "inputs": [
+        anonymous: false,
+        inputs: [
             {
-                "indexed": false,
-                "internalType": "address",
-                "name": "creator",
-                "type": "address"
+                indexed: false,
+                internalType: 'address',
+                name: 'creator',
+                type: 'address'
             },
             {
-                "indexed": true,
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
+                indexed: true,
+                internalType: 'uint256',
+                name: 'offerId',
+                type: 'uint256'
             },
             {
-                "indexed": true,
-                "internalType": "uint256",
-                "name": "slotId",
-                "type": "uint256"
+                indexed: true,
+                internalType: 'uint256',
+                name: 'slotId',
+                type: 'uint256'
             },
             {
-                "indexed": true,
-                "internalType": "bytes32",
-                "name": "externalId",
-                "type": "bytes32"
+                indexed: true,
+                internalType: 'bytes32',
+                name: 'externalId',
+                type: 'bytes32'
             }
         ],
-        "name": "ValueSlotAdded",
-        "type": "event"
+        name: 'ValueSlotAdded',
+        type: 'event'
     },
     {
-        "anonymous": false,
-        "inputs": [
+        anonymous: false,
+        inputs: [
             {
-                "indexed": true,
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
+                indexed: true,
+                internalType: 'uint256',
+                name: 'offerId',
+                type: 'uint256'
             },
             {
-                "indexed": true,
-                "internalType": "uint256",
-                "name": "slotId",
-                "type": "uint256"
+                indexed: true,
+                internalType: 'uint256',
+                name: 'slotId',
+                type: 'uint256'
             }
         ],
-        "name": "ValueSlotDeleted",
-        "type": "event"
+        name: 'ValueSlotDeleted',
+        type: 'event'
     },
     {
-        "anonymous": false,
-        "inputs": [
+        anonymous: false,
+        inputs: [
             {
-                "indexed": true,
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
+                indexed: true,
+                internalType: 'uint256',
+                name: 'offerId',
+                type: 'uint256'
             },
             {
-                "indexed": true,
-                "internalType": "uint256",
-                "name": "slotId",
-                "type": "uint256"
+                indexed: true,
+                internalType: 'uint256',
+                name: 'slotId',
+                type: 'uint256'
             }
         ],
-        "name": "ValueSlotUpdated",
-        "type": "event"
+        name: 'ValueSlotUpdated',
+        type: 'event'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'offerId',
+                type: 'uint256'
             },
             {
-                "internalType": "bytes32",
-                "name": "externalId",
-                "type": "bytes32"
+                internalType: 'bytes32',
+                name: 'externalId',
+                type: 'bytes32'
             },
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "uint64",
-                        "name": "cpuCores",
-                        "type": "uint64"
+                        internalType: 'uint64',
+                        name: 'cpuCores',
+                        type: 'uint64'
                     },
                     {
-                        "internalType": "uint64",
-                        "name": "ram",
-                        "type": "uint64"
+                        internalType: 'uint64',
+                        name: 'ram',
+                        type: 'uint64'
                     },
                     {
-                        "internalType": "uint64",
-                        "name": "diskUsage",
-                        "type": "uint64"
+                        internalType: 'uint64',
+                        name: 'diskUsage',
+                        type: 'uint64'
                     },
                     {
-                        "internalType": "uint64",
-                        "name": "gpuCores",
-                        "type": "uint64"
+                        internalType: 'uint64',
+                        name: 'gpuCores',
+                        type: 'uint64'
+                    },
+                    {
+                        internalType: 'uint64',
+                        name: 'vram',
+                        type: 'uint64'
                     }
                 ],
-                "internalType": "struct SlotInfo",
-                "name": "info",
-                "type": "tuple"
+                internalType: 'struct SlotInfo',
+                name: 'info',
+                type: 'tuple'
             },
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "string",
-                        "name": "data",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'data',
+                        type: 'string'
                     }
                 ],
-                "internalType": "struct OptionInfo",
-                "name": "option",
-                "type": "tuple"
+                internalType: 'struct OptionInfo',
+                name: 'option',
+                type: 'tuple'
             },
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "enum PriceType",
-                        "name": "priceType",
-                        "type": "uint8"
+                        internalType: 'enum PriceType',
+                        name: 'priceType',
+                        type: 'uint8'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "price",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'price',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint64",
-                        "name": "minTimeMinutes",
-                        "type": "uint64"
+                        internalType: 'uint64',
+                        name: 'minTimeMinutes',
+                        type: 'uint64'
                     },
                     {
-                        "internalType": "uint64",
-                        "name": "maxTimeMinutes",
-                        "type": "uint64"
+                        internalType: 'uint64',
+                        name: 'maxTimeMinutes',
+                        type: 'uint64'
                     }
                 ],
-                "internalType": "struct SlotUsage",
-                "name": "usage",
-                "type": "tuple"
+                internalType: 'struct SlotUsage',
+                name: 'usage',
+                type: 'tuple'
             }
         ],
-        "name": "addValueOfferSlot",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'addValueOfferSlot',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'offerId',
+                type: 'uint256'
             },
             {
-                "internalType": "uint256",
-                "name": "slotId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'slotId',
+                type: 'uint256'
             }
         ],
-        "name": "deleteValueOfferSlot",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'deleteValueOfferSlot',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'offerId',
+                type: 'uint256'
             }
         ],
-        "name": "getCheapestValueOffersPrice",
-        "outputs": [
+        name: 'getCheapestValueOffersPrice',
+        outputs: [
             {
-                "internalType": "uint256",
-                "name": "price",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'price',
+                type: 'uint256'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'offerId',
+                type: 'uint256'
             },
             {
-                "internalType": "uint256",
-                "name": "slotId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'slotId',
+                type: 'uint256'
             }
         ],
-        "name": "getValueOfferSlotById",
-        "outputs": [
+        name: 'getValueOfferSlotById',
+        outputs: [
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "uint256",
-                        "name": "id",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'id',
+                        type: 'uint256'
                     },
                     {
-                        "components": [
+                        components: [
                             {
-                                "internalType": "uint64",
-                                "name": "cpuCores",
-                                "type": "uint64"
+                                internalType: 'uint64',
+                                name: 'cpuCores',
+                                type: 'uint64'
                             },
                             {
-                                "internalType": "uint64",
-                                "name": "ram",
-                                "type": "uint64"
+                                internalType: 'uint64',
+                                name: 'ram',
+                                type: 'uint64'
                             },
                             {
-                                "internalType": "uint64",
-                                "name": "diskUsage",
-                                "type": "uint64"
+                                internalType: 'uint64',
+                                name: 'diskUsage',
+                                type: 'uint64'
                             },
                             {
-                                "internalType": "uint64",
-                                "name": "gpuCores",
-                                "type": "uint64"
+                                internalType: 'uint64',
+                                name: 'gpuCores',
+                                type: 'uint64'
+                            },
+                            {
+                                internalType: 'uint64',
+                                name: 'vram',
+                                type: 'uint64'
                             }
                         ],
-                        "internalType": "struct SlotInfo",
-                        "name": "info",
-                        "type": "tuple"
+                        internalType: 'struct SlotInfo',
+                        name: 'info',
+                        type: 'tuple'
                     },
                     {
-                        "components": [
+                        components: [
                             {
-                                "internalType": "string",
-                                "name": "data",
-                                "type": "string"
+                                internalType: 'string',
+                                name: 'data',
+                                type: 'string'
                             }
                         ],
-                        "internalType": "struct OptionInfo",
-                        "name": "option",
-                        "type": "tuple"
+                        internalType: 'struct OptionInfo',
+                        name: 'option',
+                        type: 'tuple'
                     },
                     {
-                        "components": [
+                        components: [
                             {
-                                "internalType": "enum PriceType",
-                                "name": "priceType",
-                                "type": "uint8"
+                                internalType: 'enum PriceType',
+                                name: 'priceType',
+                                type: 'uint8'
                             },
                             {
-                                "internalType": "uint256",
-                                "name": "price",
-                                "type": "uint256"
+                                internalType: 'uint256',
+                                name: 'price',
+                                type: 'uint256'
                             },
                             {
-                                "internalType": "uint64",
-                                "name": "minTimeMinutes",
-                                "type": "uint64"
+                                internalType: 'uint64',
+                                name: 'minTimeMinutes',
+                                type: 'uint64'
                             },
                             {
-                                "internalType": "uint64",
-                                "name": "maxTimeMinutes",
-                                "type": "uint64"
+                                internalType: 'uint64',
+                                name: 'maxTimeMinutes',
+                                type: 'uint64'
                             }
                         ],
-                        "internalType": "struct SlotUsage",
-                        "name": "usage",
-                        "type": "tuple"
+                        internalType: 'struct SlotUsage',
+                        name: 'usage',
+                        type: 'tuple'
                     }
                 ],
-                "internalType": "struct ValueOfferSlot",
-                "name": "",
-                "type": "tuple"
+                internalType: 'struct ValueOfferSlot',
+                name: '',
+                type: 'tuple'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'offerId',
+                type: 'uint256'
             },
             {
-                "internalType": "uint256",
-                "name": "begin",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'begin',
+                type: 'uint256'
             },
             {
-                "internalType": "uint256",
-                "name": "end",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'end',
+                type: 'uint256'
             }
         ],
-        "name": "getValueOfferSlots",
-        "outputs": [
+        name: 'getValueOfferSlots',
+        outputs: [
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "uint256",
-                        "name": "id",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'id',
+                        type: 'uint256'
                     },
                     {
-                        "components": [
+                        components: [
                             {
-                                "internalType": "uint64",
-                                "name": "cpuCores",
-                                "type": "uint64"
+                                internalType: 'uint64',
+                                name: 'cpuCores',
+                                type: 'uint64'
                             },
                             {
-                                "internalType": "uint64",
-                                "name": "ram",
-                                "type": "uint64"
+                                internalType: 'uint64',
+                                name: 'ram',
+                                type: 'uint64'
                             },
                             {
-                                "internalType": "uint64",
-                                "name": "diskUsage",
-                                "type": "uint64"
+                                internalType: 'uint64',
+                                name: 'diskUsage',
+                                type: 'uint64'
                             },
                             {
-                                "internalType": "uint64",
-                                "name": "gpuCores",
-                                "type": "uint64"
+                                internalType: 'uint64',
+                                name: 'gpuCores',
+                                type: 'uint64'
+                            },
+                            {
+                                internalType: 'uint64',
+                                name: 'vram',
+                                type: 'uint64'
                             }
                         ],
-                        "internalType": "struct SlotInfo",
-                        "name": "info",
-                        "type": "tuple"
+                        internalType: 'struct SlotInfo',
+                        name: 'info',
+                        type: 'tuple'
                     },
                     {
-                        "components": [
+                        components: [
                             {
-                                "internalType": "string",
-                                "name": "data",
-                                "type": "string"
+                                internalType: 'string',
+                                name: 'data',
+                                type: 'string'
                             }
                         ],
-                        "internalType": "struct OptionInfo",
-                        "name": "option",
-                        "type": "tuple"
+                        internalType: 'struct OptionInfo',
+                        name: 'option',
+                        type: 'tuple'
                     },
                     {
-                        "components": [
+                        components: [
                             {
-                                "internalType": "enum PriceType",
-                                "name": "priceType",
-                                "type": "uint8"
+                                internalType: 'enum PriceType',
+                                name: 'priceType',
+                                type: 'uint8'
                             },
                             {
-                                "internalType": "uint256",
-                                "name": "price",
-                                "type": "uint256"
+                                internalType: 'uint256',
+                                name: 'price',
+                                type: 'uint256'
                             },
                             {
-                                "internalType": "uint64",
-                                "name": "minTimeMinutes",
-                                "type": "uint64"
+                                internalType: 'uint64',
+                                name: 'minTimeMinutes',
+                                type: 'uint64'
                             },
                             {
-                                "internalType": "uint64",
-                                "name": "maxTimeMinutes",
-                                "type": "uint64"
+                                internalType: 'uint64',
+                                name: 'maxTimeMinutes',
+                                type: 'uint64'
                             }
                         ],
-                        "internalType": "struct SlotUsage",
-                        "name": "usage",
-                        "type": "tuple"
+                        internalType: 'struct SlotUsage',
+                        name: 'usage',
+                        type: 'tuple'
                     }
                 ],
-                "internalType": "struct ValueOfferSlot[]",
-                "name": "",
-                "type": "tuple[]"
+                internalType: 'struct ValueOfferSlot[]',
+                name: '',
+                type: 'tuple[]'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'offerId',
+                type: 'uint256'
             }
         ],
-        "name": "getValueOfferSlotsCount",
-        "outputs": [
+        name: 'getValueOfferSlotsCount',
+        outputs: [
             {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [],
-        "name": "getValueOffersSlotsCountTotal",
-        "outputs": [
+        inputs: [],
+        name: 'getValueOffersSlotsCountTotal',
+        outputs: [
             {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'offerId',
+                type: 'uint256'
             },
             {
-                "internalType": "uint256",
-                "name": "slotId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'slotId',
+                type: 'uint256'
             }
         ],
-        "name": "isValueOfferSlotExists",
-        "outputs": [
+        name: 'isValueOfferSlotExists',
+        outputs: [
             {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
+                internalType: 'bool',
+                name: '',
+                type: 'bool'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'offerId',
+                type: 'uint256'
             },
             {
-                "internalType": "uint256",
-                "name": "slotId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'slotId',
+                type: 'uint256'
             },
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "uint64",
-                        "name": "cpuCores",
-                        "type": "uint64"
+                        internalType: 'uint64',
+                        name: 'cpuCores',
+                        type: 'uint64'
                     },
                     {
-                        "internalType": "uint64",
-                        "name": "ram",
-                        "type": "uint64"
+                        internalType: 'uint64',
+                        name: 'ram',
+                        type: 'uint64'
                     },
                     {
-                        "internalType": "uint64",
-                        "name": "diskUsage",
-                        "type": "uint64"
+                        internalType: 'uint64',
+                        name: 'diskUsage',
+                        type: 'uint64'
                     },
                     {
-                        "internalType": "uint64",
-                        "name": "gpuCores",
-                        "type": "uint64"
+                        internalType: 'uint64',
+                        name: 'gpuCores',
+                        type: 'uint64'
+                    },
+                    {
+                        internalType: 'uint64',
+                        name: 'vram',
+                        type: 'uint64'
                     }
                 ],
-                "internalType": "struct SlotInfo",
-                "name": "info",
-                "type": "tuple"
+                internalType: 'struct SlotInfo',
+                name: 'info',
+                type: 'tuple'
             },
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "string",
-                        "name": "data",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'data',
+                        type: 'string'
                     }
                 ],
-                "internalType": "struct OptionInfo",
-                "name": "option",
-                "type": "tuple"
+                internalType: 'struct OptionInfo',
+                name: 'option',
+                type: 'tuple'
             },
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "enum PriceType",
-                        "name": "priceType",
-                        "type": "uint8"
+                        internalType: 'enum PriceType',
+                        name: 'priceType',
+                        type: 'uint8'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "price",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'price',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint64",
-                        "name": "minTimeMinutes",
-                        "type": "uint64"
+                        internalType: 'uint64',
+                        name: 'minTimeMinutes',
+                        type: 'uint64'
                     },
                     {
-                        "internalType": "uint64",
-                        "name": "maxTimeMinutes",
-                        "type": "uint64"
+                        internalType: 'uint64',
+                        name: 'maxTimeMinutes',
+                        type: 'uint64'
                     }
                 ],
-                "internalType": "struct SlotUsage",
-                "name": "usage",
-                "type": "tuple"
+                internalType: 'struct SlotUsage',
+                name: 'usage',
+                type: 'tuple'
             }
         ],
-        "name": "updateValueOfferSlot",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'updateValueOfferSlot',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "parentOrderId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'parentOrderId',
+                type: 'uint256'
             }
         ],
-        "name": "cancelWorkflow",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'cancelWorkflow',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "uint256",
-                        "name": "offerId",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'offerId',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "string",
-                        "name": "resultInfo",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'resultInfo',
+                        type: 'string'
                     },
                     {
-                        "internalType": "string",
-                        "name": "encryptedRequirements_DEPRECATED",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'encryptedRequirements_DEPRECATED',
+                        type: 'string'
                     },
                     {
-                        "internalType": "string",
-                        "name": "encryptedArgs_DEPRECATED",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'encryptedArgs_DEPRECATED',
+                        type: 'string'
                     },
                     {
-                        "internalType": "enum OrderStatus",
-                        "name": "status",
-                        "type": "uint8"
+                        internalType: 'enum OrderStatus',
+                        name: 'status',
+                        type: 'uint8'
                     },
                     {
-                        "internalType": "bytes32",
-                        "name": "externalId",
-                        "type": "bytes32"
+                        internalType: 'bytes32',
+                        name: 'externalId',
+                        type: 'bytes32'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "expectedPrice",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'expectedPrice',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "maxPriceSlippage",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'maxPriceSlippage',
+                        type: 'uint256'
                     }
                 ],
-                "internalType": "struct OrderInfo",
-                "name": "parentOrderInfo",
-                "type": "tuple"
+                internalType: 'struct OrderInfo',
+                name: 'parentOrderInfo',
+                type: 'tuple'
             },
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "uint256",
-                        "name": "slotId",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'slotId',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint32",
-                        "name": "slotCount",
-                        "type": "uint32"
+                        internalType: 'uint32',
+                        name: 'slotCount',
+                        type: 'uint32'
                     },
                     {
-                        "internalType": "uint256[]",
-                        "name": "optionsIds",
-                        "type": "uint256[]"
+                        internalType: 'uint256[]',
+                        name: 'optionsIds',
+                        type: 'uint256[]'
                     },
                     {
-                        "internalType": "uint32[]",
-                        "name": "optionsCount",
-                        "type": "uint32[]"
+                        internalType: 'uint32[]',
+                        name: 'optionsCount',
+                        type: 'uint32[]'
                     }
                 ],
-                "internalType": "struct OrderSlots",
-                "name": "parentOrderSlots",
-                "type": "tuple"
+                internalType: 'struct OrderSlots',
+                name: 'parentOrderSlots',
+                type: 'tuple'
             },
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "uint256[]",
-                        "name": "inputOffers",
-                        "type": "uint256[]"
+                        internalType: 'uint256[]',
+                        name: 'inputOffers',
+                        type: 'uint256[]'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "outputOffer",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'outputOffer',
+                        type: 'uint256'
                     }
                 ],
-                "internalType": "struct OrderArgs",
-                "name": "parentOrderArgs",
-                "type": "tuple"
+                internalType: 'struct OrderArgs',
+                name: 'parentOrderArgs',
+                type: 'tuple'
             },
             {
-                "internalType": "uint256",
-                "name": "workflowDeposit",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'workflowDeposit',
+                type: 'uint256'
             },
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "uint256",
-                        "name": "offerId",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'offerId',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "string",
-                        "name": "resultInfo",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'resultInfo',
+                        type: 'string'
                     },
                     {
-                        "internalType": "string",
-                        "name": "encryptedRequirements_DEPRECATED",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'encryptedRequirements_DEPRECATED',
+                        type: 'string'
                     },
                     {
-                        "internalType": "string",
-                        "name": "encryptedArgs_DEPRECATED",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'encryptedArgs_DEPRECATED',
+                        type: 'string'
                     },
                     {
-                        "internalType": "enum OrderStatus",
-                        "name": "status",
-                        "type": "uint8"
+                        internalType: 'enum OrderStatus',
+                        name: 'status',
+                        type: 'uint8'
                     },
                     {
-                        "internalType": "bytes32",
-                        "name": "externalId",
-                        "type": "bytes32"
+                        internalType: 'bytes32',
+                        name: 'externalId',
+                        type: 'bytes32'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "expectedPrice",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'expectedPrice',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "maxPriceSlippage",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'maxPriceSlippage',
+                        type: 'uint256'
                     }
                 ],
-                "internalType": "struct OrderInfo[]",
-                "name": "subOrdersInfos",
-                "type": "tuple[]"
+                internalType: 'struct OrderInfo[]',
+                name: 'subOrdersInfos',
+                type: 'tuple[]'
             },
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "uint256",
-                        "name": "slotId",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'slotId',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint32",
-                        "name": "slotCount",
-                        "type": "uint32"
+                        internalType: 'uint32',
+                        name: 'slotCount',
+                        type: 'uint32'
                     },
                     {
-                        "internalType": "uint256[]",
-                        "name": "optionsIds",
-                        "type": "uint256[]"
+                        internalType: 'uint256[]',
+                        name: 'optionsIds',
+                        type: 'uint256[]'
                     },
                     {
-                        "internalType": "uint32[]",
-                        "name": "optionsCount",
-                        "type": "uint32[]"
+                        internalType: 'uint32[]',
+                        name: 'optionsCount',
+                        type: 'uint32[]'
                     }
                 ],
-                "internalType": "struct OrderSlots[]",
-                "name": "subOrdersSlots",
-                "type": "tuple[]"
+                internalType: 'struct OrderSlots[]',
+                name: 'subOrdersSlots',
+                type: 'tuple[]'
             },
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "uint256[]",
-                        "name": "inputOffers",
-                        "type": "uint256[]"
+                        internalType: 'uint256[]',
+                        name: 'inputOffers',
+                        type: 'uint256[]'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "outputOffer",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'outputOffer',
+                        type: 'uint256'
                     }
                 ],
-                "internalType": "struct OrderArgs[]",
-                "name": "subOrdersArgs",
-                "type": "tuple[]"
+                internalType: 'struct OrderArgs[]',
+                name: 'subOrdersArgs',
+                type: 'tuple[]'
             }
         ],
-        "name": "createWorkflow",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'createWorkflow',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [],
-        "name": "deployer",
-        "outputs": [
+        inputs: [],
+        name: 'deployer',
+        outputs: [
             {
-                "internalType": "address",
-                "name": "",
-                "type": "address"
+                internalType: 'address',
+                name: '',
+                type: 'address'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [],
-        "name": "deploymentBlockNumber",
-        "outputs": [
+        inputs: [],
+        name: 'deploymentBlockNumber',
+        outputs: [
             {
-                "internalType": "uint64",
-                "name": "",
-                "type": "uint64"
+                internalType: 'uint64',
+                name: '',
+                type: 'uint64'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "anonymous": false,
-        "inputs": [
+        anonymous: false,
+        inputs: [
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "address",
-                        "name": "facetAddress",
-                        "type": "address"
+                        internalType: 'address',
+                        name: 'facetAddress',
+                        type: 'address'
                     },
                     {
-                        "internalType": "enum IDiamondCut.FacetCutAction",
-                        "name": "action",
-                        "type": "uint8"
+                        internalType: 'enum IDiamondCut.FacetCutAction',
+                        name: 'action',
+                        type: 'uint8'
                     },
                     {
-                        "internalType": "bytes4[]",
-                        "name": "functionSelectors",
-                        "type": "bytes4[]"
+                        internalType: 'bytes4[]',
+                        name: 'functionSelectors',
+                        type: 'bytes4[]'
                     }
                 ],
-                "indexed": false,
-                "internalType": "struct IDiamondCut.FacetCut[]",
-                "name": "_diamondCut",
-                "type": "tuple[]"
+                indexed: false,
+                internalType: 'struct IDiamondCut.FacetCut[]',
+                name: '_diamondCut',
+                type: 'tuple[]'
             },
             {
-                "indexed": false,
-                "internalType": "address",
-                "name": "_init",
-                "type": "address"
+                indexed: false,
+                internalType: 'address',
+                name: '_init',
+                type: 'address'
             },
             {
-                "indexed": false,
-                "internalType": "bytes",
-                "name": "_calldata",
-                "type": "bytes"
+                indexed: false,
+                internalType: 'bytes',
+                name: '_calldata',
+                type: 'bytes'
             }
         ],
-        "name": "DiamondCut",
-        "type": "event"
+        name: 'DiamondCut',
+        type: 'event'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "address",
-                        "name": "facetAddress",
-                        "type": "address"
+                        internalType: 'address',
+                        name: 'facetAddress',
+                        type: 'address'
                     },
                     {
-                        "internalType": "enum IDiamondCut.FacetCutAction",
-                        "name": "action",
-                        "type": "uint8"
+                        internalType: 'enum IDiamondCut.FacetCutAction',
+                        name: 'action',
+                        type: 'uint8'
                     },
                     {
-                        "internalType": "bytes4[]",
-                        "name": "functionSelectors",
-                        "type": "bytes4[]"
+                        internalType: 'bytes4[]',
+                        name: 'functionSelectors',
+                        type: 'bytes4[]'
                     }
                 ],
-                "internalType": "struct IDiamondCut.FacetCut[]",
-                "name": "_diamondCut",
-                "type": "tuple[]"
+                internalType: 'struct IDiamondCut.FacetCut[]',
+                name: '_diamondCut',
+                type: 'tuple[]'
             },
             {
-                "internalType": "bytes32",
-                "name": "version",
-                "type": "bytes32"
+                internalType: 'bytes32',
+                name: 'version',
+                type: 'bytes32'
             },
             {
-                "internalType": "address",
-                "name": "_init",
-                "type": "address"
+                internalType: 'address',
+                name: '_init',
+                type: 'address'
             },
             {
-                "internalType": "bytes",
-                "name": "_calldata",
-                "type": "bytes"
+                internalType: 'bytes',
+                name: '_calldata',
+                type: 'bytes'
             }
         ],
-        "name": "diamondCut",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'diamondCut',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "bytes4",
-                "name": "_functionSelector",
-                "type": "bytes4"
+                internalType: 'bytes4',
+                name: '_functionSelector',
+                type: 'bytes4'
             }
         ],
-        "name": "facetAddress",
-        "outputs": [
+        name: 'facetAddress',
+        outputs: [
             {
-                "internalType": "address",
-                "name": "facetAddress_",
-                "type": "address"
+                internalType: 'address',
+                name: 'facetAddress_',
+                type: 'address'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [],
-        "name": "facetAddresses",
-        "outputs": [
+        inputs: [],
+        name: 'facetAddresses',
+        outputs: [
             {
-                "internalType": "address[]",
-                "name": "",
-                "type": "address[]"
+                internalType: 'address[]',
+                name: '',
+                type: 'address[]'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "address",
-                "name": "_facet",
-                "type": "address"
+                internalType: 'address',
+                name: '_facet',
+                type: 'address'
             }
         ],
-        "name": "facetFunctionSelectors",
-        "outputs": [
+        name: 'facetFunctionSelectors',
+        outputs: [
             {
-                "internalType": "bytes4[]",
-                "name": "",
-                "type": "bytes4[]"
+                internalType: 'bytes4[]',
+                name: '',
+                type: 'bytes4[]'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [],
-        "name": "facets",
-        "outputs": [
+        inputs: [],
+        name: 'facets',
+        outputs: [
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "address",
-                        "name": "facetAddress",
-                        "type": "address"
+                        internalType: 'address',
+                        name: 'facetAddress',
+                        type: 'address'
                     },
                     {
-                        "internalType": "bytes4[]",
-                        "name": "functionSelectors",
-                        "type": "bytes4[]"
+                        internalType: 'bytes4[]',
+                        name: 'functionSelectors',
+                        type: 'bytes4[]'
                     }
                 ],
-                "internalType": "struct IDiamondLoupe.Facet[]",
-                "name": "facets_",
-                "type": "tuple[]"
+                internalType: 'struct IDiamondLoupe.Facet[]',
+                name: 'facets_',
+                type: 'tuple[]'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [],
-        "name": "getVersion",
-        "outputs": [
+        inputs: [],
+        name: 'getVersion',
+        outputs: [
             {
-                "internalType": "bytes32",
-                "name": "",
-                "type": "bytes32"
+                internalType: 'bytes32',
+                name: '',
+                type: 'bytes32'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [],
-        "name": "getVersionHistory",
-        "outputs": [
+        inputs: [],
+        name: 'getVersionHistory',
+        outputs: [
             {
-                "internalType": "bytes32[]",
-                "name": "",
-                "type": "bytes32[]"
+                internalType: 'bytes32[]',
+                name: '',
+                type: 'bytes32[]'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "bytes4",
-                "name": "_interfaceId",
-                "type": "bytes4"
+                internalType: 'bytes4',
+                name: '_interfaceId',
+                type: 'bytes4'
             }
         ],
-        "name": "supportsInterface",
-        "outputs": [
+        name: 'supportsInterface',
+        outputs: [
             {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
+                internalType: 'bool',
+                name: '',
+                type: 'bool'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "anonymous": false,
-        "inputs": [
+        anonymous: false,
+        inputs: [
             {
-                "indexed": true,
-                "internalType": "address",
-                "name": "previousOwner",
-                "type": "address"
+                indexed: true,
+                internalType: 'address',
+                name: 'previousOwner',
+                type: 'address'
             },
             {
-                "indexed": true,
-                "internalType": "address",
-                "name": "newOwner",
-                "type": "address"
+                indexed: true,
+                internalType: 'address',
+                name: 'newOwner',
+                type: 'address'
             }
         ],
-        "name": "OwnershipTransferred",
-        "type": "event"
+        name: 'OwnershipTransferred',
+        type: 'event'
     },
     {
-        "inputs": [],
-        "name": "owner",
-        "outputs": [
+        inputs: [],
+        name: 'owner',
+        outputs: [
             {
-                "internalType": "address",
-                "name": "owner_",
-                "type": "address"
+                internalType: 'address',
+                name: 'owner_',
+                type: 'address'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "address",
-                "name": "_newOwner",
-                "type": "address"
+                internalType: 'address',
+                name: '_newOwner',
+                type: 'address'
             }
         ],
-        "name": "transferOwnership",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'transferOwnership',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [],
-        "name": "init",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        inputs: [],
+        name: 'init',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "anonymous": false,
-        "inputs": [
+        anonymous: false,
+        inputs: [
             {
-                "indexed": true,
-                "internalType": "uint256",
-                "name": "teeOfferIssuerId",
-                "type": "uint256"
+                indexed: true,
+                internalType: 'uint256',
+                name: 'teeOfferIssuerId',
+                type: 'uint256'
             },
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "string",
-                        "name": "kty",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'kty',
+                        type: 'string'
                     },
                     {
-                        "internalType": "string",
-                        "name": "crv",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'crv',
+                        type: 'string'
                     },
                     {
-                        "internalType": "bytes32",
-                        "name": "pointX",
-                        "type": "bytes32"
+                        internalType: 'bytes32',
+                        name: 'pointX',
+                        type: 'bytes32'
                     },
                     {
-                        "internalType": "bytes32",
-                        "name": "pointY",
-                        "type": "bytes32"
+                        internalType: 'bytes32',
+                        name: 'pointY',
+                        type: 'bytes32'
                     }
                 ],
-                "indexed": false,
-                "internalType": "struct PublicKey",
-                "name": "secretPublicKey",
-                "type": "tuple"
+                indexed: false,
+                internalType: 'struct PublicKey',
+                name: 'secretPublicKey',
+                type: 'tuple'
             }
         ],
-        "name": "LoaderSecretPublicKeySessionUpdated",
-        "type": "event"
+        name: 'LoaderSecretPublicKeySessionUpdated',
+        type: 'event'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "teeOfferId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'teeOfferId',
+                type: 'uint256'
             }
         ],
-        "name": "getLoaderSecretPublicKey",
-        "outputs": [
+        name: 'getLoaderSecretPublicKey',
+        outputs: [
             {
-                "components": [
+                components: [
                     {
-                        "components": [
+                        components: [
                             {
-                                "internalType": "string",
-                                "name": "kty",
-                                "type": "string"
+                                internalType: 'string',
+                                name: 'kty',
+                                type: 'string'
                             },
                             {
-                                "internalType": "string",
-                                "name": "crv",
-                                "type": "string"
+                                internalType: 'string',
+                                name: 'crv',
+                                type: 'string'
                             },
                             {
-                                "internalType": "bytes32",
-                                "name": "pointX",
-                                "type": "bytes32"
+                                internalType: 'bytes32',
+                                name: 'pointX',
+                                type: 'bytes32'
                             },
                             {
-                                "internalType": "bytes32",
-                                "name": "pointY",
-                                "type": "bytes32"
+                                internalType: 'bytes32',
+                                name: 'pointY',
+                                type: 'bytes32'
                             }
                         ],
-                        "internalType": "struct PublicKey",
-                        "name": "secretPublicKey",
-                        "type": "tuple"
+                        internalType: 'struct PublicKey',
+                        name: 'secretPublicKey',
+                        type: 'tuple'
                     },
                     {
-                        "components": [
+                        components: [
                             {
-                                "internalType": "string",
-                                "name": "der",
-                                "type": "string"
+                                internalType: 'string',
+                                name: 'der',
+                                type: 'string'
                             },
                             {
-                                "internalType": "bytes32",
-                                "name": "r",
-                                "type": "bytes32"
+                                internalType: 'bytes32',
+                                name: 'r',
+                                type: 'bytes32'
                             },
                             {
-                                "internalType": "bytes32",
-                                "name": "s",
-                                "type": "bytes32"
+                                internalType: 'bytes32',
+                                name: 's',
+                                type: 'bytes32'
                             },
                             {
-                                "internalType": "uint8",
-                                "name": "v",
-                                "type": "uint8"
+                                internalType: 'uint8',
+                                name: 'v',
+                                type: 'uint8'
                             }
                         ],
-                        "internalType": "struct Signature",
-                        "name": "signature",
-                        "type": "tuple"
+                        internalType: 'struct Signature',
+                        name: 'signature',
+                        type: 'tuple'
                     },
                     {
-                        "internalType": "uint32",
-                        "name": "signedTime",
-                        "type": "uint32"
+                        internalType: 'uint32',
+                        name: 'signedTime',
+                        type: 'uint32'
                     },
                     {
-                        "internalType": "uint32",
-                        "name": "timestamp",
-                        "type": "uint32"
+                        internalType: 'uint32',
+                        name: 'timestamp',
+                        type: 'uint32'
                     }
                 ],
-                "internalType": "struct LoaderSecretPublicKey",
-                "name": "",
-                "type": "tuple"
+                internalType: 'struct LoaderSecretPublicKey',
+                name: '',
+                type: 'tuple'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "teeOfferId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'teeOfferId',
+                type: 'uint256'
             },
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "string",
-                        "name": "der",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'der',
+                        type: 'string'
                     },
                     {
-                        "internalType": "bytes32",
-                        "name": "r",
-                        "type": "bytes32"
+                        internalType: 'bytes32',
+                        name: 'r',
+                        type: 'bytes32'
                     },
                     {
-                        "internalType": "bytes32",
-                        "name": "s",
-                        "type": "bytes32"
+                        internalType: 'bytes32',
+                        name: 's',
+                        type: 'bytes32'
                     },
                     {
-                        "internalType": "uint8",
-                        "name": "v",
-                        "type": "uint8"
+                        internalType: 'uint8',
+                        name: 'v',
+                        type: 'uint8'
                     }
                 ],
-                "internalType": "struct Signature",
-                "name": "signature",
-                "type": "tuple"
+                internalType: 'struct Signature',
+                name: 'signature',
+                type: 'tuple'
             },
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "string",
-                        "name": "kty",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'kty',
+                        type: 'string'
                     },
                     {
-                        "internalType": "string",
-                        "name": "crv",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'crv',
+                        type: 'string'
                     },
                     {
-                        "internalType": "bytes32",
-                        "name": "pointX",
-                        "type": "bytes32"
+                        internalType: 'bytes32',
+                        name: 'pointX',
+                        type: 'bytes32'
                     },
                     {
-                        "internalType": "bytes32",
-                        "name": "pointY",
-                        "type": "bytes32"
+                        internalType: 'bytes32',
+                        name: 'pointY',
+                        type: 'bytes32'
                     }
                 ],
-                "internalType": "struct PublicKey",
-                "name": "secretPublicKey",
-                "type": "tuple"
+                internalType: 'struct PublicKey',
+                name: 'secretPublicKey',
+                type: 'tuple'
             },
             {
-                "internalType": "uint32",
-                "name": "signedTime",
-                "type": "uint32"
+                internalType: 'uint32',
+                name: 'signedTime',
+                type: 'uint32'
             }
         ],
-        "name": "setLoaderSecretPublicKey",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'setLoaderSecretPublicKey',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "anonymous": false,
-        "inputs": [
+        anonymous: false,
+        inputs: [
             {
-                "indexed": true,
-                "internalType": "uint256",
-                "name": "teeOfferIssuerId",
-                "type": "uint256"
+                indexed: true,
+                internalType: 'uint256',
+                name: 'teeOfferIssuerId',
+                type: 'uint256'
             },
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "string",
-                        "name": "kty",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'kty',
+                        type: 'string'
                     },
                     {
-                        "internalType": "string",
-                        "name": "crv",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'crv',
+                        type: 'string'
                     },
                     {
-                        "internalType": "bytes32",
-                        "name": "pointX",
-                        "type": "bytes32"
+                        internalType: 'bytes32',
+                        name: 'pointX',
+                        type: 'bytes32'
                     },
                     {
-                        "internalType": "bytes32",
-                        "name": "pointY",
-                        "type": "bytes32"
+                        internalType: 'bytes32',
+                        name: 'pointY',
+                        type: 'bytes32'
                     }
                 ],
-                "indexed": false,
-                "internalType": "struct PublicKey",
-                "name": "publicSessionsKey",
-                "type": "tuple"
+                indexed: false,
+                internalType: 'struct PublicKey',
+                name: 'publicSessionsKey',
+                type: 'tuple'
             }
         ],
-        "name": "LoaderSessionKeyUpdated",
-        "type": "event"
+        name: 'LoaderSessionKeyUpdated',
+        type: 'event'
     },
     {
-        "inputs": [],
-        "name": "getDisabledLoaders",
-        "outputs": [
+        inputs: [],
+        name: 'getDisabledLoaders',
+        outputs: [
             {
-                "internalType": "uint256[]",
-                "name": "",
-                "type": "uint256[]"
+                internalType: 'uint256[]',
+                name: '',
+                type: 'uint256[]'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [],
-        "name": "getEnabledLoaders",
-        "outputs": [
+        inputs: [],
+        name: 'getEnabledLoaders',
+        outputs: [
             {
-                "internalType": "uint256[]",
-                "name": "",
-                "type": "uint256[]"
+                internalType: 'uint256[]',
+                name: '',
+                type: 'uint256[]'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "teeOfferId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'teeOfferId',
+                type: 'uint256'
             }
         ],
-        "name": "getLoaderSession",
-        "outputs": [
+        name: 'getLoaderSession',
+        outputs: [
             {
-                "components": [
+                components: [
                     {
-                        "components": [
+                        components: [
                             {
-                                "internalType": "string",
-                                "name": "kty",
-                                "type": "string"
+                                internalType: 'string',
+                                name: 'kty',
+                                type: 'string'
                             },
                             {
-                                "internalType": "string",
-                                "name": "crv",
-                                "type": "string"
+                                internalType: 'string',
+                                name: 'crv',
+                                type: 'string'
                             },
                             {
-                                "internalType": "bytes32",
-                                "name": "pointX",
-                                "type": "bytes32"
+                                internalType: 'bytes32',
+                                name: 'pointX',
+                                type: 'bytes32'
                             },
                             {
-                                "internalType": "bytes32",
-                                "name": "pointY",
-                                "type": "bytes32"
+                                internalType: 'bytes32',
+                                name: 'pointY',
+                                type: 'bytes32'
                             }
                         ],
-                        "internalType": "struct PublicKey",
-                        "name": "sessionPublicKey",
-                        "type": "tuple"
+                        internalType: 'struct PublicKey',
+                        name: 'sessionPublicKey',
+                        type: 'tuple'
                     },
                     {
-                        "internalType": "string",
-                        "name": "signature",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'signature',
+                        type: 'string'
                     },
                     {
-                        "internalType": "uint32",
-                        "name": "timestamp",
-                        "type": "uint32"
+                        internalType: 'uint32',
+                        name: 'timestamp',
+                        type: 'uint32'
                     },
                     {
-                        "internalType": "uint32",
-                        "name": "signedTime",
-                        "type": "uint32"
+                        internalType: 'uint32',
+                        name: 'signedTime',
+                        type: 'uint32'
                     }
                 ],
-                "internalType": "struct LoaderSession",
-                "name": "",
-                "type": "tuple"
+                internalType: 'struct LoaderSession',
+                name: '',
+                type: 'tuple'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "teeOfferId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'teeOfferId',
+                type: 'uint256'
             }
         ],
-        "name": "removeLoaderKeys",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'removeLoaderKeys',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "string",
-                        "name": "kty",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'kty',
+                        type: 'string'
                     },
                     {
-                        "internalType": "string",
-                        "name": "crv",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'crv',
+                        type: 'string'
                     },
                     {
-                        "internalType": "bytes32",
-                        "name": "pointX",
-                        "type": "bytes32"
+                        internalType: 'bytes32',
+                        name: 'pointX',
+                        type: 'bytes32'
                     },
                     {
-                        "internalType": "bytes32",
-                        "name": "pointY",
-                        "type": "bytes32"
+                        internalType: 'bytes32',
+                        name: 'pointY',
+                        type: 'bytes32'
                     }
                 ],
-                "internalType": "struct PublicKey",
-                "name": "sessionPublicKey",
-                "type": "tuple"
+                internalType: 'struct PublicKey',
+                name: 'sessionPublicKey',
+                type: 'tuple'
             },
             {
-                "internalType": "string",
-                "name": "signature",
-                "type": "string"
+                internalType: 'string',
+                name: 'signature',
+                type: 'string'
             },
             {
-                "internalType": "uint256",
-                "name": "teeOfferIssuerId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'teeOfferIssuerId',
+                type: 'uint256'
             },
             {
-                "internalType": "uint32",
-                "name": "signedTime",
-                "type": "uint32"
+                internalType: 'uint32',
+                name: 'signedTime',
+                type: 'uint32'
             }
         ],
-        "name": "setLoaderSession",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'setLoaderSession',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "uint256",
-                        "name": "secretKeeperId",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'secretKeeperId',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "secretRequestorId",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'secretRequestorId',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "offerId",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'offerId',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint64",
-                        "name": "offerVersion",
-                        "type": "uint64"
+                        internalType: 'uint64',
+                        name: 'offerVersion',
+                        type: 'uint64'
                     },
                     {
-                        "internalType": "uint32",
-                        "name": "timestamp",
-                        "type": "uint32"
+                        internalType: 'uint32',
+                        name: 'timestamp',
+                        type: 'uint32'
                     }
                 ],
-                "internalType": "struct SecretRequest",
-                "name": "request",
-                "type": "tuple"
+                internalType: 'struct SecretRequest',
+                name: 'request',
+                type: 'tuple'
             },
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "string",
-                        "name": "kty",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'kty',
+                        type: 'string'
                     },
                     {
-                        "internalType": "string",
-                        "name": "crv",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'crv',
+                        type: 'string'
                     },
                     {
-                        "internalType": "bytes32",
-                        "name": "pointX",
-                        "type": "bytes32"
+                        internalType: 'bytes32',
+                        name: 'pointX',
+                        type: 'bytes32'
                     },
                     {
-                        "internalType": "bytes32",
-                        "name": "pointY",
-                        "type": "bytes32"
+                        internalType: 'bytes32',
+                        name: 'pointY',
+                        type: 'bytes32'
                     }
                 ],
-                "internalType": "struct PublicKey",
-                "name": "sessionPublicKey",
-                "type": "tuple"
+                internalType: 'struct PublicKey',
+                name: 'sessionPublicKey',
+                type: 'tuple'
             },
             {
-                "internalType": "string",
-                "name": "signature",
-                "type": "string"
+                internalType: 'string',
+                name: 'signature',
+                type: 'string'
             },
             {
-                "internalType": "uint256",
-                "name": "teeOfferIssuerId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'teeOfferIssuerId',
+                type: 'uint256'
             },
             {
-                "internalType": "uint32",
-                "name": "signedTime",
-                "type": "uint32"
+                internalType: 'uint32',
+                name: 'signedTime',
+                type: 'uint32'
             }
         ],
-        "name": "setLoaderSessionAndRequestSecret",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'setLoaderSessionAndRequestSecret',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "anonymous": false,
-        "inputs": [
+        anonymous: false,
+        inputs: [
             {
-                "indexed": true,
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
+                indexed: true,
+                internalType: 'uint256',
+                name: 'offerId',
+                type: 'uint256'
             },
             {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "offerVersion",
-                "type": "uint256"
+                indexed: false,
+                internalType: 'uint256',
+                name: 'offerVersion',
+                type: 'uint256'
             },
             {
-                "indexed": true,
-                "internalType": "uint256",
-                "name": "teeOfferKeeperId",
-                "type": "uint256"
+                indexed: true,
+                internalType: 'uint256',
+                name: 'teeOfferKeeperId',
+                type: 'uint256'
             },
             {
-                "indexed": true,
-                "internalType": "uint256",
-                "name": "teeOfferIssuerId",
-                "type": "uint256"
+                indexed: true,
+                internalType: 'uint256',
+                name: 'teeOfferIssuerId',
+                type: 'uint256'
             }
         ],
-        "name": "OfferResourceCreated",
-        "type": "event"
+        name: 'OfferResourceCreated',
+        type: 'event'
     },
     {
-        "anonymous": false,
-        "inputs": [
+        anonymous: false,
+        inputs: [
             {
-                "indexed": true,
-                "internalType": "uint256",
-                "name": "requestOfferId",
-                "type": "uint256"
+                indexed: true,
+                internalType: 'uint256',
+                name: 'requestOfferId',
+                type: 'uint256'
             },
             {
-                "indexed": true,
-                "internalType": "uint256",
-                "name": "requestOfferVersion",
-                "type": "uint256"
+                indexed: true,
+                internalType: 'uint256',
+                name: 'requestOfferVersion',
+                type: 'uint256'
             },
             {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
+                indexed: false,
+                internalType: 'uint256',
+                name: 'orderId',
+                type: 'uint256'
             }
         ],
-        "name": "OrderResourceCreated",
-        "type": "event"
+        name: 'OrderResourceCreated',
+        type: 'event'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "teeOfferKeeperId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'teeOfferKeeperId',
+                type: 'uint256'
             }
         ],
-        "name": "clearOfferResources",
-        "outputs": [
+        name: 'clearOfferResources',
+        outputs: [
             {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
+                internalType: 'bool',
+                name: '',
+                type: 'bool'
             }
         ],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "requestOfferId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'requestOfferId',
+                type: 'uint256'
             },
             {
-                "internalType": "uint64",
-                "name": "requestOfferVersion",
-                "type": "uint64"
+                internalType: 'uint64',
+                name: 'requestOfferVersion',
+                type: 'uint64'
             },
             {
-                "internalType": "string",
-                "name": "resultInfo",
-                "type": "string"
+                internalType: 'string',
+                name: 'resultInfo',
+                type: 'string'
             },
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "string",
-                        "name": "der",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'der',
+                        type: 'string'
                     },
                     {
-                        "internalType": "bytes32",
-                        "name": "r",
-                        "type": "bytes32"
+                        internalType: 'bytes32',
+                        name: 'r',
+                        type: 'bytes32'
                     },
                     {
-                        "internalType": "bytes32",
-                        "name": "s",
-                        "type": "bytes32"
+                        internalType: 'bytes32',
+                        name: 's',
+                        type: 'bytes32'
                     },
                     {
-                        "internalType": "uint8",
-                        "name": "v",
-                        "type": "uint8"
+                        internalType: 'uint8',
+                        name: 'v',
+                        type: 'uint8'
                     }
                 ],
-                "internalType": "struct Signature",
-                "name": "resultInfoSignatureBySecretKey",
-                "type": "tuple"
+                internalType: 'struct Signature',
+                name: 'resultInfoSignatureBySecretKey',
+                type: 'tuple'
             },
             {
-                "internalType": "uint32",
-                "name": "signedTime",
-                "type": "uint32"
+                internalType: 'uint32',
+                name: 'signedTime',
+                type: 'uint32'
             }
         ],
-        "name": "createResourceOrder",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'createResourceOrder',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "teeOfferIssuerId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'teeOfferIssuerId',
+                type: 'uint256'
             },
             {
-                "internalType": "uint256",
-                "name": "teeOfferKeeperId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'teeOfferKeeperId',
+                type: 'uint256'
             },
             {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'offerId',
+                type: 'uint256'
             },
             {
-                "internalType": "uint64",
-                "name": "offerVersion",
-                "type": "uint64"
+                internalType: 'uint64',
+                name: 'offerVersion',
+                type: 'uint64'
             }
         ],
-        "name": "getOfferResource",
-        "outputs": [
+        name: 'getOfferResource',
+        outputs: [
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "uint256",
-                        "name": "offerId",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'offerId',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "teeOfferIssuerId",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'teeOfferIssuerId',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "teeOfferKeeperId",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'teeOfferKeeperId',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "storageOrderId",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'storageOrderId',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint64",
-                        "name": "offerVersion",
-                        "type": "uint64"
+                        internalType: 'uint64',
+                        name: 'offerVersion',
+                        type: 'uint64'
                     },
                     {
-                        "internalType": "uint32",
-                        "name": "timestamp",
-                        "type": "uint32"
+                        internalType: 'uint32',
+                        name: 'timestamp',
+                        type: 'uint32'
                     },
                     {
-                        "internalType": "uint32",
-                        "name": "signedTime",
-                        "type": "uint32"
+                        internalType: 'uint32',
+                        name: 'signedTime',
+                        type: 'uint32'
                     },
                     {
-                        "components": [
+                        components: [
                             {
-                                "internalType": "string",
-                                "name": "der",
-                                "type": "string"
+                                internalType: 'string',
+                                name: 'der',
+                                type: 'string'
                             },
                             {
-                                "internalType": "bytes32",
-                                "name": "r",
-                                "type": "bytes32"
+                                internalType: 'bytes32',
+                                name: 'r',
+                                type: 'bytes32'
                             },
                             {
-                                "internalType": "bytes32",
-                                "name": "s",
-                                "type": "bytes32"
+                                internalType: 'bytes32',
+                                name: 's',
+                                type: 'bytes32'
                             },
                             {
-                                "internalType": "uint8",
-                                "name": "v",
-                                "type": "uint8"
+                                internalType: 'uint8',
+                                name: 'v',
+                                type: 'uint8'
                             }
                         ],
-                        "internalType": "struct Signature",
-                        "name": "signature",
-                        "type": "tuple"
+                        internalType: 'struct Signature',
+                        name: 'signature',
+                        type: 'tuple'
                     },
                     {
-                        "internalType": "string",
-                        "name": "signedEncryptedData",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'signedEncryptedData',
+                        type: 'string'
                     },
                     {
-                        "internalType": "enum OfferType",
-                        "name": "offerType",
-                        "type": "uint8"
+                        internalType: 'enum OfferType',
+                        name: 'offerType',
+                        type: 'uint8'
                     },
                     {
-                        "internalType": "string",
-                        "name": "solutionHash",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'solutionHash',
+                        type: 'string'
                     },
                     {
-                        "internalType": "bool",
-                        "name": "previousDataCopied",
-                        "type": "bool"
+                        internalType: 'bool',
+                        name: 'previousDataCopied',
+                        type: 'bool'
                     }
                 ],
-                "internalType": "struct OfferResource",
-                "name": "",
-                "type": "tuple"
+                internalType: 'struct OfferResource',
+                name: '',
+                type: 'tuple'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "teeOfferIssuerId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'teeOfferIssuerId',
+                type: 'uint256'
             }
         ],
-        "name": "getOfferResourcesByIssuerId",
-        "outputs": [
+        name: 'getOfferResourcesByIssuerId',
+        outputs: [
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "uint256",
-                        "name": "offerId",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'offerId',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "teeOfferIssuerId",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'teeOfferIssuerId',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "teeOfferKeeperId",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'teeOfferKeeperId',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "storageOrderId",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'storageOrderId',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint64",
-                        "name": "offerVersion",
-                        "type": "uint64"
+                        internalType: 'uint64',
+                        name: 'offerVersion',
+                        type: 'uint64'
                     },
                     {
-                        "internalType": "uint32",
-                        "name": "timestamp",
-                        "type": "uint32"
+                        internalType: 'uint32',
+                        name: 'timestamp',
+                        type: 'uint32'
                     },
                     {
-                        "internalType": "uint32",
-                        "name": "signedTime",
-                        "type": "uint32"
+                        internalType: 'uint32',
+                        name: 'signedTime',
+                        type: 'uint32'
                     },
                     {
-                        "components": [
+                        components: [
                             {
-                                "internalType": "string",
-                                "name": "der",
-                                "type": "string"
+                                internalType: 'string',
+                                name: 'der',
+                                type: 'string'
                             },
                             {
-                                "internalType": "bytes32",
-                                "name": "r",
-                                "type": "bytes32"
+                                internalType: 'bytes32',
+                                name: 'r',
+                                type: 'bytes32'
                             },
                             {
-                                "internalType": "bytes32",
-                                "name": "s",
-                                "type": "bytes32"
+                                internalType: 'bytes32',
+                                name: 's',
+                                type: 'bytes32'
                             },
                             {
-                                "internalType": "uint8",
-                                "name": "v",
-                                "type": "uint8"
+                                internalType: 'uint8',
+                                name: 'v',
+                                type: 'uint8'
                             }
                         ],
-                        "internalType": "struct Signature",
-                        "name": "signature",
-                        "type": "tuple"
+                        internalType: 'struct Signature',
+                        name: 'signature',
+                        type: 'tuple'
                     },
                     {
-                        "internalType": "string",
-                        "name": "signedEncryptedData",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'signedEncryptedData',
+                        type: 'string'
                     },
                     {
-                        "internalType": "enum OfferType",
-                        "name": "offerType",
-                        "type": "uint8"
+                        internalType: 'enum OfferType',
+                        name: 'offerType',
+                        type: 'uint8'
                     },
                     {
-                        "internalType": "string",
-                        "name": "solutionHash",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'solutionHash',
+                        type: 'string'
                     },
                     {
-                        "internalType": "bool",
-                        "name": "previousDataCopied",
-                        "type": "bool"
+                        internalType: 'bool',
+                        name: 'previousDataCopied',
+                        type: 'bool'
                     }
                 ],
-                "internalType": "struct OfferResource[]",
-                "name": "",
-                "type": "tuple[]"
+                internalType: 'struct OfferResource[]',
+                name: '',
+                type: 'tuple[]'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "teeKeeperId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'teeKeeperId',
+                type: 'uint256'
             }
         ],
-        "name": "getOfferResourcesByKeeperId",
-        "outputs": [
+        name: 'getOfferResourcesByKeeperId',
+        outputs: [
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "uint256",
-                        "name": "offerId",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'offerId',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "teeOfferIssuerId",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'teeOfferIssuerId',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "teeOfferKeeperId",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'teeOfferKeeperId',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "storageOrderId",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'storageOrderId',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint64",
-                        "name": "offerVersion",
-                        "type": "uint64"
+                        internalType: 'uint64',
+                        name: 'offerVersion',
+                        type: 'uint64'
                     },
                     {
-                        "internalType": "uint32",
-                        "name": "timestamp",
-                        "type": "uint32"
+                        internalType: 'uint32',
+                        name: 'timestamp',
+                        type: 'uint32'
                     },
                     {
-                        "internalType": "uint32",
-                        "name": "signedTime",
-                        "type": "uint32"
+                        internalType: 'uint32',
+                        name: 'signedTime',
+                        type: 'uint32'
                     },
                     {
-                        "components": [
+                        components: [
                             {
-                                "internalType": "string",
-                                "name": "der",
-                                "type": "string"
+                                internalType: 'string',
+                                name: 'der',
+                                type: 'string'
                             },
                             {
-                                "internalType": "bytes32",
-                                "name": "r",
-                                "type": "bytes32"
+                                internalType: 'bytes32',
+                                name: 'r',
+                                type: 'bytes32'
                             },
                             {
-                                "internalType": "bytes32",
-                                "name": "s",
-                                "type": "bytes32"
+                                internalType: 'bytes32',
+                                name: 's',
+                                type: 'bytes32'
                             },
                             {
-                                "internalType": "uint8",
-                                "name": "v",
-                                "type": "uint8"
+                                internalType: 'uint8',
+                                name: 'v',
+                                type: 'uint8'
                             }
                         ],
-                        "internalType": "struct Signature",
-                        "name": "signature",
-                        "type": "tuple"
+                        internalType: 'struct Signature',
+                        name: 'signature',
+                        type: 'tuple'
                     },
                     {
-                        "internalType": "string",
-                        "name": "signedEncryptedData",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'signedEncryptedData',
+                        type: 'string'
                     },
                     {
-                        "internalType": "enum OfferType",
-                        "name": "offerType",
-                        "type": "uint8"
+                        internalType: 'enum OfferType',
+                        name: 'offerType',
+                        type: 'uint8'
                     },
                     {
-                        "internalType": "string",
-                        "name": "solutionHash",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'solutionHash',
+                        type: 'string'
                     },
                     {
-                        "internalType": "bool",
-                        "name": "previousDataCopied",
-                        "type": "bool"
+                        internalType: 'bool',
+                        name: 'previousDataCopied',
+                        type: 'bool'
                     }
                 ],
-                "internalType": "struct OfferResource[]",
-                "name": "",
-                "type": "tuple[]"
+                internalType: 'struct OfferResource[]',
+                name: '',
+                type: 'tuple[]'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'offerId',
+                type: 'uint256'
             },
             {
-                "internalType": "uint64",
-                "name": "version",
-                "type": "uint64"
+                internalType: 'uint64',
+                name: 'version',
+                type: 'uint64'
             }
         ],
-        "name": "getOfferResourcesByOfferVersion",
-        "outputs": [
+        name: 'getOfferResourcesByOfferVersion',
+        outputs: [
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "uint256",
-                        "name": "offerId",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'offerId',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "teeOfferIssuerId",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'teeOfferIssuerId',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "teeOfferKeeperId",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'teeOfferKeeperId',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "storageOrderId",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'storageOrderId',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint64",
-                        "name": "offerVersion",
-                        "type": "uint64"
+                        internalType: 'uint64',
+                        name: 'offerVersion',
+                        type: 'uint64'
                     },
                     {
-                        "internalType": "uint32",
-                        "name": "timestamp",
-                        "type": "uint32"
+                        internalType: 'uint32',
+                        name: 'timestamp',
+                        type: 'uint32'
                     },
                     {
-                        "internalType": "uint32",
-                        "name": "signedTime",
-                        "type": "uint32"
+                        internalType: 'uint32',
+                        name: 'signedTime',
+                        type: 'uint32'
                     },
                     {
-                        "components": [
+                        components: [
                             {
-                                "internalType": "string",
-                                "name": "der",
-                                "type": "string"
+                                internalType: 'string',
+                                name: 'der',
+                                type: 'string'
                             },
                             {
-                                "internalType": "bytes32",
-                                "name": "r",
-                                "type": "bytes32"
+                                internalType: 'bytes32',
+                                name: 'r',
+                                type: 'bytes32'
                             },
                             {
-                                "internalType": "bytes32",
-                                "name": "s",
-                                "type": "bytes32"
+                                internalType: 'bytes32',
+                                name: 's',
+                                type: 'bytes32'
                             },
                             {
-                                "internalType": "uint8",
-                                "name": "v",
-                                "type": "uint8"
+                                internalType: 'uint8',
+                                name: 'v',
+                                type: 'uint8'
                             }
                         ],
-                        "internalType": "struct Signature",
-                        "name": "signature",
-                        "type": "tuple"
+                        internalType: 'struct Signature',
+                        name: 'signature',
+                        type: 'tuple'
                     },
                     {
-                        "internalType": "string",
-                        "name": "signedEncryptedData",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'signedEncryptedData',
+                        type: 'string'
                     },
                     {
-                        "internalType": "enum OfferType",
-                        "name": "offerType",
-                        "type": "uint8"
+                        internalType: 'enum OfferType',
+                        name: 'offerType',
+                        type: 'uint8'
                     },
                     {
-                        "internalType": "string",
-                        "name": "solutionHash",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'solutionHash',
+                        type: 'string'
                     },
                     {
-                        "internalType": "bool",
-                        "name": "previousDataCopied",
-                        "type": "bool"
+                        internalType: 'bool',
+                        name: 'previousDataCopied',
+                        type: 'bool'
                     }
                 ],
-                "internalType": "struct OfferResource[]",
-                "name": "",
-                "type": "tuple[]"
+                internalType: 'struct OfferResource[]',
+                name: '',
+                type: 'tuple[]'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "teeKeeperId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'teeKeeperId',
+                type: 'uint256'
             }
         ],
-        "name": "getOfferResourcesCountByKeeperId",
-        "outputs": [
+        name: 'getOfferResourcesCountByKeeperId',
+        outputs: [
             {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'offerId',
+                type: 'uint256'
             },
             {
-                "internalType": "uint32",
-                "name": "offerVersion",
-                "type": "uint32"
+                internalType: 'uint32',
+                name: 'offerVersion',
+                type: 'uint32'
             }
         ],
-        "name": "getReplicationFactorFulfilled",
-        "outputs": [
+        name: 'getReplicationFactorFulfilled',
+        outputs: [
             {
-                "internalType": "uint32",
-                "name": "",
-                "type": "uint32"
+                internalType: 'uint32',
+                name: '',
+                type: 'uint32'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "uint256",
-                        "name": "offerId",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'offerId',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "teeOfferIssuerId",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'teeOfferIssuerId',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "teeOfferKeeperId",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'teeOfferKeeperId',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "storageOrderId",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'storageOrderId',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint64",
-                        "name": "offerVersion",
-                        "type": "uint64"
+                        internalType: 'uint64',
+                        name: 'offerVersion',
+                        type: 'uint64'
                     },
                     {
-                        "internalType": "uint32",
-                        "name": "timestamp",
-                        "type": "uint32"
+                        internalType: 'uint32',
+                        name: 'timestamp',
+                        type: 'uint32'
                     },
                     {
-                        "internalType": "uint32",
-                        "name": "signedTime",
-                        "type": "uint32"
+                        internalType: 'uint32',
+                        name: 'signedTime',
+                        type: 'uint32'
                     },
                     {
-                        "components": [
+                        components: [
                             {
-                                "internalType": "string",
-                                "name": "der",
-                                "type": "string"
+                                internalType: 'string',
+                                name: 'der',
+                                type: 'string'
                             },
                             {
-                                "internalType": "bytes32",
-                                "name": "r",
-                                "type": "bytes32"
+                                internalType: 'bytes32',
+                                name: 'r',
+                                type: 'bytes32'
                             },
                             {
-                                "internalType": "bytes32",
-                                "name": "s",
-                                "type": "bytes32"
+                                internalType: 'bytes32',
+                                name: 's',
+                                type: 'bytes32'
                             },
                             {
-                                "internalType": "uint8",
-                                "name": "v",
-                                "type": "uint8"
+                                internalType: 'uint8',
+                                name: 'v',
+                                type: 'uint8'
                             }
                         ],
-                        "internalType": "struct Signature",
-                        "name": "signature",
-                        "type": "tuple"
+                        internalType: 'struct Signature',
+                        name: 'signature',
+                        type: 'tuple'
                     },
                     {
-                        "internalType": "string",
-                        "name": "signedEncryptedData",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'signedEncryptedData',
+                        type: 'string'
                     },
                     {
-                        "internalType": "enum OfferType",
-                        "name": "offerType",
-                        "type": "uint8"
+                        internalType: 'enum OfferType',
+                        name: 'offerType',
+                        type: 'uint8'
                     },
                     {
-                        "internalType": "string",
-                        "name": "solutionHash",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'solutionHash',
+                        type: 'string'
                     },
                     {
-                        "internalType": "bool",
-                        "name": "previousDataCopied",
-                        "type": "bool"
+                        internalType: 'bool',
+                        name: 'previousDataCopied',
+                        type: 'bool'
                     }
                 ],
-                "internalType": "struct OfferResource",
-                "name": "resource",
-                "type": "tuple"
+                internalType: 'struct OfferResource',
+                name: 'resource',
+                type: 'tuple'
             },
             {
-                "internalType": "uint32",
-                "name": "n",
-                "type": "uint32"
+                internalType: 'uint32',
+                name: 'n',
+                type: 'uint32'
             }
         ],
-        "name": "incrementReplicationFactor",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'incrementReplicationFactor',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "uint256",
-                        "name": "offerId",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'offerId',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "teeOfferIssuerId",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'teeOfferIssuerId',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "teeOfferKeeperId",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'teeOfferKeeperId',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "storageOrderId",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'storageOrderId',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint64",
-                        "name": "offerVersion",
-                        "type": "uint64"
+                        internalType: 'uint64',
+                        name: 'offerVersion',
+                        type: 'uint64'
                     },
                     {
-                        "internalType": "uint32",
-                        "name": "timestamp",
-                        "type": "uint32"
+                        internalType: 'uint32',
+                        name: 'timestamp',
+                        type: 'uint32'
                     },
                     {
-                        "internalType": "uint32",
-                        "name": "signedTime",
-                        "type": "uint32"
+                        internalType: 'uint32',
+                        name: 'signedTime',
+                        type: 'uint32'
                     },
                     {
-                        "components": [
+                        components: [
                             {
-                                "internalType": "string",
-                                "name": "der",
-                                "type": "string"
+                                internalType: 'string',
+                                name: 'der',
+                                type: 'string'
                             },
                             {
-                                "internalType": "bytes32",
-                                "name": "r",
-                                "type": "bytes32"
+                                internalType: 'bytes32',
+                                name: 'r',
+                                type: 'bytes32'
                             },
                             {
-                                "internalType": "bytes32",
-                                "name": "s",
-                                "type": "bytes32"
+                                internalType: 'bytes32',
+                                name: 's',
+                                type: 'bytes32'
                             },
                             {
-                                "internalType": "uint8",
-                                "name": "v",
-                                "type": "uint8"
+                                internalType: 'uint8',
+                                name: 'v',
+                                type: 'uint8'
                             }
                         ],
-                        "internalType": "struct Signature",
-                        "name": "signature",
-                        "type": "tuple"
+                        internalType: 'struct Signature',
+                        name: 'signature',
+                        type: 'tuple'
                     },
                     {
-                        "internalType": "string",
-                        "name": "signedEncryptedData",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'signedEncryptedData',
+                        type: 'string'
                     },
                     {
-                        "internalType": "enum OfferType",
-                        "name": "offerType",
-                        "type": "uint8"
+                        internalType: 'enum OfferType',
+                        name: 'offerType',
+                        type: 'uint8'
                     },
                     {
-                        "internalType": "string",
-                        "name": "solutionHash",
-                        "type": "string"
+                        internalType: 'string',
+                        name: 'solutionHash',
+                        type: 'string'
                     },
                     {
-                        "internalType": "bool",
-                        "name": "previousDataCopied",
-                        "type": "bool"
+                        internalType: 'bool',
+                        name: 'previousDataCopied',
+                        type: 'bool'
                     }
                 ],
-                "internalType": "struct OfferResource",
-                "name": "resource",
-                "type": "tuple"
-            },
-            {
-                "internalType": "uint32",
-                "name": "n",
-                "type": "uint32"
+                internalType: 'struct OfferResource',
+                name: 'resource',
+                type: 'tuple'
             }
         ],
-        "name": "incrementReplicationFactor",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'setOfferResource',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "components": [
+                internalType: 'uint256',
+                name: 'offerId',
+                type: 'uint256'
+            },
+            {
+                internalType: 'uint32',
+                name: 'offerVersion',
+                type: 'uint32'
+            }
+        ],
+        name: 'getStorageOrdersAllocated',
+        outputs: [
+            {
+                components: [
                     {
-                        "internalType": "uint256",
-                        "name": "offerId",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'teeOfferIssuerId',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "teeOfferIssuerId",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'storageOrderId',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "teeOfferKeeperId",
-                        "type": "uint256"
+                        internalType: 'uint32',
+                        name: 'distributionReplicationFactor',
+                        type: 'uint32'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "storageOrderId",
-                        "type": "uint256"
+                        internalType: 'uint32',
+                        name: 'timestamp',
+                        type: 'uint32'
                     },
                     {
-                        "internalType": "uint64",
-                        "name": "offerVersion",
-                        "type": "uint64"
+                        internalType: 'uint64',
+                        name: 'offerVersion',
+                        type: 'uint64'
                     },
                     {
-                        "internalType": "uint32",
-                        "name": "timestamp",
-                        "type": "uint32"
-                    },
-                    {
-                        "internalType": "uint32",
-                        "name": "signedTime",
-                        "type": "uint32"
-                    },
-                    {
-                        "components": [
-                            {
-                                "internalType": "string",
-                                "name": "der",
-                                "type": "string"
-                            },
-                            {
-                                "internalType": "bytes32",
-                                "name": "r",
-                                "type": "bytes32"
-                            },
-                            {
-                                "internalType": "bytes32",
-                                "name": "s",
-                                "type": "bytes32"
-                            },
-                            {
-                                "internalType": "uint8",
-                                "name": "v",
-                                "type": "uint8"
-                            }
-                        ],
-                        "internalType": "struct Signature",
-                        "name": "signature",
-                        "type": "tuple"
-                    },
-                    {
-                        "internalType": "string",
-                        "name": "signedEncryptedData",
-                        "type": "string"
-                    },
-                    {
-                        "internalType": "enum OfferType",
-                        "name": "offerType",
-                        "type": "uint8"
-                    },
-                    {
-                        "internalType": "string",
-                        "name": "solutionHash",
-                        "type": "string"
+                        internalType: 'uint256',
+                        name: 'offerId',
+                        type: 'uint256'
                     }
                 ],
-                "internalType": "struct OfferResource",
-                "name": "resource",
-                "type": "tuple"
+                internalType: 'struct OfferStorageAllocated',
+                name: '',
+                type: 'tuple'
             }
         ],
-        "name": "setOfferResource",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint32",
-                "name": "offerVersion",
-                "type": "uint32"
+                internalType: 'uint256',
+                name: 'teeOfferIssurId',
+                type: 'uint256'
             }
         ],
-        "name": "getStorageOrdersAllocated",
-        "outputs": [
+        name: 'getStorageOrdersAllocatedByIssuer',
+        outputs: [
             {
-                "components": [
+                components: [
                     {
-                        "internalType": "uint256",
-                        "name": "teeOfferIssuerId",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'teeOfferIssuerId',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "storageOrderId",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'storageOrderId',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint32",
-                        "name": "distributionReplicationFactor",
-                        "type": "uint32"
+                        internalType: 'uint32',
+                        name: 'distributionReplicationFactor',
+                        type: 'uint32'
                     },
                     {
-                        "internalType": "uint32",
-                        "name": "timestamp",
-                        "type": "uint32"
+                        internalType: 'uint32',
+                        name: 'timestamp',
+                        type: 'uint32'
                     },
                     {
-                        "internalType": "uint64",
-                        "name": "offerVersion",
-                        "type": "uint64"
+                        internalType: 'uint64',
+                        name: 'offerVersion',
+                        type: 'uint64'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "offerId",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'offerId',
+                        type: 'uint256'
                     }
                 ],
-                "internalType": "struct OfferStorageAllocated",
-                "name": "",
-                "type": "tuple"
+                internalType: 'struct OfferStorageAllocated[]',
+                name: '',
+                type: 'tuple[]'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        anonymous: false,
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "teeOfferIssurId",
-                "type": "uint256"
+                indexed: true,
+                internalType: 'uint256',
+                name: 'offerId',
+                type: 'uint256'
+            },
+            {
+                indexed: true,
+                internalType: 'uint64',
+                name: 'offerVersion',
+                type: 'uint64'
             }
         ],
-        "name": "getStorageOrdersAllocatedByIssuer",
-        "outputs": [
+        name: 'OfferStorageRequestCanceled',
+        type: 'event'
+    },
+    {
+        anonymous: false,
+        inputs: [
             {
-                "components": [
+                indexed: true,
+                internalType: 'uint256',
+                name: 'offerId',
+                type: 'uint256'
+            },
+            {
+                indexed: true,
+                internalType: 'uint64',
+                name: 'offerVersion',
+                type: 'uint64'
+            },
+            {
+                indexed: true,
+                internalType: 'uint256',
+                name: 'teeOfferIssuerId',
+                type: 'uint256'
+            }
+        ],
+        name: 'OfferStorageRequestCreated',
+        type: 'event'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'uint256',
+                name: 'offerId',
+                type: 'uint256'
+            },
+            {
+                internalType: 'uint64',
+                name: 'version',
+                type: 'uint64'
+            }
+        ],
+        name: 'cancelOfferStorageRequest',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'uint256',
+                name: 'teeOfferIssuerId',
+                type: 'uint256'
+            }
+        ],
+        name: 'getOfferStorageRequestsCountByIssuerId',
+        outputs: [
+            {
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'uint256',
+                name: 'teeOfferIssuerId',
+                type: 'uint256'
+            }
+        ],
+        name: 'getOffersStorageRequestsByIssuerId',
+        outputs: [
+            {
+                components: [
                     {
-                        "internalType": "uint256",
-                        "name": "teeOfferIssuerId",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'offerId',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "storageOrderId",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'teeOfferIssuerId',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint32",
-                        "name": "distributionReplicationFactor",
-                        "type": "uint32"
+                        internalType: 'uint256',
+                        name: 'storageOfferId',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint32",
-                        "name": "timestamp",
-                        "type": "uint32"
+                        internalType: 'uint256',
+                        name: 'storageSlotId',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint64",
-                        "name": "offerVersion",
-                        "type": "uint64"
+                        internalType: 'uint256',
+                        name: 'deposit',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "offerId",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'orderId',
+                        type: 'uint256'
+                    },
+                    {
+                        internalType: 'uint64',
+                        name: 'offerVersion',
+                        type: 'uint64'
+                    },
+                    {
+                        internalType: 'uint32',
+                        name: 'replicationFactor',
+                        type: 'uint32'
+                    },
+                    {
+                        internalType: 'uint32',
+                        name: 'timestamp',
+                        type: 'uint32'
+                    },
+                    {
+                        internalType: 'bool',
+                        name: 'copyPreviousData',
+                        type: 'bool'
                     }
                 ],
-                "internalType": "struct OfferStorageAllocated[]",
-                "name": "",
-                "type": "tuple[]"
+                internalType: 'struct OfferStorageRequest[]',
+                name: '',
+                type: 'tuple[]'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "anonymous": false,
-        "inputs": [
+        inputs: [
             {
-                "indexed": true,
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'offerId',
+                type: 'uint256'
             },
             {
-                "indexed": true,
-                "internalType": "uint64",
-                "name": "offerVersion",
-                "type": "uint64"
+                internalType: 'uint64',
+                name: 'version',
+                type: 'uint64'
             }
         ],
-        "name": "OfferStorageRequestCanceled",
-        "type": "event"
-    },
-    {
-        "anonymous": false,
-        "inputs": [
+        name: 'getOffersStorageRequestsByOfferVersion',
+        outputs: [
             {
-                "indexed": true,
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
-            },
-            {
-                "indexed": true,
-                "internalType": "uint64",
-                "name": "offerVersion",
-                "type": "uint64"
-            },
-            {
-                "indexed": true,
-                "internalType": "uint256",
-                "name": "teeOfferIssuerId",
-                "type": "uint256"
-            }
-        ],
-        "name": "OfferStorageRequestCreated",
-        "type": "event"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint64",
-                "name": "version",
-                "type": "uint64"
-            }
-        ],
-        "name": "cancelOfferStorageRequest",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "teeOfferIssuerId",
-                "type": "uint256"
-            }
-        ],
-        "name": "getOfferStorageRequestsCountByIssuerId",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "teeOfferIssuerId",
-                "type": "uint256"
-            }
-        ],
-        "name": "getOffersStorageRequestsByIssuerId",
-        "outputs": [
-            {
-                "components": [
+                components: [
                     {
-                        "internalType": "uint256",
-                        "name": "offerId",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'offerId',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "teeOfferIssuerId",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'teeOfferIssuerId',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "storageOfferId",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'storageOfferId',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "storageSlotId",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'storageSlotId',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "deposit",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'deposit',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "orderId",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'orderId',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint64",
-                        "name": "offerVersion",
-                        "type": "uint64"
+                        internalType: 'uint64',
+                        name: 'offerVersion',
+                        type: 'uint64'
                     },
                     {
-                        "internalType": "uint32",
-                        "name": "replicationFactor",
-                        "type": "uint32"
+                        internalType: 'uint32',
+                        name: 'replicationFactor',
+                        type: 'uint32'
                     },
                     {
-                        "internalType": "uint32",
-                        "name": "timestamp",
-                        "type": "uint32"
+                        internalType: 'uint32',
+                        name: 'timestamp',
+                        type: 'uint32'
                     },
                     {
-                        "internalType": "bool",
-                        "name": "copyPreviousData",
-                        "type": "bool"
+                        internalType: 'bool',
+                        name: 'copyPreviousData',
+                        type: 'bool'
                     }
                 ],
-                "internalType": "struct OfferStorageRequest[]",
-                "name": "",
-                "type": "tuple[]"
+                internalType: 'struct OfferStorageRequest',
+                name: '',
+                type: 'tuple'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
+                components: [
+                    {
+                        internalType: 'uint256',
+                        name: 'offerId',
+                        type: 'uint256'
+                    },
+                    {
+                        internalType: 'uint256',
+                        name: 'teeOfferIssuerId',
+                        type: 'uint256'
+                    },
+                    {
+                        internalType: 'uint256',
+                        name: 'storageOfferId',
+                        type: 'uint256'
+                    },
+                    {
+                        internalType: 'uint256',
+                        name: 'storageSlotId',
+                        type: 'uint256'
+                    },
+                    {
+                        internalType: 'uint256',
+                        name: 'deposit',
+                        type: 'uint256'
+                    },
+                    {
+                        internalType: 'uint256',
+                        name: 'orderId',
+                        type: 'uint256'
+                    },
+                    {
+                        internalType: 'uint64',
+                        name: 'offerVersion',
+                        type: 'uint64'
+                    },
+                    {
+                        internalType: 'uint32',
+                        name: 'replicationFactor',
+                        type: 'uint32'
+                    },
+                    {
+                        internalType: 'uint32',
+                        name: 'timestamp',
+                        type: 'uint32'
+                    },
+                    {
+                        internalType: 'bool',
+                        name: 'copyPreviousData',
+                        type: 'bool'
+                    }
+                ],
+                internalType: 'struct OfferStorageRequest',
+                name: 'request',
+                type: 'tuple'
+            }
+        ],
+        name: 'setOffersStorageRequest',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
+    },
+    {
+        anonymous: false,
+        inputs: [
+            {
+                indexed: true,
+                internalType: 'uint256',
+                name: 'secretRequestorId',
+                type: 'uint256'
             },
             {
-                "internalType": "uint64",
-                "name": "version",
-                "type": "uint64"
-            }
-        ],
-        "name": "getOffersStorageRequestsByOfferVersion",
-        "outputs": [
-            {
-                "components": [
-                    {
-                        "internalType": "uint256",
-                        "name": "offerId",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "teeOfferIssuerId",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "storageOfferId",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "storageSlotId",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "deposit",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "orderId",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint64",
-                        "name": "offerVersion",
-                        "type": "uint64"
-                    },
-                    {
-                        "internalType": "uint32",
-                        "name": "replicationFactor",
-                        "type": "uint32"
-                    },
-                    {
-                        "internalType": "uint32",
-                        "name": "timestamp",
-                        "type": "uint32"
-                    },
-                    {
-                        "internalType": "bool",
-                        "name": "copyPreviousData",
-                        "type": "bool"
-                    }
-                ],
-                "internalType": "struct OfferStorageRequest",
-                "name": "",
-                "type": "tuple"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "components": [
-                    {
-                        "internalType": "uint256",
-                        "name": "offerId",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "teeOfferIssuerId",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "storageOfferId",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "storageSlotId",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "deposit",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "orderId",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint64",
-                        "name": "offerVersion",
-                        "type": "uint64"
-                    },
-                    {
-                        "internalType": "uint32",
-                        "name": "replicationFactor",
-                        "type": "uint32"
-                    },
-                    {
-                        "internalType": "uint32",
-                        "name": "timestamp",
-                        "type": "uint32"
-                    },
-                    {
-                        "internalType": "bool",
-                        "name": "copyPreviousData",
-                        "type": "bool"
-                    }
-                ],
-                "internalType": "struct OfferStorageRequest",
-                "name": "request",
-                "type": "tuple"
-            }
-        ],
-        "name": "setOffersStorageRequest",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "anonymous": false,
-        "inputs": [
-            {
-                "indexed": true,
-                "internalType": "uint256",
-                "name": "secretRequestorId",
-                "type": "uint256"
+                indexed: true,
+                internalType: 'uint256',
+                name: 'secretKeeperId',
+                type: 'uint256'
             },
             {
-                "indexed": true,
-                "internalType": "uint256",
-                "name": "secretKeeperId",
-                "type": "uint256"
+                indexed: true,
+                internalType: 'uint256',
+                name: 'offerId',
+                type: 'uint256'
             },
             {
-                "indexed": true,
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
+                indexed: false,
+                internalType: 'uint64',
+                name: 'offerVersion',
+                type: 'uint64'
+            }
+        ],
+        name: 'SecretRequestCreated',
+        type: 'event'
+    },
+    {
+        inputs: [
+            {
+                components: [
+                    {
+                        internalType: 'uint256',
+                        name: 'secretKeeperId',
+                        type: 'uint256'
+                    },
+                    {
+                        internalType: 'uint256',
+                        name: 'secretRequestorId',
+                        type: 'uint256'
+                    },
+                    {
+                        internalType: 'uint256',
+                        name: 'offerId',
+                        type: 'uint256'
+                    },
+                    {
+                        internalType: 'uint64',
+                        name: 'offerVersion',
+                        type: 'uint64'
+                    },
+                    {
+                        internalType: 'uint32',
+                        name: 'timestamp',
+                        type: 'uint32'
+                    }
+                ],
+                internalType: 'struct SecretRequest',
+                name: 'request',
+                type: 'tuple'
+            }
+        ],
+        name: 'cancelSecretRequest',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'uint256',
+                name: 'teeOfferKeeperId',
+                type: 'uint256'
+            }
+        ],
+        name: 'clearSecretRequests',
+        outputs: [
+            {
+                internalType: 'bool',
+                name: '',
+                type: 'bool'
+            }
+        ],
+        stateMutability: 'nonpayable',
+        type: 'function'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'uint256',
+                name: 'teeOfferKeeperId',
+                type: 'uint256'
+            }
+        ],
+        name: 'getSecretRequestsByKeeperId',
+        outputs: [
+            {
+                components: [
+                    {
+                        internalType: 'uint256',
+                        name: 'secretKeeperId',
+                        type: 'uint256'
+                    },
+                    {
+                        internalType: 'uint256',
+                        name: 'secretRequestorId',
+                        type: 'uint256'
+                    },
+                    {
+                        internalType: 'uint256',
+                        name: 'offerId',
+                        type: 'uint256'
+                    },
+                    {
+                        internalType: 'uint64',
+                        name: 'offerVersion',
+                        type: 'uint64'
+                    },
+                    {
+                        internalType: 'uint32',
+                        name: 'timestamp',
+                        type: 'uint32'
+                    }
+                ],
+                internalType: 'struct SecretRequest[]',
+                name: '',
+                type: 'tuple[]'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'uint256',
+                name: 'teeOfferRequestorId',
+                type: 'uint256'
+            }
+        ],
+        name: 'getSecretRequestsByRequestorId',
+        outputs: [
+            {
+                components: [
+                    {
+                        internalType: 'uint256',
+                        name: 'secretKeeperId',
+                        type: 'uint256'
+                    },
+                    {
+                        internalType: 'uint256',
+                        name: 'secretRequestorId',
+                        type: 'uint256'
+                    },
+                    {
+                        internalType: 'uint256',
+                        name: 'offerId',
+                        type: 'uint256'
+                    },
+                    {
+                        internalType: 'uint64',
+                        name: 'offerVersion',
+                        type: 'uint64'
+                    },
+                    {
+                        internalType: 'uint32',
+                        name: 'timestamp',
+                        type: 'uint32'
+                    }
+                ],
+                internalType: 'struct SecretRequest[]',
+                name: '',
+                type: 'tuple[]'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'uint256',
+                name: 'teeOfferKeeperId',
+                type: 'uint256'
+            }
+        ],
+        name: 'getSecretRequestsCountByKeeperId',
+        outputs: [
+            {
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'uint256',
+                name: 'teeOfferRequestorId',
+                type: 'uint256'
+            }
+        ],
+        name: 'getSecretRequestsCountByRequestorId',
+        outputs: [
+            {
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [
+            {
+                components: [
+                    {
+                        internalType: 'uint256',
+                        name: 'secretKeeperId',
+                        type: 'uint256'
+                    },
+                    {
+                        internalType: 'uint256',
+                        name: 'secretRequestorId',
+                        type: 'uint256'
+                    },
+                    {
+                        internalType: 'uint256',
+                        name: 'offerId',
+                        type: 'uint256'
+                    },
+                    {
+                        internalType: 'uint64',
+                        name: 'offerVersion',
+                        type: 'uint64'
+                    },
+                    {
+                        internalType: 'uint32',
+                        name: 'timestamp',
+                        type: 'uint32'
+                    }
+                ],
+                internalType: 'struct SecretRequest',
+                name: 'request',
+                type: 'tuple'
+            }
+        ],
+        name: 'setSecretRequest',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'address',
+                name: 'sender',
+                type: 'address'
             },
             {
-                "indexed": false,
-                "internalType": "uint64",
-                "name": "offerVersion",
-                "type": "uint64"
-            }
-        ],
-        "name": "SecretRequestCreated",
-        "type": "event"
-    },
-    {
-        "inputs": [
-            {
-                "components": [
+                components: [
                     {
-                        "internalType": "uint256",
-                        "name": "secretKeeperId",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'secretKeeperId',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "secretRequestorId",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'secretRequestorId',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "offerId",
-                        "type": "uint256"
+                        internalType: 'uint256',
+                        name: 'offerId',
+                        type: 'uint256'
                     },
                     {
-                        "internalType": "uint64",
-                        "name": "offerVersion",
-                        "type": "uint64"
+                        internalType: 'uint64',
+                        name: 'offerVersion',
+                        type: 'uint64'
                     },
                     {
-                        "internalType": "uint32",
-                        "name": "timestamp",
-                        "type": "uint32"
+                        internalType: 'uint32',
+                        name: 'timestamp',
+                        type: 'uint32'
                     }
                 ],
-                "internalType": "struct SecretRequest",
-                "name": "request",
-                "type": "tuple"
+                internalType: 'struct SecretRequest',
+                name: 'request',
+                type: 'tuple'
             }
         ],
-        "name": "cancelSecretRequest",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'setSecretRequestByApp',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "teeOfferKeeperId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'tcbId',
+                type: 'uint256'
             }
         ],
-        "name": "clearSecretRequests",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
-            }
-        ],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'updateLastBlocks',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "teeOfferKeeperId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'tcbId',
+                type: 'uint256'
             }
         ],
-        "name": "getSecretRequestsByKeeperId",
-        "outputs": [
-            {
-                "components": [
-                    {
-                        "internalType": "uint256",
-                        "name": "secretKeeperId",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "secretRequestorId",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "offerId",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint64",
-                        "name": "offerVersion",
-                        "type": "uint64"
-                    },
-                    {
-                        "internalType": "uint32",
-                        "name": "timestamp",
-                        "type": "uint32"
-                    }
-                ],
-                "internalType": "struct SecretRequest[]",
-                "name": "",
-                "type": "tuple[]"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
+        name: 'updateSuspicious',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "teeOfferRequestorId",
-                "type": "uint256"
-            }
-        ],
-        "name": "getSecretRequestsByRequestorId",
-        "outputs": [
-            {
-                "components": [
-                    {
-                        "internalType": "uint256",
-                        "name": "secretKeeperId",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "secretRequestorId",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "offerId",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint64",
-                        "name": "offerVersion",
-                        "type": "uint64"
-                    },
-                    {
-                        "internalType": "uint32",
-                        "name": "timestamp",
-                        "type": "uint32"
-                    }
-                ],
-                "internalType": "struct SecretRequest[]",
-                "name": "",
-                "type": "tuple[]"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "teeOfferKeeperId",
-                "type": "uint256"
-            }
-        ],
-        "name": "getSecretRequestsCountByKeeperId",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "teeOfferRequestorId",
-                "type": "uint256"
-            }
-        ],
-        "name": "getSecretRequestsCountByRequestorId",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "components": [
-                    {
-                        "internalType": "uint256",
-                        "name": "secretKeeperId",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "secretRequestorId",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "offerId",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint64",
-                        "name": "offerVersion",
-                        "type": "uint64"
-                    },
-                    {
-                        "internalType": "uint32",
-                        "name": "timestamp",
-                        "type": "uint32"
-                    }
-                ],
-                "internalType": "struct SecretRequest",
-                "name": "request",
-                "type": "tuple"
-            }
-        ],
-        "name": "setSecretRequest",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "sender",
-                "type": "address"
+                internalType: 'address',
+                name: 'sender',
+                type: 'address'
             },
             {
-                "components": [
-                    {
-                        "internalType": "uint256",
-                        "name": "secretKeeperId",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "secretRequestorId",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "offerId",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint64",
-                        "name": "offerVersion",
-                        "type": "uint64"
-                    },
-                    {
-                        "internalType": "uint32",
-                        "name": "timestamp",
-                        "type": "uint32"
-                    }
-                ],
-                "internalType": "struct SecretRequest",
-                "name": "request",
-                "type": "tuple"
+                internalType: 'uint256',
+                name: 'orderId',
+                type: 'uint256'
             }
         ],
-        "name": "setSecretRequestByApp",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'withdrawChangeByApp',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "tcbId",
-                "type": "uint256"
+                internalType: 'address',
+                name: 'providerAuth',
+                type: 'address'
             }
         ],
-        "name": "updateLastBlocks",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'confiscateSecurityDeposit',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "tcbId",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'item',
+                type: 'uint256'
             }
         ],
-        "name": "updateSuspicious",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'add',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "sender",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
-            }
-        ],
-        "name": "withdrawChangeByApp",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        inputs: [],
+        name: 'clear',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [],
+        name: 'getAll',
+        outputs: [
             {
-                "internalType": "address",
-                "name": "providerAuth",
-                "type": "address"
+                internalType: 'uint256[]',
+                name: '',
+                type: 'uint256[]'
             }
         ],
-        "name": "confiscateSecurityDeposit",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "item",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'item',
+                type: 'uint256'
             }
         ],
-        "name": "add",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'getItemIndex',
+        outputs: [
+            {
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [],
-        "name": "clear",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        inputs: [],
+        name: 'isEmpty',
+        outputs: [
+            {
+                internalType: 'bool',
+                name: '',
+                type: 'bool'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [],
-        "name": "getAll",
-        "outputs": [
+        inputs: [
             {
-                "internalType": "uint256[]",
-                "name": "",
-                "type": "uint256[]"
+                internalType: 'uint256',
+                name: 'item',
+                type: 'uint256'
             }
         ],
-        "stateMutability": "view",
-        "type": "function"
+        name: 'isExists',
+        outputs: [
+            {
+                internalType: 'bool',
+                name: '',
+                type: 'bool'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
     },
     {
-        "inputs": [
+        inputs: [
             {
-                "internalType": "uint256",
-                "name": "item",
-                "type": "uint256"
+                internalType: 'uint256',
+                name: 'item',
+                type: 'uint256'
             }
         ],
-        "name": "getItemIndex",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "isEmpty",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "item",
-                "type": "uint256"
-            }
-        ],
-        "name": "isExists",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "item",
-                "type": "uint256"
-            }
-        ],
-        "name": "remove",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        name: 'remove',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
     }
 ] as const; export default abi;

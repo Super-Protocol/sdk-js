@@ -3,4 +3,5 @@ export type SlotInfo = {
   ram: number;
   diskUsage: number;
   gpuCores: number;
+  vram: number;
 };

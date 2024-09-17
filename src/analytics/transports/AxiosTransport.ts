@@ -25,7 +25,7 @@ export default class AxiosTransport<Response> implements Transport<Response> {
           message: `${err.message}. Error details: ${util.inspect(err.response?.data.message, { compact: true })}`,
         });
       }
-      throw new AnalyticsError({ code: null, message: (err as Error)?.message })
+      throw new AnalyticsError({ code: null, message: (err as Error)?.message });
     }
   }
 }

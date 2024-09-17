@@ -1,4 +1,3 @@
-
 export type OptionInfo = {
   bandwidth: number;
   traffic: number;
@@ -7,4 +6,4 @@ export type OptionInfo = {
 
 export type OptionInfoRaw = {
   data: string;
-}
+};

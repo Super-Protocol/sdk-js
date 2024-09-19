@@ -64,7 +64,7 @@ export const uploadObjectToStorage = async (
     ? await OrderArgsHelper.encryptOrderArgs(data, encryption)
     : JSON.stringify(data);
   const dataForUpload = string2Stream(dataToUpload);
-  const storageProvider = getStorageProvider(params.access.write);
+  const storageProvider = getStorageProvider(access.write);
   await storageProvider.uploadFile(dataForUpload.stream, filepath, dataForUpload.size);
 
   return {

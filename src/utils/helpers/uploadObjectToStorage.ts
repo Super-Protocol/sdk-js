@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import { Readable } from 'stream';
 import { Encryption, ResourceType, StorageProviderResource } from '@super-protocol/dto-js';
 import { StorageAccess, getStorageProvider } from '../../index.js';
@@ -53,6 +54,10 @@ export const uploadObjectToStorage = async (
     access.read.credentials.prefix !== access.write.credentials.prefix
   ) {
     throw new Error('Invalid storage access configuration');
+  }
+
+  if (!_.isPlainObject(params.data)) {
+    throw new Error('Invalid input data to upload to storage');
   }
 
   const dataToUpload = encryption

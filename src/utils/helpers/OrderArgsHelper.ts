@@ -1,16 +1,13 @@
 import _ from 'lodash';
-import { Readable } from 'stream';
 import {
   Encryption,
-  ResourceType,
   StorageProviderResource,
   TeeOrderEncryptedArgs,
   TeeOrderEncryptedArgsConfiguration,
 } from '@super-protocol/dto-js';
 import Crypto from '../../crypto/index.js';
-import getStorageProvider from '../../providers/storage/getStorageProvider.js';
 import StorageAccess from '../../types/storage/StorageAccess.js';
-import { isNodeJS } from '../helper.js';
+import { uploadObjectToStorage } from './uploadObjectToStorage.js';
 
 const isStringArray = (item: unknown): item is string[] =>
   Array.isArray(item) && item.every(_.isString);
@@ -72,7 +69,7 @@ export class OrderArgsHelper {
     return totalElements > elementsCount;
   }
 
-  static async uploadToStorage(params: {
+  static uploadToStorage(params: {
     args: TeeOrderEncryptedArgs;
     key: string;
     access: {
@@ -82,53 +79,16 @@ export class OrderArgsHelper {
     encryption: Encryption;
   }): Promise<StorageProviderResource> {
     const { access, args, key, encryption } = params;
-    if (
-      access.read.storageType !== access.write.storageType ||
-      access.read.credentials.bucket !== access.write.credentials.bucket ||
-      access.read.credentials.prefix !== access.write.credentials.prefix
-    ) {
-      throw new Error('Invalid storage access configuration');
-    }
+
     if (!isEncryptedArgs(args)) {
       throw new Error('Invalid args for uploading');
     }
 
-    const string2Stream = (
-      data: string,
-    ): {
-      stream: Readable | Blob;
-      size: number;
-    } => {
-      const buffer = Buffer.from(data);
-
-      if (isNodeJS()) {
-        const stream = new Readable();
-        stream.push(buffer);
-        stream.push(null);
-
-        return {
-          stream,
-          size: buffer.length,
-        };
-      } else {
-        const blob = new Blob([buffer]);
-
-        return {
-          stream: blob,
-          size: blob.size,
-        };
-      }
-    };
-
-    const encryptedData = await OrderArgsHelper.encryptOrderArgs(args, encryption);
-    const dataForUpload = string2Stream(encryptedData);
-    const storageProvider = getStorageProvider(params.access.write);
-    await storageProvider.uploadFile(dataForUpload.stream, key, dataForUpload.size);
-
-    return {
-      ...access.read,
-      type: ResourceType.StorageProvider,
+    return uploadObjectToStorage({
+      data: args,
       filepath: key,
-    };
+      access,
+      encryption,
+    });
   }
 }

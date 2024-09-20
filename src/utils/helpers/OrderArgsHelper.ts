@@ -1,5 +1,12 @@
 import _ from 'lodash';
-import { Encryption, StorageProviderResource, TeeOrderEncryptedArgs } from '@super-protocol/dto-js';
+import {
+  Encoding,
+  Encryption,
+  Hash,
+  HashAlgorithm,
+  StorageProviderResource,
+  TeeOrderEncryptedArgs,
+} from '@super-protocol/dto-js';
 import Crypto from '../../crypto/index.js';
 import StorageAccess from '../../types/storage/StorageAccess.js';
 import { uploadObjectToStorage } from './uploadObjectToStorage.js';
@@ -29,6 +36,21 @@ const isEncryptedArgs = (arg: NonNullable<Record<string, unknown>>): boolean =>
       isStringArray(arg.solution) &&
       (!arg.configuration || isEncryptedData(arg.configuration)),
   );
+
+const sortArrayByHash = async (array: string[]): Promise<string[]> => {
+  const elementsWithHashes = await Promise.all(
+    array.map(async (element) => {
+      const hashObj = await Crypto.createHash(Buffer.from(element), {
+        algo: HashAlgorithm.SHA256,
+        encoding: Encoding.hex,
+      });
+
+      return { element, hash: hashObj.hash };
+    }),
+  );
+
+  return _.chain(elementsWithHashes).sortBy(['hash']).map('element').value();
+};
 
 export class OrderArgsHelper {
   static async decryptOrderArgs<T>(
@@ -82,6 +104,21 @@ export class OrderArgsHelper {
       filepath: key,
       access,
       encryption,
+    });
+  }
+
+  static async calculateArgsHash(args: TeeOrderEncryptedArgs): Promise<Hash> {
+    const entries = Object.entries(args);
+    const resultObject: Record<string, unknown> = {};
+    for (const [key, value] of _.sortBy(entries, [0])) {
+      if (isStringArray(value) && value.length > 1) {
+        resultObject[key] = await sortArrayByHash(value as string[]);
+      }
+    }
+
+    return Crypto.createHash(Buffer.from(JSON.stringify(resultObject)), {
+      algo: HashAlgorithm.SHA256,
+      encoding: Encoding.hex,
     });
   }
 }

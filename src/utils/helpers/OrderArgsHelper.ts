@@ -1,10 +1,5 @@
 import _ from 'lodash';
-import {
-  Encryption,
-  StorageProviderResource,
-  TeeOrderEncryptedArgs,
-  TeeOrderEncryptedArgsConfiguration,
-} from '@super-protocol/dto-js';
+import { Encryption, StorageProviderResource, TeeOrderEncryptedArgs } from '@super-protocol/dto-js';
 import Crypto from '../../crypto/index.js';
 import StorageAccess from '../../types/storage/StorageAccess.js';
 import { uploadObjectToStorage } from './uploadObjectToStorage.js';
@@ -12,19 +7,27 @@ import { uploadObjectToStorage } from './uploadObjectToStorage.js';
 const isStringArray = (item: unknown): item is string[] =>
   Array.isArray(item) && item.every(_.isString);
 
-const isEncryptedArgsConfiguration = (
-  arg: Record<string, unknown>,
-): arg is TeeOrderEncryptedArgsConfiguration =>
-  Boolean(_.isPlainObject(arg) && isStringArray(arg.data) && _.isPlainObject(arg.solution));
+const isEncryptedData = (arg: unknown): boolean => {
+  if (!_.isString(arg)) {
+    return false;
+  }
 
-const isEncryptedArgs = (arg: NonNullable<Record<string, unknown>>): arg is TeeOrderEncryptedArgs =>
+  try {
+    const encryption: Encryption = JSON.parse(arg);
+
+    return Boolean(encryption.encoding && encryption.algo && encryption.ciphertext);
+  } catch {
+    return false;
+  }
+};
+
+const isEncryptedArgs = (arg: NonNullable<Record<string, unknown>>): boolean =>
   Boolean(
     _.isPlainObject(arg) &&
       isStringArray(arg.data) &&
       isStringArray(arg.image) &&
       isStringArray(arg.solution) &&
-      (!arg.configuration ||
-        isEncryptedArgsConfiguration(arg.configuration as Record<string, unknown>)),
+      (!arg.configuration || isEncryptedData(arg.configuration)),
   );
 
 export class OrderArgsHelper {
@@ -51,22 +54,12 @@ export class OrderArgsHelper {
     return JSON.stringify(encryptedArgs);
   }
 
-  static hasMoreThanGivenElements(
-    args: Partial<TeeOrderEncryptedArgs>,
-    elementsCount = 2,
-  ): boolean {
-    let totalElements = 0;
-    const inc = (data: Array<unknown> | undefined): void => {
-      totalElements += data?.length ?? 0;
-    };
+  static isMoreThanGivenSize(args: Record<string, unknown>, sizeInBytes = 2.5 * 1024): boolean {
+    const serializedData = JSON.stringify(args);
+    const encoder = new TextEncoder();
+    const data = encoder.encode(serializedData);
 
-    inc(args.solution);
-    inc(args.data);
-    inc(args.image);
-    inc(args.configuration?.data);
-    totalElements += args.configuration?.solution ? 1 : 0;
-
-    return totalElements > elementsCount;
+    return data.length > sizeInBytes;
   }
 
   static uploadToStorage(params: {

@@ -113,7 +113,7 @@ class TeeOffers {
     await TxManager.execute(
       contract.methods.createTeeOffer(
         providerAuthorityAccount,
-        teeOfferInfo,
+        { ...teeOfferInfo, tlb_DEPRECATED: '' },
         teeOfferInfo.hardwareInfo.slotInfo,
         convertOptionInfoToRaw(teeOfferInfo.hardwareInfo.optionInfo),
         formattedExternalId,

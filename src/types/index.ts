@@ -6,6 +6,7 @@ export * from './Events.js';
 export * from './HardwareInfo.js';
 export * from './Marks.js';
 export * from './Offer.js';
+export * from './OfferVersion.js';
 export * from './OptionInfo.js';
 export * from './Order.js';
 export * from './OrderUsage.js';

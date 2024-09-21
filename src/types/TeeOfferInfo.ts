@@ -5,7 +5,6 @@ export type TeeOfferInfo = {
   description: string;
   teeType: string;
   properties: string;
-  tlb: string;
   argsPublicKey: string;
   hardwareInfo: HardwareInfo;
 };

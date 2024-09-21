@@ -14,8 +14,10 @@ export enum OrderStatus {
 }
 
 export type OrderArgs = {
-  inputOffers: BlockchainId[];
-  outputOffer: BlockchainId;
+  inputOffersIds: BlockchainId[];
+  outputOfferId: BlockchainId;
+  inputOffersVersions: number[];
+  outputOfferVersion: number;
 };
 
 export type OrderSlots = {
@@ -39,6 +41,7 @@ export type OrderInfo = {
   expectedPrice?: TokenAmount;
   maxPriceSlippage?: TokenAmount;
   args: OrderArgs;
+  offerVersion: number;
 };
 
 export type OrderInfoRaw = {
@@ -50,6 +53,7 @@ export type OrderInfoRaw = {
   externalId: string;
   expectedPrice: TokenAmount;
   maxPriceSlippage: TokenAmount;
+  offerVersion: number;
 };
 
 export const orderInfoToRaw = (orderInfo: OrderInfo): OrderInfoRaw => {
@@ -67,6 +71,7 @@ export const orderInfoToRaw = (orderInfo: OrderInfo): OrderInfoRaw => {
     externalId: formatBytes32String(orderInfo.externalId),
     expectedPrice: orderInfo.expectedPrice ?? '0',
     maxPriceSlippage: orderInfo.maxPriceSlippage ?? '0',
+    offerVersion: orderInfo.offerVersion,
   };
 };
 
@@ -91,6 +96,7 @@ export const orderInfoFromRaw = (orderInfoBch: OrderInfoRaw, args: OrderArgs): O
     status: orderInfoBch.status,
     externalId: parseBytes32String(orderInfoBch.externalId),
     args,
+    offerVersion: orderInfoBch.offerVersion,
   };
 };
 

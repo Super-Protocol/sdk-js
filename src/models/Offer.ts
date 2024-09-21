@@ -22,15 +22,17 @@ import {
   ValueOfferSlot,
   TransactionOptions,
   BlockchainId,
-  OfferRestrictions,
+  ValueOfferRestrictionsSpecification,
   TokenAmount,
   ValueOfferSlotRaw,
+  OfferVersionInfo,
+  OfferVersion,
 } from '../types/index.js';
 import { formatBytes32String } from 'ethers/lib/utils.js';
 import TeeOffers from '../staticModels/TeeOffers.js';
 import TxManager from '../utils/TxManager.js';
 import { tryWithInterval } from '../utils/helpers/index.js';
-import { BLOCKCHAIN_CALL_RETRY_INTERVAL, BLOCKCHAIN_CALL_RETRY_ATTEMPTS } from '../constants.js';
+import { BLOCKCHAIN_CALL_RETRY_INTERVAL, BLOCKCHAIN_CALL_RETRY_ATTEMPTS, DEFAULT_OFFER_VERSION } from '../constants.js';
 
 class Offer {
   private static contract: Contract<typeof abi>;
@@ -127,7 +129,11 @@ class Offer {
 
     const { restrictions, ...restInfo } = newInfo;
     await TxManager.execute(
-      Offer.contract.methods.setValueOfferInfo(this.id, restInfo, restrictions),
+      Offer.contract.methods.setValueOfferInfo(this.id, restInfo),
+      transactionOptions,
+    );
+    await TxManager.execute(
+      Offer.contract.methods.setValueOfferRestrictionsSpecification(this.id, restrictions),
       transactionOptions,
     );
     if (this.offerInfo) this.offerInfo = newInfo;
@@ -145,9 +151,11 @@ class Offer {
     this.offerInfo = cleanWeb3Data(info) as OfferInfo;
 
     const offerRestrictions = await Offer.contract.methods
-      .getOfferInitialRestrictions(this.id)
+      .getOfferRestrictionsSpecification(this.id)
       .call();
-    this.offerInfo.restrictions = cleanWeb3Data(offerRestrictions) as OfferRestrictions;
+    this.offerInfo.restrictions = cleanWeb3Data(
+      offerRestrictions,
+    ) as ValueOfferRestrictionsSpecification;
 
     return this.offerInfo;
   }
@@ -221,6 +229,25 @@ class Offer {
       .getCheapestValueOffersPrice(this.id)
       .call()
       .then((price) => convertBigIntToString(price) as TokenAmount);
+  }
+
+  /**
+   * Returns the offer version info.
+   */
+  @incrementMethodCall()
+  public async getVersion(version: number): Promise<OfferVersion> {
+    return await Offer.contract.methods
+      .getOfferVersion(this.id, version)
+      .call()
+      .then((offerVersion) => cleanWeb3Data(offerVersion) as OfferVersion);
+  }
+
+  /**
+   * Returns the offer version info.
+   */
+  @incrementMethodCall()
+  public async getVersionCount(): Promise<number> {
+    return await Offer.contract.methods.getOfferVersionsCount(this.id).call();
   }
 
   @incrementMethodCall()
@@ -344,13 +371,19 @@ class Offer {
 
     newSlotInfo = packSlotInfo(newSlotInfo, await TeeOffers.getDenominator());
     await TxManager.execute(
-      Offer.contract.methods.updateValueOfferSlot(
+      Offer.contract.methods.updateValueOfferSlotInfo(this.id, slotId, newSlotInfo),
+      transactionOptions,
+    );
+    await TxManager.execute(
+      Offer.contract.methods.updateValueOfferSlotOption(
         this.id,
         slotId,
-        newSlotInfo,
         convertOptionInfoToRaw(newOptionInfo),
-        newUsage,
       ),
+      transactionOptions,
+    );
+    await TxManager.execute(
+      Offer.contract.methods.updateValueOfferSlotUsage(this.id, slotId, newUsage),
       transactionOptions,
     );
   }
@@ -371,6 +404,45 @@ class Offer {
       Offer.contract.methods.deleteValueOfferSlot(this.id, slotId),
       transactionOptions,
     );
+  }
+
+  /**
+   * Function for add a new version to the value offer.
+   * @param newVersion - Version number
+   * @param versionInfo - Version info
+   * @param transactionOptions - object what contains alternative action account or gas limit (optional)
+   */
+  @incrementMethodCall()
+  public async setNewVersion(
+    newVersion: number,
+    versionInfo: OfferVersionInfo,
+    transactionOptions?: TransactionOptions,
+  ): Promise<void> {
+    checkIfActionAccountInitialized(transactionOptions);
+
+    const transactionCall = Offer.contract.methods.setOfferNewVersion(
+      this.id,
+      newVersion,
+      versionInfo,
+    );
+    await TxManager.execute(transactionCall, transactionOptions);
+  }
+
+  /**
+   * Functcion for deletion the version from the value offer.
+   * @param newVersion - Version number
+   * @param versionInfo - Version info
+   * @param transactionOptions - object what contains alternative action account or gas limit (optional)
+   */
+  @incrementMethodCall()
+  public async deleteVersion(
+    version: number,
+    transactionOptions?: TransactionOptions,
+  ): Promise<void> {
+    checkIfActionAccountInitialized(transactionOptions);
+
+    const transactionCall = Offer.contract.methods.deleteOfferVersion(this.id, version);
+    await TxManager.execute(transactionCall, transactionOptions);
   }
 
   /**
@@ -398,8 +470,13 @@ class Offer {
    * @param offerId - id of offer what needs to be checked
    */
   @incrementMethodCall()
-  public isRestrictionsPermitThatOffer(offerId: BlockchainId): Promise<boolean> {
-    return Offer.contract.methods.isOfferRestrictionsPermitOtherOffer(this.id, offerId).call();
+  public isRestrictionsPermitThatOffer(
+    offerId: BlockchainId,
+    offerVersion: number = DEFAULT_OFFER_VERSION,
+  ): Promise<boolean> {
+    return Offer.contract.methods
+      .isOfferRestrictionsPermitOtherOffer(this.id, offerId, offerVersion)
+      .call();
   }
 
   /**

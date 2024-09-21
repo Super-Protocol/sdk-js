@@ -1,4 +1,4 @@
-import { BlockchainId } from './Web3.js';
+import { BlockchainId } from '../types/index.js';
 
 export enum OfferType {
   TeeOffer = '0',
@@ -13,9 +13,10 @@ export enum OfferGroup {
   Output = '2',
 }
 
-export type OfferRestrictions = {
+export type ValueOfferRestrictionsSpecification = {
   offers: BlockchainId[];
   types: OfferType[];
+  versions: number[];
 };
 
 export type OfferInfo = {
@@ -33,5 +34,5 @@ export type OfferInfo = {
   linkage: string;
   hash: string;
   metadata: string;
-  restrictions: OfferRestrictions;
+  restrictions: ValueOfferRestrictionsSpecification;
 };

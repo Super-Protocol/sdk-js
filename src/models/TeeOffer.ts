@@ -22,6 +22,8 @@ import {
   TokenAmount,
   OptionInfoRaw,
   TeeOfferOptionRaw,
+  OfferVersionInfo,
+  OfferVersion,
 } from '../types/index.js';
 import { BlockchainConnector } from '../connectors/index.js';
 import TxManager from '../utils/TxManager.js';
@@ -115,8 +117,9 @@ class TeeOffer {
   @incrementMethodCall()
   public async getInfo(): Promise<TeeOfferInfo> {
     const { info } = await TeeOffer.contract.methods.getTeeOffer(this.id).call();
+    const { tlb_DEPRECATED: _tlb_DEPRECATED, ...offerInfo } = cleanWeb3Data(info);
 
-    this.offerInfo = cleanWeb3Data(info) as TeeOfferInfo;
+    this.offerInfo = offerInfo as TeeOfferInfo;
     this.offerInfo.hardwareInfo = cleanWeb3Data(await this.getHardwareInfo()) as HardwareInfo;
 
     return this.offerInfo;
@@ -216,12 +219,16 @@ class TeeOffer {
     checkIfActionAccountInitialized(transactionOptions);
 
     await TxManager.execute(
-      TeeOffer.contract.methods.updateOption(
+      TeeOffer.contract.methods.updateOptionInfo(
         this.id,
         optionId,
         convertOptionInfoToRaw(newInfo),
-        newUsage,
       ),
+      transactionOptions,
+    );
+
+    await TxManager.execute(
+      TeeOffer.contract.methods.updateOptionUsage(this.id, optionId, newUsage),
       transactionOptions,
     );
   }
@@ -308,6 +315,25 @@ class TeeOffer {
       tcbId: tcb.tcbId.toString(),
       tcbsForVerification,
     };
+  }
+
+  /**
+   * Returns the offer version info.
+   */
+  @incrementMethodCall()
+  public async getVersion(version: number): Promise<OfferVersion> {
+    return await TeeOffer.contract.methods
+      .getOfferVersion(this.id, version)
+      .call()
+      .then((offerVersion) => cleanWeb3Data(offerVersion) as OfferVersion);
+  }
+
+  /**
+   * Returns the offer version info.
+   */
+  @incrementMethodCall()
+  public async getVersionCount(): Promise<number> {
+    return await TeeOffer.contract.methods.getOfferVersionsCount(this.id).call();
   }
 
   /**
@@ -400,7 +426,11 @@ class TeeOffer {
 
     newInfo = packSlotInfo(newInfo, await TeeOffers.getDenominator());
     await TxManager.execute(
-      TeeOffer.contract.methods.updateTeeOfferSlot(this.id, slotId, newInfo, newUsage),
+      TeeOffer.contract.methods.updateTeeOfferSlotInfo(this.id, slotId, newInfo, newUsage),
+      transactionOptions,
+    );
+    await TxManager.execute(
+      TeeOffer.contract.methods.updateTeeOfferSlotUsage(this.id, slotId, newUsage),
       transactionOptions,
     );
   }
@@ -421,6 +451,46 @@ class TeeOffer {
       TeeOffer.contract.methods.deleteTeeOfferSlot(this.id, slotId),
       transactionOptions,
     );
+  }
+
+
+  /**
+   * Function for add a new version to the value offer.
+   * @param newVersion - Version number
+   * @param versionInfo - Version info
+   * @param transactionOptions - object what contains alternative action account or gas limit (optional)
+   */
+  @incrementMethodCall()
+  public async setNewVersion(
+    newVersion: number,
+    versionInfo: OfferVersionInfo,
+    transactionOptions?: TransactionOptions,
+  ): Promise<void> {
+    checkIfActionAccountInitialized(transactionOptions);
+
+    const transactionCall = TeeOffer.contract.methods.setOfferNewVersion(
+      this.id,
+      newVersion,
+      versionInfo,
+    );
+    await TxManager.execute(transactionCall, transactionOptions);
+  }
+
+  /**
+   * Functcion for deletion the version from the value offer.
+   * @param newVersion - Version number
+   * @param versionInfo - Version info
+   * @param transactionOptions - object what contains alternative action account or gas limit (optional)
+   */
+  @incrementMethodCall()
+  public async deleteVersion(
+    version: number,
+    transactionOptions?: TransactionOptions,
+  ): Promise<void> {
+    checkIfActionAccountInitialized(transactionOptions);
+
+    const transactionCall = TeeOffer.contract.methods.deleteOfferVersion(this.id, version);
+    await TxManager.execute(transactionCall, transactionOptions);
   }
 
   /**
@@ -477,16 +547,6 @@ class TeeOffer {
   }
 
   /**
-   * Function for fetching TLB provider from blockchain
-   */
-  @incrementMethodCall()
-  public async getTlb(): Promise<string> {
-    const offerInfo = await this.getInfo();
-
-    return offerInfo.tlb;
-  }
-
-  /**
    * Function for fetching violationRate for this TEE offer
    */
   public async getViolationRate(): Promise<bigint | string> {
@@ -512,22 +572,6 @@ class TeeOffer {
     origins.modifiedDate = origins.modifiedDate * 1000;
 
     return (this.origins = origins);
-  }
-
-  /**
-   * Updates TLB in offer info
-   * @param tlb - new TLB
-   * @param transactionOptions - object what contains alternative action account or gas limit (optional)
-   */
-  @incrementMethodCall()
-  public async addTlb(tlb: string, transactionOptions?: TransactionOptions): Promise<void> {
-    checkIfActionAccountInitialized(transactionOptions);
-
-    await TxManager.execute(
-      TeeOffer.contract.methods.setTeeOfferTlb(this.id, tlb),
-      transactionOptions,
-    );
-    if (this.offerInfo) this.offerInfo.tlb = tlb;
   }
 
   /**

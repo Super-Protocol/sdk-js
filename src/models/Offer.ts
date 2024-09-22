@@ -140,6 +140,24 @@ class Offer {
   }
 
   /**
+   * Updates offer restrictions
+   * @param restrictions - new offer restrictions
+   * @param transactionOptions - object what contains alternative action account or gas limit (optional)
+   */
+  public async setRestrictions(
+    restrictions: ValueOfferRestrictionsSpecification,
+    transactionOptions?: TransactionOptions,
+  ): Promise<void> {
+    checkIfActionAccountInitialized(transactionOptions);
+
+    await TxManager.execute(
+      Offer.contract.methods.setValueOfferRestrictionsSpecification(this.id, restrictions),
+      transactionOptions,
+    );
+    if (this.offerInfo) this.offerInfo.restrictions = restrictions;
+  }
+
+  /**
    * Function for fetching offer info from blockchain
    */
   @incrementMethodCall()
@@ -188,6 +206,14 @@ class Offer {
     this.providerAuthority = await Offer.contract.methods.getOfferProviderAuthority(this.id).call();
 
     return this.providerAuthority!;
+  }
+
+  /**
+   * Function for fetching TEE offer provider action account from blockchain
+   */
+  @incrementMethodCall()
+  public getProviderActionAccount(): Promise<string> {
+    return Offer.contract.methods.getOfferProviderActionAccount(this.id).call();
   }
 
   /**

@@ -1947,6 +1947,11 @@ export const abi = [
                 "internalType": "bool",
                 "name": "enabled",
                 "type": "bool"
+            },
+            {
+                "internalType": "enum TeeOfferSubtype",
+                "name": "subtype",
+                "type": "uint8"
             }
         ],
         "name": "createTeeOffer",
@@ -2324,6 +2329,24 @@ export const abi = [
                 "type": "uint256"
             },
             {
+                "internalType": "enum TeeOfferSubtype",
+                "name": "newSubtype",
+                "type": "uint8"
+            }
+        ],
+        "name": "setTeeOfferSubtype",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "offerId",
+                "type": "uint256"
+            },
+            {
                 "components": [
                     {
                         "internalType": "string",
@@ -2509,6 +2532,11 @@ export const abi = [
                         "internalType": "bool",
                         "name": "enabled",
                         "type": "bool"
+                    },
+                    {
+                        "internalType": "enum TeeOfferSubtype",
+                        "name": "subtype",
+                        "type": "uint8"
                     }
                 ],
                 "internalType": "struct TeeOfferData[]",
@@ -3001,6 +3029,11 @@ export const abi = [
                         "internalType": "bool",
                         "name": "enabled",
                         "type": "bool"
+                    },
+                    {
+                        "internalType": "enum TeeOfferSubtype",
+                        "name": "subtype",
+                        "type": "uint8"
                     }
                 ],
                 "internalType": "struct TeeOfferData",
@@ -3064,6 +3097,25 @@ export const abi = [
                 "internalType": "struct OptionInfo",
                 "name": "",
                 "type": "tuple"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "offerId",
+                "type": "uint256"
+            }
+        ],
+        "name": "getTeeOfferSubtype",
+        "outputs": [
+            {
+                "internalType": "enum TeeOfferSubtype",
+                "name": "",
+                "type": "uint8"
             }
         ],
         "stateMutability": "view",

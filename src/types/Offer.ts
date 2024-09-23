@@ -7,6 +7,14 @@ export enum OfferType {
   Data = '3',
 }
 
+export enum TeeOfferSubtype {
+  Default = '0',
+  TeeSubtypeSGX = '1',
+  TeeSubtypeTDX = '2',
+  TeeSubtypeSEV = '3',
+  TeeSubtypeARM = '4',
+}
+
 export enum OfferGroup {
   Input = '0',
   Processing = '1',

@@ -24,6 +24,7 @@ import {
   TeeOfferOptionRaw,
   OfferVersionInfo,
   OfferVersion,
+  TeeOfferSubtype,
 } from '../types/index.js';
 import { BlockchainConnector } from '../connectors/index.js';
 import TxManager from '../utils/TxManager.js';
@@ -116,11 +117,14 @@ class TeeOffer {
    */
   @incrementMethodCall()
   public async getInfo(): Promise<TeeOfferInfo> {
-    const { info } = await TeeOffer.contract.methods.getTeeOffer(this.id).call();
-    const { tlb_DEPRECATED: _tlb_DEPRECATED, ...offerInfo } = cleanWeb3Data(info);
+    const { info, subtype } = await TeeOffer.contract.methods.getTeeOffer(this.id).call();
+    const { tlb_DEPRECATED: _tlb_DEPRECATED, ...offerInfo } = cleanWeb3Data({
+      ...info,
+      subType: subtype as TeeOfferSubtype,
+      hardwareInfo: (await this.getHardwareInfo()) as HardwareInfo,
+    });
 
     this.offerInfo = offerInfo as TeeOfferInfo;
-    this.offerInfo.hardwareInfo = cleanWeb3Data(await this.getHardwareInfo()) as HardwareInfo;
 
     return this.offerInfo;
   }
@@ -453,7 +457,6 @@ class TeeOffer {
     );
   }
 
-
   /**
    * Function for add a new version to the value offer.
    * @param newVersion - Version number
@@ -541,6 +544,16 @@ class TeeOffer {
     return this.type.toString() as OfferType;
   }
 
+  /**
+   * Fetch offer subtype from blockchain (TEE only)
+   */
+  @incrementMethodCall()
+  public async getSubtype(): Promise<TeeOfferSubtype> {
+    this.type = await TeeOffer.contract.methods.getTeeOfferSubtype(this.id).call();
+
+    return this.type.toString() as TeeOfferSubtype;
+  }
+
   @incrementMethodCall()
   public isTeeOfferVerifying(): Promise<boolean> {
     return TeeOffer.contract.methods.isTeeOfferVerified(this.id).call();
@@ -600,12 +613,17 @@ class TeeOffer {
   ): Promise<void> {
     checkIfActionAccountInitialized(transactionOptions);
 
-    await this.setHardwareInfo(newInfo.hardwareInfo, transactionOptions);
+    const { hardwareInfo, subType, ...offerInfo } = newInfo;
+
+    await this.setHardwareInfo(hardwareInfo, transactionOptions);
 
     await TxManager.execute(
-      TeeOffer.contract.methods.setTeeOfferInfo(this.id, newInfo),
+      TeeOffer.contract.methods.setTeeOfferInfo(this.id, { offerInfo, tlb_DEPRECATED: '' }),
       transactionOptions,
     );
+
+    await this.setSubtype(subType);
+
     if (this.offerInfo) this.offerInfo = newInfo;
   }
 
@@ -668,6 +686,22 @@ class TeeOffer {
     if (this.offerInfo) {
       this.offerInfo.argsPublicKey = argsPublicKey;
     }
+  }
+
+  /**
+   * Function for set the offer subtype.
+   * @param newSubtype - TEE offer subtype
+   * @param transactionOptions - object what contains alternative action account or gas limit (optional)
+   */
+  @incrementMethodCall()
+  public async setSubtype(
+    newSubtype: TeeOfferSubtype,
+    transactionOptions?: TransactionOptions,
+  ): Promise<void> {
+    checkIfActionAccountInitialized(transactionOptions);
+
+    const transactionCall = TeeOffer.contract.methods.setTeeOfferSubtype(this.id, newSubtype);
+    await TxManager.execute(transactionCall, transactionOptions);
   }
 
   /**

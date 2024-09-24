@@ -618,7 +618,7 @@ class TeeOffer {
     await this.setHardwareInfo(hardwareInfo, transactionOptions);
 
     await TxManager.execute(
-      TeeOffer.contract.methods.setTeeOfferInfo(this.id, { offerInfo, tlb_DEPRECATED: '' }),
+      TeeOffer.contract.methods.setTeeOfferInfo(this.id, { ...offerInfo, tlb_DEPRECATED: '' }),
       transactionOptions,
     );
 

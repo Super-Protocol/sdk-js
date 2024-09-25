@@ -27,7 +27,7 @@ export type ValueOfferRestrictionsSpecification = {
   versions: number[];
 };
 
-export type OfferInfo = {
+type OfferInfoBase = {
   name: string;
   group: OfferGroup;
   offerType: OfferType;
@@ -39,8 +39,16 @@ export type OfferInfo = {
   allowedAccounts: string[];
   argsPublicKey: string;
   resultResource: string;
-  linkage: string;
   hash: string;
+  signatureKey: string;
   metadata: string;
+};
+
+export type OfferInfoRaw = OfferInfoBase & {
+  linkage_DEPRECATED: string;
+};
+
+export type OfferInfo = OfferInfoBase & {
+  linkage: string; // TODO remove after signatureKey supported
   restrictions: ValueOfferRestrictionsSpecification;
 };

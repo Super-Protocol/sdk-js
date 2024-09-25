@@ -2025,7 +2025,7 @@ export const abi = [
                     },
                     {
                         "internalType": "string",
-                        "name": "linkage",
+                        "name": "linkage_DEPRECATED",
                         "type": "string"
                     },
                     {
@@ -2036,6 +2036,11 @@ export const abi = [
                     {
                         "internalType": "string",
                         "name": "metadata",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "signatureKey",
                         "type": "string"
                     }
                 ],
@@ -2405,7 +2410,7 @@ export const abi = [
                     },
                     {
                         "internalType": "string",
-                        "name": "linkage",
+                        "name": "linkage_DEPRECATED",
                         "type": "string"
                     },
                     {
@@ -2416,6 +2421,11 @@ export const abi = [
                     {
                         "internalType": "string",
                         "name": "metadata",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "signatureKey",
                         "type": "string"
                     }
                 ],
@@ -2638,7 +2648,7 @@ export const abi = [
                             },
                             {
                                 "internalType": "string",
-                                "name": "linkage",
+                                "name": "linkage_DEPRECATED",
                                 "type": "string"
                             },
                             {
@@ -2649,6 +2659,11 @@ export const abi = [
                             {
                                 "internalType": "string",
                                 "name": "metadata",
+                                "type": "string"
+                            },
+                            {
+                                "internalType": "string",
+                                "name": "signatureKey",
                                 "type": "string"
                             }
                         ],
@@ -3202,7 +3217,7 @@ export const abi = [
                             },
                             {
                                 "internalType": "string",
-                                "name": "linkage",
+                                "name": "linkage_DEPRECATED",
                                 "type": "string"
                             },
                             {
@@ -3213,6 +3228,11 @@ export const abi = [
                             {
                                 "internalType": "string",
                                 "name": "metadata",
+                                "type": "string"
+                            },
+                            {
+                                "internalType": "string",
+                                "name": "signatureKey",
                                 "type": "string"
                             }
                         ],
@@ -4642,6 +4662,24 @@ export const abi = [
                 "internalType": "uint256",
                 "name": "orderId",
                 "type": "uint256"
+            },
+            {
+                "internalType": "string",
+                "name": "newCertificate",
+                "type": "string"
+            }
+        ],
+        "name": "setOrderCertificate",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "orderId",
+                "type": "uint256"
             }
         ],
         "name": "startOrder",
@@ -5182,6 +5220,25 @@ export const abi = [
                 "internalType": "struct OrderArgs",
                 "name": "",
                 "type": "tuple"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "orderId",
+                "type": "uint256"
+            }
+        ],
+        "name": "getOrderCertificate",
+        "outputs": [
+            {
+                "internalType": "string",
+                "name": "",
+                "type": "string"
             }
         ],
         "stateMutability": "view",

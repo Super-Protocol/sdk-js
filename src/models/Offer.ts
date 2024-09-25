@@ -32,7 +32,11 @@ import { formatBytes32String } from 'ethers/lib/utils.js';
 import TeeOffers from '../staticModels/TeeOffers.js';
 import TxManager from '../utils/TxManager.js';
 import { tryWithInterval } from '../utils/helpers/index.js';
-import { BLOCKCHAIN_CALL_RETRY_INTERVAL, BLOCKCHAIN_CALL_RETRY_ATTEMPTS, DEFAULT_OFFER_VERSION } from '../constants.js';
+import {
+  BLOCKCHAIN_CALL_RETRY_INTERVAL,
+  BLOCKCHAIN_CALL_RETRY_ATTEMPTS,
+  DEFAULT_OFFER_VERSION,
+} from '../constants.js';
 
 class Offer {
   private static contract: Contract<typeof abi>;
@@ -127,9 +131,12 @@ class Offer {
   public async setInfo(newInfo: OfferInfo, transactionOptions?: TransactionOptions): Promise<void> {
     checkIfActionAccountInitialized(transactionOptions);
 
-    const { restrictions, ...restInfo } = newInfo;
+    const { restrictions, linkage, ...restInfo } = newInfo;
     await TxManager.execute(
-      Offer.contract.methods.setValueOfferInfo(this.id, restInfo),
+      Offer.contract.methods.setValueOfferInfo(this.id, {
+        ...restInfo,
+        linkage_DEPRECATED: linkage,
+      }),
       transactionOptions,
     );
     await TxManager.execute(
@@ -157,16 +164,14 @@ class Offer {
     if (this.offerInfo) this.offerInfo.restrictions = restrictions;
   }
 
-  /**
-   * Function for fetching offer info from blockchain
-   */
   @incrementMethodCall()
   public async getInfo(): Promise<OfferInfo> {
     if (!(await this.checkIfOfferExistsWithInterval())) {
       throw Error(`Offer ${this.id} does not exist`);
     }
     const { info } = await Offer.contract.methods.getValueOffer(this.id).call();
-    this.offerInfo = cleanWeb3Data(info) as OfferInfo;
+    const { linkage_DEPRECATED, ...restInfo } = info;
+    this.offerInfo = cleanWeb3Data({ ...restInfo, linkage: linkage_DEPRECATED }) as OfferInfo;
 
     const offerRestrictions = await Offer.contract.methods
       .getOfferRestrictionsSpecification(this.id)
@@ -329,7 +334,6 @@ class Offer {
    * Function for fetching  offer slots info from blockchain
    * @param begin - The first element of range.
    * @param end - One past the final element in the range.
-   * @returns {Promise<ValueOfferSlot[]>}
    */
   public async getSlots(begin = 0, end = 999999): Promise<ValueOfferSlot[]> {
     const slotsCount = Number(await Offer.contract.methods.getValueOfferSlotsCount(this.id).call());

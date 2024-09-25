@@ -225,6 +225,24 @@ class Order {
     return this.selectedUsage;
   }
 
+  @incrementMethodCall()
+  public getCertificate(): Promise<string> {
+    return Order.contract.methods.getOrderCertificate(this.id).call();
+  }
+
+  @incrementMethodCall()
+  public async setCertificate(
+    certificate = '',
+    transactionOptions?: TransactionOptions,
+  ): Promise<void> {
+    checkIfActionAccountInitialized(transactionOptions);
+
+    await TxManager.execute(
+      Order.contract.methods.setOrderCertificate(this.id, certificate),
+      transactionOptions,
+    );
+  }
+
   /**
    * Function for fetching hold deposits sum of the order and its suborders
    */

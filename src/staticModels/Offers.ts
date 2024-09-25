@@ -10,6 +10,7 @@ import {
   OfferInfo,
   OfferType,
   BlockchainId,
+  OfferInfoRaw,
 } from '../types/index.js';
 import Superpro from './Superpro.js';
 import TxManager from '../utils/TxManager.js';
@@ -78,11 +79,17 @@ class Offers implements StaticModel {
     checkIfActionAccountInitialized(transactionOptions);
 
     const formattedExternalId = formatBytes32String(externalId);
+    const { restrictions, linkage, ...rest } = offerInfo;
+    const offerInfoRaw: OfferInfoRaw = {
+      ...rest,
+      linkage_DEPRECATED: linkage,
+    };
+
     await TxManager.execute(
       contract.methods.createValueOffer(
         providerAuthorityAccount,
-        offerInfo,
-        offerInfo.restrictions,
+        offerInfoRaw,
+        restrictions,
         formattedExternalId,
         enabled,
       ),

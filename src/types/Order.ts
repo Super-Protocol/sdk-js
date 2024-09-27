@@ -121,4 +121,5 @@ export type OrderEncryptedInfo = {
   dataHashes: Hash[];
   imageHashes: Hash[];
   linkage: string;
+  argsHash?: Hash;
 };

@@ -63,23 +63,14 @@ class Order {
     this.logger = rootLogger.child({ className: 'Order', orderId: this.id });
   }
 
-  /**
-   * Check if order exist
-   */
   public isExist(): Promise<boolean> {
     return Order.contract.methods.isOrderValid(this.id).call();
   }
 
-  /**
-   * Check if order is in `processing` state
-   */
   public isOrderProcessing(): Promise<boolean> {
     return Order.contract.methods.isOrderProcessing(this.id).call();
   }
 
-  /**
-   * Function for fetching avaliable for unlock order profit.
-   */
   public async isOrderProfitAvailable(): Promise<TokenAmount> {
     const parsedResponse = await Order.contract.methods
       .isOrderProfitAvailable(this.id)
@@ -89,9 +80,6 @@ class Order {
     return parsedResponse.profit;
   }
 
-  /**
-   * Function for fetching order price
-   */
   public calculateCurrentPrice(): Promise<TokenAmount> {
     return Order.contract.methods
       .calculateOrderCurrentPrice(this.id)
@@ -99,9 +87,6 @@ class Order {
       .then((price) => price.toString());
   }
 
-  /**
-   * Function for fetching order info from blockchain
-   */
   @incrementMethodCall()
   public async getOrderInfo(): Promise<OrderInfo> {
     if (!(await this.checkIfOrderExistsWithInterval())) {
@@ -142,9 +127,6 @@ class Order {
     return this.consumer!;
   }
 
-  /**
-   * Function for fetching order result from blockchain
-   */
   @incrementMethodCall()
   public async getOrderResult(): Promise<OrderResult> {
     const orderResults = await Order.contract.methods.getOrder(this.id).call();
@@ -152,9 +134,6 @@ class Order {
     return (this.orderResult = cleanWeb3Data(orderResults[2]) as OrderResult);
   }
 
-  /**
-   * Function for fetching sub orders from blockchain
-   */
   @incrementMethodCall()
   public async getSubOrders(): Promise<BlockchainId[]> {
     this.subOrders = await Order.contract.methods
@@ -165,9 +144,6 @@ class Order {
     return this.subOrders;
   }
 
-  /**
-   * Function for fetching parent order from blockchain
-   */
   @incrementMethodCall()
   public async getParentOrder(): Promise<BlockchainId> {
     this.parentOrder = await Order.contract.methods
@@ -178,9 +154,6 @@ class Order {
     return this.parentOrder;
   }
 
-  /**
-   * Function for fetching order options deposit spent from blockchain
-   */
   @incrementMethodCall()
   public getOptionsDepositSpent(): Promise<TokenAmount> {
     return Order.contract.methods
@@ -189,9 +162,6 @@ class Order {
       .then((price) => price.toString());
   }
 
-  /**
-   * Function for fetching order deposit spent from blockchain
-   */
   @incrementMethodCall()
   public async getSelectedUsage(): Promise<OrderUsage> {
     const coresDenominator = await TeeOffers.getDenominator();
@@ -254,9 +224,6 @@ class Order {
       .then((price) => price.toString());
   }
 
-  /**
-   * Function for fetching reserve for output order
-   */
   @incrementMethodCall()
   public calculateOrderOutputReserve(): Promise<TokenAmount> {
     return Order.contract.methods
@@ -287,9 +254,6 @@ class Order {
       .then((price) => price.toString());
   }
 
-  /**
-   * Fetch new Origins (createdDate, createdBy, modifiedDate and modifiedBy)
-   */
   @incrementMethodCall()
   public async getOrigins(): Promise<Origins> {
     const origins: Origins = await Order.contract.methods
@@ -304,17 +268,11 @@ class Order {
     return (this.origins = origins);
   }
 
-  /**
-   * Function for fetching parent order from blockchain
-   */
   @incrementMethodCall()
   public getAwaitingPayment(): Promise<boolean> {
     return Order.contract.methods.getAwaitingPayment(this.id).call();
   }
 
-  /**
-   * Function for fetching deposit of order from blockchain
-   */
   @incrementMethodCall()
   public getDeposit(): Promise<TokenAmount> {
     return Order.contract.methods
@@ -323,25 +281,16 @@ class Order {
       .then((price) => price.toString());
   }
 
-  /**
-   * Function for fetching start of processing date
-   */
   @incrementMethodCall()
   public async getStartDate(): Promise<number> {
     return Number(await Order.contract.methods.getStartDate(this.id).call());
   }
 
-  /**
-   * Function for fetching start of processing date
-   */
   @incrementMethodCall()
   public async calculateOrderTime(): Promise<number> {
     return Number(await Order.contract.methods.calculateOrderTime(this.id).call());
   }
 
-  /**
-   * Function for fetching parent order from blockchain
-   */
   @incrementMethodCall()
   public async setAwaitingPayment(
     value: boolean,
@@ -355,9 +304,6 @@ class Order {
     );
   }
 
-  /**
-   * Sets options deposit spent
-   */
   @incrementMethodCall()
   public async setOptionsDepositSpent(
     value: TokenAmount,
@@ -371,9 +317,6 @@ class Order {
     );
   }
 
-  /**
-   * Function for updating status of contract
-   */
   @incrementMethodCall()
   public async updateStatus(
     status: OrderStatus,
@@ -388,9 +331,6 @@ class Order {
     if (this.orderInfo) this.orderInfo.status = status;
   }
 
-  /**
-   * Function for updating status of contract
-   */
   @incrementMethodCall()
   public async cancelOrder(transactionOptions?: TransactionOptions): Promise<void> {
     checkIfActionAccountInitialized(transactionOptions);
@@ -398,9 +338,6 @@ class Order {
     await TxManager.execute(Order.contract.methods.cancelOrder(this.id), transactionOptions);
   }
 
-  /**
-   * Starts suspended order
-   */
   @incrementMethodCall()
   public async start(transactionOptions?: TransactionOptions): Promise<void> {
     checkIfActionAccountInitialized(transactionOptions);
@@ -408,9 +345,6 @@ class Order {
     await TxManager.execute(Order.contract.methods.startOrder(this.id), transactionOptions);
   }
 
-  /**
-   * Updates order result
-   */
   @incrementMethodCall()
   public async updateOrderResult(
     encryptedResult = '',
@@ -424,9 +358,6 @@ class Order {
     );
   }
 
-  /**
-   * Completes order
-   */
   @incrementMethodCall()
   public async complete(
     status: OrderStatus,
@@ -441,9 +372,6 @@ class Order {
     );
   }
 
-  /**
-   * Unlocks profit
-   */
   @incrementMethodCall()
   public async unlockProfit(transactionOptions?: TransactionOptions): Promise<void> {
     checkIfActionAccountInitialized(transactionOptions);
@@ -451,13 +379,6 @@ class Order {
     await TxManager.execute(Order.contract.methods.unlockProfit(this.id), transactionOptions);
   }
 
-  /**
-   * Function for creating sub orders for current order
-   * @param subOrderInfo - order info for new subOrder
-   * @param blockParentOrder - is sub order blocking
-   * @param transactionOptions - object what contains alternative action account or gas limit (optional)
-   * @returns Promise<void> - Does not return id of created sub order!
-   */
   @incrementMethodCall()
   public async createSubOrder(
     subOrderInfo: OrderInfo,
@@ -490,12 +411,6 @@ class Order {
     );
   }
 
-  /**
-   * Function for creating pack of sub orders (wokflow) for current order
-   * @param subOrdersInfo - orders info for new subOrders
-   * @param transactionOptions - object what contains action account and web3 instance
-   * @returns {Promise<string[]>} - tx hashes
-   */
   @incrementMethodCall()
   public async createSubOrders(
     subOrdersInfo: ExtendedOrderInfo[],
@@ -533,11 +448,6 @@ class Order {
     return (await Promise.all(promises)).map((tx) => tx.transactionHash as string);
   }
 
-  /**
-   * Function for adding event listeners to contract events
-   * @param callback - function for processing each order related with event
-   * @returns unsubscribe - function unsubscribing from event
-   */
   public onStatusUpdated(callback: onOrderStatusUpdatedCallback): () => void {
     const listener = BlockchainEventsListener.getInstance();
     const logger = this.logger.child({ method: 'onOrderStatusUpdated' });

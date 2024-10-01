@@ -74,22 +74,33 @@ export class QuoteValidator {
       retryInterval?: number;
     },
   ): Promise<Buffer> {
-    const baseURL =
-      options?.baseURL ?? 'https://github.com/Super-Protocol/sp-kata-containers/releases/download';
+    const baseURL = options?.baseURL ?? 'https://api.github.com/repos/Super-Protocol/sp-vm';
     const retryMax = options?.retryMax ?? 3;
     const retryInterval = options?.retryInterval ?? 1000;
 
-    const axiosInstance = axios.create({ baseURL });
+    const axiosInstance = axios.create({
+      baseURL,
+      headers: {
+        Accept: 'application/vnd.github.v3.raw',
+      },
+    });
     const response = await tryWithInterval<AxiosResponse>({
       checkResult(response) {
         return { isResultOk: response.status === 200 };
       },
       handler() {
-        return axiosInstance.get(`/mrenclave-${mrEnclave.toString('hex')}/MRENCLAVE.sign`, {
+        const mrenclaveBase64 = mrEnclave.toString('base64');
+
+        return axiosInstance.get(`/contents/signatures/mrenclave-${mrenclaveBase64}.sign`, {
           responseType: 'arraybuffer',
         });
       },
       checkError(err) {
+        if (axios.isAxiosError(err) && err.response) {
+          const status = err.response.status;
+
+          return { retryable: status < 400 || status >= 500 };
+        }
         return { retryable: axios.isAxiosError(err) };
       },
       retryInterval,
@@ -196,7 +207,8 @@ export class QuoteValidator {
 
   private verifyDataBySignature(data: Buffer, signature: Buffer, key: Buffer): boolean {
     const ellipticEc = new ec('p256');
-    const result = ellipticEc.verify(
+
+    return ellipticEc.verify(
       data,
       {
         r: signature.subarray(0, 32),
@@ -204,8 +216,6 @@ export class QuoteValidator {
       },
       ellipticEc.keyFromPublic(key, 'hex'),
     );
-
-    return result;
   }
 
   private checkValidDate(from: number, to: number): boolean {
@@ -360,7 +370,8 @@ export class QuoteValidator {
     const calculatedHash = await this.getSha256Hash(Buffer.concat([headerBuffer, reportBuffer]));
 
     const ellipticEc = new ec('p256');
-    const result = ellipticEc.verify(
+
+    return ellipticEc.verify(
       calculatedHash,
       {
         r: expected.subarray(0, 32),
@@ -368,8 +379,6 @@ export class QuoteValidator {
       },
       Buffer.concat([Buffer.from([4]), key]),
     );
-
-    return result;
   }
 
   private async validateQuoteStructure(

@@ -20,8 +20,6 @@ import {
 } from '../connectors/BlockchainEventsListener.js';
 import { AMOY_TX_GAS_LIMIT } from '../constants.js';
 
-import { keccak256, AbiCoder } from 'ethers/lib/utils.js';
-
 class OfferResources {
   private static readonly logger = rootLogger.child({ className: 'OfferResources' });
 
@@ -165,10 +163,10 @@ class OfferResources {
   }
 
   public static async remove(
-    offerId: BlockchainId,
     teeOfferIssuerId: BlockchainId,
     teeOfferKeeperId: BlockchainId,
-    offerVersion: BlockchainId,
+    offerId: BlockchainId,
+    offerVersion: number,
     transactionOptions?: TransactionOptions,
   ): Promise<void> {
     const contract = BlockchainConnector.getInstance().getContract();
@@ -179,13 +177,15 @@ class OfferResources {
       ...transactionOptions,
     };
 
-    const keyHash = keccak256(
-      new AbiCoder().encode(
-        ['uint256', 'uint256', 'uint256', 'uint64'],
-        [offerId, teeOfferIssuerId, teeOfferKeeperId, offerVersion],
+    await TxManager.execute(
+      contract.methods.removeOfferResource(
+        teeOfferIssuerId,
+        teeOfferKeeperId,
+        offerId,
+        offerVersion,
       ),
+      options,
     );
-    await TxManager.execute(contract.methods.removeOfferResource(keyHash), options);
   }
 
   public static onOfferResourceCreated(callback: onOfferResourceCreatedCallback): () => void {

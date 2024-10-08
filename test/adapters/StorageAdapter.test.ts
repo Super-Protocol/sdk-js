@@ -3,14 +3,14 @@ import StorageAdapter, {
   CacheEvents,
 } from '../../src/providers/storage/StorageAdapter.js';
 import StorageProviderMock from '../mocks/StorageProvider.mock.js';
-import { keyValueStorageAdapterConfig, bufferAesKey } from './utils.js';
+import { S3StorageAdapterConfig, bufferAesKey } from './utils.js';
 import { sleep } from '../utils.js';
 
 interface Data {
   message: string;
 }
 const storageAccessConfig = {
-  ...keyValueStorageAdapterConfig,
+  ...S3StorageAdapterConfig,
 };
 const config: StorageAdapterConfig = {
   lruCache: {

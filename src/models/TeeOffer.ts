@@ -11,6 +11,7 @@ import {
   transformComplexObject,
   convertOptionInfoFromRaw,
   convertOptionInfoToRaw,
+  packDeviceId,
 } from '../utils/helper.js';
 import {
   TeeOfferInfo,
@@ -244,17 +245,24 @@ class TeeOffer {
   }
 
   @incrementMethodCall()
-  public async initializeTcb(transactionOptions?: TransactionOptions): Promise<void> {
+  private async initializeTcb(
+    deviceId: string,
+    transactionOptions?: TransactionOptions,
+  ): Promise<void> {
     checkIfActionAccountInitialized();
 
-    await TxManager.execute(TeeOffer.contract.methods.initializeTcb(this.id), transactionOptions);
+    await TxManager.execute(
+      TeeOffer.contract.methods.initializeTcb(this.id, deviceId),
+      transactionOptions,
+    );
   }
 
   @incrementMethodCall()
   private async initializeTcbAndAssignBlocks(
+    deviceId: string,
     transactionOptions?: TransactionOptions,
   ): Promise<TCB> {
-    await this.initializeTcb(transactionOptions);
+    await this.initializeTcb(deviceId, transactionOptions);
     const tcbId = await this.getInitializedTcbId();
     const tcb = new TCB(tcbId);
 
@@ -272,11 +280,13 @@ class TeeOffer {
    */
   @incrementMethodCall()
   public async getListsForVerification(
+    deviceId: string,
     transactionOptions?: TransactionOptions,
   ): Promise<GetTcbRequest> {
     checkIfActionAccountInitialized();
 
-    const tcb = await this.initializeTcbAndAssignBlocks(transactionOptions);
+    deviceId = packDeviceId(deviceId);
+    const tcb = await this.initializeTcbAndAssignBlocks(deviceId, transactionOptions);
     const { checkingTcbIds } = await tcb.getPublicData();
     const tcbsPublicData = await Consensus.getTcbsPublicData(checkingTcbIds);
     const tcbsUtilityData = await Consensus.getTcbsUtilityData(checkingTcbIds);
@@ -429,9 +439,12 @@ class TeeOffer {
     return TeeOffer.contract.methods.getInitializedTcbId(this.id).call();
   }
 
-  public async isTcbCreationAvailable(): Promise<boolean> {
-    const { offerNotBlocked, newEpochStarted, halfEpochPassed, benchmarkVerified } =
-      await TeeOffer.contract.methods.isTcbCreationAvailable(this.id).call();
+  public async isTcbCreationAvailable(deviceId: string): Promise<boolean> {
+    const { offerNotBlocked, newEpochStarted, halfEpochPassed, benchmarkVerified } = cleanWeb3Data(
+      await TeeOffer.contract.methods
+        .isTcbCreationAvailable(this.id, packDeviceId(deviceId))
+        .call(),
+    );
 
     return offerNotBlocked && newEpochStarted && halfEpochPassed && benchmarkVerified;
   }

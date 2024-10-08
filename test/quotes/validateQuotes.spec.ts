@@ -1,4 +1,4 @@
-import { QuoteValidator } from '../../src/tee/QuoteValidator.js';
+import { GetMrEnclaveSignatureFn, QuoteValidator } from '../../src/tee/QuoteValidator.js';
 import { QuoteValidationStatuses } from '../../src/tee/statuses.js';
 import {
   testQuotes,
@@ -7,6 +7,8 @@ import {
   intelCrlDer,
   tcbData,
   qeIdentityData,
+  tdxTcbData,
+  tdxQeIdentityData,
 } from './examples.js';
 
 jest.mock('axios', () => ({
@@ -14,12 +16,18 @@ jest.mock('axios', () => ({
     switch (url) {
       case 'https://pccs.superprotocol.io/sgx/certification/v4/pckcrl?ca=platform&encoding=pem':
         return Promise.resolve(platformCrlResult);
-      case 'https://pccs.superprotocol.io/sgx/certification/v4/rootcacrl':
+      case 'https://pccs.superprotocol.io/sgx/certification/v4/crl?uri=https://certificates.trustedservices.intel.com/IntelSGXRootCA.der':
         return Promise.resolve(intelCrlDer);
       case 'https://pccs.superprotocol.io/sgx/certification/v4/tcb?fmspc=30606a000000':
         return Promise.resolve(tcbData);
-      default:
+      case 'https://pccs.superprotocol.io/tdx/certification/v4/tcb?fmspc=b0c06f000000':
+        return Promise.resolve(tdxTcbData);
+      case 'https://pccs.superprotocol.io/sgx/certification/v4/qe/identity':
         return Promise.resolve(qeIdentityData);
+      case 'https://pccs.superprotocol.io/tdx/certification/v4/qe/identity':
+        return Promise.resolve(tdxQeIdentityData);
+      default:
+        return Promise.resolve({});
     }
   },
 }));
@@ -58,6 +66,13 @@ describe('Quote validator', () => {
       const res = await validator.validate(quoteBuffer);
       expect(res).toBeDefined();
       expect(res.quoteValidationStatus).toEqual(QuoteValidationStatuses.Error);
+    });
+
+    test('tdx quote', async () => {
+      const quoteBuffer = Buffer.from(testQuotes.tdxQuote, 'base64');
+      const res = await validator.validate(quoteBuffer);
+      expect(res).toBeDefined();
+      expect(res.quoteValidationStatus).toEqual(QuoteValidationStatuses.UpToDate);
     });
   });
 
@@ -133,6 +148,39 @@ describe('Quote validator', () => {
       );
       expect(res).toBeDefined();
       expect(res).toEqual(false);
+    });
+  });
+
+  describe('Validation tests for TDX sign', () => {
+    const quoteBuffer = Buffer.from(testQuotes.tdxQuoteSigned, 'base64');
+    const buildGetMrEnclaveSignature = (sign: string): GetMrEnclaveSignatureFn => {
+      return () => {
+        return Promise.resolve(Buffer.from(sign, 'base64'));
+      };
+    };
+
+    test('Valid sign', async () => {
+      const getMrEnclaveSignature = buildGetMrEnclaveSignature(testQuotes.validTdxSign);
+
+      await expect(
+        QuoteValidator.checkSignature(quoteBuffer, { getMrEnclaveSignature }),
+      ).resolves.not.toThrow();
+    });
+
+    test('Invalid sign', async () => {
+      const getMrEnclaveSignature = buildGetMrEnclaveSignature(testQuotes.invalidTdxSign);
+
+      await expect(
+        QuoteValidator.checkSignature(quoteBuffer, { getMrEnclaveSignature }),
+      ).rejects.toThrow(/TDX signature is invalid/);
+    });
+
+    test('Invalid key sign', async () => {
+      const getMrEnclaveSignature = buildGetMrEnclaveSignature(testQuotes.invalidTdxSignAnotherKey);
+
+      await expect(
+        QuoteValidator.checkSignature(quoteBuffer, { getMrEnclaveSignature }),
+      ).rejects.toThrow(/Encryption block is invalid/);
     });
   });
 });

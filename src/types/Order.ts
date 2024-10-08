@@ -113,5 +113,6 @@ export type OrderEncryptedInfo = {
   publicKey: EncryptionKey;
   solutionHashes: Hash[];
   dataHashes: Hash[];
+  imageHashes: Hash[];
   linkage: string;
 };

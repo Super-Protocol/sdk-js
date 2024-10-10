@@ -89,9 +89,9 @@ export class QuoteValidator {
         return { isResultOk: response.status === 200 };
       },
       handler() {
-        const mrenclaveBase64 = mrEnclave.toString('base64');
+        const mrenclaveHex = mrEnclave.toString('hex');
 
-        return axiosInstance.get(`/contents/signatures/mrenclave-${mrenclaveBase64}.sign`, {
+        return axiosInstance.get(`/contents/signatures/mrenclave-${mrenclaveHex}.sign`, {
           responseType: 'arraybuffer',
         });
       },

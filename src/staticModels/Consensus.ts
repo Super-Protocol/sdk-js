@@ -37,12 +37,12 @@ class Consensus {
   public static get address(): string {
     return Superpro.address;
   }
-  
+
   private static async batchCall<T>(
     method: ContractMethod<T>,
     ids: string[],
     batchSize: number,
-    formatFn: (data: any) => T[]
+    formatFn: (data: any) => T[],
   ): Promise<T[]> {
     const results: T[] = [];
     for (let i = 0; i < ids.length; i += batchSize) {
@@ -117,7 +117,7 @@ class Consensus {
       getTcbsPublicDataHelper,
       tcbIds,
       batchSize,
-      formatTcbPublicData
+      formatTcbPublicData,
     );
 
     for (let tcbIndex = 0; tcbIndex < tcbsPublicData.length; tcbIndex++) {
@@ -145,14 +145,15 @@ class Consensus {
     const getTcbsUtilityDataHelper = async (ids: BlockchainId[]): Promise<any> => {
       return contract.methods.getTcbsUtilityData(ids).call();
     };
-    const formatTcbUtilityData = (array: any[]) => array.map((item) => transformComplexObject(item) as TcbUtilityData);
+    const formatTcbUtilityData = (array: any[]) =>
+      array.map((item) => transformComplexObject(item) as TcbUtilityData);
     const tcbUtilityData: TcbUtilityData[] = await Consensus.batchCall(
       getTcbsUtilityDataHelper,
       tcbIds,
       batchSize,
-      formatTcbUtilityData
+      formatTcbUtilityData,
     );
-  
+
     for (let tcbIndex = 0; tcbIndex < tcbUtilityData.length; tcbIndex++) {
       response[tcbIds[tcbIndex]] = tcbUtilityData[tcbIndex];
     }

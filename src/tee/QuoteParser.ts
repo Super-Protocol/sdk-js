@@ -84,12 +84,14 @@ export abstract class TeeParser {
   public static getMrEnclave(quote: BinaryType): BinaryType {
     const teeType = TeeParser.determineQuoteType(quote);
     switch (teeType.type) {
-      case QuoteType.SGX:
+      case QuoteType.SGX: {
         const sgxParser = new TeeSgxParser();
         const parsedSgxQuote = sgxParser.parseQuote(quote);
         const parsedReport = sgxParser.parseReport(parsedSgxQuote.report);
+
         return parsedReport.mrEnclave;
-      case QuoteType.TDX:
+      }
+      case QuoteType.TDX: {
         const tdxParser = new TeeTdxParser();
         const parsedTdxQuote = tdxParser.parseQuote(quote);
         const tdBody = tdxParser.parseBody(parsedTdxQuote.tdQuoteBody);
@@ -100,7 +102,9 @@ export abstract class TeeParser {
         hash.update(tdBody.rtmr1);
         hash.update(tdBody.rtmr2);
         hash.update(tdBody.rtmr3);
+
         return hash.digest();
+      }
       default:
         throw new TeeQuoteParserError(`Unknown quote type`);
     }

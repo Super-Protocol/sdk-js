@@ -160,7 +160,7 @@ export default class StorJStorageProvider implements IStorageProvider {
     DownloadOptions: typeof DownloadOptions;
   }> {
     if (!this._storj) {
-      this._storj = await require('@super-protocol/uplink-nodejs');
+      this._storj = await import('@super-protocol/uplink-nodejs');
     }
 
     return this._storj;

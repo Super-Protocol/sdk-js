@@ -166,7 +166,7 @@ class OfferResources {
     teeOfferIssuerId: BlockchainId,
     teeOfferKeeperId: BlockchainId,
     offerId: BlockchainId,
-    offerVersion: number,
+    offerVersion: number = 0,
     transactionOptions?: TransactionOptions,
   ): Promise<void> {
     const contract = BlockchainConnector.getInstance().getContract();

@@ -19,6 +19,7 @@ import StorageObject from '../../types/storage/StorageObject.js';
 import { getStreamChunks } from '../../utils/helpers/getStreamChunks.js';
 import { S3Credentials } from '@super-protocol/dto-js';
 import path from 'path';
+import { isNodeJS } from '../../utils/helper.js';
 
 export type S3ClientConfig = Omit<S3Credentials, 'prefix'> & {
   region?: string;
@@ -71,13 +72,9 @@ export class S3StorageProvider implements IStorageProvider {
     // For performance & cost optimization
     // https://docs.storj.io/dcs/api-reference/s3-compatible-gateway/multipart-upload/multipart-part-size
     const key = this.applyPrefix(remotePath);
-    let body: Uint8Array | Readable;
-
-    if (inputStream instanceof Blob) {
-      body = new Uint8Array(await inputStream.arrayBuffer());
-    } else {
-      body = inputStream;
-    }
+    const body = isNodeJS()
+      ? (inputStream as Readable)
+      : new Uint8Array(await (inputStream as Blob).arrayBuffer());
 
     if (contentLength >= this.multipartChunkSizeInBytes) {
       return this.multipartUpload(inputStream, key, contentLength, progressListener);

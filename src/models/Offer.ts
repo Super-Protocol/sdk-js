@@ -487,7 +487,7 @@ class Offer {
   }
   /**
    * Function for set the value offer subtype.
-   * @param newSubtype - alue offer subtype
+   * @param newSubtype - value offer subtype
    * @param transactionOptions - object what contains alternative action account or gas limit (optional)
    */
   @incrementMethodCall()

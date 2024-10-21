@@ -15,6 +15,13 @@ export enum TeeOfferSubtype {
   TeeSubtypeARM = '4',
 }
 
+export enum ValueOfferSubtype {
+  Default = '0',
+  ValueSubtypeEngine = '1',
+  ValueSubtypeModel = '2',
+  ValueSubtypeDataset = '3',
+}
+
 export enum OfferGroup {
   Input = '0',
   Processing = '1',
@@ -42,6 +49,7 @@ type OfferInfoBase = {
   hash: string;
   signatureKey: string;
   metadata: string;
+  subType: ValueOfferSubtype;
 };
 
 export type OfferInfoRaw = OfferInfoBase & {

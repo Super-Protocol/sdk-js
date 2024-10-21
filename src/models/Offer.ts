@@ -27,6 +27,7 @@ import {
   ValueOfferSlotRaw,
   OfferVersionInfo,
   OfferVersion,
+  ValueOfferSubtype,
 } from '../types/index.js';
 import { formatBytes32String } from 'ethers/lib/utils.js';
 import TeeOffers from '../staticModels/TeeOffers.js';
@@ -170,8 +171,12 @@ class Offer {
       throw Error(`Offer ${this.id} does not exist`);
     }
     const { info } = await Offer.contract.methods.getValueOffer(this.id).call();
-    const { linkage_DEPRECATED, ...restInfo } = info;
-    this.offerInfo = cleanWeb3Data({ ...restInfo, linkage: linkage_DEPRECATED }) as OfferInfo;
+    const { linkage_DEPRECATED, subtype, ...restInfo } = info;
+    this.offerInfo = cleanWeb3Data({
+      ...restInfo,
+      subType: subtype,
+      linkage: linkage_DEPRECATED,
+    }) as OfferInfo;
 
     const offerRestrictions = await Offer.contract.methods
       .getOfferRestrictionsSpecification(this.id)
@@ -201,6 +206,16 @@ class Offer {
     this.type = await Offer.contract.methods.getOfferType(this.id).call();
 
     return this.type!.toString() as OfferType;
+  }
+
+  /**
+   * Fetch offer subtype from blockchain (Value only)
+   */
+  @incrementMethodCall()
+  public async getSubtype(): Promise<ValueOfferSubtype> {
+    this.type = await Offer.contract.methods.getValueOfferSubtype(this.id).call();
+
+    return this.type.toString() as ValueOfferSubtype;
   }
 
   /**
@@ -472,6 +487,21 @@ class Offer {
     checkIfActionAccountInitialized(transactionOptions);
 
     const transactionCall = Offer.contract.methods.deleteOfferVersion(this.id, version);
+    await TxManager.execute(transactionCall, transactionOptions);
+  }
+  /**
+   * Function for set the value offer subtype.
+   * @param newSubtype - value offer subtype
+   * @param transactionOptions - object what contains alternative action account or gas limit (optional)
+   */
+  @incrementMethodCall()
+  public async setSubtype(
+    newSubtype: ValueOfferSubtype,
+    transactionOptions?: TransactionOptions,
+  ): Promise<void> {
+    checkIfActionAccountInitialized(transactionOptions);
+
+    const transactionCall = Offer.contract.methods.setTeeOfferSubtype(this.id, newSubtype);
     await TxManager.execute(transactionCall, transactionOptions);
   }
 

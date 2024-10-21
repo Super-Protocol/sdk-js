@@ -1558,6 +1558,24 @@ export const abi = [
         "inputs": [
             {
                 "internalType": "address",
+                "name": "beneficiary",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "amount",
+                "type": "uint256"
+            }
+        ],
+        "name": "increaseForByApp",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
                 "name": "depositOwner",
                 "type": "address"
             },
@@ -1888,6 +1906,11 @@ export const abi = [
                         "internalType": "string",
                         "name": "argsPublicKey",
                         "type": "string"
+                    },
+                    {
+                        "internalType": "enum TeeOfferSubtype",
+                        "name": "subtype",
+                        "type": "uint8"
                     }
                 ],
                 "internalType": "struct TeeOfferInfo",
@@ -1947,11 +1970,6 @@ export const abi = [
                 "internalType": "bool",
                 "name": "enabled",
                 "type": "bool"
-            },
-            {
-                "internalType": "enum TeeOfferSubtype",
-                "name": "subtype",
-                "type": "uint8"
             }
         ],
         "name": "createTeeOffer",
@@ -2042,6 +2060,11 @@ export const abi = [
                         "internalType": "string",
                         "name": "signatureKey",
                         "type": "string"
+                    },
+                    {
+                        "internalType": "enum ValueOfferSubtype",
+                        "name": "subtype",
+                        "type": "uint8"
                     }
                 ],
                 "internalType": "struct ValueOfferInfo",
@@ -2314,6 +2337,11 @@ export const abi = [
                         "internalType": "string",
                         "name": "argsPublicKey",
                         "type": "string"
+                    },
+                    {
+                        "internalType": "enum TeeOfferSubtype",
+                        "name": "subtype",
+                        "type": "uint8"
                     }
                 ],
                 "internalType": "struct TeeOfferInfo",
@@ -2427,6 +2455,11 @@ export const abi = [
                         "internalType": "string",
                         "name": "signatureKey",
                         "type": "string"
+                    },
+                    {
+                        "internalType": "enum ValueOfferSubtype",
+                        "name": "subtype",
+                        "type": "uint8"
                     }
                 ],
                 "internalType": "struct ValueOfferInfo",
@@ -2470,6 +2503,24 @@ export const abi = [
             }
         ],
         "name": "setValueOfferRestrictionsSpecification",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "offerId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "enum ValueOfferSubtype",
+                "name": "newSubtype",
+                "type": "uint8"
+            }
+        ],
+        "name": "setValueOfferSubtype",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
@@ -2532,6 +2583,11 @@ export const abi = [
                                 "internalType": "string",
                                 "name": "argsPublicKey",
                                 "type": "string"
+                            },
+                            {
+                                "internalType": "enum TeeOfferSubtype",
+                                "name": "subtype",
+                                "type": "uint8"
                             }
                         ],
                         "internalType": "struct TeeOfferInfo",
@@ -2542,11 +2598,6 @@ export const abi = [
                         "internalType": "bool",
                         "name": "enabled",
                         "type": "bool"
-                    },
-                    {
-                        "internalType": "enum TeeOfferSubtype",
-                        "name": "subtype",
-                        "type": "uint8"
                     }
                 ],
                 "internalType": "struct TeeOfferData[]",
@@ -2665,6 +2716,11 @@ export const abi = [
                                 "internalType": "string",
                                 "name": "signatureKey",
                                 "type": "string"
+                            },
+                            {
+                                "internalType": "enum ValueOfferSubtype",
+                                "name": "subtype",
+                                "type": "uint8"
                             }
                         ],
                         "internalType": "struct ValueOfferInfo",
@@ -3034,6 +3090,11 @@ export const abi = [
                                 "internalType": "string",
                                 "name": "argsPublicKey",
                                 "type": "string"
+                            },
+                            {
+                                "internalType": "enum TeeOfferSubtype",
+                                "name": "subtype",
+                                "type": "uint8"
                             }
                         ],
                         "internalType": "struct TeeOfferInfo",
@@ -3044,11 +3105,6 @@ export const abi = [
                         "internalType": "bool",
                         "name": "enabled",
                         "type": "bool"
-                    },
-                    {
-                        "internalType": "enum TeeOfferSubtype",
-                        "name": "subtype",
-                        "type": "uint8"
                     }
                 ],
                 "internalType": "struct TeeOfferData",
@@ -3234,6 +3290,11 @@ export const abi = [
                                 "internalType": "string",
                                 "name": "signatureKey",
                                 "type": "string"
+                            },
+                            {
+                                "internalType": "enum ValueOfferSubtype",
+                                "name": "subtype",
+                                "type": "uint8"
                             }
                         ],
                         "internalType": "struct ValueOfferInfo",
@@ -3249,6 +3310,25 @@ export const abi = [
                 "internalType": "struct ValueOfferData",
                 "name": "ret",
                 "type": "tuple"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "offerId",
+                "type": "uint256"
+            }
+        ],
+        "name": "getValueOfferSubtype",
+        "outputs": [
+            {
+                "internalType": "enum ValueOfferSubtype",
+                "name": "",
+                "type": "uint8"
             }
         ],
         "stateMutability": "view",
@@ -6459,7 +6539,7 @@ export const abi = [
                     },
                     {
                         "internalType": "uint16",
-                        "name": "amount",
+                        "name": "percent",
                         "type": "uint16"
                     }
                 ],
@@ -6612,7 +6692,7 @@ export const abi = [
                     },
                     {
                         "internalType": "uint16",
-                        "name": "amount",
+                        "name": "percent",
                         "type": "uint16"
                     }
                 ],
@@ -10132,6 +10212,34 @@ export const abi = [
             }
         ],
         "name": "incrementReplicationFactor",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "teeOfferIssuerId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "teeOfferKeeperId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "offerId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint64",
+                "name": "offerVersion",
+                "type": "uint64"
+            }
+        ],
+        "name": "removeOfferResource",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"

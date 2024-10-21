@@ -117,10 +117,10 @@ class TeeOffer {
    */
   @incrementMethodCall()
   public async getInfo(): Promise<TeeOfferInfo> {
-    const { info, subtype } = await TeeOffer.contract.methods.getTeeOffer(this.id).call();
-    const { tlb_DEPRECATED: _tlb_DEPRECATED, ...offerInfo } = cleanWeb3Data({
+    const { info } = await TeeOffer.contract.methods.getTeeOffer(this.id).call();
+    const { tlb_DEPRECATED: _tlb_DEPRECATED, subtype: _subtype, ...offerInfo } = cleanWeb3Data({
       ...info,
-      subType: subtype as TeeOfferSubtype,
+      subType: info.subtype,
       hardwareInfo: (await this.getHardwareInfo()) as HardwareInfo,
     });
 
@@ -618,11 +618,13 @@ class TeeOffer {
     await this.setHardwareInfo(hardwareInfo, transactionOptions);
 
     await TxManager.execute(
-      TeeOffer.contract.methods.setTeeOfferInfo(this.id, { ...offerInfo, tlb_DEPRECATED: '' }),
+      TeeOffer.contract.methods.setTeeOfferInfo(this.id, {
+        ...offerInfo,
+        subtype: subType,
+        tlb_DEPRECATED: '',
+      }),
       transactionOptions,
     );
-
-    await this.setSubtype(subType);
 
     if (this.offerInfo) this.offerInfo = newInfo;
   }

@@ -132,10 +132,11 @@ class Offer {
   public async setInfo(newInfo: OfferInfo, transactionOptions?: TransactionOptions): Promise<void> {
     checkIfActionAccountInitialized(transactionOptions);
 
-    const { restrictions, linkage, ...restInfo } = newInfo;
+    const { restrictions, linkage, subType, ...restInfo } = newInfo;
     await TxManager.execute(
       Offer.contract.methods.setValueOfferInfo(this.id, {
         ...restInfo,
+        subtype: subType,
         linkage_DEPRECATED: linkage,
       }),
       transactionOptions,

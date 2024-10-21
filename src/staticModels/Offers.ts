@@ -88,7 +88,10 @@ class Offers implements StaticModel {
     await TxManager.execute(
       contract.methods.createValueOffer(
         providerAuthorityAccount,
-        offerInfoRaw,
+        {
+          ...offerInfoRaw,
+          subtype: offerInfoRaw.subType,
+        },
         restrictions,
         formattedExternalId,
         enabled,

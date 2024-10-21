@@ -117,10 +117,9 @@ class TeeOffer {
    */
   @incrementMethodCall()
   public async getInfo(): Promise<TeeOfferInfo> {
-    const { info, subtype } = await TeeOffer.contract.methods.getTeeOffer(this.id).call();
+    const { info } = await TeeOffer.contract.methods.getTeeOffer(this.id).call();
     const { tlb_DEPRECATED: _tlb_DEPRECATED, ...offerInfo } = cleanWeb3Data({
       ...info,
-      subType: subtype as TeeOfferSubtype,
       hardwareInfo: (await this.getHardwareInfo()) as HardwareInfo,
     });
 
@@ -613,7 +612,7 @@ class TeeOffer {
   ): Promise<void> {
     checkIfActionAccountInitialized(transactionOptions);
 
-    const { hardwareInfo, subType, ...offerInfo } = newInfo;
+    const { hardwareInfo, ...offerInfo } = newInfo;
 
     await this.setHardwareInfo(hardwareInfo, transactionOptions);
 
@@ -621,8 +620,6 @@ class TeeOffer {
       TeeOffer.contract.methods.setTeeOfferInfo(this.id, { ...offerInfo, tlb_DEPRECATED: '' }),
       transactionOptions,
     );
-
-    await this.setSubtype(subType);
 
     if (this.offerInfo) this.offerInfo = newInfo;
   }

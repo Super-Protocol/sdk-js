@@ -1906,6 +1906,11 @@ export const abi = [
                         "internalType": "string",
                         "name": "argsPublicKey",
                         "type": "string"
+                    },
+                    {
+                        "internalType": "enum TeeOfferSubtype",
+                        "name": "subtype",
+                        "type": "uint8"
                     }
                 ],
                 "internalType": "struct TeeOfferInfo",
@@ -1965,11 +1970,6 @@ export const abi = [
                 "internalType": "bool",
                 "name": "enabled",
                 "type": "bool"
-            },
-            {
-                "internalType": "enum TeeOfferSubtype",
-                "name": "subtype",
-                "type": "uint8"
             }
         ],
         "name": "createTeeOffer",
@@ -2337,6 +2337,11 @@ export const abi = [
                         "internalType": "string",
                         "name": "argsPublicKey",
                         "type": "string"
+                    },
+                    {
+                        "internalType": "enum TeeOfferSubtype",
+                        "name": "subtype",
+                        "type": "uint8"
                     }
                 ],
                 "internalType": "struct TeeOfferInfo",
@@ -2578,6 +2583,11 @@ export const abi = [
                                 "internalType": "string",
                                 "name": "argsPublicKey",
                                 "type": "string"
+                            },
+                            {
+                                "internalType": "enum TeeOfferSubtype",
+                                "name": "subtype",
+                                "type": "uint8"
                             }
                         ],
                         "internalType": "struct TeeOfferInfo",
@@ -2588,11 +2598,6 @@ export const abi = [
                         "internalType": "bool",
                         "name": "enabled",
                         "type": "bool"
-                    },
-                    {
-                        "internalType": "enum TeeOfferSubtype",
-                        "name": "subtype",
-                        "type": "uint8"
                     }
                 ],
                 "internalType": "struct TeeOfferData[]",
@@ -3085,6 +3090,11 @@ export const abi = [
                                 "internalType": "string",
                                 "name": "argsPublicKey",
                                 "type": "string"
+                            },
+                            {
+                                "internalType": "enum TeeOfferSubtype",
+                                "name": "subtype",
+                                "type": "uint8"
                             }
                         ],
                         "internalType": "struct TeeOfferInfo",
@@ -3095,11 +3105,6 @@ export const abi = [
                         "internalType": "bool",
                         "name": "enabled",
                         "type": "bool"
-                    },
-                    {
-                        "internalType": "enum TeeOfferSubtype",
-                        "name": "subtype",
-                        "type": "uint8"
                     }
                 ],
                 "internalType": "struct TeeOfferData",

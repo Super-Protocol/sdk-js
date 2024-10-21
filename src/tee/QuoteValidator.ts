@@ -74,15 +74,12 @@ export class QuoteValidator {
       retryInterval?: number;
     },
   ): Promise<Buffer> {
-    const baseURL = options?.baseURL ?? 'https://api.github.com/repos/Super-Protocol/sp-vm';
+    const baseURL = options?.baseURL ?? 'https://raw.githubusercontent.com/Super-Protocol/sp-vm';
     const retryMax = options?.retryMax ?? 3;
     const retryInterval = options?.retryInterval ?? 1000;
 
     const axiosInstance = axios.create({
       baseURL,
-      headers: {
-        Accept: 'application/vnd.github.v3.raw',
-      },
     });
     const response = await tryWithInterval<AxiosResponse>({
       checkResult(response) {
@@ -91,7 +88,7 @@ export class QuoteValidator {
       handler() {
         const mrenclaveHex = mrEnclave.toString('hex');
 
-        return axiosInstance.get(`/contents/signatures/mrenclave-${mrenclaveHex}.sign`, {
+        return axiosInstance.get(`/main/signatures/mrenclave-${mrenclaveHex}.sign`, {
           responseType: 'arraybuffer',
         });
       },

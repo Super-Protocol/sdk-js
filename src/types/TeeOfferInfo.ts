@@ -5,7 +5,7 @@ export type TeeOfferInfo = {
   name: string;
   description: string;
   teeType: string;
-  subtype: TeeOfferSubtype;
+  subType: TeeOfferSubtype;
   properties: string;
   argsPublicKey: string;
   hardwareInfo: HardwareInfo;

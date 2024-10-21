@@ -49,7 +49,7 @@ type OfferInfoBase = {
   hash: string;
   signatureKey: string;
   metadata: string;
-  subtype: ValueOfferSubtype;
+  subType: ValueOfferSubtype;
 };
 
 export type OfferInfoRaw = OfferInfoBase & {

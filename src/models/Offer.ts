@@ -171,8 +171,12 @@ class Offer {
       throw Error(`Offer ${this.id} does not exist`);
     }
     const { info } = await Offer.contract.methods.getValueOffer(this.id).call();
-    const { linkage_DEPRECATED, ...restInfo } = info;
-    this.offerInfo = cleanWeb3Data({ ...restInfo, linkage: linkage_DEPRECATED }) as OfferInfo;
+    const { linkage_DEPRECATED, subtype, ...restInfo } = info;
+    this.offerInfo = cleanWeb3Data({
+      ...restInfo,
+      subType: subtype,
+      linkage: linkage_DEPRECATED,
+    }) as OfferInfo;
 
     const offerRestrictions = await Offer.contract.methods
       .getOfferRestrictionsSpecification(this.id)

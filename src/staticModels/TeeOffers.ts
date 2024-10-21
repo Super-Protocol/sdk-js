@@ -104,7 +104,7 @@ class TeeOffers {
   ): Promise<void> {
     const contract = BlockchainConnector.getInstance().getContract();
     checkIfActionAccountInitialized(transactionOptions);
-    const { hardwareInfo, ...offerInfo } = teeOfferInfo;
+    const { hardwareInfo, subType, ...offerInfo } = teeOfferInfo;
 
     // Converts offer info to array of arrays (used in blockchain)
     const packedHardwareInfo = await TeeOffers.packHardwareInfo(hardwareInfo);
@@ -113,7 +113,7 @@ class TeeOffers {
     await TxManager.execute(
       contract.methods.createTeeOffer(
         providerAuthorityAccount,
-        { ...offerInfo, tlb_DEPRECATED: '' },
+        { ...offerInfo, subtype: subType, tlb_DEPRECATED: '' },
         packedHardwareInfo.slotInfo,
         convertOptionInfoToRaw(packedHardwareInfo.optionInfo),
         formattedExternalId,

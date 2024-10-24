@@ -1,4 +1,4 @@
-import { BlockchainId } from './Web3.js';
+import { BlockchainId } from '../types/index.js';
 
 export enum OfferType {
   TeeOffer = '0',
@@ -7,18 +7,34 @@ export enum OfferType {
   Data = '3',
 }
 
+export enum TeeOfferSubtype {
+  Default = '0',
+  TeeSubtypeSGX = '1',
+  TeeSubtypeTDX = '2',
+  TeeSubtypeSEV = '3',
+  TeeSubtypeARM = '4',
+}
+
+export enum ValueOfferSubtype {
+  Default = '0',
+  ValueSubtypeEngine = '1',
+  ValueSubtypeModel = '2',
+  ValueSubtypeDataset = '3',
+}
+
 export enum OfferGroup {
   Input = '0',
   Processing = '1',
   Output = '2',
 }
 
-export type OfferRestrictions = {
+export type ValueOfferRestrictionsSpecification = {
   offers: BlockchainId[];
   types: OfferType[];
+  versions: number[];
 };
 
-export type OfferInfo = {
+type OfferInfoBase = {
   name: string;
   group: OfferGroup;
   offerType: OfferType;
@@ -30,8 +46,17 @@ export type OfferInfo = {
   allowedAccounts: string[];
   argsPublicKey: string;
   resultResource: string;
-  linkage: string;
   hash: string;
+  signatureKey: string;
   metadata: string;
-  restrictions: OfferRestrictions;
+  subType: ValueOfferSubtype;
+};
+
+export type OfferInfoRaw = OfferInfoBase & {
+  linkage_DEPRECATED: string;
+};
+
+export type OfferInfo = OfferInfoBase & {
+  linkage: string; // TODO remove after signatureKey supported
+  restrictions: ValueOfferRestrictionsSpecification;
 };

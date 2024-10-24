@@ -5,7 +5,13 @@ import {
   cleanWeb3Data,
   convertBigIntToString,
 } from '../utils/helper.js';
-import { ProviderInfo, Origins, TransactionOptions, BlockchainId, TokenAmount } from '../types/index.js';
+import {
+  ProviderInfo,
+  Origins,
+  TransactionOptions,
+  BlockchainId,
+  TokenAmount,
+} from '../types/index.js';
 import { BlockchainConnector } from '../connectors/index.js';
 import TxManager from '../utils/TxManager.js';
 import Consensus from '../staticModels/Consensus.js';

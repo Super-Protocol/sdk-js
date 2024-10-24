@@ -98,24 +98,24 @@ class TeeOffers {
   static async create(
     providerAuthorityAccount: string,
     teeOfferInfo: TeeOfferInfo,
-    // slotInfo: SlotInfo,
-    // optionInfo: OptionInfo,
     externalId = 'default',
     enabled = true,
     transactionOptions?: TransactionOptions,
   ): Promise<void> {
     const contract = BlockchainConnector.getInstance().getContract();
     checkIfActionAccountInitialized(transactionOptions);
+    const { hardwareInfo, subType, ...offerInfo } = teeOfferInfo;
 
     // Converts offer info to array of arrays (used in blockchain)
-    teeOfferInfo.hardwareInfo = await TeeOffers.packHardwareInfo(teeOfferInfo.hardwareInfo);
+    const packedHardwareInfo = await TeeOffers.packHardwareInfo(hardwareInfo);
     const formattedExternalId = formatBytes32String(externalId);
+
     await TxManager.execute(
       contract.methods.createTeeOffer(
         providerAuthorityAccount,
-        teeOfferInfo,
-        teeOfferInfo.hardwareInfo.slotInfo,
-        convertOptionInfoToRaw(teeOfferInfo.hardwareInfo.optionInfo),
+        { ...offerInfo, subtype: subType, tlb_DEPRECATED: '' },
+        packedHardwareInfo.slotInfo,
+        convertOptionInfoToRaw(packedHardwareInfo.optionInfo),
         formattedExternalId,
         enabled,
       ),

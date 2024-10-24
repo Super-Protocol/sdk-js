@@ -5,7 +5,7 @@ import {
   defaultGasLimit,
   txIntervalMs,
   txConcurrency,
-  POLYGON_MAIN_CHAIN_ID
+  POLYGON_MAIN_CHAIN_ID,
 } from './constants.js';
 
 export type Store = {

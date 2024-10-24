@@ -8,7 +8,10 @@ class NonceTracker {
   private transactionsOnHold: (() => void)[] | undefined;
   private countOfPendingTransactions = 0;
 
-  constructor(private web3: Web3, private address: string) {
+  constructor(
+    private web3: Web3,
+    private address: string,
+  ) {
     this.logger = rootLogger.child({ className: 'NonceTracker', address });
     this.logger.trace('Created NonceTracker');
   }

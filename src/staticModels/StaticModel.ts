@@ -8,7 +8,7 @@ import { EventLog } from 'web3-eth-contract';
 import abi from '../contracts/abi.js';
 
 interface IObjectWithExternalId {
-  externalId: string
+  externalId: string;
 }
 
 class StaticModel {

@@ -136,3 +136,5 @@ export { default as AxiosTransport } from './analytics/transports/AxiosTransport
 export { default as FetchTransport } from './analytics/transports/FetchTransport.js';
 export * from './utils/cache/index.js';
 export * from './errors/index.js';
+export * from './utils/schema-validators/index.js';
+export * as ResourceLoaderUtils from './utils/resourceLoaders/index.js';

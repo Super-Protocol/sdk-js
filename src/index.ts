@@ -127,6 +127,7 @@ export { TeeSgxParser, TeeTdxParser, TeeParser } from './tee/QuoteParser.js';
 export { QuoteValidator } from './tee/QuoteValidator.js';
 export * from './tee/statuses.js';
 export { TeeBlockVerifier } from './tee/TeeBlockVerifier.js';
+export { TeeCertificateService } from './tee/TeeCertificateService.js';
 
 export * from './analytics/types.js';
 export { default as Analytics } from './analytics/Analytics.js';

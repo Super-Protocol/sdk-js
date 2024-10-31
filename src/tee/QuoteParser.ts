@@ -223,7 +223,7 @@ export class TeeSgxParser extends TeeParser {
       );
     }
 
-    const certsPems = splitChain(qeCertificationData.toString()); // [device, platform, root]
+    const certsPems = splitChain(qeCertificationData.toString()) || []; // [device, platform, root]
     const certsData = certsPems.map((pem) => this.parsePem(pem));
 
     return {
@@ -439,7 +439,7 @@ export class TeeTdxParser extends TeeParser {
 
     const qeCertificationData = this.getDataAndAdvance(signature, signatureSize);
 
-    const certsPems = splitChain(qeCertificationData.toString()); // [device, platform, root]
+    const certsPems = splitChain(qeCertificationData.toString()) || []; // [device, platform, root]
     const certsData = certsPems.map((pem) => this.parsePem(pem));
 
     return {

@@ -44,4 +44,9 @@ export class TeeCertificateService {
       dataHash: Buffer.from(report.dataHash),
     };
   }
+
+  fromRawToPem(data: Uint8Array): string {
+    const base64 = Buffer.from(data).toString('base64');
+    return `-----BEGIN CERTIFICATE-----\n${base64.match(/.{1,64}/g)!.join('\n')}\n-----END CERTIFICATE-----`;
+  }
 }

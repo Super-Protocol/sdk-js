@@ -1,5 +1,5 @@
-export const Approval = 'Approval' as const;export const Transfer = 'Transfer' as const;export const RewardsClaimed = 'RewardsClaimed' as const;export const TcbBenchmarkChanged = 'TcbBenchmarkChanged' as const;export const TcbCompleted = 'TcbCompleted' as const;export const TcbInitialized = 'TcbInitialized' as const;export const TcbBanned = 'TcbBanned' as const;export const DepositPartLocked = 'DepositPartLocked' as const;export const DepositPartUnlocked = 'DepositPartUnlocked' as const;export const DepositReplenished = 'DepositReplenished' as const;export const DepositWithdrawn = 'DepositWithdrawn' as const;export const OfferCreated = 'OfferCreated' as const;export const OfferDisabled = 'OfferDisabled' as const;export const OfferEnabled = 'OfferEnabled' as const;export const TeeOfferCreated = 'TeeOfferCreated' as const;export const TeeOfferViolationRateChanged = 'TeeOfferViolationRateChanged' as const;export const OrdersGroupCreated = 'OrdersGroupCreated' as const;export const OrderCreated = 'OrderCreated' as const;export const OrderStatusUpdated = 'OrderStatusUpdated' as const;export const OrderAwaitingPaymentChanged = 'OrderAwaitingPaymentChanged' as const;export const OrderDepositRefilled = 'OrderDepositRefilled' as const;export const OrderOptionsDepositSpentChanged = 'OrderOptionsDepositSpentChanged' as const;export const OrderProfitUnlocked = 'OrderProfitUnlocked' as const;export const OrderChangeWithdrawn = 'OrderChangeWithdrawn' as const;export const OrderEncryptedResultUpdated = 'OrderEncryptedResultUpdated' as const;export const OrderProfitWithdrawn = 'OrderProfitWithdrawn' as const;export const OrderStarted = 'OrderStarted' as const;export const OrderOptionsChangeRequested = 'OrderOptionsChangeRequested' as const;export const OrderOptionsChanged = 'OrderOptionsChanged' as const;export const OrderSlotCountUpdateRequested = 'OrderSlotCountUpdateRequested' as const;export const OrderSlotCountUpdated = 'OrderSlotCountUpdated' as const;export const ProviderModified = 'ProviderModified' as const;export const ProviderRegistered = 'ProviderRegistered' as const;export const ProviderSecurityDepoRefilled = 'ProviderSecurityDepoRefilled' as const;export const ProviderSecurityDepoUnlocked = 'ProviderSecurityDepoUnlocked' as const;export const ProviderViolationRateIncremented = 'ProviderViolationRateIncremented' as const;export const OptionAdded = 'OptionAdded' as const;export const OptionDeleted = 'OptionDeleted' as const;export const OptionUpdated = 'OptionUpdated' as const;export const TeeSlotAdded = 'TeeSlotAdded' as const;export const TeeSlotDeleted = 'TeeSlotDeleted' as const;export const TeeSlotUpdated = 'TeeSlotUpdated' as const;export const TcbRewardUnlocked = 'TcbRewardUnlocked' as const;export const WarningMessage = 'WarningMessage' as const;export const ValueSlotAdded = 'ValueSlotAdded' as const;export const ValueSlotDeleted = 'ValueSlotDeleted' as const;export const ValueSlotUpdated = 'ValueSlotUpdated' as const;export const DiamondCut = 'DiamondCut' as const;export const OwnershipTransferred = 'OwnershipTransferred' as const;export const LoaderSecretPublicKeySessionUpdated = 'LoaderSecretPublicKeySessionUpdated' as const;export const LoaderSessionKeyUpdated = 'LoaderSessionKeyUpdated' as const;export const OfferResourceCreated = 'OfferResourceCreated' as const;export const OrderResourceCreated = 'OrderResourceCreated' as const;export const OfferStorageRequestCanceled = 'OfferStorageRequestCanceled' as const;export const OfferStorageRequestCreated = 'OfferStorageRequestCreated' as const;export const SecretRequestCreated = 'SecretRequestCreated' as const;
-export type AbiEvent = typeof Approval | typeof Transfer | typeof RewardsClaimed | typeof TcbBenchmarkChanged | typeof TcbCompleted | typeof TcbInitialized | typeof TcbBanned | typeof DepositPartLocked | typeof DepositPartUnlocked | typeof DepositReplenished | typeof DepositWithdrawn | typeof OfferCreated | typeof OfferDisabled | typeof OfferEnabled | typeof TeeOfferCreated | typeof TeeOfferViolationRateChanged | typeof OrdersGroupCreated | typeof OrderCreated | typeof OrderStatusUpdated | typeof OrderAwaitingPaymentChanged | typeof OrderDepositRefilled | typeof OrderOptionsDepositSpentChanged | typeof OrderProfitUnlocked | typeof OrderChangeWithdrawn | typeof OrderEncryptedResultUpdated | typeof OrderProfitWithdrawn | typeof OrderStarted | typeof OrderOptionsChangeRequested | typeof OrderOptionsChanged | typeof OrderSlotCountUpdateRequested | typeof OrderSlotCountUpdated | typeof ProviderModified | typeof ProviderRegistered | typeof ProviderSecurityDepoRefilled | typeof ProviderSecurityDepoUnlocked | typeof ProviderViolationRateIncremented | typeof OptionAdded | typeof OptionDeleted | typeof OptionUpdated | typeof TeeSlotAdded | typeof TeeSlotDeleted | typeof TeeSlotUpdated | typeof TcbRewardUnlocked | typeof WarningMessage | typeof ValueSlotAdded | typeof ValueSlotDeleted | typeof ValueSlotUpdated | typeof DiamondCut | typeof OwnershipTransferred | typeof LoaderSecretPublicKeySessionUpdated | typeof LoaderSessionKeyUpdated | typeof OfferResourceCreated | typeof OrderResourceCreated | typeof OfferStorageRequestCanceled | typeof OfferStorageRequestCreated | typeof SecretRequestCreated;
+export const Approval = 'Approval' as const;export const Transfer = 'Transfer' as const;export const RewardsClaimed = 'RewardsClaimed' as const;export const TcbBenchmarkChanged = 'TcbBenchmarkChanged' as const;export const TcbCompleted = 'TcbCompleted' as const;export const TcbInitialized = 'TcbInitialized' as const;export const TcbBanned = 'TcbBanned' as const;export const DepositPartLocked = 'DepositPartLocked' as const;export const DepositPartUnlocked = 'DepositPartUnlocked' as const;export const DepositReplenished = 'DepositReplenished' as const;export const DepositWithdrawn = 'DepositWithdrawn' as const;export const OfferCreated = 'OfferCreated' as const;export const OfferDisabled = 'OfferDisabled' as const;export const OfferEnabled = 'OfferEnabled' as const;export const SetValueOfferRestrictions = 'SetValueOfferRestrictions' as const;export const TeeOfferCreated = 'TeeOfferCreated' as const;export const TeeOfferViolationRateChanged = 'TeeOfferViolationRateChanged' as const;export const OrdersGroupCreated = 'OrdersGroupCreated' as const;export const OrderCreated = 'OrderCreated' as const;export const OrderStatusUpdated = 'OrderStatusUpdated' as const;export const OrderAwaitingPaymentChanged = 'OrderAwaitingPaymentChanged' as const;export const OrderDepositRefilled = 'OrderDepositRefilled' as const;export const OrderOptionsDepositSpentChanged = 'OrderOptionsDepositSpentChanged' as const;export const OrderProfitUnlocked = 'OrderProfitUnlocked' as const;export const OrderChangeWithdrawn = 'OrderChangeWithdrawn' as const;export const OrderEncryptedResultUpdated = 'OrderEncryptedResultUpdated' as const;export const OrderProfitWithdrawn = 'OrderProfitWithdrawn' as const;export const OrderStarted = 'OrderStarted' as const;export const OrderOptionsChangeRequested = 'OrderOptionsChangeRequested' as const;export const OrderOptionsChanged = 'OrderOptionsChanged' as const;export const OrderSlotCountUpdateRequested = 'OrderSlotCountUpdateRequested' as const;export const OrderSlotCountUpdated = 'OrderSlotCountUpdated' as const;export const ProviderModified = 'ProviderModified' as const;export const ProviderRegistered = 'ProviderRegistered' as const;export const ProviderSecurityDepoRefilled = 'ProviderSecurityDepoRefilled' as const;export const ProviderSecurityDepoUnlocked = 'ProviderSecurityDepoUnlocked' as const;export const ProviderViolationRateIncremented = 'ProviderViolationRateIncremented' as const;export const OptionAdded = 'OptionAdded' as const;export const OptionDeleted = 'OptionDeleted' as const;export const OptionUpdated = 'OptionUpdated' as const;export const TeeSlotAdded = 'TeeSlotAdded' as const;export const TeeSlotDeleted = 'TeeSlotDeleted' as const;export const TeeSlotUpdated = 'TeeSlotUpdated' as const;export const TcbRewardUnlocked = 'TcbRewardUnlocked' as const;export const WarningMessage = 'WarningMessage' as const;export const ValueSlotAdded = 'ValueSlotAdded' as const;export const ValueSlotDeleted = 'ValueSlotDeleted' as const;export const ValueSlotUpdated = 'ValueSlotUpdated' as const;export const DiamondCut = 'DiamondCut' as const;export const OwnershipTransferred = 'OwnershipTransferred' as const;export const LoaderSecretPublicKeySessionUpdated = 'LoaderSecretPublicKeySessionUpdated' as const;export const LoaderSessionKeyUpdated = 'LoaderSessionKeyUpdated' as const;export const OfferResourceCreated = 'OfferResourceCreated' as const;export const OrderResourceCreated = 'OrderResourceCreated' as const;export const OfferStorageRequestCanceled = 'OfferStorageRequestCanceled' as const;export const OfferStorageRequestCreated = 'OfferStorageRequestCreated' as const;export const SecretRequestCreated = 'SecretRequestCreated' as const;
+export type AbiEvent = typeof Approval | typeof Transfer | typeof RewardsClaimed | typeof TcbBenchmarkChanged | typeof TcbCompleted | typeof TcbInitialized | typeof TcbBanned | typeof DepositPartLocked | typeof DepositPartUnlocked | typeof DepositReplenished | typeof DepositWithdrawn | typeof OfferCreated | typeof OfferDisabled | typeof OfferEnabled | typeof SetValueOfferRestrictions | typeof TeeOfferCreated | typeof TeeOfferViolationRateChanged | typeof OrdersGroupCreated | typeof OrderCreated | typeof OrderStatusUpdated | typeof OrderAwaitingPaymentChanged | typeof OrderDepositRefilled | typeof OrderOptionsDepositSpentChanged | typeof OrderProfitUnlocked | typeof OrderChangeWithdrawn | typeof OrderEncryptedResultUpdated | typeof OrderProfitWithdrawn | typeof OrderStarted | typeof OrderOptionsChangeRequested | typeof OrderOptionsChanged | typeof OrderSlotCountUpdateRequested | typeof OrderSlotCountUpdated | typeof ProviderModified | typeof ProviderRegistered | typeof ProviderSecurityDepoRefilled | typeof ProviderSecurityDepoUnlocked | typeof ProviderViolationRateIncremented | typeof OptionAdded | typeof OptionDeleted | typeof OptionUpdated | typeof TeeSlotAdded | typeof TeeSlotDeleted | typeof TeeSlotUpdated | typeof TcbRewardUnlocked | typeof WarningMessage | typeof ValueSlotAdded | typeof ValueSlotDeleted | typeof ValueSlotUpdated | typeof DiamondCut | typeof OwnershipTransferred | typeof LoaderSecretPublicKeySessionUpdated | typeof LoaderSessionKeyUpdated | typeof OfferResourceCreated | typeof OrderResourceCreated | typeof OfferStorageRequestCanceled | typeof OfferStorageRequestCreated | typeof SecretRequestCreated;
 export const abi = [
     {
         "anonymous": false,
@@ -1823,6 +1823,42 @@ export const abi = [
         "inputs": [
             {
                 "indexed": true,
+                "internalType": "uint256",
+                "name": "orderId",
+                "type": "uint256"
+            },
+            {
+                "components": [
+                    {
+                        "internalType": "uint256[]",
+                        "name": "offers",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "enum OfferType[]",
+                        "name": "types",
+                        "type": "uint8[]"
+                    },
+                    {
+                        "internalType": "uint64[]",
+                        "name": "versions",
+                        "type": "uint64[]"
+                    }
+                ],
+                "indexed": false,
+                "internalType": "struct ValueOfferRestrictionsSpecification",
+                "name": "specification",
+                "type": "tuple"
+            }
+        ],
+        "name": "SetValueOfferRestrictions",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
                 "internalType": "address",
                 "name": "creator",
                 "type": "address"
@@ -1985,6 +2021,11 @@ export const abi = [
                 "type": "address"
             },
             {
+                "internalType": "enum OfferType",
+                "name": "offerType",
+                "type": "uint8"
+            },
+            {
                 "components": [
                     {
                         "internalType": "string",
@@ -1993,12 +2034,12 @@ export const abi = [
                     },
                     {
                         "internalType": "enum OfferGroup",
-                        "name": "group",
+                        "name": "group_DEPRECATED",
                         "type": "uint8"
                     },
                     {
                         "internalType": "enum OfferType",
-                        "name": "offerType",
+                        "name": "offerType_DEPRECATED",
                         "type": "uint8"
                     },
                     {
@@ -2058,13 +2099,18 @@ export const abi = [
                     },
                     {
                         "internalType": "string",
-                        "name": "signatureKey",
+                        "name": "signatureKeyHash",
                         "type": "string"
                     },
                     {
                         "internalType": "enum ValueOfferSubtype",
                         "name": "subtype",
                         "type": "uint8"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "hardwareContext",
+                        "type": "string"
                     }
                 ],
                 "internalType": "struct ValueOfferInfo",
@@ -2388,12 +2434,12 @@ export const abi = [
                     },
                     {
                         "internalType": "enum OfferGroup",
-                        "name": "group",
+                        "name": "group_DEPRECATED",
                         "type": "uint8"
                     },
                     {
                         "internalType": "enum OfferType",
-                        "name": "offerType",
+                        "name": "offerType_DEPRECATED",
                         "type": "uint8"
                     },
                     {
@@ -2453,13 +2499,18 @@ export const abi = [
                     },
                     {
                         "internalType": "string",
-                        "name": "signatureKey",
+                        "name": "signatureKeyHash",
                         "type": "string"
                     },
                     {
                         "internalType": "enum ValueOfferSubtype",
                         "name": "subtype",
                         "type": "uint8"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "hardwareContext",
+                        "type": "string"
                     }
                 ],
                 "internalType": "struct ValueOfferInfo",
@@ -2641,6 +2692,11 @@ export const abi = [
                         "type": "address"
                     },
                     {
+                        "internalType": "enum OfferType",
+                        "name": "offerType",
+                        "type": "uint8"
+                    },
+                    {
                         "components": [
                             {
                                 "internalType": "string",
@@ -2649,12 +2705,12 @@ export const abi = [
                             },
                             {
                                 "internalType": "enum OfferGroup",
-                                "name": "group",
+                                "name": "group_DEPRECATED",
                                 "type": "uint8"
                             },
                             {
                                 "internalType": "enum OfferType",
-                                "name": "offerType",
+                                "name": "offerType_DEPRECATED",
                                 "type": "uint8"
                             },
                             {
@@ -2714,13 +2770,18 @@ export const abi = [
                             },
                             {
                                 "internalType": "string",
-                                "name": "signatureKey",
+                                "name": "signatureKeyHash",
                                 "type": "string"
                             },
                             {
                                 "internalType": "enum ValueOfferSubtype",
                                 "name": "subtype",
                                 "type": "uint8"
+                            },
+                            {
+                                "internalType": "string",
+                                "name": "hardwareContext",
+                                "type": "string"
                             }
                         ],
                         "internalType": "struct ValueOfferInfo",
@@ -2907,7 +2968,7 @@ export const abi = [
                     }
                 ],
                 "internalType": "struct ValueOfferRestrictionsSpecification",
-                "name": "",
+                "name": "ret",
                 "type": "tuple"
             }
         ],
@@ -3215,6 +3276,11 @@ export const abi = [
                         "type": "address"
                     },
                     {
+                        "internalType": "enum OfferType",
+                        "name": "offerType",
+                        "type": "uint8"
+                    },
+                    {
                         "components": [
                             {
                                 "internalType": "string",
@@ -3223,12 +3289,12 @@ export const abi = [
                             },
                             {
                                 "internalType": "enum OfferGroup",
-                                "name": "group",
+                                "name": "group_DEPRECATED",
                                 "type": "uint8"
                             },
                             {
                                 "internalType": "enum OfferType",
-                                "name": "offerType",
+                                "name": "offerType_DEPRECATED",
                                 "type": "uint8"
                             },
                             {
@@ -3288,13 +3354,18 @@ export const abi = [
                             },
                             {
                                 "internalType": "string",
-                                "name": "signatureKey",
+                                "name": "signatureKeyHash",
                                 "type": "string"
                             },
                             {
                                 "internalType": "enum ValueOfferSubtype",
                                 "name": "subtype",
                                 "type": "uint8"
+                            },
+                            {
+                                "internalType": "string",
+                                "name": "hardwareContext",
+                                "type": "string"
                             }
                         ],
                         "internalType": "struct ValueOfferInfo",
@@ -6322,6 +6393,11 @@ export const abi = [
                 "internalType": "enum OfferType",
                 "name": "offerType",
                 "type": "uint8"
+            },
+            {
+                "internalType": "bool",
+                "name": "enabled",
+                "type": "bool"
             }
         ],
         "name": "addProviderOffer",

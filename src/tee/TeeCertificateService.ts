@@ -21,7 +21,7 @@ export class TeeCertificateService {
   }
 
   async parseAndValidateCertificate(
-    certificatePem: forge.pki.PEM | Buffer,
+    certificatePem: string | Buffer,
     sgxApiUrl: string,
   ): Promise<ParseTlsCertificateResult> {
     const pem = Buffer.isBuffer(certificatePem) ? certificatePem.toString() : certificatePem;

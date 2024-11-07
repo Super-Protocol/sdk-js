@@ -28,6 +28,7 @@ import {
   OfferVersionInfo,
   OfferVersion,
   ValueOfferSubtype,
+  OfferInfoRaw,
 } from '../types/index.js';
 import { formatBytes32String } from 'ethers/lib/utils.js';
 import TeeOffers from '../staticModels/TeeOffers.js';
@@ -132,14 +133,15 @@ class Offer {
   public async setInfo(newInfo: OfferInfo, transactionOptions?: TransactionOptions): Promise<void> {
     checkIfActionAccountInitialized(transactionOptions);
 
-    const { restrictions, linkage, subType, offerType, ...restInfo } = newInfo;
+    const { restrictions, linkage, subType, offerType, group, ...restInfo } = newInfo;
     await TxManager.execute(
       Offer.contract.methods.setValueOfferInfo(this.id, {
         ...restInfo,
         subtype: subType,
+        group_DEPRECATED: group,
         linkage_DEPRECATED: linkage,
         offerType_DEPRECATED: offerType,
-      }),
+      } as OfferInfoRaw),
       transactionOptions,
     );
 

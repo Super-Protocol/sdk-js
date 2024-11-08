@@ -6586,6 +6586,31 @@ export const abi = [
     {
         "inputs": [
             {
+                "components": [
+                    {
+                        "internalType": "address",
+                        "name": "tokenContractAddress",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "uint32",
+                        "name": "protocolCommissionPercent",
+                        "type": "uint32"
+                    }
+                ],
+                "internalType": "struct TokenInfo[]",
+                "name": "newTokens",
+                "type": "tuple[]"
+            }
+        ],
+        "name": "addTokens",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
                 "internalType": "enum ParamName",
                 "name": "name",
                 "type": "uint8"
@@ -6600,6 +6625,19 @@ export const abi = [
             }
         ],
         "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "getProtocolCommissionDenominator",
+        "outputs": [
+            {
+                "internalType": "uint32",
+                "name": "",
+                "type": "uint32"
+            }
+        ],
+        "stateMutability": "pure",
         "type": "function"
     },
     {
@@ -6664,6 +6702,63 @@ export const abi = [
             }
         ],
         "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "getTokens",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "address",
+                        "name": "tokenContractAddress",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "uint32",
+                        "name": "protocolCommissionPercent",
+                        "type": "uint32"
+                    }
+                ],
+                "internalType": "struct TokenInfo[]",
+                "name": "",
+                "type": "tuple[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "tokenContractAddress",
+                "type": "address"
+            }
+        ],
+        "name": "isTokenExists",
+        "outputs": [
+            {
+                "internalType": "bool",
+                "name": "",
+                "type": "bool"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address[]",
+                "name": "tokensAddresses",
+                "type": "address[]"
+            }
+        ],
+        "name": "removeTokens",
+        "outputs": [],
+        "stateMutability": "nonpayable",
         "type": "function"
     },
     {

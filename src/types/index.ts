@@ -19,6 +19,7 @@ export * from './Superpro.js';
 export * from './TeeOfferInfo.js';
 export * from './TeeOfferOption.js';
 export * from './TeeOfferSlot.js';
+export * from './TokenInfo.js';
 export * from './ValueOfferSlot.js';
 export * from './Web3.js';
 export * from './DistributedSecretStorage.js';

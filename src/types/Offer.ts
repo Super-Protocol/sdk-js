@@ -36,8 +36,6 @@ export type ValueOfferRestrictionsSpecification = {
 
 type OfferInfoBase = {
   name: string;
-  group: OfferGroup;
-  offerType: OfferType;
   cancelable: boolean;
   description: string;
   input: string;
@@ -47,16 +45,22 @@ type OfferInfoBase = {
   argsPublicKey: string;
   resultResource: string;
   hash: string;
-  signatureKey: string;
+  signatureKeyHash: string;
+  hardwareContext: string;
   metadata: string;
-  subType: ValueOfferSubtype;
 };
 
 export type OfferInfoRaw = OfferInfoBase & {
   linkage_DEPRECATED: string;
+  group_DEPRECATED: OfferGroup;
+  offerType_DEPRECATED: OfferType;
+  subtype: ValueOfferSubtype;
 };
 
 export type OfferInfo = OfferInfoBase & {
   linkage: string; // TODO remove after signatureKey supported
   restrictions: ValueOfferRestrictionsSpecification;
+  offerType: OfferType;
+  subType: ValueOfferSubtype;
+  group: OfferGroup;
 };

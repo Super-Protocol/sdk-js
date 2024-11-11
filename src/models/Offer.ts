@@ -28,6 +28,7 @@ import {
   OfferVersionInfo,
   OfferVersion,
   ValueOfferSubtype,
+  OfferInfoRaw,
 } from '../types/index.js';
 import { formatBytes32String } from 'ethers/lib/utils.js';
 import TeeOffers from '../staticModels/TeeOffers.js';
@@ -132,15 +133,18 @@ class Offer {
   public async setInfo(newInfo: OfferInfo, transactionOptions?: TransactionOptions): Promise<void> {
     checkIfActionAccountInitialized(transactionOptions);
 
-    const { restrictions, linkage, subType, ...restInfo } = newInfo;
+    const { restrictions, linkage, subType, offerType, group, ...restInfo } = newInfo;
     await TxManager.execute(
       Offer.contract.methods.setValueOfferInfo(this.id, {
         ...restInfo,
         subtype: subType,
+        group_DEPRECATED: group,
         linkage_DEPRECATED: linkage,
-      }),
+        offerType_DEPRECATED: offerType,
+      } as OfferInfoRaw),
       transactionOptions,
     );
+
     await TxManager.execute(
       Offer.contract.methods.setValueOfferRestrictionsSpecification(this.id, restrictions),
       transactionOptions,
@@ -171,11 +175,16 @@ class Offer {
     if (!(await this.checkIfOfferExistsWithInterval())) {
       throw Error(`Offer ${this.id} does not exist`);
     }
-    const { info } = await Offer.contract.methods.getValueOffer(this.id).call();
-    const { linkage_DEPRECATED, subtype, ...restInfo } = info;
+    const { info, offerType } = await Offer.contract.methods.getValueOffer(this.id).call();
+    const offerGroup = await Offer.contract.methods.getOfferGroup(this.id).call();
+    // eslint-disable-next-line unused-imports/no-unused-vars
+    const { linkage_DEPRECATED, group_DEPRECATED, offerType_DEPRECATED, subtype, ...restInfo } =
+      info;
     this.offerInfo = cleanWeb3Data({
       ...restInfo,
       subType: subtype,
+      group: offerGroup,
+      offerType: offerType,
       linkage: linkage_DEPRECATED,
     }) as OfferInfo;
 

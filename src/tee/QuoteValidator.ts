@@ -593,7 +593,29 @@ export class QuoteValidator {
     }
   }
 
-  public async validate(quoteBuffer: Buffer): Promise<ValidationResult> {
+  async checkQuote(quote: Uint8Array, dataBlob: Uint8Array): Promise<void> {
+    const logger = this.logger.child({ method: this.checkQuote.name });
+
+    const quoteBuffer = Buffer.from(quote);
+    const quoteStatus = await this.validate(quoteBuffer);
+    if (quoteStatus.quoteValidationStatus !== QuoteValidationStatuses.UpToDate) {
+      if (quoteStatus.quoteValidationStatus === QuoteValidationStatuses.Error) {
+        throw new Error('Quote is invalid');
+      } else {
+        logger.warn(quoteStatus, 'Quote validation status is not UpToDate');
+      }
+    }
+
+    const userDataCheckResult = await this.isQuoteHasUserData(quoteBuffer, Buffer.from(dataBlob));
+    if (!userDataCheckResult) {
+      throw new Error('Quote has invalid user data');
+    }
+  }
+
+  async checkSignature(quoteBuffer: Buffer): Promise<void> {
+    await QuoteValidator.checkSignature(quoteBuffer);
+  }
+  async validate(quoteBuffer: Buffer): Promise<ValidationResult> {
     try {
       const quoteType = TeeParser.determineQuoteType(quoteBuffer);
       const quote =
@@ -615,7 +637,7 @@ export class QuoteValidator {
       const qeIdentity = await this.getQEIdentity(rootCertPem, quoteType.type);
 
       const qeIdentityStatus = this.getQEIdentityStatus(report, qeIdentity);
-      const tcbStatus = this.getTcbStatus(fmspc, pceId, tcbData, sgxExtensionData);
+      const tcbStatus = this.getTcbStatus(fmspc, pceId, tcbData, sgxExtensionData); // TODO method 'validate' isn't only for tcb - extract this from quote validator
 
       const quoteValidationStatus = this.getQuoteValidationStatus(qeIdentityStatus, tcbStatus);
       this.logger.info(`Quote validation status is ${quoteValidationStatus}`);

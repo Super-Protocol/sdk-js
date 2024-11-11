@@ -118,7 +118,11 @@ class TeeOffer {
   @incrementMethodCall()
   public async getInfo(): Promise<TeeOfferInfo> {
     const { info } = await TeeOffer.contract.methods.getTeeOffer(this.id).call();
-    const { tlb_DEPRECATED: _tlb_DEPRECATED, subtype: _subtype, ...offerInfo } = cleanWeb3Data({
+    const {
+      tlb_DEPRECATED: _tlb_DEPRECATED,
+      subtype: _subtype,
+      ...offerInfo
+    } = cleanWeb3Data({
       ...info,
       subType: info.subtype,
       hardwareInfo: (await this.getHardwareInfo()) as HardwareInfo,

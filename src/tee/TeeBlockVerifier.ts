@@ -1,43 +1,12 @@
-import { HashAlgorithm, Encoding } from '@super-protocol/dto-js';
-import { TLBlockSerializerV1, TLBlockUnserializeResultType } from '@super-protocol/tee-lib';
 import logger from '../logger.js';
 import { config } from '../config.js';
 import { TCB } from '../models/index.js';
 import { QuoteValidator } from './QuoteValidator.js';
-import { QuoteValidationStatuses } from './statuses.js';
 import { BlockchainId } from '../types/index.js';
-import Crypto from '../crypto/index.js';
+import { TcbDataSerializer } from './TcbSerializer.js';
 
 export class TeeBlockVerifier {
-  private static readonly verifiedTlbHashes: Map<string, string> = new Map();
   private static readonly verifiedTcbs: Set<BlockchainId> = new Set();
-
-  static async checkQuote(
-    quote: Uint8Array,
-    dataBlob: Uint8Array,
-    sgxApiUrl: string,
-  ): Promise<void> {
-    const quoteBuffer = Buffer.from(quote);
-    const validator = new QuoteValidator(sgxApiUrl);
-    const quoteStatus = await validator.validate(quoteBuffer);
-    if (quoteStatus.quoteValidationStatus !== QuoteValidationStatuses.UpToDate) {
-      if (quoteStatus.quoteValidationStatus === QuoteValidationStatuses.Error) {
-        throw new Error('Quote is invalid');
-      } else {
-        logger.warn(quoteStatus, 'Quote validation status is not UpToDate');
-      }
-    }
-
-    const userDataCheckResult = await validator.isQuoteHasUserData(
-      quoteBuffer,
-      Buffer.from(dataBlob),
-    );
-    if (!userDataCheckResult) {
-      throw new Error('Quote has invalid user data');
-    }
-
-    await QuoteValidator.checkSignature(quoteBuffer);
-  }
 
   static async verifyTcb(
     tcb: TCB,
@@ -57,14 +26,15 @@ export class TeeBlockVerifier {
       pubKey,
       ...(await tcb.getPublicData()),
     };
-    const serializer = new TLBlockSerializerV1();
-    const dataBlob = await serializer.serializeAnyData(signedTcbData);
-    await this.checkQuote(quote, dataBlob, sgxApiUrl);
+
+    const validator = new QuoteValidator(sgxApiUrl);
+    await validator.checkQuote(quote, TcbDataSerializer.serialize(signedTcbData));
+    await validator.checkSignature(quote);
 
     // update cache
     this.verifiedTcbs.add(tcb.tcbId);
     if (this.verifiedTcbs.size > config.TLB_CACHE_SIZE) {
-      const [value] = this.verifiedTcbs.entries().next().value;
+      const [value] = this.verifiedTcbs.entries().next().value as [string, string];
       this.verifiedTcbs.delete(value);
       logger.trace(
         value,
@@ -74,46 +44,6 @@ export class TeeBlockVerifier {
     logger.trace(
       tcb.tcbId,
       `TCB id = ${tcb.tcbId} added to the cache. Cache size: ${this.verifiedTcbs.size}, cache limit: ${config.TLB_CACHE_SIZE}`,
-    );
-  }
-
-  static async verifyTlb(
-    tlb: TLBlockUnserializeResultType,
-    tlbString: string,
-    offerId: string,
-    sgxApiUrl: string,
-  ): Promise<void> {
-    const tlbHash = await Crypto.createHash(Buffer.from(tlbString), {
-      algo: HashAlgorithm.SHA256,
-      encoding: Encoding.base64,
-    });
-    if (this.verifiedTlbHashes.has(tlbHash.hash)) {
-      logger.trace(
-        tlbHash,
-        `TLB hash of offer ${this.verifiedTlbHashes.get(
-          tlbHash.hash,
-        )} loaded from the cache. Cache size: ${this.verifiedTlbHashes.size}, cache limit: ${
-          config.TLB_CACHE_SIZE
-        }`,
-      );
-      return;
-    }
-
-    const quoteBuffer = Buffer.from(tlb.quote);
-    await this.checkQuote(quoteBuffer, tlb.dataBlob, sgxApiUrl);
-
-    this.verifiedTlbHashes.set(tlbHash.hash, offerId);
-    if (this.verifiedTlbHashes.size > config.TLB_CACHE_SIZE) {
-      const [key, value] = this.verifiedTlbHashes.entries().next().value;
-      this.verifiedTlbHashes.delete(key);
-      logger.trace(
-        key,
-        `TLB hash of offer ${value} removed from the cache. Cache size: ${this.verifiedTlbHashes.size}, cache limit: ${config.TLB_CACHE_SIZE}`,
-      );
-    }
-    logger.trace(
-      tlbHash.hash,
-      `TLB hash of offer ${offerId} added to the cache. Cache size: ${this.verifiedTlbHashes.size}, cache limit: ${config.TLB_CACHE_SIZE}`,
     );
   }
 }

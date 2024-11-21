@@ -1,5 +1,5 @@
-export const Approval = 'Approval' as const;export const Transfer = 'Transfer' as const;export const RewardsClaimed = 'RewardsClaimed' as const;export const TcbBenchmarkChanged = 'TcbBenchmarkChanged' as const;export const TcbCompleted = 'TcbCompleted' as const;export const TcbInitialized = 'TcbInitialized' as const;export const TcbBanned = 'TcbBanned' as const;export const DepositPartLocked = 'DepositPartLocked' as const;export const DepositPartUnlocked = 'DepositPartUnlocked' as const;export const DepositReplenished = 'DepositReplenished' as const;export const DepositWithdrawn = 'DepositWithdrawn' as const;export const OfferCreated = 'OfferCreated' as const;export const OfferDisabled = 'OfferDisabled' as const;export const OfferEnabled = 'OfferEnabled' as const;export const TeeOfferCreated = 'TeeOfferCreated' as const;export const TeeOfferViolationRateChanged = 'TeeOfferViolationRateChanged' as const;export const OrdersGroupCreated = 'OrdersGroupCreated' as const;export const OrderCreated = 'OrderCreated' as const;export const OrderStatusUpdated = 'OrderStatusUpdated' as const;export const OrderAwaitingPaymentChanged = 'OrderAwaitingPaymentChanged' as const;export const OrderDepositRefilled = 'OrderDepositRefilled' as const;export const OrderOptionsDepositSpentChanged = 'OrderOptionsDepositSpentChanged' as const;export const OrderProfitUnlocked = 'OrderProfitUnlocked' as const;export const OrderChangeWithdrawn = 'OrderChangeWithdrawn' as const;export const OrderEncryptedResultUpdated = 'OrderEncryptedResultUpdated' as const;export const OrderProfitWithdrawn = 'OrderProfitWithdrawn' as const;export const OrderStarted = 'OrderStarted' as const;export const OrderOptionsChangeRequested = 'OrderOptionsChangeRequested' as const;export const OrderOptionsChanged = 'OrderOptionsChanged' as const;export const OrderSlotCountUpdateRequested = 'OrderSlotCountUpdateRequested' as const;export const OrderSlotCountUpdated = 'OrderSlotCountUpdated' as const;export const ProviderModified = 'ProviderModified' as const;export const ProviderRegistered = 'ProviderRegistered' as const;export const ProviderSecurityDepoRefilled = 'ProviderSecurityDepoRefilled' as const;export const ProviderSecurityDepoUnlocked = 'ProviderSecurityDepoUnlocked' as const;export const ProviderViolationRateIncremented = 'ProviderViolationRateIncremented' as const;export const OptionAdded = 'OptionAdded' as const;export const OptionDeleted = 'OptionDeleted' as const;export const OptionUpdated = 'OptionUpdated' as const;export const TeeSlotAdded = 'TeeSlotAdded' as const;export const TeeSlotDeleted = 'TeeSlotDeleted' as const;export const TeeSlotUpdated = 'TeeSlotUpdated' as const;export const TcbRewardUnlocked = 'TcbRewardUnlocked' as const;export const WarningMessage = 'WarningMessage' as const;export const ValueSlotAdded = 'ValueSlotAdded' as const;export const ValueSlotDeleted = 'ValueSlotDeleted' as const;export const ValueSlotUpdated = 'ValueSlotUpdated' as const;export const DiamondCut = 'DiamondCut' as const;export const OwnershipTransferred = 'OwnershipTransferred' as const;export const LoaderSecretPublicKeySessionUpdated = 'LoaderSecretPublicKeySessionUpdated' as const;export const LoaderSessionKeyUpdated = 'LoaderSessionKeyUpdated' as const;export const OfferResourceCreated = 'OfferResourceCreated' as const;export const OrderResourceCreated = 'OrderResourceCreated' as const;export const OfferStorageRequestCanceled = 'OfferStorageRequestCanceled' as const;export const OfferStorageRequestCreated = 'OfferStorageRequestCreated' as const;export const SecretRequestCreated = 'SecretRequestCreated' as const;
-export type AbiEvent = typeof Approval | typeof Transfer | typeof RewardsClaimed | typeof TcbBenchmarkChanged | typeof TcbCompleted | typeof TcbInitialized | typeof TcbBanned | typeof DepositPartLocked | typeof DepositPartUnlocked | typeof DepositReplenished | typeof DepositWithdrawn | typeof OfferCreated | typeof OfferDisabled | typeof OfferEnabled | typeof TeeOfferCreated | typeof TeeOfferViolationRateChanged | typeof OrdersGroupCreated | typeof OrderCreated | typeof OrderStatusUpdated | typeof OrderAwaitingPaymentChanged | typeof OrderDepositRefilled | typeof OrderOptionsDepositSpentChanged | typeof OrderProfitUnlocked | typeof OrderChangeWithdrawn | typeof OrderEncryptedResultUpdated | typeof OrderProfitWithdrawn | typeof OrderStarted | typeof OrderOptionsChangeRequested | typeof OrderOptionsChanged | typeof OrderSlotCountUpdateRequested | typeof OrderSlotCountUpdated | typeof ProviderModified | typeof ProviderRegistered | typeof ProviderSecurityDepoRefilled | typeof ProviderSecurityDepoUnlocked | typeof ProviderViolationRateIncremented | typeof OptionAdded | typeof OptionDeleted | typeof OptionUpdated | typeof TeeSlotAdded | typeof TeeSlotDeleted | typeof TeeSlotUpdated | typeof TcbRewardUnlocked | typeof WarningMessage | typeof ValueSlotAdded | typeof ValueSlotDeleted | typeof ValueSlotUpdated | typeof DiamondCut | typeof OwnershipTransferred | typeof LoaderSecretPublicKeySessionUpdated | typeof LoaderSessionKeyUpdated | typeof OfferResourceCreated | typeof OrderResourceCreated | typeof OfferStorageRequestCanceled | typeof OfferStorageRequestCreated | typeof SecretRequestCreated;
+export const Approval = 'Approval' as const;export const Transfer = 'Transfer' as const;export const RewardsClaimed = 'RewardsClaimed' as const;export const TcbBenchmarkChanged = 'TcbBenchmarkChanged' as const;export const TcbCompleted = 'TcbCompleted' as const;export const TcbInitialized = 'TcbInitialized' as const;export const TcbBanned = 'TcbBanned' as const;export const DepositPartLocked = 'DepositPartLocked' as const;export const DepositPartUnlocked = 'DepositPartUnlocked' as const;export const DepositReplenished = 'DepositReplenished' as const;export const DepositWithdrawn = 'DepositWithdrawn' as const;export const OfferCreated = 'OfferCreated' as const;export const OfferDisabled = 'OfferDisabled' as const;export const OfferEnabled = 'OfferEnabled' as const;export const SetValueOfferRestrictions = 'SetValueOfferRestrictions' as const;export const TeeOfferCreated = 'TeeOfferCreated' as const;export const TeeOfferViolationRateChanged = 'TeeOfferViolationRateChanged' as const;export const OrdersGroupCreated = 'OrdersGroupCreated' as const;export const OrderCreated = 'OrderCreated' as const;export const OrderStatusUpdated = 'OrderStatusUpdated' as const;export const OrderAwaitingPaymentChanged = 'OrderAwaitingPaymentChanged' as const;export const OrderDepositRefilled = 'OrderDepositRefilled' as const;export const OrderOptionsDepositSpentChanged = 'OrderOptionsDepositSpentChanged' as const;export const OrderProfitUnlocked = 'OrderProfitUnlocked' as const;export const OrderChangeWithdrawn = 'OrderChangeWithdrawn' as const;export const OrderEncryptedResultUpdated = 'OrderEncryptedResultUpdated' as const;export const OrderProfitWithdrawn = 'OrderProfitWithdrawn' as const;export const OrderStarted = 'OrderStarted' as const;export const OrderOptionsChangeRequested = 'OrderOptionsChangeRequested' as const;export const OrderOptionsChanged = 'OrderOptionsChanged' as const;export const OrderSlotCountUpdateRequested = 'OrderSlotCountUpdateRequested' as const;export const OrderSlotCountUpdated = 'OrderSlotCountUpdated' as const;export const ProviderModified = 'ProviderModified' as const;export const ProviderRegistered = 'ProviderRegistered' as const;export const ProviderSecurityDepoRefilled = 'ProviderSecurityDepoRefilled' as const;export const ProviderSecurityDepoUnlocked = 'ProviderSecurityDepoUnlocked' as const;export const ProviderViolationRateIncremented = 'ProviderViolationRateIncremented' as const;export const OptionAdded = 'OptionAdded' as const;export const OptionDeleted = 'OptionDeleted' as const;export const OptionUpdated = 'OptionUpdated' as const;export const TeeSlotAdded = 'TeeSlotAdded' as const;export const TeeSlotDeleted = 'TeeSlotDeleted' as const;export const TeeSlotUpdated = 'TeeSlotUpdated' as const;export const TcbRewardUnlocked = 'TcbRewardUnlocked' as const;export const WarningMessage = 'WarningMessage' as const;export const ValueSlotAdded = 'ValueSlotAdded' as const;export const ValueSlotDeleted = 'ValueSlotDeleted' as const;export const ValueSlotUpdated = 'ValueSlotUpdated' as const;export const DiamondCut = 'DiamondCut' as const;export const OwnershipTransferred = 'OwnershipTransferred' as const;export const LoaderSecretPublicKeySessionUpdated = 'LoaderSecretPublicKeySessionUpdated' as const;export const LoaderSessionKeyUpdated = 'LoaderSessionKeyUpdated' as const;export const OfferResourceCreated = 'OfferResourceCreated' as const;export const OrderResourceCreated = 'OrderResourceCreated' as const;export const OfferStorageRequestCanceled = 'OfferStorageRequestCanceled' as const;export const OfferStorageRequestCreated = 'OfferStorageRequestCreated' as const;export const SecretRequestCreated = 'SecretRequestCreated' as const;
+export type AbiEvent = typeof Approval | typeof Transfer | typeof RewardsClaimed | typeof TcbBenchmarkChanged | typeof TcbCompleted | typeof TcbInitialized | typeof TcbBanned | typeof DepositPartLocked | typeof DepositPartUnlocked | typeof DepositReplenished | typeof DepositWithdrawn | typeof OfferCreated | typeof OfferDisabled | typeof OfferEnabled | typeof SetValueOfferRestrictions | typeof TeeOfferCreated | typeof TeeOfferViolationRateChanged | typeof OrdersGroupCreated | typeof OrderCreated | typeof OrderStatusUpdated | typeof OrderAwaitingPaymentChanged | typeof OrderDepositRefilled | typeof OrderOptionsDepositSpentChanged | typeof OrderProfitUnlocked | typeof OrderChangeWithdrawn | typeof OrderEncryptedResultUpdated | typeof OrderProfitWithdrawn | typeof OrderStarted | typeof OrderOptionsChangeRequested | typeof OrderOptionsChanged | typeof OrderSlotCountUpdateRequested | typeof OrderSlotCountUpdated | typeof ProviderModified | typeof ProviderRegistered | typeof ProviderSecurityDepoRefilled | typeof ProviderSecurityDepoUnlocked | typeof ProviderViolationRateIncremented | typeof OptionAdded | typeof OptionDeleted | typeof OptionUpdated | typeof TeeSlotAdded | typeof TeeSlotDeleted | typeof TeeSlotUpdated | typeof TcbRewardUnlocked | typeof WarningMessage | typeof ValueSlotAdded | typeof ValueSlotDeleted | typeof ValueSlotUpdated | typeof DiamondCut | typeof OwnershipTransferred | typeof LoaderSecretPublicKeySessionUpdated | typeof LoaderSessionKeyUpdated | typeof OfferResourceCreated | typeof OrderResourceCreated | typeof OfferStorageRequestCanceled | typeof OfferStorageRequestCreated | typeof SecretRequestCreated;
 export const abi = [
     {
         "anonymous": false,
@@ -1558,6 +1558,24 @@ export const abi = [
         "inputs": [
             {
                 "internalType": "address",
+                "name": "beneficiary",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "amount",
+                "type": "uint256"
+            }
+        ],
+        "name": "increaseForByApp",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
                 "name": "depositOwner",
                 "type": "address"
             },
@@ -1805,6 +1823,42 @@ export const abi = [
         "inputs": [
             {
                 "indexed": true,
+                "internalType": "uint256",
+                "name": "orderId",
+                "type": "uint256"
+            },
+            {
+                "components": [
+                    {
+                        "internalType": "uint256[]",
+                        "name": "offers",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "enum OfferType[]",
+                        "name": "types",
+                        "type": "uint8[]"
+                    },
+                    {
+                        "internalType": "uint64[]",
+                        "name": "versions",
+                        "type": "uint64[]"
+                    }
+                ],
+                "indexed": false,
+                "internalType": "struct ValueOfferRestrictionsSpecification",
+                "name": "specification",
+                "type": "tuple"
+            }
+        ],
+        "name": "SetValueOfferRestrictions",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
                 "internalType": "address",
                 "name": "creator",
                 "type": "address"
@@ -1881,13 +1935,18 @@ export const abi = [
                     },
                     {
                         "internalType": "string",
-                        "name": "tlb",
+                        "name": "tlb_DEPRECATED",
                         "type": "string"
                     },
                     {
                         "internalType": "string",
                         "name": "argsPublicKey",
                         "type": "string"
+                    },
+                    {
+                        "internalType": "enum TeeOfferSubtype",
+                        "name": "subtype",
+                        "type": "uint8"
                     }
                 ],
                 "internalType": "struct TeeOfferInfo",
@@ -1914,6 +1973,11 @@ export const abi = [
                     {
                         "internalType": "uint64",
                         "name": "gpuCores",
+                        "type": "uint64"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "vram",
                         "type": "uint64"
                     }
                 ],
@@ -1957,6 +2021,11 @@ export const abi = [
                 "type": "address"
             },
             {
+                "internalType": "enum OfferType",
+                "name": "offerType",
+                "type": "uint8"
+            },
+            {
                 "components": [
                     {
                         "internalType": "string",
@@ -1965,12 +2034,12 @@ export const abi = [
                     },
                     {
                         "internalType": "enum OfferGroup",
-                        "name": "group",
+                        "name": "group_DEPRECATED",
                         "type": "uint8"
                     },
                     {
                         "internalType": "enum OfferType",
-                        "name": "offerType",
+                        "name": "offerType_DEPRECATED",
                         "type": "uint8"
                     },
                     {
@@ -2015,7 +2084,7 @@ export const abi = [
                     },
                     {
                         "internalType": "string",
-                        "name": "linkage",
+                        "name": "linkage_DEPRECATED",
                         "type": "string"
                     },
                     {
@@ -2026,6 +2095,21 @@ export const abi = [
                     {
                         "internalType": "string",
                         "name": "metadata",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "signatureKeyHash",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "enum ValueOfferSubtype",
+                        "name": "subtype",
+                        "type": "uint8"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "hardwareContext",
                         "type": "string"
                     }
                 ],
@@ -2044,10 +2128,15 @@ export const abi = [
                         "internalType": "enum OfferType[]",
                         "name": "types",
                         "type": "uint8[]"
+                    },
+                    {
+                        "internalType": "uint64[]",
+                        "name": "versions",
+                        "type": "uint64[]"
                     }
                 ],
-                "internalType": "struct ValueOfferInitialRestrictions",
-                "name": "initRestrictions",
+                "internalType": "struct ValueOfferRestrictionsSpecification",
+                "name": "restrictionsSpecification",
                 "type": "tuple"
             },
             {
@@ -2062,6 +2151,24 @@ export const abi = [
             }
         ],
         "name": "createValueOffer",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "offerId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint64",
+                "name": "version",
+                "type": "uint64"
+            }
+        ],
+        "name": "deleteOfferVersion",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
@@ -2136,6 +2243,41 @@ export const abi = [
                 "type": "uint256"
             },
             {
+                "internalType": "uint64",
+                "name": "newVersion",
+                "type": "uint64"
+            },
+            {
+                "components": [
+                    {
+                        "internalType": "string",
+                        "name": "mrenclave",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "mrsigner",
+                        "type": "string"
+                    }
+                ],
+                "internalType": "struct OfferVersionInfo",
+                "name": "newVersionInfo",
+                "type": "tuple"
+            }
+        ],
+        "name": "setOfferNewVersion",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "offerId",
+                "type": "uint256"
+            },
+            {
                 "internalType": "string",
                 "name": "publicKey",
                 "type": "string"
@@ -2173,6 +2315,11 @@ export const abi = [
                     {
                         "internalType": "uint64",
                         "name": "gpuCores",
+                        "type": "uint64"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "vram",
                         "type": "uint64"
                     }
                 ],
@@ -2229,13 +2376,18 @@ export const abi = [
                     },
                     {
                         "internalType": "string",
-                        "name": "tlb",
+                        "name": "tlb_DEPRECATED",
                         "type": "string"
                     },
                     {
                         "internalType": "string",
                         "name": "argsPublicKey",
                         "type": "string"
+                    },
+                    {
+                        "internalType": "enum TeeOfferSubtype",
+                        "name": "subtype",
+                        "type": "uint8"
                     }
                 ],
                 "internalType": "struct TeeOfferInfo",
@@ -2256,12 +2408,12 @@ export const abi = [
                 "type": "uint256"
             },
             {
-                "internalType": "string",
-                "name": "tlb",
-                "type": "string"
+                "internalType": "enum TeeOfferSubtype",
+                "name": "newSubtype",
+                "type": "uint8"
             }
         ],
-        "name": "setTeeOfferTlb",
+        "name": "setTeeOfferSubtype",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
@@ -2282,12 +2434,12 @@ export const abi = [
                     },
                     {
                         "internalType": "enum OfferGroup",
-                        "name": "group",
+                        "name": "group_DEPRECATED",
                         "type": "uint8"
                     },
                     {
                         "internalType": "enum OfferType",
-                        "name": "offerType",
+                        "name": "offerType_DEPRECATED",
                         "type": "uint8"
                     },
                     {
@@ -2332,7 +2484,7 @@ export const abi = [
                     },
                     {
                         "internalType": "string",
-                        "name": "linkage",
+                        "name": "linkage_DEPRECATED",
                         "type": "string"
                     },
                     {
@@ -2344,11 +2496,39 @@ export const abi = [
                         "internalType": "string",
                         "name": "metadata",
                         "type": "string"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "signatureKeyHash",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "enum ValueOfferSubtype",
+                        "name": "subtype",
+                        "type": "uint8"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "hardwareContext",
+                        "type": "string"
                     }
                 ],
                 "internalType": "struct ValueOfferInfo",
                 "name": "newInfo",
                 "type": "tuple"
+            }
+        ],
+        "name": "setValueOfferInfo",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "offerId",
+                "type": "uint256"
             },
             {
                 "components": [
@@ -2361,14 +2541,37 @@ export const abi = [
                         "internalType": "enum OfferType[]",
                         "name": "types",
                         "type": "uint8[]"
+                    },
+                    {
+                        "internalType": "uint64[]",
+                        "name": "versions",
+                        "type": "uint64[]"
                     }
                 ],
-                "internalType": "struct ValueOfferInitialRestrictions",
-                "name": "newRestrictions",
+                "internalType": "struct ValueOfferRestrictionsSpecification",
+                "name": "newSpecification",
                 "type": "tuple"
             }
         ],
-        "name": "setValueOfferInfo",
+        "name": "setValueOfferRestrictionsSpecification",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "offerId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "enum ValueOfferSubtype",
+                "name": "newSubtype",
+                "type": "uint8"
+            }
+        ],
+        "name": "setValueOfferSubtype",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
@@ -2424,13 +2627,18 @@ export const abi = [
                             },
                             {
                                 "internalType": "string",
-                                "name": "tlb",
+                                "name": "tlb_DEPRECATED",
                                 "type": "string"
                             },
                             {
                                 "internalType": "string",
                                 "name": "argsPublicKey",
                                 "type": "string"
+                            },
+                            {
+                                "internalType": "enum TeeOfferSubtype",
+                                "name": "subtype",
+                                "type": "uint8"
                             }
                         ],
                         "internalType": "struct TeeOfferInfo",
@@ -2484,6 +2692,11 @@ export const abi = [
                         "type": "address"
                     },
                     {
+                        "internalType": "enum OfferType",
+                        "name": "offerType",
+                        "type": "uint8"
+                    },
+                    {
                         "components": [
                             {
                                 "internalType": "string",
@@ -2492,12 +2705,12 @@ export const abi = [
                             },
                             {
                                 "internalType": "enum OfferGroup",
-                                "name": "group",
+                                "name": "group_DEPRECATED",
                                 "type": "uint8"
                             },
                             {
                                 "internalType": "enum OfferType",
-                                "name": "offerType",
+                                "name": "offerType_DEPRECATED",
                                 "type": "uint8"
                             },
                             {
@@ -2542,7 +2755,7 @@ export const abi = [
                             },
                             {
                                 "internalType": "string",
-                                "name": "linkage",
+                                "name": "linkage_DEPRECATED",
                                 "type": "string"
                             },
                             {
@@ -2553,6 +2766,21 @@ export const abi = [
                             {
                                 "internalType": "string",
                                 "name": "metadata",
+                                "type": "string"
+                            },
+                            {
+                                "internalType": "string",
+                                "name": "signatureKeyHash",
+                                "type": "string"
+                            },
+                            {
+                                "internalType": "enum ValueOfferSubtype",
+                                "name": "subtype",
+                                "type": "uint8"
+                            },
+                            {
+                                "internalType": "string",
+                                "name": "hardwareContext",
                                 "type": "string"
                             }
                         ],
@@ -2588,37 +2816,6 @@ export const abi = [
                 "internalType": "enum OfferGroup",
                 "name": "",
                 "type": "uint8"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
-            }
-        ],
-        "name": "getOfferInitialRestrictions",
-        "outputs": [
-            {
-                "components": [
-                    {
-                        "internalType": "uint256[]",
-                        "name": "offers",
-                        "type": "uint256[]"
-                    },
-                    {
-                        "internalType": "enum OfferType[]",
-                        "name": "types",
-                        "type": "uint8[]"
-                    }
-                ],
-                "internalType": "struct ValueOfferInitialRestrictions",
-                "name": "ret",
-                "type": "tuple"
             }
         ],
         "stateMutability": "view",
@@ -2750,12 +2947,120 @@ export const abi = [
                 "type": "uint256"
             }
         ],
+        "name": "getOfferRestrictionsSpecification",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "uint256[]",
+                        "name": "offers",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "enum OfferType[]",
+                        "name": "types",
+                        "type": "uint8[]"
+                    },
+                    {
+                        "internalType": "uint64[]",
+                        "name": "versions",
+                        "type": "uint64[]"
+                    }
+                ],
+                "internalType": "struct ValueOfferRestrictionsSpecification",
+                "name": "ret",
+                "type": "tuple"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "offerId",
+                "type": "uint256"
+            }
+        ],
         "name": "getOfferType",
         "outputs": [
             {
                 "internalType": "enum OfferType",
                 "name": "",
                 "type": "uint8"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "offerId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint64",
+                "name": "version",
+                "type": "uint64"
+            }
+        ],
+        "name": "getOfferVersion",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "uint64",
+                        "name": "version",
+                        "type": "uint64"
+                    },
+                    {
+                        "components": [
+                            {
+                                "internalType": "string",
+                                "name": "mrenclave",
+                                "type": "string"
+                            },
+                            {
+                                "internalType": "string",
+                                "name": "mrsigner",
+                                "type": "string"
+                            }
+                        ],
+                        "internalType": "struct OfferVersionInfo",
+                        "name": "info",
+                        "type": "tuple"
+                    },
+                    {
+                        "internalType": "enum OfferVersionStatus",
+                        "name": "status",
+                        "type": "uint8"
+                    }
+                ],
+                "internalType": "struct OfferVersion",
+                "name": "",
+                "type": "tuple"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "offerId",
+                "type": "uint256"
+            }
+        ],
+        "name": "getOfferVersionsCount",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
             }
         ],
         "stateMutability": "view",
@@ -2839,13 +3144,18 @@ export const abi = [
                             },
                             {
                                 "internalType": "string",
-                                "name": "tlb",
+                                "name": "tlb_DEPRECATED",
                                 "type": "string"
                             },
                             {
                                 "internalType": "string",
                                 "name": "argsPublicKey",
                                 "type": "string"
+                            },
+                            {
+                                "internalType": "enum TeeOfferSubtype",
+                                "name": "subtype",
+                                "type": "uint8"
                             }
                         ],
                         "internalType": "struct TeeOfferInfo",
@@ -2897,6 +3207,11 @@ export const abi = [
                         "internalType": "uint64",
                         "name": "gpuCores",
                         "type": "uint64"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "vram",
+                        "type": "uint64"
                     }
                 ],
                 "internalType": "struct SlotInfo",
@@ -2927,12 +3242,12 @@ export const abi = [
                 "type": "uint256"
             }
         ],
-        "name": "getTeeOfferLastTlbAddedTime",
+        "name": "getTeeOfferSubtype",
         "outputs": [
             {
-                "internalType": "uint256",
+                "internalType": "enum TeeOfferSubtype",
                 "name": "",
-                "type": "uint256"
+                "type": "uint8"
             }
         ],
         "stateMutability": "view",
@@ -2961,6 +3276,11 @@ export const abi = [
                         "type": "address"
                     },
                     {
+                        "internalType": "enum OfferType",
+                        "name": "offerType",
+                        "type": "uint8"
+                    },
+                    {
                         "components": [
                             {
                                 "internalType": "string",
@@ -2969,12 +3289,12 @@ export const abi = [
                             },
                             {
                                 "internalType": "enum OfferGroup",
-                                "name": "group",
+                                "name": "group_DEPRECATED",
                                 "type": "uint8"
                             },
                             {
                                 "internalType": "enum OfferType",
-                                "name": "offerType",
+                                "name": "offerType_DEPRECATED",
                                 "type": "uint8"
                             },
                             {
@@ -3019,7 +3339,7 @@ export const abi = [
                             },
                             {
                                 "internalType": "string",
-                                "name": "linkage",
+                                "name": "linkage_DEPRECATED",
                                 "type": "string"
                             },
                             {
@@ -3030,6 +3350,21 @@ export const abi = [
                             {
                                 "internalType": "string",
                                 "name": "metadata",
+                                "type": "string"
+                            },
+                            {
+                                "internalType": "string",
+                                "name": "signatureKeyHash",
+                                "type": "string"
+                            },
+                            {
+                                "internalType": "enum ValueOfferSubtype",
+                                "name": "subtype",
+                                "type": "uint8"
+                            },
+                            {
+                                "internalType": "string",
+                                "name": "hardwareContext",
                                 "type": "string"
                             }
                         ],
@@ -3059,6 +3394,25 @@ export const abi = [
                 "type": "uint256"
             }
         ],
+        "name": "getValueOfferSubtype",
+        "outputs": [
+            {
+                "internalType": "enum ValueOfferSubtype",
+                "name": "",
+                "type": "uint8"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "offerId",
+                "type": "uint256"
+            }
+        ],
         "name": "isAutoCompleteOffer",
         "outputs": [
             {
@@ -3068,6 +3422,40 @@ export const abi = [
             }
         ],
         "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "firstId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint64",
+                "name": "firstVersion",
+                "type": "uint64"
+            },
+            {
+                "internalType": "uint256",
+                "name": "secondId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint64",
+                "name": "secondVersion",
+                "type": "uint64"
+            }
+        ],
+        "name": "isMagicallySameOfferVersion",
+        "outputs": [
+            {
+                "internalType": "bool",
+                "name": "",
+                "type": "bool"
+            }
+        ],
+        "stateMutability": "pure",
         "type": "function"
     },
     {
@@ -3186,9 +3574,38 @@ export const abi = [
                 "internalType": "uint256",
                 "name": "otherOfferId",
                 "type": "uint256"
+            },
+            {
+                "internalType": "uint64",
+                "name": "otherOfferVersion",
+                "type": "uint64"
             }
         ],
         "name": "isOfferRestrictionsPermitOtherOffer",
+        "outputs": [
+            {
+                "internalType": "bool",
+                "name": "",
+                "type": "bool"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "offerId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint64",
+                "name": "version",
+                "type": "uint64"
+            }
+        ],
+        "name": "isOfferVersionAvailable",
         "outputs": [
             {
                 "internalType": "bool",
@@ -3465,6 +3882,11 @@ export const abi = [
                         "internalType": "uint256",
                         "name": "maxPriceSlippage",
                         "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "offerVersion",
+                        "type": "uint64"
                     }
                 ],
                 "internalType": "struct OrderInfo",
@@ -3502,13 +3924,23 @@ export const abi = [
                 "components": [
                     {
                         "internalType": "uint256[]",
-                        "name": "inputOffers",
+                        "name": "inputOffersIds",
                         "type": "uint256[]"
                     },
                     {
                         "internalType": "uint256",
-                        "name": "outputOffer",
+                        "name": "outputOfferId",
                         "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint64[]",
+                        "name": "inputOffersVersions",
+                        "type": "uint64[]"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "outputOfferVersion",
+                        "type": "uint64"
                     }
                 ],
                 "internalType": "struct OrderArgs",
@@ -3585,6 +4017,11 @@ export const abi = [
                         "internalType": "uint256",
                         "name": "maxPriceSlippage",
                         "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "offerVersion",
+                        "type": "uint64"
                     }
                 ],
                 "internalType": "struct OrderInfo",
@@ -3622,13 +4059,23 @@ export const abi = [
                 "components": [
                     {
                         "internalType": "uint256[]",
-                        "name": "inputOffers",
+                        "name": "inputOffersIds",
                         "type": "uint256[]"
                     },
                     {
                         "internalType": "uint256",
-                        "name": "outputOffer",
+                        "name": "outputOfferId",
                         "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint64[]",
+                        "name": "inputOffersVersions",
+                        "type": "uint64[]"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "outputOfferVersion",
+                        "type": "uint64"
                     }
                 ],
                 "internalType": "struct OrderArgs",
@@ -3705,6 +4152,11 @@ export const abi = [
                         "internalType": "uint256",
                         "name": "maxPriceSlippage",
                         "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "offerVersion",
+                        "type": "uint64"
                     }
                 ],
                 "internalType": "struct OrderInfo",
@@ -3742,13 +4194,23 @@ export const abi = [
                 "components": [
                     {
                         "internalType": "uint256[]",
-                        "name": "inputOffers",
+                        "name": "inputOffersIds",
                         "type": "uint256[]"
                     },
                     {
                         "internalType": "uint256",
-                        "name": "outputOffer",
+                        "name": "outputOfferId",
                         "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint64[]",
+                        "name": "inputOffersVersions",
+                        "type": "uint64[]"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "outputOfferVersion",
+                        "type": "uint64"
                     }
                 ],
                 "internalType": "struct OrderArgs",
@@ -3837,6 +4299,11 @@ export const abi = [
                         "internalType": "uint256",
                         "name": "maxPriceSlippage",
                         "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "offerVersion",
+                        "type": "uint64"
                     }
                 ],
                 "internalType": "struct OrderInfo",
@@ -3874,13 +4341,23 @@ export const abi = [
                 "components": [
                     {
                         "internalType": "uint256[]",
-                        "name": "inputOffers",
+                        "name": "inputOffersIds",
                         "type": "uint256[]"
                     },
                     {
                         "internalType": "uint256",
-                        "name": "outputOffer",
+                        "name": "outputOfferId",
                         "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint64[]",
+                        "name": "inputOffersVersions",
+                        "type": "uint64[]"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "outputOfferVersion",
+                        "type": "uint64"
                     }
                 ],
                 "internalType": "struct OrderArgs",
@@ -4336,6 +4813,24 @@ export const abi = [
                 "internalType": "uint256",
                 "name": "orderId",
                 "type": "uint256"
+            },
+            {
+                "internalType": "string",
+                "name": "newCertificate",
+                "type": "string"
+            }
+        ],
+        "name": "setOrderCertificate",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "orderId",
+                "type": "uint256"
             }
         ],
         "name": "startOrder",
@@ -4685,12 +5180,12 @@ export const abi = [
                 "type": "uint256"
             },
             {
-                "internalType": "enum OfferGroup",
-                "name": "subOfferGroup",
-                "type": "uint8"
+                "internalType": "uint64",
+                "name": "subOfferVersion",
+                "type": "uint64"
             }
         ],
-        "name": "checkOrderRestrictions",
+        "name": "checkParentOrderArgsCompliesWithSubOfferRestrictions",
         "outputs": [],
         "stateMutability": "view",
         "type": "function"
@@ -4808,6 +5303,11 @@ export const abi = [
                         "internalType": "uint256",
                         "name": "maxPriceSlippage",
                         "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "offerVersion",
+                        "type": "uint64"
                     }
                 ],
                 "internalType": "struct OrderInfo",
@@ -4849,18 +5349,47 @@ export const abi = [
                 "components": [
                     {
                         "internalType": "uint256[]",
-                        "name": "inputOffers",
+                        "name": "inputOffersIds",
                         "type": "uint256[]"
                     },
                     {
                         "internalType": "uint256",
-                        "name": "outputOffer",
+                        "name": "outputOfferId",
                         "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint64[]",
+                        "name": "inputOffersVersions",
+                        "type": "uint64[]"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "outputOfferVersion",
+                        "type": "uint64"
                     }
                 ],
                 "internalType": "struct OrderArgs",
                 "name": "",
                 "type": "tuple"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "orderId",
+                "type": "uint256"
+            }
+        ],
+        "name": "getOrderCertificate",
+        "outputs": [
+            {
+                "internalType": "string",
+                "name": "",
+                "type": "string"
             }
         ],
         "stateMutability": "view",
@@ -5088,6 +5617,11 @@ export const abi = [
                     {
                         "internalType": "uint64",
                         "name": "gpuCores",
+                        "type": "uint64"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "vram",
                         "type": "uint64"
                     }
                 ],
@@ -5859,6 +6393,11 @@ export const abi = [
                 "internalType": "enum OfferType",
                 "name": "offerType",
                 "type": "uint8"
+            },
+            {
+                "internalType": "bool",
+                "name": "enabled",
+                "type": "bool"
             }
         ],
         "name": "addProviderOffer",
@@ -6047,6 +6586,31 @@ export const abi = [
     {
         "inputs": [
             {
+                "components": [
+                    {
+                        "internalType": "address",
+                        "name": "tokenContractAddress",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "uint32",
+                        "name": "protocolCommissionPercent",
+                        "type": "uint32"
+                    }
+                ],
+                "internalType": "struct TokenInfo[]",
+                "name": "newTokens",
+                "type": "tuple[]"
+            }
+        ],
+        "name": "addTokens",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
                 "internalType": "enum ParamName",
                 "name": "name",
                 "type": "uint8"
@@ -6065,6 +6629,19 @@ export const abi = [
     },
     {
         "inputs": [],
+        "name": "getProtocolCommissionDenominator",
+        "outputs": [
+            {
+                "internalType": "uint32",
+                "name": "",
+                "type": "uint32"
+            }
+        ],
+        "stateMutability": "pure",
+        "type": "function"
+    },
+    {
+        "inputs": [],
         "name": "getProtocolIncomeDistribution",
         "outputs": [
             {
@@ -6076,7 +6653,7 @@ export const abi = [
                     },
                     {
                         "internalType": "uint16",
-                        "name": "amount",
+                        "name": "percent",
                         "type": "uint16"
                     }
                 ],
@@ -6125,6 +6702,63 @@ export const abi = [
             }
         ],
         "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "getTokens",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "address",
+                        "name": "tokenContractAddress",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "uint32",
+                        "name": "protocolCommissionPercent",
+                        "type": "uint32"
+                    }
+                ],
+                "internalType": "struct TokenInfo[]",
+                "name": "",
+                "type": "tuple[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "tokenContractAddress",
+                "type": "address"
+            }
+        ],
+        "name": "isTokenExists",
+        "outputs": [
+            {
+                "internalType": "bool",
+                "name": "",
+                "type": "bool"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address[]",
+                "name": "tokensAddresses",
+                "type": "address[]"
+            }
+        ],
+        "name": "removeTokens",
+        "outputs": [],
+        "stateMutability": "nonpayable",
         "type": "function"
     },
     {
@@ -6229,7 +6863,7 @@ export const abi = [
                     },
                     {
                         "internalType": "uint16",
-                        "name": "amount",
+                        "name": "percent",
                         "type": "uint16"
                     }
                 ],
@@ -6612,8 +7246,26 @@ export const abi = [
                     }
                 ],
                 "internalType": "struct OptionInfo",
-                "name": "info",
+                "name": "newInfo",
                 "type": "tuple"
+            }
+        ],
+        "name": "updateOptionInfo",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "teeOfferId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "optionId",
+                "type": "uint256"
             },
             {
                 "components": [
@@ -6639,11 +7291,11 @@ export const abi = [
                     }
                 ],
                 "internalType": "struct SlotUsage",
-                "name": "usage",
+                "name": "newUsage",
                 "type": "tuple"
             }
         ],
-        "name": "updateOption",
+        "name": "updateOptionUsage",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
@@ -6749,6 +7401,11 @@ export const abi = [
                     {
                         "internalType": "uint64",
                         "name": "gpuCores",
+                        "type": "uint64"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "vram",
                         "type": "uint64"
                     }
                 ],
@@ -6863,6 +7520,11 @@ export const abi = [
                                 "internalType": "uint64",
                                 "name": "gpuCores",
                                 "type": "uint64"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "vram",
+                                "type": "uint64"
                             }
                         ],
                         "internalType": "struct SlotInfo",
@@ -6952,6 +7614,11 @@ export const abi = [
                             {
                                 "internalType": "uint64",
                                 "name": "gpuCores",
+                                "type": "uint64"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "vram",
                                 "type": "uint64"
                             }
                         ],
@@ -7084,11 +7751,34 @@ export const abi = [
                         "internalType": "uint64",
                         "name": "gpuCores",
                         "type": "uint64"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "vram",
+                        "type": "uint64"
                     }
                 ],
                 "internalType": "struct SlotInfo",
-                "name": "info",
+                "name": "newInfo",
                 "type": "tuple"
+            }
+        ],
+        "name": "updateTeeOfferSlotInfo",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "teeOfferId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "slotId",
+                "type": "uint256"
             },
             {
                 "components": [
@@ -7114,11 +7804,11 @@ export const abi = [
                     }
                 ],
                 "internalType": "struct SlotUsage",
-                "name": "usage",
+                "name": "newUsage",
                 "type": "tuple"
             }
         ],
-        "name": "updateTeeOfferSlot",
+        "name": "updateTeeOfferSlotUsage",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
@@ -7510,6 +8200,11 @@ export const abi = [
                         "internalType": "uint64",
                         "name": "gpuCores",
                         "type": "uint64"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "vram",
+                        "type": "uint64"
                     }
                 ],
                 "internalType": "struct SlotInfo",
@@ -7641,6 +8336,11 @@ export const abi = [
                                 "internalType": "uint64",
                                 "name": "gpuCores",
                                 "type": "uint64"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "vram",
+                                "type": "uint64"
                             }
                         ],
                         "internalType": "struct SlotInfo",
@@ -7742,6 +8442,11 @@ export const abi = [
                             {
                                 "internalType": "uint64",
                                 "name": "gpuCores",
+                                "type": "uint64"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "vram",
                                 "type": "uint64"
                             }
                         ],
@@ -7886,11 +8591,34 @@ export const abi = [
                         "internalType": "uint64",
                         "name": "gpuCores",
                         "type": "uint64"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "vram",
+                        "type": "uint64"
                     }
                 ],
                 "internalType": "struct SlotInfo",
-                "name": "info",
+                "name": "newInfo",
                 "type": "tuple"
+            }
+        ],
+        "name": "updateValueOfferSlotInfo",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "offerId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "slotId",
+                "type": "uint256"
             },
             {
                 "components": [
@@ -7901,8 +8629,26 @@ export const abi = [
                     }
                 ],
                 "internalType": "struct OptionInfo",
-                "name": "option",
+                "name": "newOption",
                 "type": "tuple"
+            }
+        ],
+        "name": "updateValueOfferSlotOption",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "offerId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "slotId",
+                "type": "uint256"
             },
             {
                 "components": [
@@ -7928,11 +8674,11 @@ export const abi = [
                     }
                 ],
                 "internalType": "struct SlotUsage",
-                "name": "usage",
+                "name": "newUsage",
                 "type": "tuple"
             }
         ],
-        "name": "updateValueOfferSlot",
+        "name": "updateValueOfferSlotUsage",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
@@ -7993,6 +8739,11 @@ export const abi = [
                         "internalType": "uint256",
                         "name": "maxPriceSlippage",
                         "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "offerVersion",
+                        "type": "uint64"
                     }
                 ],
                 "internalType": "struct OrderInfo",
@@ -8030,13 +8781,23 @@ export const abi = [
                 "components": [
                     {
                         "internalType": "uint256[]",
-                        "name": "inputOffers",
+                        "name": "inputOffersIds",
                         "type": "uint256[]"
                     },
                     {
                         "internalType": "uint256",
-                        "name": "outputOffer",
+                        "name": "outputOfferId",
                         "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint64[]",
+                        "name": "inputOffersVersions",
+                        "type": "uint64[]"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "outputOfferVersion",
+                        "type": "uint64"
                     }
                 ],
                 "internalType": "struct OrderArgs",
@@ -8089,6 +8850,11 @@ export const abi = [
                         "internalType": "uint256",
                         "name": "maxPriceSlippage",
                         "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "offerVersion",
+                        "type": "uint64"
                     }
                 ],
                 "internalType": "struct OrderInfo[]",
@@ -8126,13 +8892,23 @@ export const abi = [
                 "components": [
                     {
                         "internalType": "uint256[]",
-                        "name": "inputOffers",
+                        "name": "inputOffersIds",
                         "type": "uint256[]"
                     },
                     {
                         "internalType": "uint256",
-                        "name": "outputOffer",
+                        "name": "outputOfferId",
                         "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint64[]",
+                        "name": "inputOffersVersions",
+                        "type": "uint64[]"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "outputOfferVersion",
+                        "type": "uint64"
                     }
                 ],
                 "internalType": "struct OrderArgs[]",
@@ -9614,101 +10390,27 @@ export const abi = [
     {
         "inputs": [
             {
-                "components": [
-                    {
-                        "internalType": "uint256",
-                        "name": "offerId",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "teeOfferIssuerId",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "teeOfferKeeperId",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "storageOrderId",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint64",
-                        "name": "offerVersion",
-                        "type": "uint64"
-                    },
-                    {
-                        "internalType": "uint32",
-                        "name": "timestamp",
-                        "type": "uint32"
-                    },
-                    {
-                        "internalType": "uint32",
-                        "name": "signedTime",
-                        "type": "uint32"
-                    },
-                    {
-                        "components": [
-                            {
-                                "internalType": "string",
-                                "name": "der",
-                                "type": "string"
-                            },
-                            {
-                                "internalType": "bytes32",
-                                "name": "r",
-                                "type": "bytes32"
-                            },
-                            {
-                                "internalType": "bytes32",
-                                "name": "s",
-                                "type": "bytes32"
-                            },
-                            {
-                                "internalType": "uint8",
-                                "name": "v",
-                                "type": "uint8"
-                            }
-                        ],
-                        "internalType": "struct Signature",
-                        "name": "signature",
-                        "type": "tuple"
-                    },
-                    {
-                        "internalType": "string",
-                        "name": "signedEncryptedData",
-                        "type": "string"
-                    },
-                    {
-                        "internalType": "enum OfferType",
-                        "name": "offerType",
-                        "type": "uint8"
-                    },
-                    {
-                        "internalType": "string",
-                        "name": "solutionHash",
-                        "type": "string"
-                    },
-                    {
-                        "internalType": "bool",
-                        "name": "previousDataCopied",
-                        "type": "bool"
-                    }
-                ],
-                "internalType": "struct OfferResource",
-                "name": "resource",
-                "type": "tuple"
+                "internalType": "uint256",
+                "name": "teeOfferIssuerId",
+                "type": "uint256"
             },
             {
-                "internalType": "uint32",
-                "name": "n",
-                "type": "uint32"
+                "internalType": "uint256",
+                "name": "teeOfferKeeperId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "offerId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint64",
+                "name": "offerVersion",
+                "type": "uint64"
             }
         ],
-        "name": "incrementReplicationFactor",
+        "name": "removeOfferResource",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
@@ -9793,6 +10495,11 @@ export const abi = [
                         "internalType": "string",
                         "name": "solutionHash",
                         "type": "string"
+                    },
+                    {
+                        "internalType": "bool",
+                        "name": "previousDataCopied",
+                        "type": "bool"
                     }
                 ],
                 "internalType": "struct OfferResource",

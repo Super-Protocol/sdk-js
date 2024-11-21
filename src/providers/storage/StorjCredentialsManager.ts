@@ -98,7 +98,7 @@ export class StorjCredentialsManager {
     Permission: typeof Permission;
     SharePrefix: typeof SharePrefix;
   }> {
-    return await require('@super-protocol/uplink-nodejs');
+    return await import('@super-protocol/uplink-nodejs');
   }
 
   private async lazyAccess(): Promise<Access> {

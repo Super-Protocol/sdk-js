@@ -33,6 +33,7 @@ class RIGenerator extends TeeInputGeneratorBase {
     dataHashes: Hash[];
     imageHashes: Hash[];
     linkage?: string;
+    argsHash?: Hash;
   }): Promise<OrderResultInfo> {
     const resultEncryption = Crypto.getPublicKey(params.encryptionPrivateKey);
 
@@ -52,6 +53,7 @@ class RIGenerator extends TeeInputGeneratorBase {
       dataHashes: params.dataHashes || [],
       imageHashes: params.imageHashes || [],
       linkage: params.linkage ?? '',
+      ...(params.argsHash && { argsHash: params.argsHash }),
     };
 
     const encryptedInfo = await this.encryptByTeeBlock(
@@ -70,12 +72,12 @@ class RIGenerator extends TeeInputGeneratorBase {
     encryptedResultInfo: Encryption,
     privateKey: Buffer,
   ): Promise<OrderEncryptedInfo> {
-    const resultInfo: OrderEncryptedInfo = await Crypto.decrypt({
+    const res = await Crypto.decrypt({
       ...encryptedResultInfo,
       key: privateKey.toString(encryptedResultInfo.encoding),
-    }).then((res) => JSON.parse(res));
+    });
 
-    return resultInfo;
+    return JSON.parse(res);
   }
 }
 

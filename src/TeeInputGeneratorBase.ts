@@ -1,13 +1,12 @@
 import { Encryption, CryptoAlgorithm, Encoding, Hash } from '@super-protocol/dto-js';
-import { TLBlockSerializerV1, TLBlockUnserializeResultType } from '@super-protocol/tee-lib';
 import { TeeOffer, TCB, Offer } from './models/index.js';
-import { BlockchainId, OfferInfo, OfferType, TeeOfferInfo } from './types/index.js';
+import { BlockchainId, OfferInfo, OfferType } from './types/index.js';
 import Crypto from './crypto/index.js';
 import { TeeBlockVerifier } from './tee/TeeBlockVerifier.js';
 import { ZERO_HASH } from './constants.js';
 
 export default class TeeInputGeneratorBase {
-  public static async getOffersHashesAndLinkage(inputOffers: BlockchainId[]): Promise<{
+  public static async getOffersHashesAndLinkage(inputOffersIds: BlockchainId[]): Promise<{
     solutionHashes: Hash[];
     imageHashes: Hash[];
     dataHashes: Hash[];
@@ -20,7 +19,7 @@ export default class TeeInputGeneratorBase {
     let anyLinkage: string | undefined;
 
     await Promise.all(
-      inputOffers.map(async (offerId): Promise<void> => {
+      inputOffersIds.map(async (offerId): Promise<void> => {
         const offer: Offer = new Offer(offerId);
         const offerInfo: OfferInfo = await offer.getInfo();
 
@@ -68,37 +67,22 @@ export default class TeeInputGeneratorBase {
     sgxApiUrl: string,
   ): Promise<Encryption> {
     const teeOffer: TeeOffer = new TeeOffer(offerId);
-    const teeOfferInfo: TeeOfferInfo = await teeOffer.getInfo();
     const tcbId = await teeOffer.getActualTcbId();
-    const verifyByTcb = Number.parseInt(tcbId) != 0;
 
-    let encryption: Encryption;
-
-    if (verifyByTcb) {
-      const tcb = new TCB(await teeOffer.getActualTcbId());
-      const { pubKey, quote } = await tcb.getUtilityData();
-      await TeeBlockVerifier.verifyTcb(tcb, quote, pubKey, sgxApiUrl);
-
-      // TODO: must be 'blockEncryption = JSON.parse(pubKey);'
-      encryption = {
-        algo: CryptoAlgorithm.ECIES,
-        key: pubKey,
-        encoding: Encoding.base64,
-      };
-    } else {
-      const serializer = new TLBlockSerializerV1();
-      const tlb: TLBlockUnserializeResultType = serializer.unserializeTlb(
-        Buffer.from(teeOfferInfo.tlb, 'base64'),
-      );
-
-      await TeeBlockVerifier.verifyTlb(tlb, teeOfferInfo.tlb, offerId, sgxApiUrl);
-
-      encryption = {
-        algo: CryptoAlgorithm.ECIES,
-        key: tlb.data.teePubKeyData.toString('base64'),
-        encoding: Encoding.base64,
-      };
+    if (Number.parseInt(tcbId) === 0) {
+      throw new Error('Tcb does not exist');
     }
+
+    const tcb = new TCB(tcbId);
+    const { pubKey, quote } = await tcb.getUtilityData();
+    await TeeBlockVerifier.verifyTcb(tcb, quote, pubKey, sgxApiUrl);
+
+    // TODO: must be 'blockEncryption = JSON.parse(pubKey);'
+    const encryption: Encryption = {
+      algo: CryptoAlgorithm.ECIES,
+      key: pubKey,
+      encoding: Encoding.base64,
+    };
 
     return encryption;
   }

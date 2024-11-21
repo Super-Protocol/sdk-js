@@ -104,7 +104,7 @@ class TIIGenerator extends TeeInputGeneratorBase {
     const parentOrderInfo: OrderInfo = await parentOrder.getOrderInfo();
 
     const { solutionHashes, imageHashes, linkage } = await this.getOffersHashesAndLinkage(
-      parentOrderInfo.args.inputOffers,
+      parentOrderInfo.args.inputOffersIds,
     );
 
     return this.generateByOffer({

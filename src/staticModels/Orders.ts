@@ -31,6 +31,7 @@ import {
   WssSubscriptionOnDataFn,
   WssSubscriptionOnErrorFn,
 } from '../connectors/BlockchainEventsListener.js';
+import { TransactionReceipt } from 'web3-types';
 
 class Orders implements StaticModel {
   private static readonly logger = rootLogger.child({ className: 'Orders' });
@@ -76,7 +77,7 @@ class Orders implements StaticModel {
     suspended = false,
     transactionOptions?: TransactionOptions,
     checkTxBeforeSend = false,
-  ): Promise<void> {
+  ): Promise<TransactionReceipt> {
     const contract = BlockchainConnector.getInstance().getContract();
     checkIfActionAccountInitialized(transactionOptions);
     deposit = deposit ?? '0';
@@ -90,7 +91,7 @@ class Orders implements StaticModel {
       );
     }
 
-    await TxManager.execute(
+    return await TxManager.execute(
       contract.methods.createOrder(orderInfoArguments, slots, args, deposit, suspended),
       transactionOptions,
     );
@@ -121,7 +122,7 @@ class Orders implements StaticModel {
     workflowDeposit: TokenAmount,
     transactionOptions?: TransactionOptions,
     checkTxBeforeSend = false,
-  ): Promise<void> {
+  ): Promise<TransactionReceipt> {
     const contract = BlockchainConnector.getInstance().getContract();
     checkIfActionAccountInitialized(transactionOptions);
     workflowDeposit = workflowDeposit ?? '0';
@@ -146,7 +147,7 @@ class Orders implements StaticModel {
       );
     }
 
-    await TxManager.execute(
+    return await TxManager.execute(
       contract.methods.createWorkflow(
         parentOrderInfoArgs,
         parentOrderSlot,
@@ -163,11 +164,14 @@ class Orders implements StaticModel {
   public static async cancelWorkflow(
     perentOrderId: BlockchainId,
     transactionOptions?: TransactionOptions,
-  ): Promise<void> {
+  ): Promise<TransactionReceipt> {
     const contract = BlockchainConnector.getInstance().getContract();
     checkIfActionAccountInitialized(transactionOptions);
 
-    await TxManager.execute(contract.methods.cancelWorkflow(perentOrderId), transactionOptions);
+    return await TxManager.execute(
+      contract.methods.cancelWorkflow(perentOrderId),
+      transactionOptions,
+    );
   }
 
   /**
@@ -180,11 +184,14 @@ class Orders implements StaticModel {
     orderId: BlockchainId,
     amount: TokenAmount,
     transactionOptions?: TransactionOptions,
-  ): Promise<void> {
+  ): Promise<TransactionReceipt> {
     const contract = BlockchainConnector.getInstance().getContract();
     checkIfActionAccountInitialized(transactionOptions);
 
-    await TxManager.execute(contract.methods.refillOrder(orderId, amount), transactionOptions);
+    return await TxManager.execute(
+      contract.methods.refillOrder(orderId, amount),
+      transactionOptions,
+    );
   }
 
   public static async unlockProfitByOrderList(
@@ -614,13 +621,14 @@ class Orders implements StaticModel {
    */
   public static accumulatedSlotInfo(selectedUsage: OrderUsage): SlotInfo {
     const slotCount = selectedUsage.slotCount;
-    const { cpuCores, ram, diskUsage, gpuCores } = selectedUsage.slotInfo;
+    const { cpuCores, ram, vram, diskUsage, gpuCores } = selectedUsage.slotInfo;
 
     return {
       cpuCores: cpuCores * slotCount,
       ram: ram * slotCount,
       diskUsage: diskUsage * slotCount,
       gpuCores: gpuCores * slotCount,
+      vram: vram * slotCount,
     };
   }
 

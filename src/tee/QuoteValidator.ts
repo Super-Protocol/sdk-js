@@ -74,22 +74,30 @@ export class QuoteValidator {
       retryInterval?: number;
     },
   ): Promise<Buffer> {
-    const baseURL =
-      options?.baseURL ?? 'https://github.com/Super-Protocol/sp-kata-containers/releases/download';
+    const baseURL = options?.baseURL ?? 'https://raw.githubusercontent.com/Super-Protocol/sp-vm';
     const retryMax = options?.retryMax ?? 3;
     const retryInterval = options?.retryInterval ?? 1000;
 
-    const axiosInstance = axios.create({ baseURL });
+    const axiosInstance = axios.create({
+      baseURL,
+    });
     const response = await tryWithInterval<AxiosResponse>({
       checkResult(response) {
         return { isResultOk: response.status === 200 };
       },
       handler() {
-        return axiosInstance.get(`/mrenclave-${mrEnclave.toString('hex')}/MRENCLAVE.sign`, {
+        const mrenclaveHex = mrEnclave.toString('hex');
+
+        return axiosInstance.get(`/main/signatures/mrenclave-${mrenclaveHex}.sign`, {
           responseType: 'arraybuffer',
         });
       },
       checkError(err) {
+        if (axios.isAxiosError(err) && err.response) {
+          const status = err.response.status;
+
+          return { retryable: status < 400 || status >= 500 };
+        }
         return { retryable: axios.isAxiosError(err) };
       },
       retryInterval,
@@ -196,7 +204,8 @@ export class QuoteValidator {
 
   private verifyDataBySignature(data: Buffer, signature: Buffer, key: Buffer): boolean {
     const ellipticEc = new ec('p256');
-    const result = ellipticEc.verify(
+
+    return ellipticEc.verify(
       data,
       {
         r: signature.subarray(0, 32),
@@ -204,8 +213,6 @@ export class QuoteValidator {
       },
       ellipticEc.keyFromPublic(key, 'hex'),
     );
-
-    return result;
   }
 
   private checkValidDate(from: number, to: number): boolean {
@@ -360,7 +367,8 @@ export class QuoteValidator {
     const calculatedHash = await this.getSha256Hash(Buffer.concat([headerBuffer, reportBuffer]));
 
     const ellipticEc = new ec('p256');
-    const result = ellipticEc.verify(
+
+    return ellipticEc.verify(
       calculatedHash,
       {
         r: expected.subarray(0, 32),
@@ -368,8 +376,6 @@ export class QuoteValidator {
       },
       Buffer.concat([Buffer.from([4]), key]),
     );
-
-    return result;
   }
 
   private async validateQuoteStructure(
@@ -587,7 +593,29 @@ export class QuoteValidator {
     }
   }
 
-  public async validate(quoteBuffer: Buffer): Promise<ValidationResult> {
+  async checkQuote(quote: Uint8Array, dataBlob: Uint8Array): Promise<void> {
+    const logger = this.logger.child({ method: this.checkQuote.name });
+
+    const quoteBuffer = Buffer.from(quote);
+    const quoteStatus = await this.validate(quoteBuffer);
+    if (quoteStatus.quoteValidationStatus !== QuoteValidationStatuses.UpToDate) {
+      if (quoteStatus.quoteValidationStatus === QuoteValidationStatuses.Error) {
+        throw new Error('Quote is invalid');
+      } else {
+        logger.warn(quoteStatus, 'Quote validation status is not UpToDate');
+      }
+    }
+
+    const userDataCheckResult = await this.isQuoteHasUserData(quoteBuffer, Buffer.from(dataBlob));
+    if (!userDataCheckResult) {
+      throw new Error('Quote has invalid user data');
+    }
+  }
+
+  async checkSignature(quoteBuffer: Buffer): Promise<void> {
+    await QuoteValidator.checkSignature(quoteBuffer);
+  }
+  async validate(quoteBuffer: Buffer): Promise<ValidationResult> {
     try {
       const quoteType = TeeParser.determineQuoteType(quoteBuffer);
       const quote =
@@ -609,7 +637,7 @@ export class QuoteValidator {
       const qeIdentity = await this.getQEIdentity(rootCertPem, quoteType.type);
 
       const qeIdentityStatus = this.getQEIdentityStatus(report, qeIdentity);
-      const tcbStatus = this.getTcbStatus(fmspc, pceId, tcbData, sgxExtensionData);
+      const tcbStatus = this.getTcbStatus(fmspc, pceId, tcbData, sgxExtensionData); // TODO method 'validate' isn't only for tcb - extract this from quote validator
 
       const quoteValidationStatus = this.getQuoteValidationStatus(qeIdentityStatus, tcbStatus);
       this.logger.info(`Quote validation status is ${quoteValidationStatus}`);

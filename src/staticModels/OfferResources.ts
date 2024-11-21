@@ -162,6 +162,32 @@ class OfferResources {
     await TxManager.execute(contract.methods.clearOfferResources(teeOfferKeeperId), options);
   }
 
+  public static async remove(
+    teeOfferIssuerId: BlockchainId,
+    teeOfferKeeperId: BlockchainId,
+    offerId: BlockchainId,
+    offerVersion: number = 0,
+    transactionOptions?: TransactionOptions,
+  ): Promise<void> {
+    const contract = BlockchainConnector.getInstance().getContract();
+    checkIfActionAccountInitialized(transactionOptions);
+
+    const options: TransactionOptions = {
+      gas: AMOY_TX_GAS_LIMIT,
+      ...transactionOptions,
+    };
+
+    await TxManager.execute(
+      contract.methods.removeOfferResource(
+        teeOfferIssuerId,
+        teeOfferKeeperId,
+        offerId,
+        offerVersion,
+      ),
+      options,
+    );
+  }
+
   public static onOfferResourceCreated(callback: onOfferResourceCreatedCallback): () => void {
     const listener = BlockchainEventsListener.getInstance();
     const logger = this.logger.child({ method: 'onOfferResourceCreated' });

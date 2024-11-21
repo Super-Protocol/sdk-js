@@ -19,6 +19,7 @@ import StorageObject from '../../types/storage/StorageObject.js';
 import { getStreamChunks } from '../../utils/helpers/getStreamChunks.js';
 import { S3Credentials } from '@super-protocol/dto-js';
 import path from 'path';
+import { isNodeJS } from '../../utils/helper.js';
 
 export type S3ClientConfig = Omit<S3Credentials, 'prefix'> & {
   region?: string;
@@ -63,7 +64,7 @@ export class S3StorageProvider implements IStorageProvider {
   }
 
   async uploadFile(
-    inputStream: Readable,
+    inputStream: Readable | Blob,
     remotePath: string,
     contentLength: number,
     progressListener?: ((total: number, current: number) => void) | undefined,
@@ -71,13 +72,16 @@ export class S3StorageProvider implements IStorageProvider {
     // For performance & cost optimization
     // https://docs.storj.io/dcs/api-reference/s3-compatible-gateway/multipart-upload/multipart-part-size
     const key = this.applyPrefix(remotePath);
+    const body = isNodeJS()
+      ? (inputStream as Readable)
+      : new Uint8Array(await (inputStream as Blob).arrayBuffer());
 
     if (contentLength >= this.multipartChunkSizeInBytes) {
       return this.multipartUpload(inputStream, key, contentLength, progressListener);
     }
 
     const putObjectCommand = new PutObjectCommand({
-      Body: inputStream,
+      Body: body,
       Bucket: this.bucket,
       Key: key,
       ContentLength: contentLength,
@@ -91,12 +95,19 @@ export class S3StorageProvider implements IStorageProvider {
   }
 
   private async multipartUpload(
-    inputStream: Readable,
+    inputStream: Readable | Blob,
     remotePath: string,
     contentLength: number,
     progressListener?: ((total: number, current: number) => void) | undefined,
   ): Promise<void> {
     const key = this.applyPrefix(remotePath);
+    let transformedStream: Readable | Uint8Array;
+
+    if (inputStream instanceof Blob) {
+      transformedStream = new Uint8Array(await inputStream.arrayBuffer());
+    } else {
+      transformedStream = inputStream;
+    }
 
     const createMultipartUploadCommand = new CreateMultipartUploadCommand({
       Bucket: this.bucket,
@@ -108,33 +119,45 @@ export class S3StorageProvider implements IStorageProvider {
     if (!multipart.UploadId) {
       throw new Error('UploadId property is empty');
     }
+
+    let totalWritten = 0;
+    const uploadId = multipart.UploadId;
+    const parts: Array<CompletedPart> = [];
+    const uploadPart = async (chunk: Uint8Array, partNumber: number): Promise<void> => {
+      const uploadPartCommand = new UploadPartCommand({
+        Body: chunk,
+        Bucket: this.bucket,
+        Key: key,
+        UploadId: uploadId,
+        PartNumber: partNumber,
+      });
+
+      const response = await this.s3Client.send(uploadPartCommand);
+
+      parts.push({
+        ETag: response.ETag,
+        PartNumber: partNumber,
+      });
+
+      totalWritten += chunk.length;
+      progressListener?.(contentLength, totalWritten);
+    };
     try {
-      let totalWritten = 0;
-      const uploadId = multipart.UploadId;
-      const parts: Array<CompletedPart> = [];
+      if (transformedStream instanceof Readable) {
+        for await (const streamChunk of getStreamChunks(
+          transformedStream,
+          this.multipartChunkSizeInBytes,
+        )) {
+          await uploadPart(streamChunk.data, streamChunk.partNumber);
+        }
+      } else {
+        const chunkSize = this.multipartChunkSizeInBytes;
+        let partNumber = 1;
 
-      for await (const streamChunk of getStreamChunks(
-        inputStream,
-        this.multipartChunkSizeInBytes,
-      )) {
-        const uploadPartCommand = new UploadPartCommand({
-          Body: streamChunk.data,
-          Bucket: this.bucket,
-          Key: key,
-          UploadId: uploadId,
-          PartNumber: streamChunk.partNumber,
-        });
-
-        const response = await this.s3Client.send(uploadPartCommand);
-
-        parts.push({
-          ETag: response.ETag,
-          PartNumber: streamChunk.partNumber,
-        });
-
-        totalWritten += streamChunk.data.length;
-        if (!!progressListener) {
-          progressListener(contentLength, totalWritten);
+        for (let offset = 0; offset < transformedStream.length; offset += chunkSize) {
+          const chunk = transformedStream.slice(offset, offset + chunkSize);
+          await uploadPart(chunk, partNumber);
+          partNumber++;
         }
       }
 

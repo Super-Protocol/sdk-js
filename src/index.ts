@@ -127,6 +127,7 @@ export { TeeSgxParser, TeeTdxParser, TeeParser } from './tee/QuoteParser.js';
 export { QuoteValidator } from './tee/QuoteValidator.js';
 export * from './tee/statuses.js';
 export { TeeBlockVerifier } from './tee/TeeBlockVerifier.js';
+export { TeeCertificateService } from './tee/TeeCertificateService.js';
 
 export * from './analytics/types.js';
 export { default as Analytics } from './analytics/Analytics.js';
@@ -136,3 +137,5 @@ export { default as AxiosTransport } from './analytics/transports/AxiosTransport
 export { default as FetchTransport } from './analytics/transports/FetchTransport.js';
 export * from './utils/cache/index.js';
 export * from './errors/index.js';
+export * from './utils/schema-validators/index.js';
+export * as ResourceLoaderUtils from './utils/resourceLoaders/index.js';

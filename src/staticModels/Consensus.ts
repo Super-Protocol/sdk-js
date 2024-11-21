@@ -27,6 +27,9 @@ import {
   WssSubscriptionOnErrorFn,
 } from '../connectors/BlockchainEventsListener.js';
 
+const TCB_REQUEST_BATCH_SIZE = 10; // expected response less then 100k bytes
+type ContractMethod<T> = (ids: BlockchainId[]) => Promise<T[]>;
+
 class Consensus {
   private static readonly logger = rootLogger.child({ className: 'Consensus' });
   private static tcbIds?: BlockchainId[];
@@ -35,6 +38,20 @@ class Consensus {
     return Superpro.address;
   }
 
+  private static async batchCall<T>(
+    method: ContractMethod<T>,
+    ids: string[],
+    batchSize: number,
+    formatFn: (data: any) => T[],
+  ): Promise<T[]> {
+    const results: T[] = [];
+    for (let i = 0; i < ids.length; i += batchSize) {
+      const batch = ids.slice(i, i + batchSize);
+      const result = await method(batch);
+      results.push(...formatFn(result));
+    }
+    return results;
+  }
   /**
    * Function for fetching list of all tcb ids
    * @returns list of tcb ids
@@ -87,14 +104,21 @@ class Consensus {
 
   public static async getTcbsPublicData(
     tcbIds: BlockchainId[],
+    batchSize = TCB_REQUEST_BATCH_SIZE,
   ): Promise<{ [tcbId: BlockchainId]: TcbPublicData }> {
     const contract = BlockchainConnector.getInstance().getContract();
 
     const response: { [tcbId: BlockchainId]: TcbPublicData } = {};
-    const tcbsPublicData: TcbPublicData[] = await contract.methods
-      .getTcbsPublicData(tcbIds)
-      .call()
-      .then((array) => formatTcbPublicData(array));
+    const getTcbsPublicDataHelper = async (ids: BlockchainId[]): Promise<any> => {
+      return contract.methods.getTcbsPublicData(ids).call();
+    };
+
+    const tcbsPublicData: TcbPublicData[] = await Consensus.batchCall(
+      getTcbsPublicDataHelper,
+      tcbIds,
+      batchSize,
+      formatTcbPublicData,
+    );
 
     for (let tcbIndex = 0; tcbIndex < tcbsPublicData.length; tcbIndex++) {
       tcbsPublicData[tcbIndex].deviceId = unpackDeviceId(tcbsPublicData[tcbIndex].deviceId);
@@ -113,14 +137,23 @@ class Consensus {
 
   public static async getTcbsUtilityData(
     tcbIds: BlockchainId[],
+    batchSize = TCB_REQUEST_BATCH_SIZE,
   ): Promise<{ [tcbId: BlockchainId]: TcbUtilityData }> {
     const contract = BlockchainConnector.getInstance().getContract();
 
     const response: { [tcbId: BlockchainId]: TcbUtilityData } = {};
-    const tcbUtilityData: TcbUtilityData[] = await contract.methods
-      .getTcbsUtilityData(tcbIds)
-      .call()
-      .then((array) => array.map((item) => transformComplexObject(item) as TcbUtilityData));
+    const getTcbsUtilityDataHelper = async (ids: BlockchainId[]): Promise<any> => {
+      return contract.methods.getTcbsUtilityData(ids).call();
+    };
+    const formatTcbUtilityData = (array: any[]) =>
+      array.map((item) => transformComplexObject(item) as TcbUtilityData);
+    const tcbUtilityData: TcbUtilityData[] = await Consensus.batchCall(
+      getTcbsUtilityDataHelper,
+      tcbIds,
+      batchSize,
+      formatTcbUtilityData,
+    );
+
     for (let tcbIndex = 0; tcbIndex < tcbUtilityData.length; tcbIndex++) {
       response[tcbIds[tcbIndex]] = tcbUtilityData[tcbIndex];
     }

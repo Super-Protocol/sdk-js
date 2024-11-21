@@ -341,6 +341,7 @@ export function unpackSlotInfo(slotInfo: SlotInfo, coresDenominator: number): Sl
     ram: Number(slotInfo.ram),
     diskUsage: Number(slotInfo.diskUsage),
     gpuCores: Number(slotInfo.gpuCores) / coresDenominator,
+    vram: Number(slotInfo.vram),
   };
 }
 
@@ -350,6 +351,7 @@ export function packSlotInfo(slotInfo: SlotInfo, coresDenominator: number): Slot
     ram: slotInfo.ram,
     diskUsage: slotInfo.diskUsage,
     gpuCores: slotInfo.gpuCores * coresDenominator,
+    vram: slotInfo.vram,
   };
 }
 

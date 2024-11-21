@@ -1,11 +1,5 @@
-export const splitChain = (chain: string): string[] => {
-  const begin = '-----BEGIN CERTIFICATE-----';
-  const end = '-----END CERTIFICATE-----';
-
-  return chain
-    .split(begin)
-    .filter(Boolean)
-    .map((cert) => begin.concat(cert.slice(0, cert.indexOf(end)), end));
+export const splitChain = (chain: string): string[] | null => {
+  return chain.match(/-----BEGIN CERTIFICATE-----[^-]+-----END CERTIFICATE-----/g);
 };
 
 class Position {

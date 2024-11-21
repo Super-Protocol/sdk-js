@@ -1,6 +1,6 @@
-import rootLogger from '../logger';
-import TCB from '../models/TCB';
-import Superpro from './Superpro';
+import rootLogger from '../logger.js';
+import TCB from '../models/TCB.js';
+import Superpro from './Superpro.js';
 import {
   EpochInfo,
   ConsensusConstants,
@@ -10,18 +10,25 @@ import {
   TokenAmount,
   TcbPublicData,
   TcbUtilityData,
-} from '../types';
+} from '../types/index.js';
 import {
   checkIfActionAccountInitialized,
   cleanWeb3Data,
   formatTcbPublicData,
   transformComplexObject,
   unpackDeviceId,
-} from '../utils/helper';
-import TxManager from '../utils/TxManager';
-import { BlockchainConnector, BlockchainEventsListener } from '../connectors';
+} from '../utils/helper.js';
+import TxManager from '../utils/TxManager.js';
+import { BlockchainConnector, BlockchainEventsListener } from '../connectors/index.js';
 import { EventLog } from 'web3-eth-contract';
 import { TcbVerifiedStatus } from '@super-protocol/dto-js';
+import {
+  WssSubscriptionOnDataFn,
+  WssSubscriptionOnErrorFn,
+} from '../connectors/BlockchainEventsListener.js';
+
+const TCB_REQUEST_BATCH_SIZE = 10; // expected response less then 100k bytes
+type ContractMethod<T> = (ids: BlockchainId[]) => Promise<T[]>;
 
 class Consensus {
   private static readonly logger = rootLogger.child({ className: 'Consensus' });
@@ -31,21 +38,40 @@ class Consensus {
     return Superpro.address;
   }
 
+  private static async batchCall<T>(
+    method: ContractMethod<T>,
+    ids: string[],
+    batchSize: number,
+    formatFn: (data: any) => T[],
+  ): Promise<T[]> {
+    const results: T[] = [];
+    for (let i = 0; i < ids.length; i += batchSize) {
+      const batch = ids.slice(i, i + batchSize);
+      const result = await method(batch);
+      results.push(...formatFn(result));
+    }
+    return results;
+  }
   /**
    * Function for fetching list of all tcb ids
    * @returns list of tcb ids
    */
   public static async getAllTcbs(): Promise<BlockchainId[]> {
-    const contract = BlockchainConnector.getInstance().getContract();
     const tcbSet = new Set(this.tcbIds ?? []);
 
-    const tcbsCount = Number(await contract.methods.getTcbsCount().call());
+    const tcbsCount = await Consensus.getTcbsCount();
     for (let tcbId = tcbSet.size + 1; tcbId <= tcbsCount; tcbId++) {
       tcbSet.add(tcbId.toString());
     }
     this.tcbIds = Array.from(tcbSet);
 
     return this.tcbIds;
+  }
+
+  public static async getTcbsCount(): Promise<number> {
+    const contract = BlockchainConnector.getInstance().getContract();
+
+    return Number(await contract.methods.getTcbsCount().call());
   }
 
   public static async getEpochTime(
@@ -78,14 +104,21 @@ class Consensus {
 
   public static async getTcbsPublicData(
     tcbIds: BlockchainId[],
+    batchSize = TCB_REQUEST_BATCH_SIZE,
   ): Promise<{ [tcbId: BlockchainId]: TcbPublicData }> {
     const contract = BlockchainConnector.getInstance().getContract();
 
     const response: { [tcbId: BlockchainId]: TcbPublicData } = {};
-    const tcbsPublicData: TcbPublicData[] = await contract.methods
-      .getTcbsPublicData(tcbIds)
-      .call()
-      .then((array) => formatTcbPublicData(array));
+    const getTcbsPublicDataHelper = async (ids: BlockchainId[]): Promise<any> => {
+      return contract.methods.getTcbsPublicData(ids).call();
+    };
+
+    const tcbsPublicData: TcbPublicData[] = await Consensus.batchCall(
+      getTcbsPublicDataHelper,
+      tcbIds,
+      batchSize,
+      formatTcbPublicData,
+    );
 
     for (let tcbIndex = 0; tcbIndex < tcbsPublicData.length; tcbIndex++) {
       tcbsPublicData[tcbIndex].deviceId = unpackDeviceId(tcbsPublicData[tcbIndex].deviceId);
@@ -104,14 +137,23 @@ class Consensus {
 
   public static async getTcbsUtilityData(
     tcbIds: BlockchainId[],
+    batchSize = TCB_REQUEST_BATCH_SIZE,
   ): Promise<{ [tcbId: BlockchainId]: TcbUtilityData }> {
     const contract = BlockchainConnector.getInstance().getContract();
 
     const response: { [tcbId: BlockchainId]: TcbUtilityData } = {};
-    const tcbUtilityData: TcbUtilityData[] = await contract.methods
-      .getTcbsUtilityData(tcbIds)
-      .call()
-      .then((array) => array.map((item) => transformComplexObject(item) as TcbUtilityData));
+    const getTcbsUtilityDataHelper = async (ids: BlockchainId[]): Promise<any> => {
+      return contract.methods.getTcbsUtilityData(ids).call();
+    };
+    const formatTcbUtilityData = (array: any[]) =>
+      array.map((item) => transformComplexObject(item) as TcbUtilityData);
+    const tcbUtilityData: TcbUtilityData[] = await Consensus.batchCall(
+      getTcbsUtilityDataHelper,
+      tcbIds,
+      batchSize,
+      formatTcbUtilityData,
+    );
+
     for (let tcbIndex = 0; tcbIndex < tcbUtilityData.length; tcbIndex++) {
       response[tcbIds[tcbIndex]] = tcbUtilityData[tcbIndex];
     }
@@ -182,11 +224,9 @@ class Consensus {
   }
 
   public static onTcbBanned(callback: onTcbBannedCallback): () => void {
-    const contract = BlockchainEventsListener.getInstance().getContract();
+    const listener = BlockchainEventsListener.getInstance();
     const logger = this.logger.child({ method: 'onTcbBanned' });
-
-    const subscription = contract.events.TcbBanned();
-    subscription.on('data', (event: EventLog): void => {
+    const onData: WssSubscriptionOnDataFn = (event: EventLog): void => {
       const parsedEvent = cleanWeb3Data(event.returnValues);
       callback(
         <string>parsedEvent.tcbId,
@@ -196,20 +236,21 @@ class Consensus {
           hash: <string>event.blockHash,
         },
       );
-    });
-    subscription.on('error', (error: Error) => {
+    };
+    const onError: WssSubscriptionOnErrorFn = (error: Error) => {
       logger.warn(error);
+    };
+    return listener.subscribeEvent({
+      onError,
+      onData,
+      event: 'TcbBanned',
     });
-
-    return () => subscription.unsubscribe();
   }
 
   public static onTcbCompleted(callback: onTcbCompletedCallback): () => void {
-    const contract = BlockchainEventsListener.getInstance().getContract();
+    const listener = BlockchainEventsListener.getInstance();
     const logger = this.logger.child({ method: 'onTcbCompleted' });
-
-    const subscription = contract.events.TcbCompleted();
-    subscription.on('data', (event: EventLog): void => {
+    const onData: WssSubscriptionOnDataFn = (event: EventLog): void => {
       const parsedEvent = cleanWeb3Data(event.returnValues);
       callback(
         <string>parsedEvent.tcbId,
@@ -219,20 +260,21 @@ class Consensus {
           hash: <string>event.blockHash,
         },
       );
-    });
-    subscription.on('error', (error: Error) => {
+    };
+    const onError: WssSubscriptionOnErrorFn = (error: Error) => {
       logger.warn(error);
+    };
+    return listener.subscribeEvent({
+      onError,
+      onData,
+      event: 'TcbCompleted',
     });
-
-    return () => subscription.unsubscribe();
   }
 
   public static onTcbInitialized(callback: onTcbInitializedCallback): () => void {
-    const contract = BlockchainEventsListener.getInstance().getContract();
+    const listener = BlockchainEventsListener.getInstance();
     const logger = this.logger.child({ method: 'onTcbInitialized' });
-
-    const subscription = contract.events.TcbInitialized();
-    subscription.on('data', (event: EventLog): void => {
+    const onData: WssSubscriptionOnDataFn = (event: EventLog): void => {
       const parsedEvent = cleanWeb3Data(event.returnValues);
       callback(
         <string>parsedEvent.tcbId,
@@ -242,20 +284,21 @@ class Consensus {
           hash: <string>event.blockHash,
         },
       );
-    });
-    subscription.on('error', (error: Error) => {
+    };
+    const onError: WssSubscriptionOnErrorFn = (error: Error) => {
       logger.warn(error);
+    };
+    return listener.subscribeEvent({
+      onError,
+      onData,
+      event: 'TcbInitialized',
     });
-
-    return () => subscription.unsubscribe();
   }
 
   public static onTcbBenchmarkChanged(callback: onTcbBenchmarkChangedCallback): () => void {
-    const contract = BlockchainEventsListener.getInstance().getContract();
+    const listener = BlockchainEventsListener.getInstance();
     const logger = this.logger.child({ method: 'onTcbBenchmarkChanged' });
-
-    const subscription = contract.events.TcbBenchmarkChanged();
-    subscription.on('data', (event: EventLog) => {
+    const onData: WssSubscriptionOnDataFn = (event: EventLog) => {
       const parsedEvent = cleanWeb3Data(event.returnValues);
       callback(
         <string>parsedEvent.tcbId,
@@ -265,20 +308,21 @@ class Consensus {
           hash: <string>event.blockHash,
         },
       );
-    });
-    subscription.on('error', (error: Error) => {
+    };
+    const onError: WssSubscriptionOnErrorFn = (error: Error) => {
       logger.warn(error);
+    };
+    return listener.subscribeEvent({
+      onError,
+      onData,
+      event: 'TcbBenchmarkChanged',
     });
-
-    return () => subscription.unsubscribe();
   }
 
   public static onRewardsClaimed(callback: onRewardsClaimedCallback): () => void {
-    const contract = BlockchainEventsListener.getInstance().getContract();
+    const listener = BlockchainEventsListener.getInstance();
     const logger = this.logger.child({ method: 'onRewardsClaimed' });
-
-    const subscription = contract.events.RewardsClaimed();
-    subscription.on('data', (event: EventLog) => {
+    const onData: WssSubscriptionOnDataFn = (event: EventLog) => {
       const parsedEvent = cleanWeb3Data(event.returnValues);
       callback(
         <BlockchainId>parsedEvent.tcbId,
@@ -289,20 +333,21 @@ class Consensus {
           hash: <string>event.blockHash,
         },
       );
-    });
-    subscription.on('error', (error: Error) => {
+    };
+    const onError: WssSubscriptionOnErrorFn = (error: Error) => {
       logger.warn(error);
+    };
+    return listener.subscribeEvent({
+      onError,
+      onData,
+      event: 'RewardsClaimed',
     });
-
-    return () => subscription.unsubscribe();
   }
 
   public static onTcbRewardUnlocked(callback: onTcbRewardUnlockedCallback): () => void {
-    const contract = BlockchainEventsListener.getInstance().getContract();
+    const listener = BlockchainEventsListener.getInstance();
     const logger = this.logger.child({ method: 'onTcbRewardUnlocked' });
-
-    const subscription = contract.events.TcbRewardUnlocked();
-    subscription.on('data', (event: EventLog) => {
+    const onData: WssSubscriptionOnDataFn = (event: EventLog) => {
       const parsedEvent = cleanWeb3Data(event.returnValues);
       callback(
         <BlockchainId>parsedEvent.tcbId,
@@ -312,12 +357,15 @@ class Consensus {
           hash: <string>event.blockHash,
         },
       );
-    });
-    subscription.on('error', (error: Error) => {
+    };
+    const onError: WssSubscriptionOnErrorFn = (error: Error) => {
       logger.warn(error);
+    };
+    return listener.subscribeEvent({
+      onError,
+      onData,
+      event: 'TcbRewardUnlocked',
     });
-
-    return () => subscription.unsubscribe();
   }
 }
 

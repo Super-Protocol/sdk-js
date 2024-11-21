@@ -1,5 +1,5 @@
 import { Contract } from 'web3';
-import { abi } from '../contracts/abi';
+import { abi } from '../contracts/abi.js';
 import {
   checkIfActionAccountInitialized,
   incrementMethodCall,
@@ -11,7 +11,8 @@ import {
   transformComplexObject,
   convertOptionInfoFromRaw,
   convertOptionInfoToRaw,
-} from '../utils/helper';
+  packDeviceId,
+} from '../utils/helper.js';
 import {
   TeeOfferInfo,
   TransactionOptions,
@@ -21,9 +22,12 @@ import {
   TokenAmount,
   OptionInfoRaw,
   TeeOfferOptionRaw,
-} from '../types';
-import { BlockchainConnector } from '../connectors';
-import TxManager from '../utils/TxManager';
+  OfferVersionInfo,
+  OfferVersion,
+  TeeOfferSubtype,
+} from '../types/index.js';
+import { BlockchainConnector } from '../connectors/index.js';
+import TxManager from '../utils/TxManager.js';
 import {
   HardwareInfo,
   TeeOfferOption,
@@ -31,12 +35,12 @@ import {
   OptionInfo,
   SlotUsage,
   SlotInfo,
-} from '../types';
-import { formatBytes32String } from 'ethers/lib/utils';
-import TeeOffers from '../staticModels/TeeOffers';
-import { TCB } from '../models';
+} from '../types/index.js';
+import { formatBytes32String } from 'ethers/lib/utils.js';
+import TeeOffers from '../staticModels/TeeOffers.js';
+import { TCB } from '../models/index.js';
 import { TeeConfirmationBlock, GetTcbRequest, TcbVerifiedStatus } from '@super-protocol/dto-js';
-import Consensus from '../staticModels/Consensus';
+import Consensus from '../staticModels/Consensus.js';
 
 class TeeOffer {
   private static contract: Contract<typeof abi>;
@@ -114,9 +118,17 @@ class TeeOffer {
   @incrementMethodCall()
   public async getInfo(): Promise<TeeOfferInfo> {
     const { info } = await TeeOffer.contract.methods.getTeeOffer(this.id).call();
+    const {
+      tlb_DEPRECATED: _tlb_DEPRECATED,
+      subtype: _subtype,
+      ...offerInfo
+    } = cleanWeb3Data({
+      ...info,
+      subType: info.subtype,
+      hardwareInfo: (await this.getHardwareInfo()) as HardwareInfo,
+    });
 
-    this.offerInfo = cleanWeb3Data(info) as TeeOfferInfo;
-    this.offerInfo.hardwareInfo = cleanWeb3Data(await this.getHardwareInfo()) as HardwareInfo;
+    this.offerInfo = offerInfo as TeeOfferInfo;
 
     return this.offerInfo;
   }
@@ -215,12 +227,16 @@ class TeeOffer {
     checkIfActionAccountInitialized(transactionOptions);
 
     await TxManager.execute(
-      TeeOffer.contract.methods.updateOption(
+      TeeOffer.contract.methods.updateOptionInfo(
         this.id,
         optionId,
         convertOptionInfoToRaw(newInfo),
-        newUsage,
       ),
+      transactionOptions,
+    );
+
+    await TxManager.execute(
+      TeeOffer.contract.methods.updateOptionUsage(this.id, optionId, newUsage),
       transactionOptions,
     );
   }
@@ -244,17 +260,24 @@ class TeeOffer {
   }
 
   @incrementMethodCall()
-  public async initializeTcb(transactionOptions?: TransactionOptions): Promise<void> {
+  private async initializeTcb(
+    deviceId: string,
+    transactionOptions?: TransactionOptions,
+  ): Promise<void> {
     checkIfActionAccountInitialized();
 
-    await TxManager.execute(TeeOffer.contract.methods.initializeTcb(this.id), transactionOptions);
+    await TxManager.execute(
+      TeeOffer.contract.methods.initializeTcb(this.id, deviceId),
+      transactionOptions,
+    );
   }
 
   @incrementMethodCall()
   private async initializeTcbAndAssignBlocks(
+    deviceId: string,
     transactionOptions?: TransactionOptions,
   ): Promise<TCB> {
-    await this.initializeTcb(transactionOptions);
+    await this.initializeTcb(deviceId, transactionOptions);
     const tcbId = await this.getInitializedTcbId();
     const tcb = new TCB(tcbId);
 
@@ -272,11 +295,13 @@ class TeeOffer {
    */
   @incrementMethodCall()
   public async getListsForVerification(
+    deviceId: string,
     transactionOptions?: TransactionOptions,
   ): Promise<GetTcbRequest> {
     checkIfActionAccountInitialized();
 
-    const tcb = await this.initializeTcbAndAssignBlocks(transactionOptions);
+    deviceId = packDeviceId(deviceId);
+    const tcb = await this.initializeTcbAndAssignBlocks(deviceId, transactionOptions);
     const { checkingTcbIds } = await tcb.getPublicData();
     const tcbsPublicData = await Consensus.getTcbsPublicData(checkingTcbIds);
     const tcbsUtilityData = await Consensus.getTcbsUtilityData(checkingTcbIds);
@@ -298,6 +323,25 @@ class TeeOffer {
       tcbId: tcb.tcbId.toString(),
       tcbsForVerification,
     };
+  }
+
+  /**
+   * Returns the offer version info.
+   */
+  @incrementMethodCall()
+  public async getVersion(version: number): Promise<OfferVersion> {
+    return await TeeOffer.contract.methods
+      .getOfferVersion(this.id, version)
+      .call()
+      .then((offerVersion) => cleanWeb3Data(offerVersion) as OfferVersion);
+  }
+
+  /**
+   * Returns the offer version info.
+   */
+  @incrementMethodCall()
+  public async getVersionCount(): Promise<number> {
+    return await TeeOffer.contract.methods.getOfferVersionsCount(this.id).call();
   }
 
   /**
@@ -390,7 +434,11 @@ class TeeOffer {
 
     newInfo = packSlotInfo(newInfo, await TeeOffers.getDenominator());
     await TxManager.execute(
-      TeeOffer.contract.methods.updateTeeOfferSlot(this.id, slotId, newInfo, newUsage),
+      TeeOffer.contract.methods.updateTeeOfferSlotInfo(this.id, slotId, newInfo, newUsage),
+      transactionOptions,
+    );
+    await TxManager.execute(
+      TeeOffer.contract.methods.updateTeeOfferSlotUsage(this.id, slotId, newUsage),
       transactionOptions,
     );
   }
@@ -414,6 +462,45 @@ class TeeOffer {
   }
 
   /**
+   * Function for add a new version to the value offer.
+   * @param newVersion - Version number
+   * @param versionInfo - Version info
+   * @param transactionOptions - object what contains alternative action account or gas limit (optional)
+   */
+  @incrementMethodCall()
+  public async setNewVersion(
+    newVersion: number,
+    versionInfo: OfferVersionInfo,
+    transactionOptions?: TransactionOptions,
+  ): Promise<void> {
+    checkIfActionAccountInitialized(transactionOptions);
+
+    const transactionCall = TeeOffer.contract.methods.setOfferNewVersion(
+      this.id,
+      newVersion,
+      versionInfo,
+    );
+    await TxManager.execute(transactionCall, transactionOptions);
+  }
+
+  /**
+   * Functcion for deletion the version from the value offer.
+   * @param newVersion - Version number
+   * @param versionInfo - Version info
+   * @param transactionOptions - object what contains alternative action account or gas limit (optional)
+   */
+  @incrementMethodCall()
+  public async deleteVersion(
+    version: number,
+    transactionOptions?: TransactionOptions,
+  ): Promise<void> {
+    checkIfActionAccountInitialized(transactionOptions);
+
+    const transactionCall = TeeOffer.contract.methods.deleteOfferVersion(this.id, version);
+    await TxManager.execute(transactionCall, transactionOptions);
+  }
+
+  /**
    * @param teeOfferId - TEE offer ID
    * @returns {Promise<string>} - Actual TCB ID
    */
@@ -429,9 +516,12 @@ class TeeOffer {
     return TeeOffer.contract.methods.getInitializedTcbId(this.id).call();
   }
 
-  public async isTcbCreationAvailable(): Promise<boolean> {
-    const { offerNotBlocked, newEpochStarted, halfEpochPassed, benchmarkVerified } =
-      await TeeOffer.contract.methods.isTcbCreationAvailable(this.id).call();
+  public async isTcbCreationAvailable(deviceId: string): Promise<boolean> {
+    const { offerNotBlocked, newEpochStarted, halfEpochPassed, benchmarkVerified } = cleanWeb3Data(
+      await TeeOffer.contract.methods
+        .isTcbCreationAvailable(this.id, packDeviceId(deviceId))
+        .call(),
+    );
 
     return offerNotBlocked && newEpochStarted && halfEpochPassed && benchmarkVerified;
   }
@@ -458,19 +548,19 @@ class TeeOffer {
     return this.type.toString() as OfferType;
   }
 
-  @incrementMethodCall()
-  public isTeeOfferVerifying(): Promise<boolean> {
-    return TeeOffer.contract.methods.isTeeOfferVerifying(this.id).call();
-  }
-
   /**
-   * Function for fetching TLB provider from blockchain
+   * Fetch offer subtype from blockchain (TEE only)
    */
   @incrementMethodCall()
-  public async getTlb(): Promise<string> {
-    const offerInfo = await this.getInfo();
+  public async getSubtype(): Promise<TeeOfferSubtype> {
+    this.type = await TeeOffer.contract.methods.getTeeOfferSubtype(this.id).call();
 
-    return offerInfo.tlb;
+    return this.type.toString() as TeeOfferSubtype;
+  }
+
+  @incrementMethodCall()
+  public isTeeOfferVerifying(): Promise<boolean> {
+    return TeeOffer.contract.methods.isTeeOfferVerified(this.id).call();
   }
 
   /**
@@ -502,22 +592,6 @@ class TeeOffer {
   }
 
   /**
-   * Updates TLB in offer info
-   * @param tlb - new TLB
-   * @param transactionOptions - object what contains alternative action account or gas limit (optional)
-   */
-  @incrementMethodCall()
-  public async addTlb(tlb: string, transactionOptions?: TransactionOptions): Promise<void> {
-    checkIfActionAccountInitialized(transactionOptions);
-
-    await TxManager.execute(
-      TeeOffer.contract.methods.setTeeOfferTlb(this.id, tlb),
-      transactionOptions,
-    );
-    if (this.offerInfo) this.offerInfo.tlb = tlb;
-  }
-
-  /**
    * Updates name in offer info
    * @param name - new name
    * @param transactionOptions - object what contains alternative action account or gas limit (optional)
@@ -543,12 +617,19 @@ class TeeOffer {
   ): Promise<void> {
     checkIfActionAccountInitialized(transactionOptions);
 
-    await this.setHardwareInfo(newInfo.hardwareInfo, transactionOptions);
+    const { hardwareInfo, subType, ...offerInfo } = newInfo;
+
+    await this.setHardwareInfo(hardwareInfo, transactionOptions);
 
     await TxManager.execute(
-      TeeOffer.contract.methods.setTeeOfferInfo(this.id, newInfo),
+      TeeOffer.contract.methods.setTeeOfferInfo(this.id, {
+        ...offerInfo,
+        subtype: subType,
+        tlb_DEPRECATED: '',
+      }),
       transactionOptions,
     );
+
     if (this.offerInfo) this.offerInfo = newInfo;
   }
 
@@ -566,7 +647,11 @@ class TeeOffer {
     newHardwareInfo = await TeeOffers.packHardwareInfo(newHardwareInfo);
 
     await TxManager.execute(
-      TeeOffer.contract.methods.setTeeOfferHardwareInfo(this.id, newHardwareInfo.slotInfo, convertOptionInfoToRaw(newHardwareInfo.optionInfo)),
+      TeeOffer.contract.methods.setTeeOfferHardwareInfo(
+        this.id,
+        newHardwareInfo.slotInfo,
+        convertOptionInfoToRaw(newHardwareInfo.optionInfo),
+      ),
       transactionOptions,
     );
   }
@@ -607,6 +692,22 @@ class TeeOffer {
     if (this.offerInfo) {
       this.offerInfo.argsPublicKey = argsPublicKey;
     }
+  }
+
+  /**
+   * Function for set the offer subtype.
+   * @param newSubtype - TEE offer subtype
+   * @param transactionOptions - object what contains alternative action account or gas limit (optional)
+   */
+  @incrementMethodCall()
+  public async setSubtype(
+    newSubtype: TeeOfferSubtype,
+    transactionOptions?: TransactionOptions,
+  ): Promise<void> {
+    checkIfActionAccountInitialized(transactionOptions);
+
+    const transactionCall = TeeOffer.contract.methods.setTeeOfferSubtype(this.id, newSubtype);
+    await TxManager.execute(transactionCall, transactionOptions);
   }
 
   /**

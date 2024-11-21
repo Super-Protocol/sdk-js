@@ -1,14 +1,20 @@
 import { Contract } from 'web3';
-import { abi } from '../contracts/abi';
+import { abi } from '../contracts/abi.js';
 import {
   checkIfActionAccountInitialized,
   cleanWeb3Data,
   convertBigIntToString,
-} from '../utils/helper';
-import { ProviderInfo, Origins, TransactionOptions, BlockchainId, TokenAmount } from '../types';
-import { BlockchainConnector } from '../connectors';
-import TxManager from '../utils/TxManager';
-import Consensus from '../staticModels/Consensus';
+} from '../utils/helper.js';
+import {
+  ProviderInfo,
+  Origins,
+  TransactionOptions,
+  BlockchainId,
+  TokenAmount,
+} from '../types/index.js';
+import { BlockchainConnector } from '../connectors/index.js';
+import TxManager from '../utils/TxManager.js';
+import Consensus from '../staticModels/Consensus.js';
 
 class Provider {
   private static contract: Contract<typeof abi>;

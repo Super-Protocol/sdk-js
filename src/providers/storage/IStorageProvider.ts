@@ -1,4 +1,4 @@
-import StorageObject from '../../types/storage/StorageObject';
+import StorageObject from '../../types/storage/StorageObject.js';
 import stream from 'stream';
 
 export type DownloadConfig = {
@@ -7,7 +7,7 @@ export type DownloadConfig = {
 };
 export default interface IStorageProvider {
   uploadFile(
-    inputStream: stream.Readable,
+    inputStream: stream.Readable | Blob,
     remotePath: string,
     contentLength: number,
     progressListener?: (total: number, current: number) => void,

@@ -1,12 +1,10 @@
-import { gzip, ungzip } from 'node-gzip';
-import _ from 'lodash';
+import nodeGzip from 'node-gzip';
 
-import { config } from './config';
-import { Compression, Compression_TYPE } from './proto/Compression';
-import { TRI } from './proto/TRI';
-import Crypto from './crypto';
-import { Offer, Order, TeeOffer, TCB } from './models';
-import { BlockchainId, OrderInfo, OfferInfo, TeeOfferInfo } from './types';
+import { Compression, Compression_TYPE } from './proto/Compression.js';
+import { TRI } from './proto/TRI.js';
+import Crypto from './crypto/index.js';
+import { Order, TeeOffer } from './models/index.js';
+import { BlockchainId, OrderInfo, TeeOfferInfo } from './types/index.js';
 import {
   Cipher,
   CryptoAlgorithm,
@@ -20,136 +18,21 @@ import {
   TeeRunInfo,
   UrlResource,
 } from '@super-protocol/dto-js';
-import { TLBlockSerializerV1, TLBlockUnserializeResultType } from '@super-protocol/tee-lib';
-import { QuoteValidator } from './tee/QuoteValidator';
-import { QuoteValidationStatuses } from './tee/statuses';
-import { TeeSgxParser } from './tee/QuoteParser';
-import logger from './logger';
+import TeeInputGeneratorBase from './TeeInputGeneratorBase.js';
 
-class TIIGenerator {
-  static verifiedTlbHashes: Map<string, string> = new Map();
-  static verifiedTcbs: Set<BlockchainId> = new Set();
+const { gzip, ungzip } = nodeGzip;
 
-  private static async checkQuote(
-    quote: Uint8Array,
-    dataBlob: Uint8Array,
-    sgxApiUrl: string,
-  ): Promise<void> {
-    const quoteBuffer = Buffer.from(quote);
-    const validator = new QuoteValidator(sgxApiUrl);
-    const quoteStatus = await validator.validate(quoteBuffer);
-    if (quoteStatus.quoteValidationStatus !== QuoteValidationStatuses.UpToDate) {
-      if (quoteStatus.quoteValidationStatus === QuoteValidationStatuses.Error) {
-        throw new Error('Quote is invalid');
-      } else {
-        logger.warn(quoteStatus, 'Quote validation status is not UpToDate');
-      }
-    }
-
-    const userDataCheckResult = await validator.isQuoteHasUserData(
-      quoteBuffer,
-      Buffer.from(dataBlob),
-    );
-    if (!userDataCheckResult) {
-      throw new Error('Quote has invalid user data');
-    }
-
-    const parser = new TeeSgxParser();
-    const parsedQuote = parser.parseQuote(quote);
-    const report = parser.parseReport(parsedQuote.report);
-    if (report.mrSigner.toString('hex') !== config.TEE_LOADER_TRUSTED_MRSIGNER) {
-      throw new Error('Quote has invalid MR signer');
-    }
-  }
-
-  public static async verifyTcb(
-    tcb: TCB,
-    quoteString: string,
-    pubKey: string,
-    sgxApiUrl: string,
-  ): Promise<void> {
-    // check cache
-    if (this.verifiedTcbs.has(tcb.tcbId)) {
-      logger.trace(`Tcb id = ${tcb.tcbId}, already validated`);
-      return;
-    }
-
-    const quote = Buffer.from(quoteString, 'base64');
-    const signedTcbData = {
-      checkingTcbId: tcb.tcbId.toString(),
-      pubKey,
-      ...(await tcb.getPublicData()),
-    };
-    const serializer = new TLBlockSerializerV1();
-    const dataBlob = await serializer.serializeAnyData(signedTcbData);
-    await this.checkQuote(quote, dataBlob, sgxApiUrl);
-
-    // update cashe
-    this.verifiedTcbs.add(tcb.tcbId);
-    if (this.verifiedTcbs.size > config.TLB_CACHE_SIZE) {
-      const [value] = this.verifiedTcbs.entries().next().value;
-      this.verifiedTcbs.delete(value);
-      logger.trace(
-        value,
-        `TCB id = ${value} removed from the cache. Cache size: ${this.verifiedTcbs.size}, cache limit: ${config.TLB_CACHE_SIZE}`,
-      );
-    }
-    logger.trace(
-      tcb.tcbId,
-      `TCB id = ${tcb.tcbId} added to the cache. Cache size: ${this.verifiedTcbs.size}, cache limit: ${config.TLB_CACHE_SIZE}`,
-    );
-  }
-
-  public static async verifyTlb(
-    tlb: TLBlockUnserializeResultType,
-    tlbString: string,
-    offerId: string,
-    sgxApiUrl: string,
-  ): Promise<void> {
-    const tlbHash = await Crypto.createHash(Buffer.from(tlbString), {
-      algo: HashAlgorithm.SHA256,
-      encoding: Encoding.base64,
-    });
-    if (this.verifiedTlbHashes.has(tlbHash.hash)) {
-      logger.trace(
-        tlbHash,
-        `TLB hash of offer ${this.verifiedTlbHashes.get(
-          tlbHash.hash,
-        )} loaded from the cache. Cache size: ${this.verifiedTlbHashes.size}, cache limit: ${
-          config.TLB_CACHE_SIZE
-        }`,
-      );
-      return;
-    }
-
-    const quoteBuffer = Buffer.from(tlb.quote);
-    await this.checkQuote(quoteBuffer, tlb.dataBlob, sgxApiUrl);
-
-    this.verifiedTlbHashes.set(tlbHash.hash, offerId);
-    if (this.verifiedTlbHashes.size > config.TLB_CACHE_SIZE) {
-      const [key, value] = this.verifiedTlbHashes.entries().next().value;
-      this.verifiedTlbHashes.delete(key);
-      logger.trace(
-        key,
-        `TLB hash of offer ${value} removed from the cache. Cache size: ${this.verifiedTlbHashes.size}, cache limit: ${config.TLB_CACHE_SIZE}`,
-      );
-    }
-    logger.trace(
-      tlbHash.hash,
-      `TLB hash of offer ${offerId} added to the cache. Cache size: ${this.verifiedTlbHashes.size}, cache limit: ${config.TLB_CACHE_SIZE}`,
-    );
-  }
-
-  public static async generateByOffer(
-    offerId: BlockchainId,
-    solutionHashes: Hash[],
-    linkageString: string | undefined,
-    resource: Resource,
-    args: any,
-    encryption: Encryption,
-    sgxApiUrl: string,
-    verifyByTcb = false,
-  ): Promise<string> {
+class TIIGenerator extends TeeInputGeneratorBase {
+  public static async generateByOffer({
+    offerId,
+    solutionHashes,
+    imageHashes,
+    linkageString,
+    resource,
+    args,
+    encryption,
+    sgxApiUrl,
+  }: GenerateByOfferParams): Promise<string> {
     const teeOffer: TeeOffer = new TeeOffer(offerId);
     const teeOfferInfo: TeeOfferInfo = await teeOffer.getInfo();
     const linkage: Linkage = linkageString
@@ -157,33 +40,10 @@ class TIIGenerator {
       : {
           encoding: Encoding.base64,
           mrenclave: '',
+          mrsigner: '',
         };
 
-    const serializer = new TLBlockSerializerV1();
-
-    let blockEncryption: Encryption;
-    if (verifyByTcb) {
-      const tcb = new TCB(await teeOffer.getActualTcbId());
-      const { pubKey, quote } = await tcb.getUtilityData();
-      await this.verifyTcb(tcb, quote, pubKey, sgxApiUrl);
-
-      // TODO: must be 'blockEncryption = JSON.parse(pubKey);'
-      blockEncryption = {
-        algo: CryptoAlgorithm.ECIES,
-        key: pubKey,
-        encoding: Encoding.base64,
-      };
-    } else {
-      const tlb: TLBlockUnserializeResultType = serializer.unserializeTlb(
-        Buffer.from(teeOfferInfo.tlb, 'base64'),
-      );
-      await this.verifyTlb(tlb, teeOfferInfo.tlb, offerId, sgxApiUrl);
-      blockEncryption = {
-        algo: CryptoAlgorithm.ECIES,
-        key: Buffer.from(tlb.data.teePubKeyData).toString('base64'),
-        encoding: Encoding.base64,
-      };
-    }
+    const blockEncryption = await this.getVerifiedBlockEncryption(offerId, sgxApiUrl);
 
     // TODO: check env with SP-149
     const mac = (encryption as any).authTag || (encryption as EncryptionWithMacIV).mac;
@@ -192,7 +52,12 @@ class TIIGenerator {
         algo: hash.algo,
         hash: Buffer.from(hash.hash, hash.encoding),
       })),
+      imageHashes: imageHashes.map((hash) => ({
+        algo: hash.algo,
+        hash: Buffer.from(hash.hash, hash.encoding),
+      })),
       mrenclave: Buffer.from(linkage.mrenclave, linkage.encoding),
+      mrsigner: Buffer.from(linkage.mrsigner, linkage.encoding),
       args: JSON.stringify(args || ''),
       encryption: {
         ...encryption,
@@ -231,7 +96,6 @@ class TIIGenerator {
     args: any,
     encryption: Encryption,
     sgxApiUrl: string,
-    verifyByTcb = false,
   ): Promise<string> {
     const order: Order = new Order(orderId);
 
@@ -239,52 +103,20 @@ class TIIGenerator {
     const parentOrder: Order = new Order(parentOrderId);
     const parentOrderInfo: OrderInfo = await parentOrder.getOrderInfo();
 
-    const { hashes, linkage } = await this.getSolutionHashesAndLinkage(
-      parentOrderInfo.args.inputOffers,
+    const { solutionHashes, imageHashes, linkage } = await this.getOffersHashesAndLinkage(
+      parentOrderInfo.args.inputOffersIds,
     );
 
-    return this.generateByOffer(
-      parentOrderInfo.offerId,
-      hashes,
-      linkage,
+    return this.generateByOffer({
+      offerId: parentOrderInfo.offerId,
+      solutionHashes,
+      imageHashes,
+      linkageString: linkage,
       resource,
       args,
       encryption,
       sgxApiUrl,
-      verifyByTcb,
-    );
-  }
-
-  public static async getSolutionHashesAndLinkage(
-    inputOffers: BlockchainId[],
-  ): Promise<{ hashes: Hash[]; linkage?: string }> {
-    const solutionHashes: Hash[] = [];
-    let solutionLinkage: string | undefined;
-    let anyLinkage: string | undefined;
-    await Promise.all(
-      inputOffers.map(async (offerId): Promise<void> => {
-        const offer: Offer = new Offer(offerId);
-        const offerInfo: OfferInfo = await offer.getInfo();
-
-        if (offerInfo.hash) {
-          solutionHashes.push(JSON.parse(offerInfo.hash));
-        }
-
-        const restrictions = _.intersection(offerInfo.restrictions.offers, inputOffers).filter(
-          (restrictedOfferId) => restrictedOfferId !== offer.id,
-        );
-        if (restrictions.length) {
-          solutionLinkage = offerInfo.linkage;
-        } else {
-          anyLinkage = offerInfo.linkage;
-        }
-      }),
-    );
-
-    return {
-      hashes: solutionHashes,
-      linkage: solutionLinkage || anyLinkage,
-    };
+    });
   }
 
   public static async getTRI(tii: string, decryptionKey: Buffer): Promise<TeeRunInfo> {
@@ -292,7 +124,7 @@ class TIIGenerator {
     tiiObj.tri.key = decryptionKey.toString(tiiObj.tri.encoding);
     const tri: string = await Crypto.decrypt(tiiObj.tri as Encryption);
 
-    const compression = Compression.decode(Buffer.from(tri, (tiiObj.tri as Encryption).encoding));
+    const compression = Compression.decode(Buffer.from(tri, tiiObj.tri.encoding));
 
     let decompressed: Buffer;
     switch (compression.type) {
@@ -312,9 +144,15 @@ class TIIGenerator {
         algo: hash.algo as HashAlgorithm,
         encoding: Encoding.base64,
       })),
+      imageHashes: decoded.imageHashes.map((hash) => ({
+        hash: Buffer.from(hash.hash).toString(Encoding.base64),
+        algo: hash.algo as HashAlgorithm,
+        encoding: Encoding.base64,
+      })),
       linkage: {
         encoding: Encoding.base64,
         mrenclave: Buffer.from(decoded.mrenclave).toString(Encoding.base64),
+        mrsigner: Buffer.from(decoded.mrsigner).toString(Encoding.base64),
       },
       args: decoded.args,
       encryption: {
@@ -345,5 +183,16 @@ class TIIGenerator {
     return JSON.parse(resource) as T;
   }
 }
+
+export type GenerateByOfferParams = {
+  offerId: BlockchainId;
+  solutionHashes: Hash[];
+  imageHashes: Hash[];
+  linkageString: string | undefined;
+  resource: Resource;
+  args: any;
+  encryption: Encryption;
+  sgxApiUrl: string;
+};
 
 export default TIIGenerator;

@@ -1,21 +1,25 @@
 import { Contract, Transaction } from 'web3';
-import rootLogger from '../logger';
-import { abi } from '../contracts/abi';
-import store from '../store';
+import rootLogger from '../logger.js';
+import { abi } from '../contracts/abi.js';
+import store from '../store.js';
 import {
   checkIfActionAccountInitialized,
   cleanWeb3Data,
   convertBigIntToString,
-} from '../utils/helper';
-import { TransactionOptions, BlockInfo, TokenAmount } from '../types';
+} from '../utils/helper.js';
+import { TransactionOptions, BlockInfo, TokenAmount } from '../types/index.js';
 import { EventLog } from 'web3-eth-contract';
-import TxManager from '../utils/TxManager';
+import TxManager from '../utils/TxManager.js';
+import { BlockchainEventsListener } from '../connectors/index.js';
+import {
+  WssSubscriptionOnDataFn,
+  WssSubscriptionOnErrorFn,
+} from '../connectors/BlockchainEventsListener.js';
 
 class SuperproToken {
   private static _addressHttps: string;
   private static _addressWss: string;
   private static contractHttps?: Contract<typeof abi>;
-  private static contractWss?: Contract<typeof abi>;
   private static readonly logger = rootLogger.child({ className: 'SuperproToken' });
 
   public static get addressHttps(): string {
@@ -36,10 +40,6 @@ class SuperproToken {
 
   public static set addressWss(newAddress: string) {
     SuperproToken._addressWss = newAddress;
-    SuperproToken.contractWss = new store.web3Wss!.eth.Contract(abi, newAddress, {
-      provider: store.web3Wss!.currentProvider,
-      config: { contractDataInputFill: 'data' },
-    });
   }
 
   /**
@@ -51,13 +51,6 @@ class SuperproToken {
     }
 
     return SuperproToken.contractHttps!;
-  }
-
-  /**
-   * Checks if contract has been initialized with socket support
-   */
-  private static checkWssInit(): Contract<typeof abi> {
-    return SuperproToken.contractWss!;
   }
 
   /**
@@ -137,11 +130,9 @@ class SuperproToken {
     owner?: string,
     spender?: string,
   ): () => void {
-    const contract = this.checkWssInit();
+    const listener = BlockchainEventsListener.getInstance();
     const logger = this.logger.child({ method: 'onTokenApprove' });
-
-    const subscription = contract.events.Approval();
-    subscription.on('data', (event: EventLog): void => {
+    const onData: WssSubscriptionOnDataFn = (event: EventLog): void => {
       const parsedEvent = cleanWeb3Data(event.returnValues);
       if (owner && parsedEvent.owner != owner) {
         return;
@@ -158,12 +149,15 @@ class SuperproToken {
           hash: <string>event.blockHash,
         },
       );
-    });
-    subscription.on('error', (error: Error) => {
+    };
+    const onError: WssSubscriptionOnErrorFn = (error: Error) => {
       logger.warn(error);
+    };
+    return listener.subscribeEvent({
+      onError,
+      onData,
+      event: 'Approval',
     });
-
-    return () => subscription.unsubscribe();
   }
 
   public static onTokenTransfer(
@@ -171,11 +165,9 @@ class SuperproToken {
     from?: string,
     to?: string,
   ): () => void {
-    const contract = this.checkWssInit();
+    const listener = BlockchainEventsListener.getInstance();
     const logger = this.logger.child({ method: 'onTokenTransfer' });
-
-    const subscription = contract.events.Transfer();
-    subscription.on('data', (event: EventLog): void => {
+    const onData: WssSubscriptionOnDataFn = (event: EventLog): void => {
       const parsedEvent = cleanWeb3Data(event.returnValues);
       if (from && parsedEvent.from != from) {
         return;
@@ -187,12 +179,15 @@ class SuperproToken {
         index: Number(event.blockNumber),
         hash: <string>event.blockHash,
       });
-    });
-    subscription.on('error', (error: Error) => {
+    };
+    const onError: WssSubscriptionOnErrorFn = (error: Error) => {
       logger.warn(error);
+    };
+    return listener.subscribeEvent({
+      onError,
+      onData,
+      event: 'Transfer',
     });
-
-    return () => subscription.unsubscribe();
   }
 }
 

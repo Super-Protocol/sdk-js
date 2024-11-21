@@ -1,8 +1,8 @@
-import StorageMetadataReader from '../../src/providers/storage/StorageMetadataReader';
-import StorageKeyValueAdapter from '../../src/providers/storage/StorageKeyValueAdapter';
-import StorageProviderMock from '../mocks/StorageProvider.mock';
-import { CacheRecord } from '../../src/providers/storage/types';
-import { keyValueStorageAdapterConfig, aesKey } from './utils';
+import StorageMetadataReader from '../../src/providers/storage/StorageMetadataReader.js';
+import StorageKeyValueAdapter from '../../src/providers/storage/StorageKeyValueAdapter.js';
+import StorageProviderMock from '../mocks/StorageProvider.mock.js';
+import { CacheRecord } from '../../src/providers/storage/types.js';
+import { S3StorageAdapterConfig, aesKey } from './utils.js';
 
 interface Data {
   message: string;
@@ -20,10 +20,9 @@ describe('StorageMetadataReader', () => {
     test('must be updated size', async () => {
       const key = 'test-key';
       const DEFAULT_DECREASE = 10000;
-      const storageKeyValueAdapter = new StorageKeyValueAdapter<Data>(
-        keyValueStorageAdapterConfig,
-        { showLogs: false },
-      );
+      const storageKeyValueAdapter = new StorageKeyValueAdapter<Data>(S3StorageAdapterConfig, {
+        showLogs: false,
+      });
       await storageKeyValueAdapter.set(key, data, aesKey);
       const cache = new Map<string, CacheRecord<Data>>();
       cache.set(key, {
@@ -40,10 +39,9 @@ describe('StorageMetadataReader', () => {
     });
     test('must be deleted size', async () => {
       const key = 'test-key';
-      const storageKeyValueAdapter = new StorageKeyValueAdapter<Data>(
-        keyValueStorageAdapterConfig,
-        { showLogs: false },
-      );
+      const storageKeyValueAdapter = new StorageKeyValueAdapter<Data>(S3StorageAdapterConfig, {
+        showLogs: false,
+      });
       const cache = new Map<string, CacheRecord<Data>>();
       cache.set(key, {
         value: data,
@@ -59,10 +57,9 @@ describe('StorageMetadataReader', () => {
     });
     test('must be empty sizes', async () => {
       const key = 'test-key';
-      const storageKeyValueAdapter = new StorageKeyValueAdapter<Data>(
-        keyValueStorageAdapterConfig,
-        { showLogs: false },
-      );
+      const storageKeyValueAdapter = new StorageKeyValueAdapter<Data>(S3StorageAdapterConfig, {
+        showLogs: false,
+      });
       const cache = new Map<string, CacheRecord<Data>>();
       const storageMetadataReader = new StorageMetadataReader<string, Data>({
         storageKeyValueAdapter,

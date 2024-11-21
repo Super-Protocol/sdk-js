@@ -1,13 +1,14 @@
 import { LRUCache } from 'lru-cache';
-import { createHash, randomUUID } from 'crypto';
+import * as uuid from 'uuid';
+import { createHash } from 'crypto';
 import Queue from 'p-queue';
-import StorageKeyValueAdapter from './StorageKeyValueAdapter';
-import StorageContentWriter, { ContentWriterType } from './StorageContentWriter';
-import StorageMetadataReader from './StorageMetadataReader';
-import StorageAccess from '../../types/storage/StorageAccess';
-import logger, { Logger } from '../../logger';
-import { CacheRecord, Performance } from './types';
-import PubSub from '../../utils/PubSub';
+import StorageKeyValueAdapter from './StorageKeyValueAdapter.js';
+import StorageContentWriter, { ContentWriterType } from './StorageContentWriter.js';
+import StorageMetadataReader from './StorageMetadataReader.js';
+import StorageAccess from '../../types/storage/StorageAccess.js';
+import logger, { Logger } from '../../logger.js';
+import { CacheRecord, IStorageAdapter, Performance } from './types.js';
+import PubSub from '../../utils/PubSub.js';
 
 export interface LRUCacheConfig {
   max: number;
@@ -21,6 +22,8 @@ export interface StorageAdapterConfig {
   readMetadataConcurrency?: number;
   performance?: Performance;
   showLogs?: boolean;
+  hasEncryption?: boolean;
+  instanceId?: string;
 }
 
 export enum CacheEvents {
@@ -28,9 +31,9 @@ export enum CacheEvents {
   KEY_DELETED = 'KEY_DELETED',
 }
 
-const DEFAULT_READ_METADATA_CONCUREENCY = 16;
+const DEFAULT_READ_METADATA_CONCURRENCY = 16;
 
-export default class StorageAdapter<V extends object> {
+export default class StorageAdapter<V extends object> implements IStorageAdapter<V> {
   private readonly logger?: Logger | null;
   private readonly storageKeyValueAdapter: StorageKeyValueAdapter<V>;
   private readonly cache: LRUCache<string, Map<string, CacheRecord<V>>>;
@@ -56,12 +59,17 @@ export default class StorageAdapter<V extends object> {
       readMetadataConcurrency,
       performance,
       showLogs = true,
+      hasEncryption = true,
+      instanceId,
     } = config;
     this.logger = showLogs ? logger.child({ class: StorageAdapter.name }) : null;
     this.performance = performance;
-    this.instanceId = this.generateHash();
+    this.instanceId = instanceId ?? this.generateHash();
     this.readInterval = readInterval;
-    this.storageKeyValueAdapter = new StorageKeyValueAdapter(storageAccess, { showLogs });
+    this.storageKeyValueAdapter = new StorageKeyValueAdapter(storageAccess, {
+      showLogs,
+      hasEncryption,
+    });
     this.cache = new LRUCache(lruCache);
     this.metadataReader = new StorageMetadataReader({
       storageKeyValueAdapter: this.storageKeyValueAdapter,
@@ -78,34 +86,32 @@ export default class StorageAdapter<V extends object> {
     });
 
     this.queueReadMetadata = new Queue({
-      concurrency: readMetadataConcurrency || DEFAULT_READ_METADATA_CONCUREENCY,
+      concurrency: readMetadataConcurrency || DEFAULT_READ_METADATA_CONCURRENCY,
     });
   }
 
   private generateHash(str?: string): string {
     return createHash('sha256')
-      .update(str || randomUUID())
+      .update(str || uuid.v4())
       .digest('hex');
   }
 
-  public async subscribe(
-    cb: (props: { type: CacheEvents; message: unknown }) => void,
-  ): Promise<() => Promise<void>> {
+  subscribe(cb: (props: { type: CacheEvents; message: unknown }) => void): () => void {
     this.pubSub.subscribe(this.eventName, cb);
 
-    return async () => {
+    return () => {
       this.pubSub.unsubscribe(this.eventName, cb);
     };
   }
 
-  private publish(type: CacheEvents, message: unknown) {
+  private publish(type: CacheEvents, message: unknown): void {
     this.pubSub.publish(this.eventName, {
       type,
       message,
     });
   }
 
-  public async has(key: string): Promise<boolean> {
+  async has(key: string): Promise<boolean> {
     if (!this.cache.has(key)) {
       await this.getQueue(key).add(async () => {
         if (!this.cache.has(key)) {
@@ -117,9 +123,11 @@ export default class StorageAdapter<V extends object> {
     return this.cache.has(key);
   }
 
-  private getEnryptionKey(key: string, encryptionKeyBuffer?: Buffer): string | null {
+  private getEncryptionKey(key: string, encryptionKeyBuffer?: Buffer): string | null {
     if (!this.encryptionKeys.has(key)) {
-      if (!encryptionKeyBuffer) return null;
+      if (!encryptionKeyBuffer) {
+        return null;
+      }
       const encryptionKey = encryptionKeyBuffer.toString('base64');
       this.encryptionKeys.set(key, encryptionKey);
 
@@ -129,30 +137,29 @@ export default class StorageAdapter<V extends object> {
     return this.encryptionKeys.get(key) || null;
   }
 
-  public async set(key: string, value: V, encryptionKeyBuffer: Buffer): Promise<void> {
+  set(key: string, value: V, encryptionKeyBuffer?: Buffer): void {
     if (this.contentWriter.storageWrites.get(key)?.type === ContentWriterType.NEEDS_DELETE) {
       throw new Error('Object has been deleted');
     }
-    const encryptionKey = this.getEnryptionKey(key, encryptionKeyBuffer);
-    if (!encryptionKey) throw new Error('Encryption key required');
+    const encryptionKey = this.getEncryptionKey(key, encryptionKeyBuffer);
     this.setByInstance(key, this.instanceId, {
       value,
       modifiedTs: Number.MAX_SAFE_INTEGER,
     });
-    this.contentWriter.set(key, ContentWriterType.NEEDS_UPLOAD, encryptionKey);
+    this.contentWriter.set(key, ContentWriterType.NEEDS_UPLOAD, encryptionKey || undefined);
   }
 
-  private setByInstance(key: string, instanceId: string, value: CacheRecord<V>) {
+  private setByInstance(key: string, instanceId: string, value: CacheRecord<V>): void {
     const instances = this.cache.get(key) || new Map();
     instances.set(instanceId, value);
     this.cache.set(key, instances);
   }
 
-  public async delete(key: string): Promise<void> {
+  delete(key: string): void {
     this.cache.delete(key);
     this.isUpdating.delete(key);
 
-    const encryptionKey = this.getEnryptionKey(key);
+    const encryptionKey = this.getEncryptionKey(key);
     if (encryptionKey) {
       this.contentWriter.set(key, ContentWriterType.NEEDS_DELETE, encryptionKey);
       this.encryptionKeys.delete(key);
@@ -164,20 +171,18 @@ export default class StorageAdapter<V extends object> {
   }
 
   // the first value is always the current instance, if key exists
-  public async get(key: string, encryptionKeyBuffer: Buffer): Promise<(V | null)[] | null> {
-    if (!encryptionKeyBuffer) throw new Error('Encryption key required');
+  async get(key: string, encryptionKeyBuffer?: Buffer): Promise<(V | null)[] | null> {
     if (
       this.contentWriter.storageWrites.get(key)?.type === ContentWriterType.NEEDS_DELETE ||
       !(await this.has(key))
     ) {
       return null;
     }
-    const encryptionKey = this.getEnryptionKey(key, encryptionKeyBuffer);
-    if (!encryptionKey) throw new Error('Encryption key required');
+    const encryptionKey = this.getEncryptionKey(key, encryptionKeyBuffer);
     if (this.cacheHasNullInstances(key)) {
       await this.getQueue(key).add(async () => {
         if (this.cacheHasNullInstances(key)) {
-          await this.fetchNullValues(key, encryptionKey);
+          await this.fetchNullValues(key, encryptionKey || undefined);
         }
       });
     }
@@ -185,9 +190,12 @@ export default class StorageAdapter<V extends object> {
     const map = this.cache.get(key);
     if (!map?.size) return null;
     const currentInstance = map.get(this.instanceId)?.value || null;
-    const otherInstances = Array.from(map.entries()).reduce((acc, [instanceId, instance]) => {
-      return instanceId !== this.instanceId ? [...acc, instance?.value || null] : acc;
-    }, [] as (V | null)[]);
+    const otherInstances = Array.from(map.entries()).reduce(
+      (acc, [instanceId, instance]) => {
+        return instanceId !== this.instanceId ? [...acc, instance?.value || null] : acc;
+      },
+      [] as (V | null)[],
+    );
 
     return [currentInstance, ...otherInstances];
   }
@@ -215,12 +223,12 @@ export default class StorageAdapter<V extends object> {
     );
   }
 
-  private async fetchNullValues(key: string, encryptionKey: string) {
+  private async fetchNullValues(key: string, encryptionKey?: string): Promise<void> {
     const promises: Promise<void>[] = [];
 
-    this.cache.get(key)?.forEach((instance, instanseId) => {
+    this.cache.get(key)?.forEach((instance, instanceId) => {
       if (instance.value === null) {
-        const fileName = `${key}/${instanseId}`;
+        const fileName = `${key}/${instanceId}`;
         const startDownload: number | undefined = this.performance?.now();
 
         promises.push(
@@ -231,7 +239,7 @@ export default class StorageAdapter<V extends object> {
                 const finishDownload = this.performance.now();
                 logger.info(`Downloading took ${(finishDownload - startDownload).toFixed(1)} ms`);
               }
-              this.setByInstance(key, instanseId, {
+              this.setByInstance(key, instanceId, {
                 ...instance,
                 value: file,
               });
@@ -244,12 +252,12 @@ export default class StorageAdapter<V extends object> {
     await Promise.all(promises);
   }
 
-  public clear(): void {
+  clear(): void {
     this.cache.clear();
     this.contentWriter.clear();
   }
 
-  public run(): void {
+  run(): void {
     this.contentWriter.startActualizeCacheTimer(this.cache);
 
     if (this.readInterval) {
@@ -257,7 +265,7 @@ export default class StorageAdapter<V extends object> {
     }
   }
 
-  private async checkUpdates(key: string) {
+  private async checkUpdates(key: string): Promise<void> {
     if (
       this.isUpdating.get(key) ||
       this.contentWriter.storageWrites.get(key)?.type === ContentWriterType.NEEDS_DELETE
@@ -279,7 +287,7 @@ export default class StorageAdapter<V extends object> {
       );
 
       if (deleted.has(key)) {
-        await this.delete(key);
+        this.delete(key);
         this.publish(CacheEvents.KEY_DELETED, key);
 
         return;
@@ -314,11 +322,11 @@ export default class StorageAdapter<V extends object> {
     }
   }
 
-  private async startUpdatesChecking() {
+  private startUpdatesChecking(): void {
     this.stopUpdatesChecking();
     this.timeout = setTimeout(async () => {
       Array.from(this.cache.keys()).forEach((key) => {
-        this.queueReadMetadata.add(async () => {
+        void this.queueReadMetadata.add(async () => {
           await this.getQueue(key).add(async () => {
             await this.checkUpdates(key);
           });
@@ -335,12 +343,12 @@ export default class StorageAdapter<V extends object> {
     if (this.timeout) clearTimeout(this.timeout);
   }
 
-  public stop(): void {
+  stop(): void {
     this.stopUpdatesChecking();
     this.contentWriter.stop();
   }
 
-  public async shutdown(): Promise<void> {
+  async shutdown(): Promise<void> {
     this.stop();
     await this.contentWriter.shutdown(this.cache);
   }

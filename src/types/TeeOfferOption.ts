@@ -1,6 +1,6 @@
-import { OptionInfo, OptionInfoRaw } from './OptionInfo';
-import { BlockchainId } from './Web3';
-import { SlotUsage } from './SlotUsage';
+import { OptionInfo, OptionInfoRaw } from './OptionInfo.js';
+import { BlockchainId } from './Web3.js';
+import { SlotUsage } from './SlotUsage.js';
 
 export type TeeOfferOptionBase = {
   id: BlockchainId;

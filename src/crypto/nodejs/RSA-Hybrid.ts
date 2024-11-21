@@ -17,7 +17,7 @@ import {
   privateDecrypt,
   randomBytes,
 } from 'crypto';
-import NativeCrypto from './NativeCrypto';
+import NativeCrypto from './NativeCrypto.js';
 
 type KeysType = Record<string, string>;
 

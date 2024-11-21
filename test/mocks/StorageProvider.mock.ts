@@ -1,7 +1,7 @@
 import { Readable } from 'stream';
-import IStorageProvider from '../../src/providers/storage/IStorageProvider';
-import StorageObject from '../../src/types/storage/StorageObject';
-import { mockReadStream } from './ReadStream.mock';
+import IStorageProvider from '../../src/providers/storage/IStorageProvider.js';
+import StorageObject from '../../src/types/storage/StorageObject.js';
+import { mockReadStream } from './ReadStream.mock.js';
 
 const DEFAULT_SIZE = 1;
 

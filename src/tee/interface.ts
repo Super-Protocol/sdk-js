@@ -4,7 +4,7 @@ import {
   TLBlockUnserializeResultType,
   TLBlockSerializeResultType,
   TLBlockType,
-} from './types';
+} from './types.js';
 
 /**
  * Serializes and Unserializes TLB

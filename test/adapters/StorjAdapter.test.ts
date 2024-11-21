@@ -1,13 +1,13 @@
-import StorjAdapter, { StorjConfig } from '../../src/providers/storage/StorjAdapter';
-import StorageProviderMock from '../mocks/StorageProvider.mock';
-import { keyValueStorageAdapterConfig, bufferAesKey } from './utils';
-import { sleep } from '../utils';
+import StorjAdapter, { StorjConfig } from '../../src/providers/storage/StorjAdapter.js';
+import StorageProviderMock from '../mocks/StorageProvider.mock.js';
+import { StorJStorageAdapterConfig, bufferAesKey } from './utils.js';
+import { sleep } from '../utils.js';
 
 interface Data {
   message: string;
 }
 const storageAccessConfig = {
-  ...keyValueStorageAdapterConfig,
+  ...StorJStorageAdapterConfig,
 };
 const config: StorjConfig = {
   lruCache: {

@@ -1,3 +1,13 @@
+declare module 'pkijs' {
+  interface AbstractCryptoEngine {
+    generateKey(
+      algorithm: 'Ed25519',
+      extractable: boolean,
+      keyUsages: ReadonlyArray<'sign' | 'verify'>,
+    ): Promise<CryptoKeyPair>;
+  }
+}
+
 export type TeeDataBlockType = {
   format: 'lzma' | 'gzip' | 'raw';
   userData: {
@@ -38,28 +48,54 @@ export type TLBlockUnserializeResultType = {
 };
 export type TLBlockSerializeResultType = BinaryType;
 
-export type TeeSgxQuoteDataType = {
-  rawHeader: BinaryType;
-  header: {
-    version: number;
-    attestationKeyType: number;
-    pceSvn: number;
-    userData: BinaryType;
-  };
-  report: BinaryType;
-  isvEnclaveReportSignature: BinaryType;
-  ecdsaAttestationKey: BinaryType;
-  qeReport: BinaryType;
-  qeReportSignature: BinaryType;
-  qeAuthenticationData: BinaryType;
-  qeCertificationDataType: number;
-  qeCertificationData: BinaryType;
-  certificates: {
+export enum QuoteType {
+  SGX = 'Sgx',
+  TDX = 'Tdx',
+}
+export class TeeQuoteBase {
+  quoteType!: QuoteType;
+  rawHeader!: BinaryType;
+  ecdsaAttestationKey!: BinaryType;
+  qeReport!: BinaryType;
+  qeReportSignature!: BinaryType;
+  qeAuthenticationData!: BinaryType;
+  qeCertificationDataType!: number;
+  qeCertificationData!: BinaryType;
+  certificates!: {
     device: CertificateData;
     platform: CertificateData;
     root: CertificateData;
   };
+}
+
+export type TeeSgxHeaderData = {
+  version: number;
+  attestationKeyType: number;
+  pceSvn: number;
+  userData: BinaryType;
 };
+
+export class TeeSgxQuoteDataType extends TeeQuoteBase {
+  header!: TeeSgxHeaderData;
+  report!: BinaryType;
+  isvEnclaveReportSignature!: BinaryType;
+}
+export type TeeTdxHeaderData = {
+  version: number;
+  attestationKeyType: number;
+  teeType: number;
+  reserved1: BinaryType;
+  reserved2: BinaryType;
+  qeVendorId: BinaryType;
+  userData: BinaryType;
+};
+
+export class TeeTdxQuoteDataType extends TeeQuoteBase {
+  header!: TeeTdxHeaderData;
+  tdQuoteBody!: BinaryType;
+  quoteSignature!: BinaryType;
+  certDataType!: number;
+}
 
 export type TeeSgxReportDataType = {
   cpuSvn: string;
@@ -81,4 +117,23 @@ export type ChunkedX509Cert = {
 export type CertificateData = {
   pem: string;
   x509Data: ChunkedX509Cert;
+};
+
+export type TeeTdxBodyType = {
+  teeTcbSvn: BinaryType;
+  mrSeam: BinaryType;
+  mrSignerSeam: BinaryType;
+  seamAttributes: BinaryType;
+  tdAttributes: BinaryType;
+  xfam: BinaryType;
+  mrTd: BinaryType;
+  mrConfigId: BinaryType;
+  mrOwner: BinaryType;
+  mrOwnerConfig: BinaryType;
+  rtmr0: BinaryType;
+  rtmr1: BinaryType;
+  rtmr2: BinaryType;
+  rtmr3: BinaryType;
+  reportData: BinaryType;
+  dataHash: BinaryType;
 };

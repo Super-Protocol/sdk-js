@@ -1,8 +1,8 @@
-import { Orders, OrderUsage, PriceType } from '../../src';
+import { Orders, OrderUsage, PriceType } from '../../src/index.js';
 
 describe('Orders static model', () => {
   describe('selected usage calculation', () => {
-    const selectedUsage = {
+    const selectedUsage: OrderUsage = {
       slotCount: 4,
       optionInfo: [
         {
@@ -42,6 +42,7 @@ describe('Orders static model', () => {
         ram: 9850475854,
         diskUsage: 14910627722,
         gpuCores: 2,
+        vram: 85899345920,
       },
       slotUsage: {
         priceType: PriceType.PerHour,
@@ -49,7 +50,7 @@ describe('Orders static model', () => {
         minTimeMinutes: 10,
         maxTimeMinutes: 0,
       },
-    } as OrderUsage;
+    };
 
     test('calculates accumulated options info', () => {
       const accumulatedOptionsInfo = Orders.accumulatedOptionsInfo(selectedUsage);
@@ -87,6 +88,7 @@ describe('Orders static model', () => {
         ram: 39401903416,
         diskUsage: 59642510888,
         gpuCores: 8,
+        vram: selectedUsage.slotInfo.vram * selectedUsage.slotCount,
       });
     });
 

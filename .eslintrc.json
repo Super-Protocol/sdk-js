@@ -1,8 +1,9 @@
-
 {
-    "extends": ["@super-protocol/eslint-config-typescript/eslint-config.js"],
-    "ignorePatterns": [
-        "src/contracts/abi.ts",
-        "**/gen/*"
-    ]
+  "extends": [
+    "@super-protocol/eslint-config-typescript/eslint/node-esm"
+  ],
+  "ignorePatterns": [
+    "src/contracts/abi.ts",
+    "**/gen/*"
+  ]
 }

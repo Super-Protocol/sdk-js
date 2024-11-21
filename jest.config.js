@@ -1,12 +1,15 @@
 module.exports = {
+  moduleNameMapper: {
+    '^(\\.{1,2}/.*)\\.js$': '$1'
+  },
+  transform: {
+    '^.+\\.[tj]sx?$': [
+      'ts-jest',
+      {
+        tsconfig: 'tsconfig.jest.json'
+      },
+    ],
+  },
   preset: 'ts-jest',
   testEnvironment: 'node',
-  globals:{
-    'ts-jest': {
-        tsconfig: 'tsconfig.build.json'
-      }
-  },
-  moduleNameMapper: {
-    axios: 'axios/dist/node/axios.cjs'
-  }
 };

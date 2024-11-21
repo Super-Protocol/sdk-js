@@ -1,10 +1,17 @@
 {
-  "extends": "@super-protocol/eslint-config-typescript/tsconfig.json",
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": "@super-protocol/eslint-config-typescript/tsconfig/base",
   "compilerOptions": {
-    "target": "es6",
-    "lib": ["es7", "dom"],
+    "target": "es2022",
+    "lib": [
+      "es7",
+      "dom"
+    ],
     "allowJs": true,
-    "declaration": true,
+    "declaration": true
   },
-  "include": ["src/**/*", "test/**/*"]
+  "include": [
+    "src/**/*",
+    "test/**/*"
+  ]
 }

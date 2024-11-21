@@ -1,6 +1,6 @@
 import { Contract } from 'web3';
-import { abi } from '../contracts/abi';
-import rootLogger from '../logger';
+import { abi } from '../contracts/abi.js';
+import rootLogger from '../logger.js';
 import {
   checkIfActionAccountInitialized,
   incrementMethodCall,
@@ -10,8 +10,8 @@ import {
   convertBigIntToString,
   transformComplexObject,
   convertOptionInfoToRaw,
-} from '../utils/helper';
-import { BlockchainConnector } from '../connectors';
+} from '../utils/helper.js';
+import { BlockchainConnector } from '../connectors/index.js';
 import {
   SlotInfo,
   OptionInfo,
@@ -22,15 +22,23 @@ import {
   ValueOfferSlot,
   TransactionOptions,
   BlockchainId,
-  OfferRestrictions,
+  ValueOfferRestrictionsSpecification,
   TokenAmount,
   ValueOfferSlotRaw,
-} from '../types';
-import { formatBytes32String } from 'ethers/lib/utils';
-import TeeOffers from '../staticModels/TeeOffers';
-import TxManager from '../utils/TxManager';
-import { tryWithInterval } from '../utils/helpers';
-import { BLOCKCHAIN_CALL_RETRY_INTERVAL, BLOCKCHAIN_CALL_RETRY_ATTEMPTS } from '../constants';
+  OfferVersionInfo,
+  OfferVersion,
+  ValueOfferSubtype,
+  OfferInfoRaw,
+} from '../types/index.js';
+import { formatBytes32String } from 'ethers/lib/utils.js';
+import TeeOffers from '../staticModels/TeeOffers.js';
+import TxManager from '../utils/TxManager.js';
+import { tryWithInterval } from '../utils/helpers/index.js';
+import {
+  BLOCKCHAIN_CALL_RETRY_INTERVAL,
+  BLOCKCHAIN_CALL_RETRY_ATTEMPTS,
+  DEFAULT_OFFER_VERSION,
+} from '../constants.js';
 
 class Offer {
   private static contract: Contract<typeof abi>;
@@ -57,11 +65,34 @@ class Offer {
   }
 
   /**
-   * Function for fetching offer status from blockchain
+   * Checks if the offer is enabled
    */
   @incrementMethodCall()
   public isEnabled(): Promise<boolean> {
     return Offer.contract.methods.isOfferEnabled(this.id).call();
+  }
+
+  /**
+   * Checks if the offer is base image
+   */
+  @incrementMethodCall()
+  public async isBaseImage(): Promise<boolean> {
+    const info = this.offerInfo ?? (await this.getInfo());
+    if (info.offerType !== OfferType.Solution) {
+      return false;
+    }
+
+    const isRestrictedBySolution = this.offerInfo?.restrictions.types.includes(OfferType.Solution);
+    return !isRestrictedBySolution;
+  }
+
+  /**
+   * Checks if the offer has public data
+   */
+  @incrementMethodCall()
+  public async isOfferPublic(): Promise<boolean> {
+    const info = this.offerInfo ?? (await this.getInfo());
+    return Boolean(info.resultResource);
   }
 
   /**
@@ -102,27 +133,67 @@ class Offer {
   public async setInfo(newInfo: OfferInfo, transactionOptions?: TransactionOptions): Promise<void> {
     checkIfActionAccountInitialized(transactionOptions);
 
-    const { restrictions, ...restInfo } = newInfo;
+    const { restrictions, linkage, subType, offerType, group, ...restInfo } = newInfo;
     await TxManager.execute(
-      Offer.contract.methods.setValueOfferInfo(this.id, restInfo, restrictions),
+      Offer.contract.methods.setValueOfferInfo(this.id, {
+        ...restInfo,
+        subtype: subType,
+        group_DEPRECATED: group,
+        linkage_DEPRECATED: linkage,
+        offerType_DEPRECATED: offerType,
+      } as OfferInfoRaw),
+      transactionOptions,
+    );
+
+    await TxManager.execute(
+      Offer.contract.methods.setValueOfferRestrictionsSpecification(this.id, restrictions),
       transactionOptions,
     );
     if (this.offerInfo) this.offerInfo = newInfo;
   }
 
   /**
-   * Function for fetching offer info from blockchain
+   * Updates offer restrictions
+   * @param restrictions - new offer restrictions
+   * @param transactionOptions - object what contains alternative action account or gas limit (optional)
    */
+  public async setRestrictions(
+    restrictions: ValueOfferRestrictionsSpecification,
+    transactionOptions?: TransactionOptions,
+  ): Promise<void> {
+    checkIfActionAccountInitialized(transactionOptions);
+
+    await TxManager.execute(
+      Offer.contract.methods.setValueOfferRestrictionsSpecification(this.id, restrictions),
+      transactionOptions,
+    );
+    if (this.offerInfo) this.offerInfo.restrictions = restrictions;
+  }
+
   @incrementMethodCall()
   public async getInfo(): Promise<OfferInfo> {
     if (!(await this.checkIfOfferExistsWithInterval())) {
       throw Error(`Offer ${this.id} does not exist`);
     }
-    const { info } = await Offer.contract.methods.getValueOffer(this.id).call();
-    this.offerInfo = cleanWeb3Data(info) as OfferInfo;
+    const { info, offerType } = await Offer.contract.methods.getValueOffer(this.id).call();
+    const offerGroup = await Offer.contract.methods.getOfferGroup(this.id).call();
+    // eslint-disable-next-line unused-imports/no-unused-vars
+    const { linkage_DEPRECATED, group_DEPRECATED, offerType_DEPRECATED, subtype, ...restInfo } =
+      info;
+    this.offerInfo = cleanWeb3Data({
+      ...restInfo,
+      subType: subtype,
+      group: offerGroup,
+      offerType: offerType,
+      linkage: linkage_DEPRECATED,
+    }) as OfferInfo;
 
-    const offerRestrictions = await Offer.contract.methods.getOfferInitialRestrictions(this.id).call();
-    this.offerInfo.restrictions = cleanWeb3Data(offerRestrictions) as OfferRestrictions;
+    const offerRestrictions = await Offer.contract.methods
+      .getOfferRestrictionsSpecification(this.id)
+      .call();
+    this.offerInfo.restrictions = cleanWeb3Data(
+      offerRestrictions,
+    ) as ValueOfferRestrictionsSpecification;
 
     return this.offerInfo;
   }
@@ -148,6 +219,16 @@ class Offer {
   }
 
   /**
+   * Fetch offer subtype from blockchain (Value only)
+   */
+  @incrementMethodCall()
+  public async getSubtype(): Promise<ValueOfferSubtype> {
+    this.type = await Offer.contract.methods.getValueOfferSubtype(this.id).call();
+
+    return this.type.toString() as ValueOfferSubtype;
+  }
+
+  /**
    * Function for fetching TEE offer provider authority account from blockchain
    */
   @incrementMethodCall()
@@ -155,6 +236,14 @@ class Offer {
     this.providerAuthority = await Offer.contract.methods.getOfferProviderAuthority(this.id).call();
 
     return this.providerAuthority!;
+  }
+
+  /**
+   * Function for fetching TEE offer provider action account from blockchain
+   */
+  @incrementMethodCall()
+  public getProviderActionAccount(): Promise<string> {
+    return Offer.contract.methods.getOfferProviderActionAccount(this.id).call();
   }
 
   /**
@@ -196,6 +285,25 @@ class Offer {
       .getCheapestValueOffersPrice(this.id)
       .call()
       .then((price) => convertBigIntToString(price) as TokenAmount);
+  }
+
+  /**
+   * Returns the offer version info.
+   */
+  @incrementMethodCall()
+  public async getVersion(version: number): Promise<OfferVersion> {
+    return await Offer.contract.methods
+      .getOfferVersion(this.id, version)
+      .call()
+      .then((offerVersion) => cleanWeb3Data(offerVersion) as OfferVersion);
+  }
+
+  /**
+   * Returns the offer version info.
+   */
+  @incrementMethodCall()
+  public async getVersionCount(): Promise<number> {
+    return await Offer.contract.methods.getOfferVersionsCount(this.id).call();
   }
 
   @incrementMethodCall()
@@ -251,7 +359,6 @@ class Offer {
    * Function for fetching  offer slots info from blockchain
    * @param begin - The first element of range.
    * @param end - One past the final element in the range.
-   * @returns {Promise<ValueOfferSlot[]>}
    */
   public async getSlots(begin = 0, end = 999999): Promise<ValueOfferSlot[]> {
     const slotsCount = Number(await Offer.contract.methods.getValueOfferSlotsCount(this.id).call());
@@ -319,13 +426,19 @@ class Offer {
 
     newSlotInfo = packSlotInfo(newSlotInfo, await TeeOffers.getDenominator());
     await TxManager.execute(
-      Offer.contract.methods.updateValueOfferSlot(
+      Offer.contract.methods.updateValueOfferSlotInfo(this.id, slotId, newSlotInfo),
+      transactionOptions,
+    );
+    await TxManager.execute(
+      Offer.contract.methods.updateValueOfferSlotOption(
         this.id,
         slotId,
-        newSlotInfo,
         convertOptionInfoToRaw(newOptionInfo),
-        newUsage,
       ),
+      transactionOptions,
+    );
+    await TxManager.execute(
+      Offer.contract.methods.updateValueOfferSlotUsage(this.id, slotId, newUsage),
       transactionOptions,
     );
   }
@@ -346,6 +459,60 @@ class Offer {
       Offer.contract.methods.deleteValueOfferSlot(this.id, slotId),
       transactionOptions,
     );
+  }
+
+  /**
+   * Function for add a new version to the value offer.
+   * @param newVersion - Version number
+   * @param versionInfo - Version info
+   * @param transactionOptions - object what contains alternative action account or gas limit (optional)
+   */
+  @incrementMethodCall()
+  public async setNewVersion(
+    newVersion: number,
+    versionInfo: OfferVersionInfo,
+    transactionOptions?: TransactionOptions,
+  ): Promise<void> {
+    checkIfActionAccountInitialized(transactionOptions);
+
+    const transactionCall = Offer.contract.methods.setOfferNewVersion(
+      this.id,
+      newVersion,
+      versionInfo,
+    );
+    await TxManager.execute(transactionCall, transactionOptions);
+  }
+
+  /**
+   * Functcion for deletion the version from the value offer.
+   * @param newVersion - Version number
+   * @param versionInfo - Version info
+   * @param transactionOptions - object what contains alternative action account or gas limit (optional)
+   */
+  @incrementMethodCall()
+  public async deleteVersion(
+    version: number,
+    transactionOptions?: TransactionOptions,
+  ): Promise<void> {
+    checkIfActionAccountInitialized(transactionOptions);
+
+    const transactionCall = Offer.contract.methods.deleteOfferVersion(this.id, version);
+    await TxManager.execute(transactionCall, transactionOptions);
+  }
+  /**
+   * Function for set the value offer subtype.
+   * @param newSubtype - value offer subtype
+   * @param transactionOptions - object what contains alternative action account or gas limit (optional)
+   */
+  @incrementMethodCall()
+  public async setSubtype(
+    newSubtype: ValueOfferSubtype,
+    transactionOptions?: TransactionOptions,
+  ): Promise<void> {
+    checkIfActionAccountInitialized(transactionOptions);
+
+    const transactionCall = Offer.contract.methods.setTeeOfferSubtype(this.id, newSubtype);
+    await TxManager.execute(transactionCall, transactionOptions);
   }
 
   /**
@@ -373,8 +540,13 @@ class Offer {
    * @param offerId - id of offer what needs to be checked
    */
   @incrementMethodCall()
-  public isRestrictionsPermitThatOffer(offerId: BlockchainId): Promise<boolean> {
-    return Offer.contract.methods.isOfferRestrictionsPermitOtherOffer(this.id, offerId).call();
+  public isRestrictionsPermitThatOffer(
+    offerId: BlockchainId,
+    offerVersion: number = DEFAULT_OFFER_VERSION,
+  ): Promise<boolean> {
+    return Offer.contract.methods
+      .isOfferRestrictionsPermitOtherOffer(this.id, offerId, offerVersion)
+      .call();
   }
 
   /**

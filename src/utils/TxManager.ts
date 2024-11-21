@@ -1,22 +1,22 @@
 import { TransactionReceipt } from 'web3';
-import NonceTracker from './NonceTracker';
-import rootLogger from '../logger';
-import store from '../store';
+import NonceTracker from './NonceTracker.js';
+import rootLogger from '../logger.js';
+import store from '../store.js';
 import {
   TransactionOptions,
   DryRunError,
   TransactionDataOptions,
   BlockchainError,
   TransactionOptionsRequired,
-} from '../types';
+} from '../types/index.js';
 import {
   checkForUsingExternalTxManager,
   checkIfActionAccountInitialized,
   createTransactionOptions,
   multiplyBigIntByNumber,
-} from './helper';
-import Superpro from '../staticModels/Superpro';
-import { defaultGasLimit } from '../constants';
+} from './helper.js';
+import Superpro from '../staticModels/Superpro.js';
+import { AMOY_TX_COST_LIMIT, defaultGasLimit, POLYGON_AMOY_CHAIN_ID } from '../constants.js';
 import lodash from 'lodash';
 import Web3 from 'web3';
 import Bottleneck from 'bottleneck';
@@ -143,31 +143,45 @@ class TxManager {
       gasPriceMultiplier,
     };
 
+    let estimatedGas;
     if (transactionCall) {
-      let estimatedGas;
       try {
         estimatedGas = await transactionCall.estimateGas(txData as NonPayableTxOptions);
       } catch (e) {
         TxManager.logger.debug({ error: e }, 'Fail to calculate estimated gas');
         estimatedGas = defaultGasLimit;
       }
-      txData.gas = multiplyBigIntByNumber(estimatedGas, store.gasLimitMultiplier);
-      // defaultGasLimit is max gas limit
-      txData.gas = txData.gas < defaultGasLimit ? txData.gas : defaultGasLimit;
-
-      if (transactionOptions.gas) {
-        if (transactionOptions.gas < estimatedGas) {
-          TxManager.logger.warn(
-            {
-              estimated: estimatedGas,
-              specified: transactionOptions.gas,
-            },
-            'Fail to calculate estimated gas',
-          );
-        }
-        txData.gas = transactionOptions.gas;
+    } else {
+      try {
+        estimatedGas = await store.web3Https!.eth.estimateGas(txData);
+      } catch (e) {
+        TxManager.logger.debug({ error: e }, 'Fail to calculate estimated gas');
+        estimatedGas = defaultGasLimit;
       }
+    }
+    txData.gas = multiplyBigIntByNumber(estimatedGas, store.gasLimitMultiplier);
+    // defaultGasLimit is max gas limit
+    txData.gas = txData.gas < defaultGasLimit ? txData.gas : defaultGasLimit;
 
+    if (transactionOptions.gas) {
+      if (transactionOptions.gas < estimatedGas) {
+        TxManager.logger.warn(
+          {
+            estimated: estimatedGas,
+            specified: transactionOptions.gas,
+          },
+          'Overriding gas is lower than estimated',
+        );
+      }
+      txData.gas = transactionOptions.gas;
+    }
+
+    if (store.chainId === POLYGON_AMOY_CHAIN_ID) {
+      const maxGasPrice = AMOY_TX_COST_LIMIT / BigInt(txData.gas);
+      if (maxGasPrice < txData.gasPrice!) {
+        txData.gasPrice = maxGasPrice;
+      }
+    } else {
       txData.gasPrice = multiplyBigIntByNumber(txData.gasPrice!, store.gasPriceMultiplier);
     }
 

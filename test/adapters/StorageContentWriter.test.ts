@@ -2,19 +2,19 @@ import { LRUCache } from 'lru-cache';
 import StorageContentWriter, {
   ContentWriterType,
   StorageContentWriterConfig,
-} from '../../src/providers/storage/StorageContentWriter';
-import { CacheRecord } from '../../src/providers/storage/types';
-import StorageKeyValueAdapter from '../../src/providers/storage/StorageKeyValueAdapter';
-import StorageProviderMock from '../mocks/StorageProvider.mock';
-import { keyValueStorageAdapterConfig, aesKey } from './utils';
-import { sleep } from '../utils';
+} from '../../src/providers/storage/StorageContentWriter.js';
+import { CacheRecord } from '../../src/providers/storage/types.js';
+import StorageKeyValueAdapter from '../../src/providers/storage/StorageKeyValueAdapter.js';
+import StorageProviderMock from '../mocks/StorageProvider.mock.js';
+import { S3StorageAdapterConfig, aesKey } from './utils.js';
+import { sleep } from '../utils.js';
 
 interface Data {
   message: string;
 }
 const config: StorageContentWriterConfig<Data> = {
   interval: 1,
-  storageKeyValueAdapter: new StorageKeyValueAdapter<Data>(keyValueStorageAdapterConfig, {
+  storageKeyValueAdapter: new StorageKeyValueAdapter<Data>(S3StorageAdapterConfig, {
     showLogs: false,
   }),
   instanceId: 'test-instance-id',

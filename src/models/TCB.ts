@@ -1,12 +1,18 @@
 import { Contract, TransactionReceipt } from 'web3';
-import { abi } from '../contracts/abi';
-import TxManager from '../utils/TxManager';
-import { BlockchainConnector } from '../connectors';
-import { BlockchainId, TcbData, TcbPublicData, TcbUtilityData, TransactionOptions } from '../types';
+import { abi } from '../contracts/abi.js';
+import TxManager from '../utils/TxManager.js';
+import { BlockchainConnector } from '../connectors/index.js';
+import {
+  BlockchainId,
+  TcbData,
+  TcbPublicData,
+  TcbUtilityData,
+  TransactionOptions,
+} from '../types/index.js';
 import { TcbVerifiedStatus } from '@super-protocol/dto-js';
-import { checkIfActionAccountInitialized, cleanWeb3Data, packDeviceId } from '../utils/helper';
-import Consensus from '../staticModels/Consensus';
-import rootLogger from '../logger';
+import { checkIfActionAccountInitialized, cleanWeb3Data, packDeviceId } from '../utils/helper.js';
+import Consensus from '../staticModels/Consensus.js';
+import rootLogger from '../logger.js';
 
 class TCB {
   private static readonly logger = rootLogger.child({ className: 'TCB' });
@@ -38,13 +44,13 @@ class TCB {
   ): Promise<TransactionReceipt> {
     checkIfActionAccountInitialized(transactionOptions);
 
-    const fromattedDeviceId = packDeviceId(publicData.deviceId);
+    const formattedDeviceId = packDeviceId(publicData.deviceId);
     return TxManager.execute(
       TCB.contract.methods.setTcbData(
         this.tcbId,
         publicData.benchmark,
         publicData.properties,
-        fromattedDeviceId,
+        formattedDeviceId,
         quote,
         publicKey,
       ),
@@ -71,12 +77,21 @@ class TCB {
     publicKey: string,
     transactionOptions?: TransactionOptions,
   ): Promise<void> {
+    const logger = TCB.logger.child({
+      deviceId: publicData.deviceId,
+      method: 'apply',
+    });
+
     try {
+      logger.debug('apply tcb marks');
       await this.applyTcbMarks(publicData.checkingTcbMarks, transactionOptions);
+      logger.debug('set tcb data');
       await this.setTcbData(publicData, quote, publicKey, transactionOptions);
+      logger.debug('add to supply');
       await this.addToSupply(transactionOptions);
-    } catch (error) {
-      TCB.logger.debug({ error }, 'Adding TCB to blockchain failed');
+      logger.debug('apply is done');
+    } catch (err) {
+      logger.error({ err }, 'Failed to add TCB to blockchain');
     }
   }
 

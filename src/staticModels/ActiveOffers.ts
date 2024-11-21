@@ -1,6 +1,6 @@
-import Superpro from './Superpro';
-import { BlockchainConnector } from '../connectors';
-import { BlockchainId } from '../types';
+import Superpro from './Superpro.js';
+import { BlockchainConnector } from '../connectors/index.js';
+import { BlockchainId } from '../types/index.js';
 
 class ActiveOffers {
   public static get address(): string {

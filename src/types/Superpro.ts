@@ -6,4 +6,5 @@ export enum ParamName {
   TeeOfferSecDeposit = '4',
   OfferSecDeposit = '5',
   TeeRewardPerEpoch = '6',
+  StorageRequestFee = '7',
 }

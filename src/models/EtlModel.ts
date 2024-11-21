@@ -1,11 +1,11 @@
 import * as protobuf from 'protobufjs';
 import { EtlModel as IEtlModel, EtlModelMetadata } from '@super-protocol/dto-js';
 import { EtlModelType } from '@super-protocol/dto-js/build/enum/EtlModel.enum';
-import { EtlModelSubtype } from '../types';
-import rootLogger from '../logger';
-import { ModelPackager } from '../staticModels/ModelPackager';
+import { EtlModelSubtype } from '../types/index.js';
+import rootLogger from '../logger.js';
+import { ModelPackager } from '../staticModels/ModelPackager.js';
 import { ResourceContentType } from '@super-protocol/dto-js/build/enum/ResourceContentType.enum';
-import { getResourceLoader } from '../utils/resourceLoaders';
+import { getResourceLoader } from '../utils/resourceLoaders/index.js';
 
 export class EtlModel {
   public static logger = rootLogger.child({ name: EtlModel.name });

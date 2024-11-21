@@ -1,4 +1,4 @@
-import { BaseConnector, Config } from './BaseConnector';
+import { BaseConnector, Config } from './BaseConnector.js';
 import Web3, {
   AbiParameter,
   Block,
@@ -13,31 +13,31 @@ import {
   POLYGON_MATIC_EVENT_PATH,
   defaultBlockchainUrl,
   defaultGasPrice,
-} from '../constants';
+} from '../constants.js';
 import {
   checkIfActionAccountInitialized,
   cleanWeb3Data,
   incrementMethodCall,
   executeBatchAsync,
   preparePrivateKey,
-} from '../utils/helper';
+} from '../utils/helper.js';
 import {
   TransactionOptions,
   EventData,
   BlockInfo,
   ExtendedTransactionInfo,
   TokenAmount,
-} from '../types/Web3';
-import BlockchainTransaction from '../types/blockchainConnector/StorageAccess';
-import TxManager from '../utils/TxManager';
-import { abi } from '../contracts/abi';
+} from '../types/Web3.js';
+import BlockchainTransaction from '../types/blockchainConnector/StorageAccess.js';
+import TxManager from '../utils/TxManager.js';
+import { abi } from '../contracts/abi.js';
 import { Wallet } from 'ethers';
 
 // TODO: remove this dependencies
-import store from '../store';
-import Superpro from '../staticModels/Superpro';
-import SuperproToken from '../staticModels/SuperproToken';
-import { Monitoring } from '../utils/Monitoring';
+import store from '../store.js';
+import Superpro from '../staticModels/Superpro.js';
+import SuperproToken from '../staticModels/SuperproToken.js';
+import { Monitoring } from '../utils/Monitoring.js';
 
 class BlockchainConnector extends BaseConnector {
   private defaultActionAccount?: string;
@@ -72,6 +72,7 @@ class BlockchainConnector extends BaseConnector {
       config: { contractDataInputFill: 'data' },
     });
 
+    store.chainId = Number(await store.web3Https.eth.getChainId());
     store.gasPrice = config?.gasPrice ?? defaultGasPrice;
     if (config?.gasLimit) store.gasLimit = config.gasLimit;
     if (config?.gasLimitMultiplier) store.gasLimitMultiplier = config.gasLimitMultiplier;

@@ -1,6 +1,6 @@
 import { Readable, Transform, TransformCallback } from 'stream';
-import StorageObject from '../../types/storage/StorageObject';
-import IStorageProvider, { DownloadConfig } from './IStorageProvider';
+import StorageObject from '../../types/storage/StorageObject.js';
+import IStorageProvider, { DownloadConfig } from './IStorageProvider.js';
 
 export type DownloadChunkMethodType = (
   provider: IStorageProvider,
@@ -50,7 +50,7 @@ class ChunkedReadableTransform extends Transform {
     });
   }
 
-  _transform(chunk: ChunkType, encoding: BufferEncoding, callback: TransformCallback) {
+  _transform(chunk: ChunkType, _encoding: BufferEncoding, callback: TransformCallback) {
     const resultPromise = this.downloadChunk(chunk);
 
     callback(null, {
@@ -70,7 +70,7 @@ class ChainedChunksReadableTransform extends Transform {
 
   _transform(
     obj: { resultPromise: Promise<Buffer>; chunk: ChunkType },
-    encoding: BufferEncoding,
+    _encoding: BufferEncoding,
     callback: TransformCallback,
   ) {
     obj.resultPromise.then(
@@ -147,7 +147,7 @@ export const createDownloadChunkMethodWithRetry = (
       }
 
       if (retryCount !== 0) {
-        await new Promise<void>((resolve, reject) => setTimeout(resolve, retryWaitTime()));
+        await new Promise<void>((resolve) => setTimeout(resolve, retryWaitTime()));
       }
     }
 

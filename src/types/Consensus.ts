@@ -1,4 +1,4 @@
-import { BlockchainId, TokenAmount } from './Web3';
+import { BlockchainId, TokenAmount } from './Web3.js';
 import { TcbVerifiedStatus } from '@super-protocol/dto-js';
 
 export type TcbPublicData = {

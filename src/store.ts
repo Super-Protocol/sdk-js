@@ -5,7 +5,8 @@ import {
   defaultGasLimit,
   txIntervalMs,
   txConcurrency,
-} from './constants';
+  POLYGON_MAIN_CHAIN_ID,
+} from './constants.js';
 
 export type Store = {
   web3Wss?: Web3;
@@ -17,6 +18,7 @@ export type Store = {
   gasPrice?: bigint;
   txConcurrency: number;
   txIntervalMs: number;
+  chainId: number;
   keys: Record<string, string>;
 };
 
@@ -30,6 +32,7 @@ const store: Store = {
   gasPrice: undefined,
   txConcurrency: txConcurrency,
   txIntervalMs: txIntervalMs,
+  chainId: POLYGON_MAIN_CHAIN_ID,
   keys: {},
 };
 

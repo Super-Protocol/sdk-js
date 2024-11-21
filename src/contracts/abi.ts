@@ -1,3 +1,5 @@
+export const Approval = 'Approval' as const;export const Transfer = 'Transfer' as const;export const RewardsClaimed = 'RewardsClaimed' as const;export const TcbBenchmarkChanged = 'TcbBenchmarkChanged' as const;export const TcbCompleted = 'TcbCompleted' as const;export const TcbInitialized = 'TcbInitialized' as const;export const TcbBanned = 'TcbBanned' as const;export const DepositPartLocked = 'DepositPartLocked' as const;export const DepositPartUnlocked = 'DepositPartUnlocked' as const;export const DepositReplenished = 'DepositReplenished' as const;export const DepositWithdrawn = 'DepositWithdrawn' as const;export const OfferCreated = 'OfferCreated' as const;export const OfferDisabled = 'OfferDisabled' as const;export const OfferEnabled = 'OfferEnabled' as const;export const SetValueOfferRestrictions = 'SetValueOfferRestrictions' as const;export const TeeOfferCreated = 'TeeOfferCreated' as const;export const TeeOfferViolationRateChanged = 'TeeOfferViolationRateChanged' as const;export const OrdersGroupCreated = 'OrdersGroupCreated' as const;export const OrderCreated = 'OrderCreated' as const;export const OrderStatusUpdated = 'OrderStatusUpdated' as const;export const OrderAwaitingPaymentChanged = 'OrderAwaitingPaymentChanged' as const;export const OrderDepositRefilled = 'OrderDepositRefilled' as const;export const OrderOptionsDepositSpentChanged = 'OrderOptionsDepositSpentChanged' as const;export const OrderProfitUnlocked = 'OrderProfitUnlocked' as const;export const OrderChangeWithdrawn = 'OrderChangeWithdrawn' as const;export const OrderEncryptedResultUpdated = 'OrderEncryptedResultUpdated' as const;export const OrderProfitWithdrawn = 'OrderProfitWithdrawn' as const;export const OrderStarted = 'OrderStarted' as const;export const OrderOptionsChangeRequested = 'OrderOptionsChangeRequested' as const;export const OrderOptionsChanged = 'OrderOptionsChanged' as const;export const OrderSlotCountUpdateRequested = 'OrderSlotCountUpdateRequested' as const;export const OrderSlotCountUpdated = 'OrderSlotCountUpdated' as const;export const ProviderModified = 'ProviderModified' as const;export const ProviderRegistered = 'ProviderRegistered' as const;export const ProviderSecurityDepoRefilled = 'ProviderSecurityDepoRefilled' as const;export const ProviderSecurityDepoUnlocked = 'ProviderSecurityDepoUnlocked' as const;export const ProviderViolationRateIncremented = 'ProviderViolationRateIncremented' as const;export const OptionAdded = 'OptionAdded' as const;export const OptionDeleted = 'OptionDeleted' as const;export const OptionUpdated = 'OptionUpdated' as const;export const TeeSlotAdded = 'TeeSlotAdded' as const;export const TeeSlotDeleted = 'TeeSlotDeleted' as const;export const TeeSlotUpdated = 'TeeSlotUpdated' as const;export const TcbRewardUnlocked = 'TcbRewardUnlocked' as const;export const WarningMessage = 'WarningMessage' as const;export const ValueSlotAdded = 'ValueSlotAdded' as const;export const ValueSlotDeleted = 'ValueSlotDeleted' as const;export const ValueSlotUpdated = 'ValueSlotUpdated' as const;export const DiamondCut = 'DiamondCut' as const;export const OwnershipTransferred = 'OwnershipTransferred' as const;export const LoaderSecretPublicKeySessionUpdated = 'LoaderSecretPublicKeySessionUpdated' as const;export const LoaderSessionKeyUpdated = 'LoaderSessionKeyUpdated' as const;export const OfferResourceCreated = 'OfferResourceCreated' as const;export const OrderResourceCreated = 'OrderResourceCreated' as const;export const OfferStorageRequestCanceled = 'OfferStorageRequestCanceled' as const;export const OfferStorageRequestCreated = 'OfferStorageRequestCreated' as const;export const SecretRequestCreated = 'SecretRequestCreated' as const;
+export type AbiEvent = typeof Approval | typeof Transfer | typeof RewardsClaimed | typeof TcbBenchmarkChanged | typeof TcbCompleted | typeof TcbInitialized | typeof TcbBanned | typeof DepositPartLocked | typeof DepositPartUnlocked | typeof DepositReplenished | typeof DepositWithdrawn | typeof OfferCreated | typeof OfferDisabled | typeof OfferEnabled | typeof SetValueOfferRestrictions | typeof TeeOfferCreated | typeof TeeOfferViolationRateChanged | typeof OrdersGroupCreated | typeof OrderCreated | typeof OrderStatusUpdated | typeof OrderAwaitingPaymentChanged | typeof OrderDepositRefilled | typeof OrderOptionsDepositSpentChanged | typeof OrderProfitUnlocked | typeof OrderChangeWithdrawn | typeof OrderEncryptedResultUpdated | typeof OrderProfitWithdrawn | typeof OrderStarted | typeof OrderOptionsChangeRequested | typeof OrderOptionsChanged | typeof OrderSlotCountUpdateRequested | typeof OrderSlotCountUpdated | typeof ProviderModified | typeof ProviderRegistered | typeof ProviderSecurityDepoRefilled | typeof ProviderSecurityDepoUnlocked | typeof ProviderViolationRateIncremented | typeof OptionAdded | typeof OptionDeleted | typeof OptionUpdated | typeof TeeSlotAdded | typeof TeeSlotDeleted | typeof TeeSlotUpdated | typeof TcbRewardUnlocked | typeof WarningMessage | typeof ValueSlotAdded | typeof ValueSlotDeleted | typeof ValueSlotUpdated | typeof DiamondCut | typeof OwnershipTransferred | typeof LoaderSecretPublicKeySessionUpdated | typeof LoaderSessionKeyUpdated | typeof OfferResourceCreated | typeof OrderResourceCreated | typeof OfferStorageRequestCanceled | typeof OfferStorageRequestCreated | typeof SecretRequestCreated;
 export const abi = [
     {
         "anonymous": false,
@@ -270,306 +272,6 @@ export const abi = [
         "type": "function"
     },
     {
-        "anonymous": false,
-        "inputs": [
-            {
-                "indexed": true,
-                "internalType": "address",
-                "name": "owner",
-                "type": "address"
-            },
-            {
-                "indexed": true,
-                "internalType": "address",
-                "name": "spender",
-                "type": "address"
-            },
-            {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "value",
-                "type": "uint256"
-            }
-        ],
-        "name": "Approval",
-        "type": "event"
-    },
-    {
-        "anonymous": false,
-        "inputs": [
-            {
-                "indexed": true,
-                "internalType": "address",
-                "name": "from",
-                "type": "address"
-            },
-            {
-                "indexed": true,
-                "internalType": "address",
-                "name": "to",
-                "type": "address"
-            },
-            {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "value",
-                "type": "uint256"
-            }
-        ],
-        "name": "Transfer",
-        "type": "event"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "owner",
-                "type": "address"
-            },
-            {
-                "internalType": "address",
-                "name": "spender",
-                "type": "address"
-            }
-        ],
-        "name": "allowance",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "spender",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "amount",
-                "type": "uint256"
-            }
-        ],
-        "name": "approve",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
-            }
-        ],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "account",
-                "type": "address"
-            }
-        ],
-        "name": "balanceOf",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "totalSupply",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "to",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "amount",
-                "type": "uint256"
-            }
-        ],
-        "name": "transfer",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
-            }
-        ],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "from",
-                "type": "address"
-            },
-            {
-                "internalType": "address",
-                "name": "to",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "amount",
-                "type": "uint256"
-            }
-        ],
-        "name": "transferFrom",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
-            }
-        ],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "anonymous": false,
-        "inputs": [
-            {
-                "indexed": true,
-                "internalType": "address",
-                "name": "owner",
-                "type": "address"
-            },
-            {
-                "indexed": true,
-                "internalType": "address",
-                "name": "spender",
-                "type": "address"
-            },
-            {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "value",
-                "type": "uint256"
-            }
-        ],
-        "name": "Approval",
-        "type": "event"
-    },
-    {
-        "anonymous": false,
-        "inputs": [
-            {
-                "indexed": true,
-                "internalType": "address",
-                "name": "from",
-                "type": "address"
-            },
-            {
-                "indexed": true,
-                "internalType": "address",
-                "name": "to",
-                "type": "address"
-            },
-            {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "value",
-                "type": "uint256"
-            }
-        ],
-        "name": "Transfer",
-        "type": "event"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "owner",
-                "type": "address"
-            },
-            {
-                "internalType": "address",
-                "name": "spender",
-                "type": "address"
-            }
-        ],
-        "name": "allowance",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "spender",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "amount",
-                "type": "uint256"
-            }
-        ],
-        "name": "approve",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
-            }
-        ],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "account",
-                "type": "address"
-            }
-        ],
-        "name": "balanceOf",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
         "inputs": [
             {
                 "internalType": "uint256",
@@ -597,381 +299,6 @@ export const abi = [
         ],
         "name": "burnFrom",
         "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "decimals",
-        "outputs": [
-            {
-                "internalType": "uint8",
-                "name": "",
-                "type": "uint8"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "spender",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "subtractedValue",
-                "type": "uint256"
-            }
-        ],
-        "name": "decreaseAllowance",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
-            }
-        ],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "spender",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "addedValue",
-                "type": "uint256"
-            }
-        ],
-        "name": "increaseAllowance",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
-            }
-        ],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "name",
-        "outputs": [
-            {
-                "internalType": "string",
-                "name": "",
-                "type": "string"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "symbol",
-        "outputs": [
-            {
-                "internalType": "string",
-                "name": "",
-                "type": "string"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "totalSupply",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "to",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "amount",
-                "type": "uint256"
-            }
-        ],
-        "name": "transfer",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
-            }
-        ],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "from",
-                "type": "address"
-            },
-            {
-                "internalType": "address",
-                "name": "to",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "amount",
-                "type": "uint256"
-            }
-        ],
-        "name": "transferFrom",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
-            }
-        ],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "anonymous": false,
-        "inputs": [
-            {
-                "indexed": true,
-                "internalType": "address",
-                "name": "owner",
-                "type": "address"
-            },
-            {
-                "indexed": true,
-                "internalType": "address",
-                "name": "spender",
-                "type": "address"
-            },
-            {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "value",
-                "type": "uint256"
-            }
-        ],
-        "name": "Approval",
-        "type": "event"
-    },
-    {
-        "anonymous": false,
-        "inputs": [
-            {
-                "indexed": true,
-                "internalType": "address",
-                "name": "from",
-                "type": "address"
-            },
-            {
-                "indexed": true,
-                "internalType": "address",
-                "name": "to",
-                "type": "address"
-            },
-            {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "value",
-                "type": "uint256"
-            }
-        ],
-        "name": "Transfer",
-        "type": "event"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "owner",
-                "type": "address"
-            },
-            {
-                "internalType": "address",
-                "name": "spender",
-                "type": "address"
-            }
-        ],
-        "name": "allowance",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "spender",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "amount",
-                "type": "uint256"
-            }
-        ],
-        "name": "approve",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
-            }
-        ],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "account",
-                "type": "address"
-            }
-        ],
-        "name": "balanceOf",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "decimals",
-        "outputs": [
-            {
-                "internalType": "uint8",
-                "name": "",
-                "type": "uint8"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "name",
-        "outputs": [
-            {
-                "internalType": "string",
-                "name": "",
-                "type": "string"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "symbol",
-        "outputs": [
-            {
-                "internalType": "string",
-                "name": "",
-                "type": "string"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "totalSupply",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "to",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "amount",
-                "type": "uint256"
-            }
-        ],
-        "name": "transfer",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
-            }
-        ],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "from",
-                "type": "address"
-            },
-            {
-                "internalType": "address",
-                "name": "to",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "amount",
-                "type": "uint256"
-            }
-        ],
-        "name": "transferFrom",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
-            }
-        ],
         "stateMutability": "nonpayable",
         "type": "function"
     },
@@ -1642,6 +969,19 @@ export const abi = [
         "type": "function"
     },
     {
+        "inputs": [],
+        "name": "getTcbsCount",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
         "inputs": [
             {
                 "internalType": "uint256[]",
@@ -1729,6 +1069,11 @@ export const abi = [
                 "internalType": "uint256",
                 "name": "teeOfferId",
                 "type": "uint256"
+            },
+            {
+                "internalType": "bytes32",
+                "name": "newDeviceId",
+                "type": "bytes32"
             }
         ],
         "name": "initializeTcb",
@@ -1761,6 +1106,11 @@ export const abi = [
                 "internalType": "uint256",
                 "name": "teeOfferId",
                 "type": "uint256"
+            },
+            {
+                "internalType": "bytes32",
+                "name": "deviceId",
+                "type": "bytes32"
             }
         ],
         "name": "isTcbCreationAvailable",
@@ -1797,7 +1147,7 @@ export const abi = [
                 "type": "uint256"
             }
         ],
-        "name": "isTeeOfferVerifying",
+        "name": "isTeeOfferVerified",
         "outputs": [
             {
                 "internalType": "bool",
@@ -2208,6 +1558,24 @@ export const abi = [
         "inputs": [
             {
                 "internalType": "address",
+                "name": "beneficiary",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "amount",
+                "type": "uint256"
+            }
+        ],
+        "name": "increaseForByApp",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
                 "name": "depositOwner",
                 "type": "address"
             },
@@ -2455,6 +1823,42 @@ export const abi = [
         "inputs": [
             {
                 "indexed": true,
+                "internalType": "uint256",
+                "name": "orderId",
+                "type": "uint256"
+            },
+            {
+                "components": [
+                    {
+                        "internalType": "uint256[]",
+                        "name": "offers",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "enum OfferType[]",
+                        "name": "types",
+                        "type": "uint8[]"
+                    },
+                    {
+                        "internalType": "uint64[]",
+                        "name": "versions",
+                        "type": "uint64[]"
+                    }
+                ],
+                "indexed": false,
+                "internalType": "struct ValueOfferRestrictionsSpecification",
+                "name": "specification",
+                "type": "tuple"
+            }
+        ],
+        "name": "SetValueOfferRestrictions",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
                 "internalType": "address",
                 "name": "creator",
                 "type": "address"
@@ -2487,7 +1891,7 @@ export const abi = [
             {
                 "indexed": true,
                 "internalType": "uint256",
-                "name": "offerId",
+                "name": "teeOfferId",
                 "type": "uint256"
             },
             {
@@ -2531,13 +1935,18 @@ export const abi = [
                     },
                     {
                         "internalType": "string",
-                        "name": "tlb",
+                        "name": "tlb_DEPRECATED",
                         "type": "string"
                     },
                     {
                         "internalType": "string",
                         "name": "argsPublicKey",
                         "type": "string"
+                    },
+                    {
+                        "internalType": "enum TeeOfferSubtype",
+                        "name": "subtype",
+                        "type": "uint8"
                     }
                 ],
                 "internalType": "struct TeeOfferInfo",
@@ -2564,6 +1973,11 @@ export const abi = [
                     {
                         "internalType": "uint64",
                         "name": "gpuCores",
+                        "type": "uint64"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "vram",
                         "type": "uint64"
                     }
                 ],
@@ -2607,6 +2021,11 @@ export const abi = [
                 "type": "address"
             },
             {
+                "internalType": "enum OfferType",
+                "name": "offerType",
+                "type": "uint8"
+            },
+            {
                 "components": [
                     {
                         "internalType": "string",
@@ -2615,12 +2034,12 @@ export const abi = [
                     },
                     {
                         "internalType": "enum OfferGroup",
-                        "name": "group",
+                        "name": "group_DEPRECATED",
                         "type": "uint8"
                     },
                     {
                         "internalType": "enum OfferType",
-                        "name": "offerType",
+                        "name": "offerType_DEPRECATED",
                         "type": "uint8"
                     },
                     {
@@ -2665,7 +2084,7 @@ export const abi = [
                     },
                     {
                         "internalType": "string",
-                        "name": "linkage",
+                        "name": "linkage_DEPRECATED",
                         "type": "string"
                     },
                     {
@@ -2676,6 +2095,21 @@ export const abi = [
                     {
                         "internalType": "string",
                         "name": "metadata",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "signatureKeyHash",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "enum ValueOfferSubtype",
+                        "name": "subtype",
+                        "type": "uint8"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "hardwareContext",
                         "type": "string"
                     }
                 ],
@@ -2694,10 +2128,15 @@ export const abi = [
                         "internalType": "enum OfferType[]",
                         "name": "types",
                         "type": "uint8[]"
+                    },
+                    {
+                        "internalType": "uint64[]",
+                        "name": "versions",
+                        "type": "uint64[]"
                     }
                 ],
-                "internalType": "struct ValueOfferInitialRestrictions",
-                "name": "initRestrictions",
+                "internalType": "struct ValueOfferRestrictionsSpecification",
+                "name": "restrictionsSpecification",
                 "type": "tuple"
             },
             {
@@ -2712,6 +2151,24 @@ export const abi = [
             }
         ],
         "name": "createValueOffer",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "offerId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint64",
+                "name": "version",
+                "type": "uint64"
+            }
+        ],
+        "name": "deleteOfferVersion",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
@@ -2786,6 +2243,41 @@ export const abi = [
                 "type": "uint256"
             },
             {
+                "internalType": "uint64",
+                "name": "newVersion",
+                "type": "uint64"
+            },
+            {
+                "components": [
+                    {
+                        "internalType": "string",
+                        "name": "mrenclave",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "mrsigner",
+                        "type": "string"
+                    }
+                ],
+                "internalType": "struct OfferVersionInfo",
+                "name": "newVersionInfo",
+                "type": "tuple"
+            }
+        ],
+        "name": "setOfferNewVersion",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "offerId",
+                "type": "uint256"
+            },
+            {
                 "internalType": "string",
                 "name": "publicKey",
                 "type": "string"
@@ -2823,6 +2315,11 @@ export const abi = [
                     {
                         "internalType": "uint64",
                         "name": "gpuCores",
+                        "type": "uint64"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "vram",
                         "type": "uint64"
                     }
                 ],
@@ -2879,13 +2376,18 @@ export const abi = [
                     },
                     {
                         "internalType": "string",
-                        "name": "tlb",
+                        "name": "tlb_DEPRECATED",
                         "type": "string"
                     },
                     {
                         "internalType": "string",
                         "name": "argsPublicKey",
                         "type": "string"
+                    },
+                    {
+                        "internalType": "enum TeeOfferSubtype",
+                        "name": "subtype",
+                        "type": "uint8"
                     }
                 ],
                 "internalType": "struct TeeOfferInfo",
@@ -2906,12 +2408,12 @@ export const abi = [
                 "type": "uint256"
             },
             {
-                "internalType": "string",
-                "name": "tlb",
-                "type": "string"
+                "internalType": "enum TeeOfferSubtype",
+                "name": "newSubtype",
+                "type": "uint8"
             }
         ],
-        "name": "setTeeOfferTlb",
+        "name": "setTeeOfferSubtype",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
@@ -2932,12 +2434,12 @@ export const abi = [
                     },
                     {
                         "internalType": "enum OfferGroup",
-                        "name": "group",
+                        "name": "group_DEPRECATED",
                         "type": "uint8"
                     },
                     {
                         "internalType": "enum OfferType",
-                        "name": "offerType",
+                        "name": "offerType_DEPRECATED",
                         "type": "uint8"
                     },
                     {
@@ -2982,7 +2484,7 @@ export const abi = [
                     },
                     {
                         "internalType": "string",
-                        "name": "linkage",
+                        "name": "linkage_DEPRECATED",
                         "type": "string"
                     },
                     {
@@ -2994,11 +2496,39 @@ export const abi = [
                         "internalType": "string",
                         "name": "metadata",
                         "type": "string"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "signatureKeyHash",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "enum ValueOfferSubtype",
+                        "name": "subtype",
+                        "type": "uint8"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "hardwareContext",
+                        "type": "string"
                     }
                 ],
                 "internalType": "struct ValueOfferInfo",
                 "name": "newInfo",
                 "type": "tuple"
+            }
+        ],
+        "name": "setValueOfferInfo",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "offerId",
+                "type": "uint256"
             },
             {
                 "components": [
@@ -3011,14 +2541,37 @@ export const abi = [
                         "internalType": "enum OfferType[]",
                         "name": "types",
                         "type": "uint8[]"
+                    },
+                    {
+                        "internalType": "uint64[]",
+                        "name": "versions",
+                        "type": "uint64[]"
                     }
                 ],
-                "internalType": "struct ValueOfferInitialRestrictions",
-                "name": "newRestrictions",
+                "internalType": "struct ValueOfferRestrictionsSpecification",
+                "name": "newSpecification",
                 "type": "tuple"
             }
         ],
-        "name": "setValueOfferInfo",
+        "name": "setValueOfferRestrictionsSpecification",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "offerId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "enum ValueOfferSubtype",
+                "name": "newSubtype",
+                "type": "uint8"
+            }
+        ],
+        "name": "setValueOfferSubtype",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
@@ -3074,13 +2627,18 @@ export const abi = [
                             },
                             {
                                 "internalType": "string",
-                                "name": "tlb",
+                                "name": "tlb_DEPRECATED",
                                 "type": "string"
                             },
                             {
                                 "internalType": "string",
                                 "name": "argsPublicKey",
                                 "type": "string"
+                            },
+                            {
+                                "internalType": "enum TeeOfferSubtype",
+                                "name": "subtype",
+                                "type": "uint8"
                             }
                         ],
                         "internalType": "struct TeeOfferInfo",
@@ -3134,6 +2692,11 @@ export const abi = [
                         "type": "address"
                     },
                     {
+                        "internalType": "enum OfferType",
+                        "name": "offerType",
+                        "type": "uint8"
+                    },
+                    {
                         "components": [
                             {
                                 "internalType": "string",
@@ -3142,12 +2705,12 @@ export const abi = [
                             },
                             {
                                 "internalType": "enum OfferGroup",
-                                "name": "group",
+                                "name": "group_DEPRECATED",
                                 "type": "uint8"
                             },
                             {
                                 "internalType": "enum OfferType",
-                                "name": "offerType",
+                                "name": "offerType_DEPRECATED",
                                 "type": "uint8"
                             },
                             {
@@ -3192,7 +2755,7 @@ export const abi = [
                             },
                             {
                                 "internalType": "string",
-                                "name": "linkage",
+                                "name": "linkage_DEPRECATED",
                                 "type": "string"
                             },
                             {
@@ -3203,6 +2766,21 @@ export const abi = [
                             {
                                 "internalType": "string",
                                 "name": "metadata",
+                                "type": "string"
+                            },
+                            {
+                                "internalType": "string",
+                                "name": "signatureKeyHash",
+                                "type": "string"
+                            },
+                            {
+                                "internalType": "enum ValueOfferSubtype",
+                                "name": "subtype",
+                                "type": "uint8"
+                            },
+                            {
+                                "internalType": "string",
+                                "name": "hardwareContext",
                                 "type": "string"
                             }
                         ],
@@ -3238,37 +2816,6 @@ export const abi = [
                 "internalType": "enum OfferGroup",
                 "name": "",
                 "type": "uint8"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
-            }
-        ],
-        "name": "getOfferInitialRestrictions",
-        "outputs": [
-            {
-                "components": [
-                    {
-                        "internalType": "uint256[]",
-                        "name": "offers",
-                        "type": "uint256[]"
-                    },
-                    {
-                        "internalType": "enum OfferType[]",
-                        "name": "types",
-                        "type": "uint8[]"
-                    }
-                ],
-                "internalType": "struct ValueOfferInitialRestrictions",
-                "name": "ret",
-                "type": "tuple"
             }
         ],
         "stateMutability": "view",
@@ -3400,12 +2947,120 @@ export const abi = [
                 "type": "uint256"
             }
         ],
+        "name": "getOfferRestrictionsSpecification",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "uint256[]",
+                        "name": "offers",
+                        "type": "uint256[]"
+                    },
+                    {
+                        "internalType": "enum OfferType[]",
+                        "name": "types",
+                        "type": "uint8[]"
+                    },
+                    {
+                        "internalType": "uint64[]",
+                        "name": "versions",
+                        "type": "uint64[]"
+                    }
+                ],
+                "internalType": "struct ValueOfferRestrictionsSpecification",
+                "name": "ret",
+                "type": "tuple"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "offerId",
+                "type": "uint256"
+            }
+        ],
         "name": "getOfferType",
         "outputs": [
             {
                 "internalType": "enum OfferType",
                 "name": "",
                 "type": "uint8"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "offerId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint64",
+                "name": "version",
+                "type": "uint64"
+            }
+        ],
+        "name": "getOfferVersion",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "uint64",
+                        "name": "version",
+                        "type": "uint64"
+                    },
+                    {
+                        "components": [
+                            {
+                                "internalType": "string",
+                                "name": "mrenclave",
+                                "type": "string"
+                            },
+                            {
+                                "internalType": "string",
+                                "name": "mrsigner",
+                                "type": "string"
+                            }
+                        ],
+                        "internalType": "struct OfferVersionInfo",
+                        "name": "info",
+                        "type": "tuple"
+                    },
+                    {
+                        "internalType": "enum OfferVersionStatus",
+                        "name": "status",
+                        "type": "uint8"
+                    }
+                ],
+                "internalType": "struct OfferVersion",
+                "name": "",
+                "type": "tuple"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "offerId",
+                "type": "uint256"
+            }
+        ],
+        "name": "getOfferVersionsCount",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
             }
         ],
         "stateMutability": "view",
@@ -3489,13 +3144,18 @@ export const abi = [
                             },
                             {
                                 "internalType": "string",
-                                "name": "tlb",
+                                "name": "tlb_DEPRECATED",
                                 "type": "string"
                             },
                             {
                                 "internalType": "string",
                                 "name": "argsPublicKey",
                                 "type": "string"
+                            },
+                            {
+                                "internalType": "enum TeeOfferSubtype",
+                                "name": "subtype",
+                                "type": "uint8"
                             }
                         ],
                         "internalType": "struct TeeOfferInfo",
@@ -3547,6 +3207,11 @@ export const abi = [
                         "internalType": "uint64",
                         "name": "gpuCores",
                         "type": "uint64"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "vram",
+                        "type": "uint64"
                     }
                 ],
                 "internalType": "struct SlotInfo",
@@ -3577,12 +3242,12 @@ export const abi = [
                 "type": "uint256"
             }
         ],
-        "name": "getTeeOfferLastTlbAddedTime",
+        "name": "getTeeOfferSubtype",
         "outputs": [
             {
-                "internalType": "uint256",
+                "internalType": "enum TeeOfferSubtype",
                 "name": "",
-                "type": "uint256"
+                "type": "uint8"
             }
         ],
         "stateMutability": "view",
@@ -3611,6 +3276,11 @@ export const abi = [
                         "type": "address"
                     },
                     {
+                        "internalType": "enum OfferType",
+                        "name": "offerType",
+                        "type": "uint8"
+                    },
+                    {
                         "components": [
                             {
                                 "internalType": "string",
@@ -3619,12 +3289,12 @@ export const abi = [
                             },
                             {
                                 "internalType": "enum OfferGroup",
-                                "name": "group",
+                                "name": "group_DEPRECATED",
                                 "type": "uint8"
                             },
                             {
                                 "internalType": "enum OfferType",
-                                "name": "offerType",
+                                "name": "offerType_DEPRECATED",
                                 "type": "uint8"
                             },
                             {
@@ -3669,7 +3339,7 @@ export const abi = [
                             },
                             {
                                 "internalType": "string",
-                                "name": "linkage",
+                                "name": "linkage_DEPRECATED",
                                 "type": "string"
                             },
                             {
@@ -3680,6 +3350,21 @@ export const abi = [
                             {
                                 "internalType": "string",
                                 "name": "metadata",
+                                "type": "string"
+                            },
+                            {
+                                "internalType": "string",
+                                "name": "signatureKeyHash",
+                                "type": "string"
+                            },
+                            {
+                                "internalType": "enum ValueOfferSubtype",
+                                "name": "subtype",
+                                "type": "uint8"
+                            },
+                            {
+                                "internalType": "string",
+                                "name": "hardwareContext",
                                 "type": "string"
                             }
                         ],
@@ -3709,6 +3394,25 @@ export const abi = [
                 "type": "uint256"
             }
         ],
+        "name": "getValueOfferSubtype",
+        "outputs": [
+            {
+                "internalType": "enum ValueOfferSubtype",
+                "name": "",
+                "type": "uint8"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "offerId",
+                "type": "uint256"
+            }
+        ],
         "name": "isAutoCompleteOffer",
         "outputs": [
             {
@@ -3718,6 +3422,40 @@ export const abi = [
             }
         ],
         "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "firstId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint64",
+                "name": "firstVersion",
+                "type": "uint64"
+            },
+            {
+                "internalType": "uint256",
+                "name": "secondId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint64",
+                "name": "secondVersion",
+                "type": "uint64"
+            }
+        ],
+        "name": "isMagicallySameOfferVersion",
+        "outputs": [
+            {
+                "internalType": "bool",
+                "name": "",
+                "type": "bool"
+            }
+        ],
+        "stateMutability": "pure",
         "type": "function"
     },
     {
@@ -3836,9 +3574,38 @@ export const abi = [
                 "internalType": "uint256",
                 "name": "otherOfferId",
                 "type": "uint256"
+            },
+            {
+                "internalType": "uint64",
+                "name": "otherOfferVersion",
+                "type": "uint64"
             }
         ],
         "name": "isOfferRestrictionsPermitOtherOffer",
+        "outputs": [
+            {
+                "internalType": "bool",
+                "name": "",
+                "type": "bool"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "offerId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint64",
+                "name": "version",
+                "type": "uint64"
+            }
+        ],
+        "name": "isOfferVersionAvailable",
         "outputs": [
             {
                 "internalType": "bool",
@@ -4051,6 +3818,30 @@ export const abi = [
     {
         "inputs": [
             {
+                "internalType": "address",
+                "name": "consumer",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "deposit",
+                "type": "uint256"
+            }
+        ],
+        "name": "adjustOrderDepositByApp",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
                 "components": [
                     {
                         "internalType": "uint256",
@@ -4059,17 +3850,17 @@ export const abi = [
                     },
                     {
                         "internalType": "string",
-                        "name": "resultPublicKey",
+                        "name": "resultInfo",
                         "type": "string"
                     },
                     {
                         "internalType": "string",
-                        "name": "encryptedRequirements",
+                        "name": "encryptedRequirements_DEPRECATED",
                         "type": "string"
                     },
                     {
                         "internalType": "string",
-                        "name": "encryptedArgs",
+                        "name": "encryptedArgs_DEPRECATED",
                         "type": "string"
                     },
                     {
@@ -4091,6 +3882,11 @@ export const abi = [
                         "internalType": "uint256",
                         "name": "maxPriceSlippage",
                         "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "offerVersion",
+                        "type": "uint64"
                     }
                 ],
                 "internalType": "struct OrderInfo",
@@ -4128,13 +3924,23 @@ export const abi = [
                 "components": [
                     {
                         "internalType": "uint256[]",
-                        "name": "inputOffers",
+                        "name": "inputOffersIds",
                         "type": "uint256[]"
                     },
                     {
                         "internalType": "uint256",
-                        "name": "outputOffer",
+                        "name": "outputOfferId",
                         "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint64[]",
+                        "name": "inputOffersVersions",
+                        "type": "uint64[]"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "outputOfferVersion",
+                        "type": "uint64"
                     }
                 ],
                 "internalType": "struct OrderArgs",
@@ -4179,17 +3985,17 @@ export const abi = [
                     },
                     {
                         "internalType": "string",
-                        "name": "resultPublicKey",
+                        "name": "resultInfo",
                         "type": "string"
                     },
                     {
                         "internalType": "string",
-                        "name": "encryptedRequirements",
+                        "name": "encryptedRequirements_DEPRECATED",
                         "type": "string"
                     },
                     {
                         "internalType": "string",
-                        "name": "encryptedArgs",
+                        "name": "encryptedArgs_DEPRECATED",
                         "type": "string"
                     },
                     {
@@ -4211,6 +4017,11 @@ export const abi = [
                         "internalType": "uint256",
                         "name": "maxPriceSlippage",
                         "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "offerVersion",
+                        "type": "uint64"
                     }
                 ],
                 "internalType": "struct OrderInfo",
@@ -4248,13 +4059,23 @@ export const abi = [
                 "components": [
                     {
                         "internalType": "uint256[]",
-                        "name": "inputOffers",
+                        "name": "inputOffersIds",
                         "type": "uint256[]"
                     },
                     {
                         "internalType": "uint256",
-                        "name": "outputOffer",
+                        "name": "outputOfferId",
                         "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint64[]",
+                        "name": "inputOffersVersions",
+                        "type": "uint64[]"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "outputOfferVersion",
+                        "type": "uint64"
                     }
                 ],
                 "internalType": "struct OrderArgs",
@@ -4299,17 +4120,17 @@ export const abi = [
                     },
                     {
                         "internalType": "string",
-                        "name": "resultPublicKey",
+                        "name": "resultInfo",
                         "type": "string"
                     },
                     {
                         "internalType": "string",
-                        "name": "encryptedRequirements",
+                        "name": "encryptedRequirements_DEPRECATED",
                         "type": "string"
                     },
                     {
                         "internalType": "string",
-                        "name": "encryptedArgs",
+                        "name": "encryptedArgs_DEPRECATED",
                         "type": "string"
                     },
                     {
@@ -4331,6 +4152,11 @@ export const abi = [
                         "internalType": "uint256",
                         "name": "maxPriceSlippage",
                         "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "offerVersion",
+                        "type": "uint64"
                     }
                 ],
                 "internalType": "struct OrderInfo",
@@ -4368,13 +4194,23 @@ export const abi = [
                 "components": [
                     {
                         "internalType": "uint256[]",
-                        "name": "inputOffers",
+                        "name": "inputOffersIds",
                         "type": "uint256[]"
                     },
                     {
                         "internalType": "uint256",
-                        "name": "outputOffer",
+                        "name": "outputOfferId",
                         "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint64[]",
+                        "name": "inputOffersVersions",
+                        "type": "uint64[]"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "outputOfferVersion",
+                        "type": "uint64"
                     }
                 ],
                 "internalType": "struct OrderArgs",
@@ -4431,17 +4267,17 @@ export const abi = [
                     },
                     {
                         "internalType": "string",
-                        "name": "resultPublicKey",
+                        "name": "resultInfo",
                         "type": "string"
                     },
                     {
                         "internalType": "string",
-                        "name": "encryptedRequirements",
+                        "name": "encryptedRequirements_DEPRECATED",
                         "type": "string"
                     },
                     {
                         "internalType": "string",
-                        "name": "encryptedArgs",
+                        "name": "encryptedArgs_DEPRECATED",
                         "type": "string"
                     },
                     {
@@ -4463,6 +4299,11 @@ export const abi = [
                         "internalType": "uint256",
                         "name": "maxPriceSlippage",
                         "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "offerVersion",
+                        "type": "uint64"
                     }
                 ],
                 "internalType": "struct OrderInfo",
@@ -4500,13 +4341,23 @@ export const abi = [
                 "components": [
                     {
                         "internalType": "uint256[]",
-                        "name": "inputOffers",
+                        "name": "inputOffersIds",
                         "type": "uint256[]"
                     },
                     {
                         "internalType": "uint256",
-                        "name": "outputOffer",
+                        "name": "outputOfferId",
                         "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint64[]",
+                        "name": "inputOffersVersions",
+                        "type": "uint64[]"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "outputOfferVersion",
+                        "type": "uint64"
                     }
                 ],
                 "internalType": "struct OrderArgs",
@@ -4641,6 +4492,30 @@ export const abi = [
         ],
         "name": "OrderProfitUnlocked",
         "type": "event"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "orderId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "amount",
+                "type": "uint256"
+            }
+        ],
+        "name": "debitOrderDepositByApp",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "function"
     },
     {
         "inputs": [
@@ -4847,25 +4722,6 @@ export const abi = [
         "type": "event"
     },
     {
-        "anonymous": false,
-        "inputs": [
-            {
-                "indexed": true,
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
-            },
-            {
-                "indexed": true,
-                "internalType": "enum OrderStatus",
-                "name": "status",
-                "type": "uint8"
-            }
-        ],
-        "name": "OrderStatusUpdated",
-        "type": "event"
-    },
-    {
         "inputs": [
             {
                 "internalType": "uint256",
@@ -4947,6 +4803,24 @@ export const abi = [
             }
         ],
         "name": "processOrder",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "orderId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "string",
+                "name": "newCertificate",
+                "type": "string"
+            }
+        ],
+        "name": "setOrderCertificate",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
@@ -5168,7 +5042,7 @@ export const abi = [
         "outputs": [
             {
                 "internalType": "uint256",
-                "name": "reservedForOutput",
+                "name": "",
                 "type": "uint256"
             }
         ],
@@ -5306,12 +5180,12 @@ export const abi = [
                 "type": "uint256"
             },
             {
-                "internalType": "enum OfferGroup",
-                "name": "subOfferGroup",
-                "type": "uint8"
+                "internalType": "uint64",
+                "name": "subOfferVersion",
+                "type": "uint64"
             }
         ],
-        "name": "checkOrderRestrictions",
+        "name": "checkParentOrderArgsCompliesWithSubOfferRestrictions",
         "outputs": [],
         "stateMutability": "view",
         "type": "function"
@@ -5330,6 +5204,25 @@ export const abi = [
                 "internalType": "bool",
                 "name": "",
                 "type": "bool"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "orderId",
+                "type": "uint256"
+            }
+        ],
+        "name": "getFinalizationDate",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
             }
         ],
         "stateMutability": "view",
@@ -5378,17 +5271,17 @@ export const abi = [
                     },
                     {
                         "internalType": "string",
-                        "name": "resultPublicKey",
+                        "name": "resultInfo",
                         "type": "string"
                     },
                     {
                         "internalType": "string",
-                        "name": "encryptedRequirements",
+                        "name": "encryptedRequirements_DEPRECATED",
                         "type": "string"
                     },
                     {
                         "internalType": "string",
-                        "name": "encryptedArgs",
+                        "name": "encryptedArgs_DEPRECATED",
                         "type": "string"
                     },
                     {
@@ -5410,6 +5303,11 @@ export const abi = [
                         "internalType": "uint256",
                         "name": "maxPriceSlippage",
                         "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "offerVersion",
+                        "type": "uint64"
                     }
                 ],
                 "internalType": "struct OrderInfo",
@@ -5451,18 +5349,66 @@ export const abi = [
                 "components": [
                     {
                         "internalType": "uint256[]",
-                        "name": "inputOffers",
+                        "name": "inputOffersIds",
                         "type": "uint256[]"
                     },
                     {
                         "internalType": "uint256",
-                        "name": "outputOffer",
+                        "name": "outputOfferId",
                         "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint64[]",
+                        "name": "inputOffersVersions",
+                        "type": "uint64[]"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "outputOfferVersion",
+                        "type": "uint64"
                     }
                 ],
                 "internalType": "struct OrderArgs",
                 "name": "",
                 "type": "tuple"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "orderId",
+                "type": "uint256"
+            }
+        ],
+        "name": "getOrderCertificate",
+        "outputs": [
+            {
+                "internalType": "string",
+                "name": "",
+                "type": "string"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "orderId",
+                "type": "uint256"
+            }
+        ],
+        "name": "getOrderConsumer",
+        "outputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
             }
         ],
         "stateMutability": "view",
@@ -5671,6 +5617,11 @@ export const abi = [
                     {
                         "internalType": "uint64",
                         "name": "gpuCores",
+                        "type": "uint64"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "vram",
                         "type": "uint64"
                     }
                 ],
@@ -6442,6 +6393,11 @@ export const abi = [
                 "internalType": "enum OfferType",
                 "name": "offerType",
                 "type": "uint8"
+            },
+            {
+                "internalType": "bool",
+                "name": "enabled",
+                "type": "bool"
             }
         ],
         "name": "addProviderOffer",
@@ -6630,6 +6586,31 @@ export const abi = [
     {
         "inputs": [
             {
+                "components": [
+                    {
+                        "internalType": "address",
+                        "name": "tokenContractAddress",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "uint32",
+                        "name": "protocolCommissionPercent",
+                        "type": "uint32"
+                    }
+                ],
+                "internalType": "struct TokenInfo[]",
+                "name": "newTokens",
+                "type": "tuple[]"
+            }
+        ],
+        "name": "addTokens",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
                 "internalType": "enum ParamName",
                 "name": "name",
                 "type": "uint8"
@@ -6648,6 +6629,19 @@ export const abi = [
     },
     {
         "inputs": [],
+        "name": "getProtocolCommissionDenominator",
+        "outputs": [
+            {
+                "internalType": "uint32",
+                "name": "",
+                "type": "uint32"
+            }
+        ],
+        "stateMutability": "pure",
+        "type": "function"
+    },
+    {
+        "inputs": [],
         "name": "getProtocolIncomeDistribution",
         "outputs": [
             {
@@ -6659,7 +6653,7 @@ export const abi = [
                     },
                     {
                         "internalType": "uint16",
-                        "name": "amount",
+                        "name": "percent",
                         "type": "uint16"
                     }
                 ],
@@ -6702,12 +6696,69 @@ export const abi = [
         "name": "getToken",
         "outputs": [
             {
-                "internalType": "address",
+                "internalType": "contract ISuperproToken",
                 "name": "",
                 "type": "address"
             }
         ],
         "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "getTokens",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "address",
+                        "name": "tokenContractAddress",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "uint32",
+                        "name": "protocolCommissionPercent",
+                        "type": "uint32"
+                    }
+                ],
+                "internalType": "struct TokenInfo[]",
+                "name": "",
+                "type": "tuple[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "tokenContractAddress",
+                "type": "address"
+            }
+        ],
+        "name": "isTokenExists",
+        "outputs": [
+            {
+                "internalType": "bool",
+                "name": "",
+                "type": "bool"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address[]",
+                "name": "tokensAddresses",
+                "type": "address[]"
+            }
+        ],
+        "name": "removeTokens",
+        "outputs": [],
+        "stateMutability": "nonpayable",
         "type": "function"
     },
     {
@@ -6771,6 +6822,11 @@ export const abi = [
                         "internalType": "uint256",
                         "name": "teeRewardPerEpoch",
                         "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "storageRequestFee",
+                        "type": "uint256"
                     }
                 ],
                 "internalType": "struct SuperproParams",
@@ -6807,7 +6863,7 @@ export const abi = [
                     },
                     {
                         "internalType": "uint16",
-                        "name": "amount",
+                        "name": "percent",
                         "type": "uint16"
                     }
                 ],
@@ -7036,7 +7092,7 @@ export const abi = [
                     }
                 ],
                 "internalType": "struct TeeOfferOption",
-                "name": "result",
+                "name": "",
                 "type": "tuple"
             }
         ],
@@ -7190,8 +7246,26 @@ export const abi = [
                     }
                 ],
                 "internalType": "struct OptionInfo",
-                "name": "info",
+                "name": "newInfo",
                 "type": "tuple"
+            }
+        ],
+        "name": "updateOptionInfo",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "teeOfferId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "optionId",
+                "type": "uint256"
             },
             {
                 "components": [
@@ -7217,11 +7291,11 @@ export const abi = [
                     }
                 ],
                 "internalType": "struct SlotUsage",
-                "name": "usage",
+                "name": "newUsage",
                 "type": "tuple"
             }
         ],
-        "name": "updateOption",
+        "name": "updateOptionUsage",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
@@ -7327,6 +7401,11 @@ export const abi = [
                     {
                         "internalType": "uint64",
                         "name": "gpuCores",
+                        "type": "uint64"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "vram",
                         "type": "uint64"
                     }
                 ],
@@ -7441,6 +7520,11 @@ export const abi = [
                                 "internalType": "uint64",
                                 "name": "gpuCores",
                                 "type": "uint64"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "vram",
+                                "type": "uint64"
                             }
                         ],
                         "internalType": "struct SlotInfo",
@@ -7530,6 +7614,11 @@ export const abi = [
                             {
                                 "internalType": "uint64",
                                 "name": "gpuCores",
+                                "type": "uint64"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "vram",
                                 "type": "uint64"
                             }
                         ],
@@ -7662,11 +7751,34 @@ export const abi = [
                         "internalType": "uint64",
                         "name": "gpuCores",
                         "type": "uint64"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "vram",
+                        "type": "uint64"
                     }
                 ],
                 "internalType": "struct SlotInfo",
-                "name": "info",
+                "name": "newInfo",
                 "type": "tuple"
+            }
+        ],
+        "name": "updateTeeOfferSlotInfo",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "teeOfferId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "slotId",
+                "type": "uint256"
             },
             {
                 "components": [
@@ -7692,11 +7804,11 @@ export const abi = [
                     }
                 ],
                 "internalType": "struct SlotUsage",
-                "name": "usage",
+                "name": "newUsage",
                 "type": "tuple"
             }
         ],
-        "name": "updateTeeOfferSlot",
+        "name": "updateTeeOfferSlotUsage",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
@@ -7718,31 +7830,6 @@ export const abi = [
             }
         ],
         "name": "TcbRewardUnlocked",
-        "type": "event"
-    },
-    {
-        "anonymous": false,
-        "inputs": [
-            {
-                "indexed": true,
-                "internalType": "address",
-                "name": "providerAuth",
-                "type": "address"
-            },
-            {
-                "indexed": true,
-                "internalType": "uint256",
-                "name": "teeOfferId",
-                "type": "uint256"
-            },
-            {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "violationRate",
-                "type": "uint256"
-            }
-        ],
-        "name": "TeeOfferViolationRateChanged",
         "type": "event"
     },
     {
@@ -7821,28 +7908,9 @@ export const abi = [
                 "type": "uint256"
             }
         ],
-        "name": "confisacateAllRewards",
+        "name": "confiscateAllRewards",
         "outputs": [],
         "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "teeOfferId",
-                "type": "uint256"
-            }
-        ],
-        "name": "getLastTeeBenchmark",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
         "type": "function"
     },
     {
@@ -8132,6 +8200,11 @@ export const abi = [
                         "internalType": "uint64",
                         "name": "gpuCores",
                         "type": "uint64"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "vram",
+                        "type": "uint64"
                     }
                 ],
                 "internalType": "struct SlotInfo",
@@ -8263,6 +8336,11 @@ export const abi = [
                                 "internalType": "uint64",
                                 "name": "gpuCores",
                                 "type": "uint64"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "vram",
+                                "type": "uint64"
                             }
                         ],
                         "internalType": "struct SlotInfo",
@@ -8364,6 +8442,11 @@ export const abi = [
                             {
                                 "internalType": "uint64",
                                 "name": "gpuCores",
+                                "type": "uint64"
+                            },
+                            {
+                                "internalType": "uint64",
+                                "name": "vram",
                                 "type": "uint64"
                             }
                         ],
@@ -8508,11 +8591,34 @@ export const abi = [
                         "internalType": "uint64",
                         "name": "gpuCores",
                         "type": "uint64"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "vram",
+                        "type": "uint64"
                     }
                 ],
                 "internalType": "struct SlotInfo",
-                "name": "info",
+                "name": "newInfo",
                 "type": "tuple"
+            }
+        ],
+        "name": "updateValueOfferSlotInfo",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "offerId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "slotId",
+                "type": "uint256"
             },
             {
                 "components": [
@@ -8523,8 +8629,26 @@ export const abi = [
                     }
                 ],
                 "internalType": "struct OptionInfo",
-                "name": "option",
+                "name": "newOption",
                 "type": "tuple"
+            }
+        ],
+        "name": "updateValueOfferSlotOption",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "offerId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "slotId",
+                "type": "uint256"
             },
             {
                 "components": [
@@ -8550,63 +8674,14 @@ export const abi = [
                     }
                 ],
                 "internalType": "struct SlotUsage",
-                "name": "usage",
+                "name": "newUsage",
                 "type": "tuple"
             }
         ],
-        "name": "updateValueOfferSlot",
+        "name": "updateValueOfferSlotUsage",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
-    },
-    {
-        "anonymous": false,
-        "inputs": [
-            {
-                "indexed": true,
-                "internalType": "address",
-                "name": "consumer",
-                "type": "address"
-            },
-            {
-                "indexed": true,
-                "internalType": "bytes32",
-                "name": "externalId",
-                "type": "bytes32"
-            },
-            {
-                "indexed": true,
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
-            },
-            {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "parentOrderId",
-                "type": "uint256"
-            },
-            {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
-            },
-            {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "deposit",
-                "type": "uint256"
-            },
-            {
-                "indexed": false,
-                "internalType": "enum OrderStatus",
-                "name": "status",
-                "type": "uint8"
-            }
-        ],
-        "name": "OrderCreated",
-        "type": "event"
     },
     {
         "inputs": [
@@ -8632,17 +8707,17 @@ export const abi = [
                     },
                     {
                         "internalType": "string",
-                        "name": "resultPublicKey",
+                        "name": "resultInfo",
                         "type": "string"
                     },
                     {
                         "internalType": "string",
-                        "name": "encryptedRequirements",
+                        "name": "encryptedRequirements_DEPRECATED",
                         "type": "string"
                     },
                     {
                         "internalType": "string",
-                        "name": "encryptedArgs",
+                        "name": "encryptedArgs_DEPRECATED",
                         "type": "string"
                     },
                     {
@@ -8664,6 +8739,11 @@ export const abi = [
                         "internalType": "uint256",
                         "name": "maxPriceSlippage",
                         "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "offerVersion",
+                        "type": "uint64"
                     }
                 ],
                 "internalType": "struct OrderInfo",
@@ -8701,13 +8781,23 @@ export const abi = [
                 "components": [
                     {
                         "internalType": "uint256[]",
-                        "name": "inputOffers",
+                        "name": "inputOffersIds",
                         "type": "uint256[]"
                     },
                     {
                         "internalType": "uint256",
-                        "name": "outputOffer",
+                        "name": "outputOfferId",
                         "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint64[]",
+                        "name": "inputOffersVersions",
+                        "type": "uint64[]"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "outputOfferVersion",
+                        "type": "uint64"
                     }
                 ],
                 "internalType": "struct OrderArgs",
@@ -8728,17 +8818,17 @@ export const abi = [
                     },
                     {
                         "internalType": "string",
-                        "name": "resultPublicKey",
+                        "name": "resultInfo",
                         "type": "string"
                     },
                     {
                         "internalType": "string",
-                        "name": "encryptedRequirements",
+                        "name": "encryptedRequirements_DEPRECATED",
                         "type": "string"
                     },
                     {
                         "internalType": "string",
-                        "name": "encryptedArgs",
+                        "name": "encryptedArgs_DEPRECATED",
                         "type": "string"
                     },
                     {
@@ -8760,6 +8850,11 @@ export const abi = [
                         "internalType": "uint256",
                         "name": "maxPriceSlippage",
                         "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "offerVersion",
+                        "type": "uint64"
                     }
                 ],
                 "internalType": "struct OrderInfo[]",
@@ -8797,13 +8892,23 @@ export const abi = [
                 "components": [
                     {
                         "internalType": "uint256[]",
-                        "name": "inputOffers",
+                        "name": "inputOffersIds",
                         "type": "uint256[]"
                     },
                     {
                         "internalType": "uint256",
-                        "name": "outputOffer",
+                        "name": "outputOfferId",
                         "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint64[]",
+                        "name": "inputOffersVersions",
+                        "type": "uint64[]"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "outputOfferVersion",
+                        "type": "uint64"
                     }
                 ],
                 "internalType": "struct OrderArgs[]",
@@ -9096,320 +9201,6 @@ export const abi = [
         "type": "function"
     },
     {
-        "anonymous": false,
-        "inputs": [
-            {
-                "components": [
-                    {
-                        "internalType": "address",
-                        "name": "facetAddress",
-                        "type": "address"
-                    },
-                    {
-                        "internalType": "enum IDiamondCut.FacetCutAction",
-                        "name": "action",
-                        "type": "uint8"
-                    },
-                    {
-                        "internalType": "bytes4[]",
-                        "name": "functionSelectors",
-                        "type": "bytes4[]"
-                    }
-                ],
-                "indexed": false,
-                "internalType": "struct IDiamondCut.FacetCut[]",
-                "name": "_diamondCut",
-                "type": "tuple[]"
-            },
-            {
-                "indexed": false,
-                "internalType": "address",
-                "name": "_init",
-                "type": "address"
-            },
-            {
-                "indexed": false,
-                "internalType": "bytes",
-                "name": "_calldata",
-                "type": "bytes"
-            }
-        ],
-        "name": "DiamondCut",
-        "type": "event"
-    },
-    {
-        "inputs": [
-            {
-                "components": [
-                    {
-                        "internalType": "address",
-                        "name": "facetAddress",
-                        "type": "address"
-                    },
-                    {
-                        "internalType": "enum IDiamondCut.FacetCutAction",
-                        "name": "action",
-                        "type": "uint8"
-                    },
-                    {
-                        "internalType": "bytes4[]",
-                        "name": "functionSelectors",
-                        "type": "bytes4[]"
-                    }
-                ],
-                "internalType": "struct IDiamondCut.FacetCut[]",
-                "name": "_diamondCut",
-                "type": "tuple[]"
-            },
-            {
-                "internalType": "bytes32",
-                "name": "version",
-                "type": "bytes32"
-            },
-            {
-                "internalType": "address",
-                "name": "_init",
-                "type": "address"
-            },
-            {
-                "internalType": "bytes",
-                "name": "_calldata",
-                "type": "bytes"
-            }
-        ],
-        "name": "diamondCut",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "bytes4",
-                "name": "_functionSelector",
-                "type": "bytes4"
-            }
-        ],
-        "name": "facetAddress",
-        "outputs": [
-            {
-                "internalType": "address",
-                "name": "",
-                "type": "address"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "facetAddresses",
-        "outputs": [
-            {
-                "internalType": "address[]",
-                "name": "",
-                "type": "address[]"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "_facet",
-                "type": "address"
-            }
-        ],
-        "name": "facetFunctionSelectors",
-        "outputs": [
-            {
-                "internalType": "bytes4[]",
-                "name": "",
-                "type": "bytes4[]"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "facets",
-        "outputs": [
-            {
-                "components": [
-                    {
-                        "internalType": "address",
-                        "name": "facetAddress",
-                        "type": "address"
-                    },
-                    {
-                        "internalType": "bytes4[]",
-                        "name": "functionSelectors",
-                        "type": "bytes4[]"
-                    }
-                ],
-                "internalType": "struct IDiamondLoupe.Facet[]",
-                "name": "facets_",
-                "type": "tuple[]"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "getVersion",
-        "outputs": [
-            {
-                "internalType": "bytes32",
-                "name": "",
-                "type": "bytes32"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "getVersionHistory",
-        "outputs": [
-            {
-                "internalType": "bytes32[]",
-                "name": "",
-                "type": "bytes32[]"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "bytes4",
-                "name": "interfaceId",
-                "type": "bytes4"
-            }
-        ],
-        "name": "supportsInterface",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "anonymous": false,
-        "inputs": [
-            {
-                "indexed": true,
-                "internalType": "address",
-                "name": "previousOwner",
-                "type": "address"
-            },
-            {
-                "indexed": true,
-                "internalType": "address",
-                "name": "newOwner",
-                "type": "address"
-            }
-        ],
-        "name": "OwnershipTransferred",
-        "type": "event"
-    },
-    {
-        "inputs": [],
-        "name": "owner",
-        "outputs": [
-            {
-                "internalType": "address",
-                "name": "owner_",
-                "type": "address"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "_newOwner",
-                "type": "address"
-            }
-        ],
-        "name": "transferOwnership",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "anonymous": false,
-        "inputs": [
-            {
-                "components": [
-                    {
-                        "internalType": "address",
-                        "name": "facetAddress",
-                        "type": "address"
-                    },
-                    {
-                        "internalType": "enum IDiamondCut.FacetCutAction",
-                        "name": "action",
-                        "type": "uint8"
-                    },
-                    {
-                        "internalType": "bytes4[]",
-                        "name": "functionSelectors",
-                        "type": "bytes4[]"
-                    }
-                ],
-                "indexed": false,
-                "internalType": "struct IDiamondCut.FacetCut[]",
-                "name": "_diamondCut",
-                "type": "tuple[]"
-            },
-            {
-                "indexed": false,
-                "internalType": "address",
-                "name": "_init",
-                "type": "address"
-            },
-            {
-                "indexed": false,
-                "internalType": "bytes",
-                "name": "_calldata",
-                "type": "bytes"
-            }
-        ],
-        "name": "DiamondCut",
-        "type": "event"
-    },
-    {
-        "anonymous": false,
-        "inputs": [
-            {
-                "indexed": true,
-                "internalType": "address",
-                "name": "previousOwner",
-                "type": "address"
-            },
-            {
-                "indexed": true,
-                "internalType": "address",
-                "name": "newOwner",
-                "type": "address"
-            }
-        ],
-        "name": "OwnershipTransferred",
-        "type": "event"
-    },
-    {
         "inputs": [],
         "name": "init",
         "outputs": [],
@@ -9417,66 +9208,45 @@ export const abi = [
         "type": "function"
     },
     {
+        "anonymous": false,
         "inputs": [
             {
+                "indexed": true,
                 "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
-            }
-        ],
-        "name": "onOfferDisabled",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
-            }
-        ],
-        "name": "onOfferEnabled",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "orderId",
+                "name": "teeOfferIssuerId",
                 "type": "uint256"
             },
             {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
+                "components": [
+                    {
+                        "internalType": "string",
+                        "name": "kty",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "crv",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "bytes32",
+                        "name": "pointX",
+                        "type": "bytes32"
+                    },
+                    {
+                        "internalType": "bytes32",
+                        "name": "pointY",
+                        "type": "bytes32"
+                    }
+                ],
+                "indexed": false,
+                "internalType": "struct PublicKey",
+                "name": "secretPublicKey",
+                "type": "tuple"
             }
         ],
-        "name": "onOrderActivated",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
-            }
-        ],
-        "name": "onOrderDeactivated",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
+        "name": "LoaderSecretPublicKeySessionUpdated",
+        "type": "event"
     },
     {
         "inputs": [
@@ -9486,120 +9256,76 @@ export const abi = [
                 "type": "uint256"
             }
         ],
-        "name": "getActualTcbId",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "tcbInitiedTime",
-                "type": "uint256"
-            }
-        ],
-        "name": "getEpochTime",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "tcbId",
-                "type": "uint256"
-            }
-        ],
-        "name": "getTcbById",
+        "name": "getLoaderSecretPublicKey",
         "outputs": [
             {
                 "components": [
                     {
-                        "internalType": "enum TcbStatus",
-                        "name": "status",
-                        "type": "uint8"
+                        "components": [
+                            {
+                                "internalType": "string",
+                                "name": "kty",
+                                "type": "string"
+                            },
+                            {
+                                "internalType": "string",
+                                "name": "crv",
+                                "type": "string"
+                            },
+                            {
+                                "internalType": "bytes32",
+                                "name": "pointX",
+                                "type": "bytes32"
+                            },
+                            {
+                                "internalType": "bytes32",
+                                "name": "pointY",
+                                "type": "bytes32"
+                            }
+                        ],
+                        "internalType": "struct PublicKey",
+                        "name": "secretPublicKey",
+                        "type": "tuple"
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "previousTcb",
-                        "type": "uint256"
+                        "components": [
+                            {
+                                "internalType": "string",
+                                "name": "der",
+                                "type": "string"
+                            },
+                            {
+                                "internalType": "bytes32",
+                                "name": "r",
+                                "type": "bytes32"
+                            },
+                            {
+                                "internalType": "bytes32",
+                                "name": "s",
+                                "type": "bytes32"
+                            },
+                            {
+                                "internalType": "uint8",
+                                "name": "v",
+                                "type": "uint8"
+                            }
+                        ],
+                        "internalType": "struct Signature",
+                        "name": "signature",
+                        "type": "tuple"
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "timeInitialized",
-                        "type": "uint256"
+                        "internalType": "uint32",
+                        "name": "signedTime",
+                        "type": "uint32"
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "timeAdded",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "lastBlocksTakenAmount",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "suspiciousBlocksTakenAmount",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint16",
-                        "name": "negative",
-                        "type": "uint16"
-                    },
-                    {
-                        "internalType": "uint16",
-                        "name": "positive",
-                        "type": "uint16"
-                    },
-                    {
-                        "internalType": "bool",
-                        "name": "lastBlocksTaken",
-                        "type": "bool"
-                    },
-                    {
-                        "internalType": "bool",
-                        "name": "suspiciousBlocksTaken",
-                        "type": "bool"
-                    },
-                    {
-                        "internalType": "bool",
-                        "name": "checked",
-                        "type": "bool"
-                    },
-                    {
-                        "internalType": "bool",
-                        "name": "rewardClaimed",
-                        "type": "bool"
+                        "internalType": "uint32",
+                        "name": "timestamp",
+                        "type": "uint32"
                     }
                 ],
-                "internalType": "struct Tcb",
+                "internalType": "struct LoaderSecretPublicKey",
                 "name": "",
                 "type": "tuple"
             }
@@ -9611,16 +9337,136 @@ export const abi = [
         "inputs": [
             {
                 "internalType": "uint256",
-                "name": "tcbId",
+                "name": "teeOfferId",
                 "type": "uint256"
+            },
+            {
+                "components": [
+                    {
+                        "internalType": "string",
+                        "name": "der",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "bytes32",
+                        "name": "r",
+                        "type": "bytes32"
+                    },
+                    {
+                        "internalType": "bytes32",
+                        "name": "s",
+                        "type": "bytes32"
+                    },
+                    {
+                        "internalType": "uint8",
+                        "name": "v",
+                        "type": "uint8"
+                    }
+                ],
+                "internalType": "struct Signature",
+                "name": "signature",
+                "type": "tuple"
+            },
+            {
+                "components": [
+                    {
+                        "internalType": "string",
+                        "name": "kty",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "crv",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "bytes32",
+                        "name": "pointX",
+                        "type": "bytes32"
+                    },
+                    {
+                        "internalType": "bytes32",
+                        "name": "pointY",
+                        "type": "bytes32"
+                    }
+                ],
+                "internalType": "struct PublicKey",
+                "name": "secretPublicKey",
+                "type": "tuple"
+            },
+            {
+                "internalType": "uint32",
+                "name": "signedTime",
+                "type": "uint32"
             }
         ],
-        "name": "getTcbReward",
+        "name": "setLoaderSecretPublicKey",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "uint256",
+                "name": "teeOfferIssuerId",
+                "type": "uint256"
+            },
+            {
+                "components": [
+                    {
+                        "internalType": "string",
+                        "name": "kty",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "crv",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "bytes32",
+                        "name": "pointX",
+                        "type": "bytes32"
+                    },
+                    {
+                        "internalType": "bytes32",
+                        "name": "pointY",
+                        "type": "bytes32"
+                    }
+                ],
+                "indexed": false,
+                "internalType": "struct PublicKey",
+                "name": "publicSessionsKey",
+                "type": "tuple"
+            }
+        ],
+        "name": "LoaderSessionKeyUpdated",
+        "type": "event"
+    },
+    {
+        "inputs": [],
+        "name": "getDisabledLoaders",
         "outputs": [
             {
-                "internalType": "uint256",
+                "internalType": "uint256[]",
                 "name": "",
-                "type": "uint256"
+                "type": "uint256[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "getEnabledLoaders",
+        "outputs": [
+            {
+                "internalType": "uint256[]",
+                "name": "",
+                "type": "uint256[]"
             }
         ],
         "stateMutability": "view",
@@ -9630,16 +9476,60 @@ export const abi = [
         "inputs": [
             {
                 "internalType": "uint256",
-                "name": "offerId",
+                "name": "teeOfferId",
                 "type": "uint256"
             }
         ],
-        "name": "isBenchmarkChangedByLastbBlock",
+        "name": "getLoaderSession",
         "outputs": [
             {
-                "internalType": "bool",
+                "components": [
+                    {
+                        "components": [
+                            {
+                                "internalType": "string",
+                                "name": "kty",
+                                "type": "string"
+                            },
+                            {
+                                "internalType": "string",
+                                "name": "crv",
+                                "type": "string"
+                            },
+                            {
+                                "internalType": "bytes32",
+                                "name": "pointX",
+                                "type": "bytes32"
+                            },
+                            {
+                                "internalType": "bytes32",
+                                "name": "pointY",
+                                "type": "bytes32"
+                            }
+                        ],
+                        "internalType": "struct PublicKey",
+                        "name": "sessionPublicKey",
+                        "type": "tuple"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "signature",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "uint32",
+                        "name": "timestamp",
+                        "type": "uint32"
+                    },
+                    {
+                        "internalType": "uint32",
+                        "name": "signedTime",
+                        "type": "uint32"
+                    }
+                ],
+                "internalType": "struct LoaderSession",
                 "name": "",
-                "type": "bool"
+                "type": "tuple"
             }
         ],
         "stateMutability": "view",
@@ -9649,19 +9539,721 @@ export const abi = [
         "inputs": [
             {
                 "internalType": "uint256",
-                "name": "tcbId",
+                "name": "teeOfferId",
                 "type": "uint256"
             }
         ],
-        "name": "isTcbProfitAvailable",
-        "outputs": [
+        "name": "removeLoaderKeys",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
             {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
+                "components": [
+                    {
+                        "internalType": "string",
+                        "name": "kty",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "crv",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "bytes32",
+                        "name": "pointX",
+                        "type": "bytes32"
+                    },
+                    {
+                        "internalType": "bytes32",
+                        "name": "pointY",
+                        "type": "bytes32"
+                    }
+                ],
+                "internalType": "struct PublicKey",
+                "name": "sessionPublicKey",
+                "type": "tuple"
+            },
+            {
+                "internalType": "string",
+                "name": "signature",
+                "type": "string"
             },
             {
                 "internalType": "uint256",
+                "name": "teeOfferIssuerId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint32",
+                "name": "signedTime",
+                "type": "uint32"
+            }
+        ],
+        "name": "setLoaderSession",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "uint256",
+                        "name": "secretKeeperId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "secretRequestorId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "offerId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "offerVersion",
+                        "type": "uint64"
+                    },
+                    {
+                        "internalType": "uint32",
+                        "name": "timestamp",
+                        "type": "uint32"
+                    }
+                ],
+                "internalType": "struct SecretRequest",
+                "name": "request",
+                "type": "tuple"
+            },
+            {
+                "components": [
+                    {
+                        "internalType": "string",
+                        "name": "kty",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "crv",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "bytes32",
+                        "name": "pointX",
+                        "type": "bytes32"
+                    },
+                    {
+                        "internalType": "bytes32",
+                        "name": "pointY",
+                        "type": "bytes32"
+                    }
+                ],
+                "internalType": "struct PublicKey",
+                "name": "sessionPublicKey",
+                "type": "tuple"
+            },
+            {
+                "internalType": "string",
+                "name": "signature",
+                "type": "string"
+            },
+            {
+                "internalType": "uint256",
+                "name": "teeOfferIssuerId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint32",
+                "name": "signedTime",
+                "type": "uint32"
+            }
+        ],
+        "name": "setLoaderSessionAndRequestSecret",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "uint256",
+                "name": "offerId",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "offerVersion",
+                "type": "uint256"
+            },
+            {
+                "indexed": true,
+                "internalType": "uint256",
+                "name": "teeOfferKeeperId",
+                "type": "uint256"
+            },
+            {
+                "indexed": true,
+                "internalType": "uint256",
+                "name": "teeOfferIssuerId",
+                "type": "uint256"
+            }
+        ],
+        "name": "OfferResourceCreated",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "uint256",
+                "name": "requestOfferId",
+                "type": "uint256"
+            },
+            {
+                "indexed": true,
+                "internalType": "uint256",
+                "name": "requestOfferVersion",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "orderId",
+                "type": "uint256"
+            }
+        ],
+        "name": "OrderResourceCreated",
+        "type": "event"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "teeOfferKeeperId",
+                "type": "uint256"
+            }
+        ],
+        "name": "clearOfferResources",
+        "outputs": [
+            {
+                "internalType": "bool",
+                "name": "",
+                "type": "bool"
+            }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "requestOfferId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint64",
+                "name": "requestOfferVersion",
+                "type": "uint64"
+            },
+            {
+                "internalType": "string",
+                "name": "resultInfo",
+                "type": "string"
+            },
+            {
+                "components": [
+                    {
+                        "internalType": "string",
+                        "name": "der",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "bytes32",
+                        "name": "r",
+                        "type": "bytes32"
+                    },
+                    {
+                        "internalType": "bytes32",
+                        "name": "s",
+                        "type": "bytes32"
+                    },
+                    {
+                        "internalType": "uint8",
+                        "name": "v",
+                        "type": "uint8"
+                    }
+                ],
+                "internalType": "struct Signature",
+                "name": "resultInfoSignatureBySecretKey",
+                "type": "tuple"
+            },
+            {
+                "internalType": "uint32",
+                "name": "signedTime",
+                "type": "uint32"
+            }
+        ],
+        "name": "createResourceOrder",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "teeOfferIssuerId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "teeOfferKeeperId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "offerId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint64",
+                "name": "offerVersion",
+                "type": "uint64"
+            }
+        ],
+        "name": "getOfferResource",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "uint256",
+                        "name": "offerId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "teeOfferIssuerId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "teeOfferKeeperId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "storageOrderId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "offerVersion",
+                        "type": "uint64"
+                    },
+                    {
+                        "internalType": "uint32",
+                        "name": "timestamp",
+                        "type": "uint32"
+                    },
+                    {
+                        "internalType": "uint32",
+                        "name": "signedTime",
+                        "type": "uint32"
+                    },
+                    {
+                        "components": [
+                            {
+                                "internalType": "string",
+                                "name": "der",
+                                "type": "string"
+                            },
+                            {
+                                "internalType": "bytes32",
+                                "name": "r",
+                                "type": "bytes32"
+                            },
+                            {
+                                "internalType": "bytes32",
+                                "name": "s",
+                                "type": "bytes32"
+                            },
+                            {
+                                "internalType": "uint8",
+                                "name": "v",
+                                "type": "uint8"
+                            }
+                        ],
+                        "internalType": "struct Signature",
+                        "name": "signature",
+                        "type": "tuple"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "signedEncryptedData",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "enum OfferType",
+                        "name": "offerType",
+                        "type": "uint8"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "solutionHash",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "bool",
+                        "name": "previousDataCopied",
+                        "type": "bool"
+                    }
+                ],
+                "internalType": "struct OfferResource",
+                "name": "",
+                "type": "tuple"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "teeOfferIssuerId",
+                "type": "uint256"
+            }
+        ],
+        "name": "getOfferResourcesByIssuerId",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "uint256",
+                        "name": "offerId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "teeOfferIssuerId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "teeOfferKeeperId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "storageOrderId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "offerVersion",
+                        "type": "uint64"
+                    },
+                    {
+                        "internalType": "uint32",
+                        "name": "timestamp",
+                        "type": "uint32"
+                    },
+                    {
+                        "internalType": "uint32",
+                        "name": "signedTime",
+                        "type": "uint32"
+                    },
+                    {
+                        "components": [
+                            {
+                                "internalType": "string",
+                                "name": "der",
+                                "type": "string"
+                            },
+                            {
+                                "internalType": "bytes32",
+                                "name": "r",
+                                "type": "bytes32"
+                            },
+                            {
+                                "internalType": "bytes32",
+                                "name": "s",
+                                "type": "bytes32"
+                            },
+                            {
+                                "internalType": "uint8",
+                                "name": "v",
+                                "type": "uint8"
+                            }
+                        ],
+                        "internalType": "struct Signature",
+                        "name": "signature",
+                        "type": "tuple"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "signedEncryptedData",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "enum OfferType",
+                        "name": "offerType",
+                        "type": "uint8"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "solutionHash",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "bool",
+                        "name": "previousDataCopied",
+                        "type": "bool"
+                    }
+                ],
+                "internalType": "struct OfferResource[]",
+                "name": "",
+                "type": "tuple[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "teeKeeperId",
+                "type": "uint256"
+            }
+        ],
+        "name": "getOfferResourcesByKeeperId",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "uint256",
+                        "name": "offerId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "teeOfferIssuerId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "teeOfferKeeperId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "storageOrderId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "offerVersion",
+                        "type": "uint64"
+                    },
+                    {
+                        "internalType": "uint32",
+                        "name": "timestamp",
+                        "type": "uint32"
+                    },
+                    {
+                        "internalType": "uint32",
+                        "name": "signedTime",
+                        "type": "uint32"
+                    },
+                    {
+                        "components": [
+                            {
+                                "internalType": "string",
+                                "name": "der",
+                                "type": "string"
+                            },
+                            {
+                                "internalType": "bytes32",
+                                "name": "r",
+                                "type": "bytes32"
+                            },
+                            {
+                                "internalType": "bytes32",
+                                "name": "s",
+                                "type": "bytes32"
+                            },
+                            {
+                                "internalType": "uint8",
+                                "name": "v",
+                                "type": "uint8"
+                            }
+                        ],
+                        "internalType": "struct Signature",
+                        "name": "signature",
+                        "type": "tuple"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "signedEncryptedData",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "enum OfferType",
+                        "name": "offerType",
+                        "type": "uint8"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "solutionHash",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "bool",
+                        "name": "previousDataCopied",
+                        "type": "bool"
+                    }
+                ],
+                "internalType": "struct OfferResource[]",
+                "name": "",
+                "type": "tuple[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "offerId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint64",
+                "name": "version",
+                "type": "uint64"
+            }
+        ],
+        "name": "getOfferResourcesByOfferVersion",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "uint256",
+                        "name": "offerId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "teeOfferIssuerId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "teeOfferKeeperId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "storageOrderId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "offerVersion",
+                        "type": "uint64"
+                    },
+                    {
+                        "internalType": "uint32",
+                        "name": "timestamp",
+                        "type": "uint32"
+                    },
+                    {
+                        "internalType": "uint32",
+                        "name": "signedTime",
+                        "type": "uint32"
+                    },
+                    {
+                        "components": [
+                            {
+                                "internalType": "string",
+                                "name": "der",
+                                "type": "string"
+                            },
+                            {
+                                "internalType": "bytes32",
+                                "name": "r",
+                                "type": "bytes32"
+                            },
+                            {
+                                "internalType": "bytes32",
+                                "name": "s",
+                                "type": "bytes32"
+                            },
+                            {
+                                "internalType": "uint8",
+                                "name": "v",
+                                "type": "uint8"
+                            }
+                        ],
+                        "internalType": "struct Signature",
+                        "name": "signature",
+                        "type": "tuple"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "signedEncryptedData",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "enum OfferType",
+                        "name": "offerType",
+                        "type": "uint8"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "solutionHash",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "bool",
+                        "name": "previousDataCopied",
+                        "type": "bool"
+                    }
+                ],
+                "internalType": "struct OfferResource[]",
+                "name": "",
+                "type": "tuple[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "teeKeeperId",
+                "type": "uint256"
+            }
+        ],
+        "name": "getOfferResourcesCountByKeeperId",
+        "outputs": [
+            {
+                "internalType": "uint256",
                 "name": "",
                 "type": "uint256"
             }
@@ -9675,14 +10267,302 @@ export const abi = [
                 "internalType": "uint256",
                 "name": "offerId",
                 "type": "uint256"
+            },
+            {
+                "internalType": "uint32",
+                "name": "offerVersion",
+                "type": "uint32"
             }
         ],
-        "name": "isTeeOfferVerifying",
+        "name": "getReplicationFactorFulfilled",
         "outputs": [
             {
-                "internalType": "bool",
+                "internalType": "uint32",
                 "name": "",
-                "type": "bool"
+                "type": "uint32"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "uint256",
+                        "name": "offerId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "teeOfferIssuerId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "teeOfferKeeperId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "storageOrderId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "offerVersion",
+                        "type": "uint64"
+                    },
+                    {
+                        "internalType": "uint32",
+                        "name": "timestamp",
+                        "type": "uint32"
+                    },
+                    {
+                        "internalType": "uint32",
+                        "name": "signedTime",
+                        "type": "uint32"
+                    },
+                    {
+                        "components": [
+                            {
+                                "internalType": "string",
+                                "name": "der",
+                                "type": "string"
+                            },
+                            {
+                                "internalType": "bytes32",
+                                "name": "r",
+                                "type": "bytes32"
+                            },
+                            {
+                                "internalType": "bytes32",
+                                "name": "s",
+                                "type": "bytes32"
+                            },
+                            {
+                                "internalType": "uint8",
+                                "name": "v",
+                                "type": "uint8"
+                            }
+                        ],
+                        "internalType": "struct Signature",
+                        "name": "signature",
+                        "type": "tuple"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "signedEncryptedData",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "enum OfferType",
+                        "name": "offerType",
+                        "type": "uint8"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "solutionHash",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "bool",
+                        "name": "previousDataCopied",
+                        "type": "bool"
+                    }
+                ],
+                "internalType": "struct OfferResource",
+                "name": "resource",
+                "type": "tuple"
+            },
+            {
+                "internalType": "uint32",
+                "name": "n",
+                "type": "uint32"
+            }
+        ],
+        "name": "incrementReplicationFactor",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "teeOfferIssuerId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "teeOfferKeeperId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "offerId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint64",
+                "name": "offerVersion",
+                "type": "uint64"
+            }
+        ],
+        "name": "removeOfferResource",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "uint256",
+                        "name": "offerId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "teeOfferIssuerId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "teeOfferKeeperId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "storageOrderId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "offerVersion",
+                        "type": "uint64"
+                    },
+                    {
+                        "internalType": "uint32",
+                        "name": "timestamp",
+                        "type": "uint32"
+                    },
+                    {
+                        "internalType": "uint32",
+                        "name": "signedTime",
+                        "type": "uint32"
+                    },
+                    {
+                        "components": [
+                            {
+                                "internalType": "string",
+                                "name": "der",
+                                "type": "string"
+                            },
+                            {
+                                "internalType": "bytes32",
+                                "name": "r",
+                                "type": "bytes32"
+                            },
+                            {
+                                "internalType": "bytes32",
+                                "name": "s",
+                                "type": "bytes32"
+                            },
+                            {
+                                "internalType": "uint8",
+                                "name": "v",
+                                "type": "uint8"
+                            }
+                        ],
+                        "internalType": "struct Signature",
+                        "name": "signature",
+                        "type": "tuple"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "signedEncryptedData",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "enum OfferType",
+                        "name": "offerType",
+                        "type": "uint8"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "solutionHash",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "bool",
+                        "name": "previousDataCopied",
+                        "type": "bool"
+                    }
+                ],
+                "internalType": "struct OfferResource",
+                "name": "resource",
+                "type": "tuple"
+            }
+        ],
+        "name": "setOfferResource",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "offerId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint32",
+                "name": "offerVersion",
+                "type": "uint32"
+            }
+        ],
+        "name": "getStorageOrdersAllocated",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "uint256",
+                        "name": "teeOfferIssuerId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "storageOrderId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint32",
+                        "name": "distributionReplicationFactor",
+                        "type": "uint32"
+                    },
+                    {
+                        "internalType": "uint32",
+                        "name": "timestamp",
+                        "type": "uint32"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "offerVersion",
+                        "type": "uint64"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "offerId",
+                        "type": "uint256"
+                    }
+                ],
+                "internalType": "struct OfferStorageAllocated",
+                "name": "",
+                "type": "tuple"
             }
         ],
         "stateMutability": "view",
@@ -9692,11 +10572,111 @@ export const abi = [
         "inputs": [
             {
                 "internalType": "uint256",
-                "name": "tcbId",
+                "name": "teeOfferIssurId",
                 "type": "uint256"
             }
         ],
-        "name": "addLastBlock",
+        "name": "getStorageOrdersAllocatedByIssuer",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "uint256",
+                        "name": "teeOfferIssuerId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "storageOrderId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint32",
+                        "name": "distributionReplicationFactor",
+                        "type": "uint32"
+                    },
+                    {
+                        "internalType": "uint32",
+                        "name": "timestamp",
+                        "type": "uint32"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "offerVersion",
+                        "type": "uint64"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "offerId",
+                        "type": "uint256"
+                    }
+                ],
+                "internalType": "struct OfferStorageAllocated[]",
+                "name": "",
+                "type": "tuple[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "uint256",
+                "name": "offerId",
+                "type": "uint256"
+            },
+            {
+                "indexed": true,
+                "internalType": "uint64",
+                "name": "offerVersion",
+                "type": "uint64"
+            }
+        ],
+        "name": "OfferStorageRequestCanceled",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "uint256",
+                "name": "offerId",
+                "type": "uint256"
+            },
+            {
+                "indexed": true,
+                "internalType": "uint64",
+                "name": "offerVersion",
+                "type": "uint64"
+            },
+            {
+                "indexed": true,
+                "internalType": "uint256",
+                "name": "teeOfferIssuerId",
+                "type": "uint256"
+            }
+        ],
+        "name": "OfferStorageRequestCreated",
+        "type": "event"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "offerId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint64",
+                "name": "version",
+                "type": "uint64"
+            }
+        ],
+        "name": "cancelOfferStorageRequest",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
@@ -9705,11 +10685,300 @@ export const abi = [
         "inputs": [
             {
                 "internalType": "uint256",
-                "name": "tcbId",
+                "name": "teeOfferIssuerId",
                 "type": "uint256"
             }
         ],
-        "name": "addSuspiciousBlock",
+        "name": "getOfferStorageRequestsCountByIssuerId",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "teeOfferIssuerId",
+                "type": "uint256"
+            }
+        ],
+        "name": "getOffersStorageRequestsByIssuerId",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "uint256",
+                        "name": "offerId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "teeOfferIssuerId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "storageOfferId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "storageSlotId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "deposit",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "orderId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "offerVersion",
+                        "type": "uint64"
+                    },
+                    {
+                        "internalType": "uint32",
+                        "name": "replicationFactor",
+                        "type": "uint32"
+                    },
+                    {
+                        "internalType": "uint32",
+                        "name": "timestamp",
+                        "type": "uint32"
+                    },
+                    {
+                        "internalType": "bool",
+                        "name": "copyPreviousData",
+                        "type": "bool"
+                    }
+                ],
+                "internalType": "struct OfferStorageRequest[]",
+                "name": "",
+                "type": "tuple[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "offerId",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint64",
+                "name": "version",
+                "type": "uint64"
+            }
+        ],
+        "name": "getOffersStorageRequestsByOfferVersion",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "uint256",
+                        "name": "offerId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "teeOfferIssuerId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "storageOfferId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "storageSlotId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "deposit",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "orderId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "offerVersion",
+                        "type": "uint64"
+                    },
+                    {
+                        "internalType": "uint32",
+                        "name": "replicationFactor",
+                        "type": "uint32"
+                    },
+                    {
+                        "internalType": "uint32",
+                        "name": "timestamp",
+                        "type": "uint32"
+                    },
+                    {
+                        "internalType": "bool",
+                        "name": "copyPreviousData",
+                        "type": "bool"
+                    }
+                ],
+                "internalType": "struct OfferStorageRequest",
+                "name": "",
+                "type": "tuple"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "uint256",
+                        "name": "offerId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "teeOfferIssuerId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "storageOfferId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "storageSlotId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "deposit",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "orderId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "offerVersion",
+                        "type": "uint64"
+                    },
+                    {
+                        "internalType": "uint32",
+                        "name": "replicationFactor",
+                        "type": "uint32"
+                    },
+                    {
+                        "internalType": "uint32",
+                        "name": "timestamp",
+                        "type": "uint32"
+                    },
+                    {
+                        "internalType": "bool",
+                        "name": "copyPreviousData",
+                        "type": "bool"
+                    }
+                ],
+                "internalType": "struct OfferStorageRequest",
+                "name": "request",
+                "type": "tuple"
+            }
+        ],
+        "name": "setOffersStorageRequest",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "internalType": "uint256",
+                "name": "secretRequestorId",
+                "type": "uint256"
+            },
+            {
+                "indexed": true,
+                "internalType": "uint256",
+                "name": "secretKeeperId",
+                "type": "uint256"
+            },
+            {
+                "indexed": true,
+                "internalType": "uint256",
+                "name": "offerId",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint64",
+                "name": "offerVersion",
+                "type": "uint64"
+            }
+        ],
+        "name": "SecretRequestCreated",
+        "type": "event"
+    },
+    {
+        "inputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "uint256",
+                        "name": "secretKeeperId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "secretRequestorId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "offerId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "offerVersion",
+                        "type": "uint64"
+                    },
+                    {
+                        "internalType": "uint32",
+                        "name": "timestamp",
+                        "type": "uint32"
+                    }
+                ],
+                "internalType": "struct SecretRequest",
+                "name": "request",
+                "type": "tuple"
+            }
+        ],
+        "name": "cancelSecretRequest",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
@@ -9718,12 +10987,18 @@ export const abi = [
         "inputs": [
             {
                 "internalType": "uint256",
-                "name": "tcbId",
+                "name": "teeOfferKeeperId",
                 "type": "uint256"
             }
         ],
-        "name": "addTcbToEpoch",
-        "outputs": [],
+        "name": "clearSecretRequests",
+        "outputs": [
+            {
+                "internalType": "bool",
+                "name": "",
+                "type": "bool"
+            }
+        ],
         "stateMutability": "nonpayable",
         "type": "function"
     },
@@ -9731,11 +11006,168 @@ export const abi = [
         "inputs": [
             {
                 "internalType": "uint256",
-                "name": "compenstaion",
+                "name": "teeOfferKeeperId",
                 "type": "uint256"
             }
         ],
-        "name": "increaseNextEpochCompensation",
+        "name": "getSecretRequestsByKeeperId",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "uint256",
+                        "name": "secretKeeperId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "secretRequestorId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "offerId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "offerVersion",
+                        "type": "uint64"
+                    },
+                    {
+                        "internalType": "uint32",
+                        "name": "timestamp",
+                        "type": "uint32"
+                    }
+                ],
+                "internalType": "struct SecretRequest[]",
+                "name": "",
+                "type": "tuple[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "teeOfferRequestorId",
+                "type": "uint256"
+            }
+        ],
+        "name": "getSecretRequestsByRequestorId",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "uint256",
+                        "name": "secretKeeperId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "secretRequestorId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "offerId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "offerVersion",
+                        "type": "uint64"
+                    },
+                    {
+                        "internalType": "uint32",
+                        "name": "timestamp",
+                        "type": "uint32"
+                    }
+                ],
+                "internalType": "struct SecretRequest[]",
+                "name": "",
+                "type": "tuple[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "teeOfferKeeperId",
+                "type": "uint256"
+            }
+        ],
+        "name": "getSecretRequestsCountByKeeperId",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "teeOfferRequestorId",
+                "type": "uint256"
+            }
+        ],
+        "name": "getSecretRequestsCountByRequestorId",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "uint256",
+                        "name": "secretKeeperId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "secretRequestorId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "offerId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "offerVersion",
+                        "type": "uint64"
+                    },
+                    {
+                        "internalType": "uint32",
+                        "name": "timestamp",
+                        "type": "uint32"
+                    }
+                ],
+                "internalType": "struct SecretRequest",
+                "name": "request",
+                "type": "tuple"
+            }
+        ],
+        "name": "setSecretRequest",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
@@ -9743,12 +11175,44 @@ export const abi = [
     {
         "inputs": [
             {
-                "internalType": "uint256",
-                "name": "tcbId",
-                "type": "uint256"
+                "internalType": "address",
+                "name": "sender",
+                "type": "address"
+            },
+            {
+                "components": [
+                    {
+                        "internalType": "uint256",
+                        "name": "secretKeeperId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "secretRequestorId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "offerId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint64",
+                        "name": "offerVersion",
+                        "type": "uint64"
+                    },
+                    {
+                        "internalType": "uint32",
+                        "name": "timestamp",
+                        "type": "uint32"
+                    }
+                ],
+                "internalType": "struct SecretRequest",
+                "name": "request",
+                "type": "tuple"
             }
         ],
-        "name": "updateConsensusTables",
+        "name": "setSecretRequestByApp",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
@@ -9783,1148 +11247,6 @@ export const abi = [
         "inputs": [
             {
                 "internalType": "address",
-                "name": "depositOwner",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "amount",
-                "type": "uint256"
-            }
-        ],
-        "name": "addProfit",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "depositOwner",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "amount",
-                "type": "uint256"
-            }
-        ],
-        "name": "confiscateTokensFrom",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "depositOwner",
-                "type": "address"
-            }
-        ],
-        "name": "getDepositInfo",
-        "outputs": [
-            {
-                "components": [
-                    {
-                        "internalType": "uint256",
-                        "name": "amount",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "totalLocked",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "profit",
-                        "type": "uint256"
-                    }
-                ],
-                "internalType": "struct DepositInfo",
-                "name": "",
-                "type": "tuple"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "depositOwner",
-                "type": "address"
-            }
-        ],
-        "name": "getLockedTokensAmount",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "depositOwner",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "amount",
-                "type": "uint256"
-            }
-        ],
-        "name": "lockDeposit",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "amount",
-                "type": "uint256"
-            }
-        ],
-        "name": "replenish",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "depositOwner",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "amount",
-                "type": "uint256"
-            }
-        ],
-        "name": "replenishFor",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "funder",
-                "type": "address"
-            },
-            {
-                "internalType": "address",
-                "name": "depositOwner",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "amount",
-                "type": "uint256"
-            }
-        ],
-        "name": "replenishForByApp",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "depositOwner",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "amount",
-                "type": "uint256"
-            }
-        ],
-        "name": "unlockDeposit",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "amount",
-                "type": "uint256"
-            }
-        ],
-        "name": "withdraw",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
-            }
-        ],
-        "name": "getOfferGroup",
-        "outputs": [
-            {
-                "internalType": "enum OfferGroup",
-                "name": "",
-                "type": "uint8"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint256",
-                "name": "slotId",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint32",
-                "name": "slotCount",
-                "type": "uint32"
-            },
-            {
-                "internalType": "uint256[]",
-                "name": "optionsIds",
-                "type": "uint256[]"
-            },
-            {
-                "internalType": "uint32[]",
-                "name": "optionsCount",
-                "type": "uint32[]"
-            }
-        ],
-        "name": "getOfferMinDeposit",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
-            }
-        ],
-        "name": "getOfferProviderActionAccount",
-        "outputs": [
-            {
-                "internalType": "address",
-                "name": "",
-                "type": "address"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
-            }
-        ],
-        "name": "getOfferProviderAuthority",
-        "outputs": [
-            {
-                "internalType": "address",
-                "name": "",
-                "type": "address"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
-            }
-        ],
-        "name": "getOfferType",
-        "outputs": [
-            {
-                "internalType": "enum OfferType",
-                "name": "",
-                "type": "uint8"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "getOffersTotalCount",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "providerAuth",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "additional",
-                "type": "uint256"
-            }
-        ],
-        "name": "getProviderRequiredSecDepo",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
-            }
-        ],
-        "name": "getTeeOffer",
-        "outputs": [
-            {
-                "components": [
-                    {
-                        "internalType": "uint256",
-                        "name": "id",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "address",
-                        "name": "providerAuth",
-                        "type": "address"
-                    },
-                    {
-                        "components": [
-                            {
-                                "internalType": "string",
-                                "name": "name",
-                                "type": "string"
-                            },
-                            {
-                                "internalType": "string",
-                                "name": "description",
-                                "type": "string"
-                            },
-                            {
-                                "internalType": "string",
-                                "name": "teeType",
-                                "type": "string"
-                            },
-                            {
-                                "internalType": "string",
-                                "name": "properties",
-                                "type": "string"
-                            },
-                            {
-                                "internalType": "string",
-                                "name": "tlb",
-                                "type": "string"
-                            },
-                            {
-                                "internalType": "string",
-                                "name": "argsPublicKey",
-                                "type": "string"
-                            }
-                        ],
-                        "internalType": "struct TeeOfferInfo",
-                        "name": "info",
-                        "type": "tuple"
-                    },
-                    {
-                        "internalType": "bool",
-                        "name": "enabled",
-                        "type": "bool"
-                    }
-                ],
-                "internalType": "struct TeeOfferData",
-                "name": "ret",
-                "type": "tuple"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "teeOfferId",
-                "type": "uint256"
-            }
-        ],
-        "name": "getTeeOfferHardwareInfo",
-        "outputs": [
-            {
-                "components": [
-                    {
-                        "internalType": "uint64",
-                        "name": "cpuCores",
-                        "type": "uint64"
-                    },
-                    {
-                        "internalType": "uint64",
-                        "name": "ram",
-                        "type": "uint64"
-                    },
-                    {
-                        "internalType": "uint64",
-                        "name": "diskUsage",
-                        "type": "uint64"
-                    },
-                    {
-                        "internalType": "uint64",
-                        "name": "gpuCores",
-                        "type": "uint64"
-                    }
-                ],
-                "internalType": "struct SlotInfo",
-                "name": "",
-                "type": "tuple"
-            },
-            {
-                "components": [
-                    {
-                        "internalType": "string",
-                        "name": "data",
-                        "type": "string"
-                    }
-                ],
-                "internalType": "struct OptionInfo",
-                "name": "",
-                "type": "tuple"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
-            }
-        ],
-        "name": "getValueOffer",
-        "outputs": [
-            {
-                "components": [
-                    {
-                        "internalType": "uint256",
-                        "name": "id",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "address",
-                        "name": "providerAuth",
-                        "type": "address"
-                    },
-                    {
-                        "components": [
-                            {
-                                "internalType": "string",
-                                "name": "name",
-                                "type": "string"
-                            },
-                            {
-                                "internalType": "enum OfferGroup",
-                                "name": "group",
-                                "type": "uint8"
-                            },
-                            {
-                                "internalType": "enum OfferType",
-                                "name": "offerType",
-                                "type": "uint8"
-                            },
-                            {
-                                "internalType": "bool",
-                                "name": "cancelable",
-                                "type": "bool"
-                            },
-                            {
-                                "internalType": "string",
-                                "name": "description",
-                                "type": "string"
-                            },
-                            {
-                                "internalType": "string",
-                                "name": "input",
-                                "type": "string"
-                            },
-                            {
-                                "internalType": "string",
-                                "name": "output",
-                                "type": "string"
-                            },
-                            {
-                                "internalType": "string",
-                                "name": "allowedArgs",
-                                "type": "string"
-                            },
-                            {
-                                "internalType": "address[]",
-                                "name": "allowedAccounts",
-                                "type": "address[]"
-                            },
-                            {
-                                "internalType": "string",
-                                "name": "argsPublicKey",
-                                "type": "string"
-                            },
-                            {
-                                "internalType": "string",
-                                "name": "resultResource",
-                                "type": "string"
-                            },
-                            {
-                                "internalType": "string",
-                                "name": "linkage",
-                                "type": "string"
-                            },
-                            {
-                                "internalType": "string",
-                                "name": "hash",
-                                "type": "string"
-                            },
-                            {
-                                "internalType": "string",
-                                "name": "metadata",
-                                "type": "string"
-                            }
-                        ],
-                        "internalType": "struct ValueOfferInfo",
-                        "name": "info",
-                        "type": "tuple"
-                    },
-                    {
-                        "internalType": "bool",
-                        "name": "enabled",
-                        "type": "bool"
-                    }
-                ],
-                "internalType": "struct ValueOfferData",
-                "name": "ret",
-                "type": "tuple"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
-            }
-        ],
-        "name": "isAutoCompleteOffer",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
-            },
-            {
-                "internalType": "address",
-                "name": "consumer",
-                "type": "address"
-            }
-        ],
-        "name": "isOfferAllowedForConsumer",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
-            }
-        ],
-        "name": "isOfferCancelable",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
-            }
-        ],
-        "name": "isOfferEnabled",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
-            }
-        ],
-        "name": "isOfferExists",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
-            },
-            {
-                "internalType": "enum OfferType",
-                "name": "offerType",
-                "type": "uint8"
-            }
-        ],
-        "name": "isOfferRestrictedByOfferType",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint256",
-                "name": "otherOfferId",
-                "type": "uint256"
-            }
-        ],
-        "name": "isOfferRestrictionsPermitOtherOffer",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
-            }
-        ],
-        "name": "isTeeOfferBanned",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
-            }
-        ],
-        "name": "calculateOrderCurrentPrice",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "consumer",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
-            }
-        ],
-        "name": "cancelOrderByApp",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "consumer",
-                "type": "address"
-            },
-            {
-                "components": [
-                    {
-                        "internalType": "uint256",
-                        "name": "offerId",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "string",
-                        "name": "resultPublicKey",
-                        "type": "string"
-                    },
-                    {
-                        "internalType": "string",
-                        "name": "encryptedRequirements",
-                        "type": "string"
-                    },
-                    {
-                        "internalType": "string",
-                        "name": "encryptedArgs",
-                        "type": "string"
-                    },
-                    {
-                        "internalType": "enum OrderStatus",
-                        "name": "status",
-                        "type": "uint8"
-                    },
-                    {
-                        "internalType": "bytes32",
-                        "name": "externalId",
-                        "type": "bytes32"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "expectedPrice",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "maxPriceSlippage",
-                        "type": "uint256"
-                    }
-                ],
-                "internalType": "struct OrderInfo",
-                "name": "info",
-                "type": "tuple"
-            },
-            {
-                "components": [
-                    {
-                        "internalType": "uint256",
-                        "name": "slotId",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint32",
-                        "name": "slotCount",
-                        "type": "uint32"
-                    },
-                    {
-                        "internalType": "uint256[]",
-                        "name": "optionsIds",
-                        "type": "uint256[]"
-                    },
-                    {
-                        "internalType": "uint32[]",
-                        "name": "optionsCount",
-                        "type": "uint32[]"
-                    }
-                ],
-                "internalType": "struct OrderSlots",
-                "name": "slots",
-                "type": "tuple"
-            },
-            {
-                "components": [
-                    {
-                        "internalType": "uint256[]",
-                        "name": "inputOffers",
-                        "type": "uint256[]"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "outputOffer",
-                        "type": "uint256"
-                    }
-                ],
-                "internalType": "struct OrderArgs",
-                "name": "args",
-                "type": "tuple"
-            },
-            {
-                "internalType": "uint256",
-                "name": "deposit",
-                "type": "uint256"
-            },
-            {
-                "internalType": "bool",
-                "name": "suspended",
-                "type": "bool"
-            }
-        ],
-        "name": "createOrderByApp",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "consumer",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "parentOrderId",
-                "type": "uint256"
-            },
-            {
-                "components": [
-                    {
-                        "internalType": "uint256",
-                        "name": "offerId",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "string",
-                        "name": "resultPublicKey",
-                        "type": "string"
-                    },
-                    {
-                        "internalType": "string",
-                        "name": "encryptedRequirements",
-                        "type": "string"
-                    },
-                    {
-                        "internalType": "string",
-                        "name": "encryptedArgs",
-                        "type": "string"
-                    },
-                    {
-                        "internalType": "enum OrderStatus",
-                        "name": "status",
-                        "type": "uint8"
-                    },
-                    {
-                        "internalType": "bytes32",
-                        "name": "externalId",
-                        "type": "bytes32"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "expectedPrice",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "maxPriceSlippage",
-                        "type": "uint256"
-                    }
-                ],
-                "internalType": "struct OrderInfo",
-                "name": "suborderInfo",
-                "type": "tuple"
-            },
-            {
-                "components": [
-                    {
-                        "internalType": "uint256",
-                        "name": "slotId",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint32",
-                        "name": "slotCount",
-                        "type": "uint32"
-                    },
-                    {
-                        "internalType": "uint256[]",
-                        "name": "optionsIds",
-                        "type": "uint256[]"
-                    },
-                    {
-                        "internalType": "uint32[]",
-                        "name": "optionsCount",
-                        "type": "uint32[]"
-                    }
-                ],
-                "internalType": "struct OrderSlots",
-                "name": "suborderSlots",
-                "type": "tuple"
-            },
-            {
-                "components": [
-                    {
-                        "internalType": "uint256[]",
-                        "name": "inputOffers",
-                        "type": "uint256[]"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "outputOffer",
-                        "type": "uint256"
-                    }
-                ],
-                "internalType": "struct OrderArgs",
-                "name": "suborderArgs",
-                "type": "tuple"
-            },
-            {
-                "components": [
-                    {
-                        "internalType": "bool",
-                        "name": "blockParentOrder",
-                        "type": "bool"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "deposit",
-                        "type": "uint256"
-                    }
-                ],
-                "internalType": "struct SubOrderParams",
-                "name": "params",
-                "type": "tuple"
-            }
-        ],
-        "name": "createSubOrderByApp",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
-            }
-        ],
-        "name": "getOrder",
-        "outputs": [
-            {
-                "internalType": "address",
-                "name": "",
-                "type": "address"
-            },
-            {
-                "components": [
-                    {
-                        "internalType": "uint256",
-                        "name": "offerId",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "string",
-                        "name": "resultPublicKey",
-                        "type": "string"
-                    },
-                    {
-                        "internalType": "string",
-                        "name": "encryptedRequirements",
-                        "type": "string"
-                    },
-                    {
-                        "internalType": "string",
-                        "name": "encryptedArgs",
-                        "type": "string"
-                    },
-                    {
-                        "internalType": "enum OrderStatus",
-                        "name": "status",
-                        "type": "uint8"
-                    },
-                    {
-                        "internalType": "bytes32",
-                        "name": "externalId",
-                        "type": "bytes32"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "expectedPrice",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "maxPriceSlippage",
-                        "type": "uint256"
-                    }
-                ],
-                "internalType": "struct OrderInfo",
-                "name": "",
-                "type": "tuple"
-            },
-            {
-                "components": [
-                    {
-                        "internalType": "string",
-                        "name": "encryptedResult",
-                        "type": "string"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "orderPrice",
-                        "type": "uint256"
-                    }
-                ],
-                "internalType": "struct OrderResult",
-                "name": "",
-                "type": "tuple"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "consumer",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
-            }
-        ],
-        "name": "startOrderByApp",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
                 "name": "sender",
                 "type": "address"
             },
@@ -10937,591 +11259,6 @@ export const abi = [
         "name": "withdrawChangeByApp",
         "outputs": [],
         "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
-            },
-            {
-                "components": [
-                    {
-                        "internalType": "uint256",
-                        "name": "slotId",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint32",
-                        "name": "slotCount",
-                        "type": "uint32"
-                    },
-                    {
-                        "internalType": "uint256[]",
-                        "name": "optionsIds",
-                        "type": "uint256[]"
-                    },
-                    {
-                        "internalType": "uint32[]",
-                        "name": "optionsCount",
-                        "type": "uint32[]"
-                    }
-                ],
-                "internalType": "struct OrderSlots",
-                "name": "slots",
-                "type": "tuple"
-            }
-        ],
-        "name": "setTeeOrderSelectedUsageAndOptions",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint256",
-                "name": "slotId",
-                "type": "uint256"
-            }
-        ],
-        "name": "setValueOrderUsage",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
-            }
-        ],
-        "name": "calculateOrderOutputReserve",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "enum OfferGroup",
-                "name": "parentOfferGroup",
-                "type": "uint8"
-            },
-            {
-                "internalType": "enum OfferGroup",
-                "name": "subOfferGroup",
-                "type": "uint8"
-            }
-        ],
-        "name": "checkOrderAllowedGroup",
-        "outputs": [],
-        "stateMutability": "pure",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "enum OrderStatus",
-                "name": "prev",
-                "type": "uint8"
-            },
-            {
-                "internalType": "enum OrderStatus",
-                "name": "next",
-                "type": "uint8"
-            }
-        ],
-        "name": "checkOrderAllowedStatus",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
-            }
-        ],
-        "stateMutability": "pure",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "parentOrderId",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint256",
-                "name": "subOfferId",
-                "type": "uint256"
-            },
-            {
-                "internalType": "enum OfferGroup",
-                "name": "subOfferGroup",
-                "type": "uint8"
-            }
-        ],
-        "name": "checkOrderRestrictions",
-        "outputs": [],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
-            }
-        ],
-        "name": "getAwaitingPayment",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
-            }
-        ],
-        "name": "getOrder",
-        "outputs": [
-            {
-                "internalType": "address",
-                "name": "",
-                "type": "address"
-            },
-            {
-                "components": [
-                    {
-                        "internalType": "uint256",
-                        "name": "offerId",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "string",
-                        "name": "resultPublicKey",
-                        "type": "string"
-                    },
-                    {
-                        "internalType": "string",
-                        "name": "encryptedRequirements",
-                        "type": "string"
-                    },
-                    {
-                        "internalType": "string",
-                        "name": "encryptedArgs",
-                        "type": "string"
-                    },
-                    {
-                        "internalType": "enum OrderStatus",
-                        "name": "status",
-                        "type": "uint8"
-                    },
-                    {
-                        "internalType": "bytes32",
-                        "name": "externalId",
-                        "type": "bytes32"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "expectedPrice",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "maxPriceSlippage",
-                        "type": "uint256"
-                    }
-                ],
-                "internalType": "struct OrderInfo",
-                "name": "",
-                "type": "tuple"
-            },
-            {
-                "components": [
-                    {
-                        "internalType": "string",
-                        "name": "encryptedResult",
-                        "type": "string"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "orderPrice",
-                        "type": "uint256"
-                    }
-                ],
-                "internalType": "struct OrderResult",
-                "name": "",
-                "type": "tuple"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
-            }
-        ],
-        "name": "getOrderDeposit",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
-            }
-        ],
-        "name": "getOrderOrigins",
-        "outputs": [
-            {
-                "components": [
-                    {
-                        "internalType": "uint256",
-                        "name": "createdDate",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "address",
-                        "name": "createdBy",
-                        "type": "address"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "modifiedDate",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "address",
-                        "name": "modifiedBy",
-                        "type": "address"
-                    }
-                ],
-                "internalType": "struct Origins",
-                "name": "",
-                "type": "tuple"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
-            }
-        ],
-        "name": "getOrderParentOrder",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
-            }
-        ],
-        "name": "getOrderPrice",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
-            }
-        ],
-        "name": "getOrderSelectedUsageSlotInfo",
-        "outputs": [
-            {
-                "components": [
-                    {
-                        "internalType": "uint64",
-                        "name": "cpuCores",
-                        "type": "uint64"
-                    },
-                    {
-                        "internalType": "uint64",
-                        "name": "ram",
-                        "type": "uint64"
-                    },
-                    {
-                        "internalType": "uint64",
-                        "name": "diskUsage",
-                        "type": "uint64"
-                    },
-                    {
-                        "internalType": "uint64",
-                        "name": "gpuCores",
-                        "type": "uint64"
-                    }
-                ],
-                "internalType": "struct SlotInfo",
-                "name": "",
-                "type": "tuple"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
-            }
-        ],
-        "name": "getOrderSelectedUsageSlotUsage",
-        "outputs": [
-            {
-                "components": [
-                    {
-                        "internalType": "enum PriceType",
-                        "name": "priceType",
-                        "type": "uint8"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "price",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint64",
-                        "name": "minTimeMinutes",
-                        "type": "uint64"
-                    },
-                    {
-                        "internalType": "uint64",
-                        "name": "maxTimeMinutes",
-                        "type": "uint64"
-                    }
-                ],
-                "internalType": "struct SlotUsage",
-                "name": "",
-                "type": "tuple"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
-            }
-        ],
-        "name": "getOrderSubOrders",
-        "outputs": [
-            {
-                "internalType": "uint256[]",
-                "name": "",
-                "type": "uint256[]"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "getOrdersCount",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
-            }
-        ],
-        "name": "getStartDate",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
-            }
-        ],
-        "name": "isOrderCompleted",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
-            }
-        ],
-        "name": "isOrderProcessing",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "name": "isOrderProfitAvailable",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
-            },
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
-            }
-        ],
-        "name": "isOrderStarted",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
-            }
-        ],
-        "name": "isOrderValid",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
-            }
-        ],
-        "stateMutability": "view",
         "type": "function"
     },
     {
@@ -11540,305 +11277,31 @@ export const abi = [
     {
         "inputs": [
             {
-                "internalType": "address",
-                "name": "providerAuth",
-                "type": "address"
-            }
-        ],
-        "name": "getProviderActionAccount",
-        "outputs": [
-            {
-                "internalType": "address",
-                "name": "",
-                "type": "address"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "providerAuth",
-                "type": "address"
-            },
-            {
                 "internalType": "uint256",
-                "name": "additional",
+                "name": "item",
                 "type": "uint256"
             }
         ],
-        "name": "getProviderRequiredSecDepo",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "providerAuth",
-                "type": "address"
-            }
-        ],
-        "name": "getProviderSecurityDeposit",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "providerAuth",
-                "type": "address"
-            }
-        ],
-        "name": "getProviderTokenReceiver",
-        "outputs": [
-            {
-                "internalType": "address",
-                "name": "",
-                "type": "address"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "providerAuth",
-                "type": "address"
-            }
-        ],
-        "name": "incrProviderViolationRate",
+        "name": "add",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
     },
     {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "providerAuth",
-                "type": "address"
-            }
-        ],
-        "name": "isProviderRegistered",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "authority",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
-            }
-        ],
-        "name": "addLockedOrder",
+        "inputs": [],
+        "name": "clear",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
     },
     {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "authority",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "tcbId",
-                "type": "uint256"
-            }
-        ],
-        "name": "addLockedTcb",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "authority",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "orderId",
-                "type": "uint256"
-            }
-        ],
-        "name": "removeLockedOrder",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "authority",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "tcbId",
-                "type": "uint256"
-            }
-        ],
-        "name": "removeLockedTcb",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "providerAuth",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
-            },
-            {
-                "internalType": "enum OfferType",
-                "name": "offerType",
-                "type": "uint8"
-            }
-        ],
-        "name": "addProviderOffer",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "providerAuth",
-                "type": "address"
-            }
-        ],
-        "name": "getProviderOffersDisabledTime",
+        "inputs": [],
+        "name": "getAll",
         "outputs": [
             {
-                "internalType": "uint256",
+                "internalType": "uint256[]",
                 "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "providerAuth",
-                "type": "address"
-            }
-        ],
-        "name": "isProviderHasEnabledOffers",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "providerAuth",
-                "type": "address"
-            }
-        ],
-        "name": "isProviderHasEnoughSecurityDeposit",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "providerAuth",
-                "type": "address"
-            },
-            {
-                "internalType": "enum OfferType",
-                "name": "offerType",
-                "type": "uint8"
-            },
-            {
-                "internalType": "bool",
-                "name": "enabled",
-                "type": "bool"
-            }
-        ],
-        "name": "setProviderOfferState",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
-            }
-        ],
-        "name": "getCheapestValueOffersPrice",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "price",
-                "type": "uint256"
+                "type": "uint256[]"
             }
         ],
         "stateMutability": "view",
@@ -11848,306 +11311,11 @@ export const abi = [
         "inputs": [
             {
                 "internalType": "uint256",
-                "name": "optionId",
+                "name": "item",
                 "type": "uint256"
             }
         ],
-        "name": "getOptionById",
-        "outputs": [
-            {
-                "components": [
-                    {
-                        "internalType": "uint256",
-                        "name": "id",
-                        "type": "uint256"
-                    },
-                    {
-                        "components": [
-                            {
-                                "internalType": "string",
-                                "name": "data",
-                                "type": "string"
-                            }
-                        ],
-                        "internalType": "struct OptionInfo",
-                        "name": "info",
-                        "type": "tuple"
-                    },
-                    {
-                        "components": [
-                            {
-                                "internalType": "enum PriceType",
-                                "name": "priceType",
-                                "type": "uint8"
-                            },
-                            {
-                                "internalType": "uint256",
-                                "name": "price",
-                                "type": "uint256"
-                            },
-                            {
-                                "internalType": "uint64",
-                                "name": "minTimeMinutes",
-                                "type": "uint64"
-                            },
-                            {
-                                "internalType": "uint64",
-                                "name": "maxTimeMinutes",
-                                "type": "uint64"
-                            }
-                        ],
-                        "internalType": "struct SlotUsage",
-                        "name": "usage",
-                        "type": "tuple"
-                    }
-                ],
-                "internalType": "struct TeeOfferOption",
-                "name": "",
-                "type": "tuple"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "teeOfferId",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint256",
-                "name": "slotId",
-                "type": "uint256"
-            }
-        ],
-        "name": "getTeeOfferSlotById",
-        "outputs": [
-            {
-                "components": [
-                    {
-                        "internalType": "uint256",
-                        "name": "id",
-                        "type": "uint256"
-                    },
-                    {
-                        "components": [
-                            {
-                                "internalType": "uint64",
-                                "name": "cpuCores",
-                                "type": "uint64"
-                            },
-                            {
-                                "internalType": "uint64",
-                                "name": "ram",
-                                "type": "uint64"
-                            },
-                            {
-                                "internalType": "uint64",
-                                "name": "diskUsage",
-                                "type": "uint64"
-                            },
-                            {
-                                "internalType": "uint64",
-                                "name": "gpuCores",
-                                "type": "uint64"
-                            }
-                        ],
-                        "internalType": "struct SlotInfo",
-                        "name": "info",
-                        "type": "tuple"
-                    },
-                    {
-                        "components": [
-                            {
-                                "internalType": "enum PriceType",
-                                "name": "priceType",
-                                "type": "uint8"
-                            },
-                            {
-                                "internalType": "uint256",
-                                "name": "price",
-                                "type": "uint256"
-                            },
-                            {
-                                "internalType": "uint64",
-                                "name": "minTimeMinutes",
-                                "type": "uint64"
-                            },
-                            {
-                                "internalType": "uint64",
-                                "name": "maxTimeMinutes",
-                                "type": "uint64"
-                            }
-                        ],
-                        "internalType": "struct SlotUsage",
-                        "name": "usage",
-                        "type": "tuple"
-                    }
-                ],
-                "internalType": "struct TeeOfferSlot",
-                "name": "",
-                "type": "tuple"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint256",
-                "name": "slotId",
-                "type": "uint256"
-            }
-        ],
-        "name": "getValueOfferSlotById",
-        "outputs": [
-            {
-                "components": [
-                    {
-                        "internalType": "uint256",
-                        "name": "id",
-                        "type": "uint256"
-                    },
-                    {
-                        "components": [
-                            {
-                                "internalType": "uint64",
-                                "name": "cpuCores",
-                                "type": "uint64"
-                            },
-                            {
-                                "internalType": "uint64",
-                                "name": "ram",
-                                "type": "uint64"
-                            },
-                            {
-                                "internalType": "uint64",
-                                "name": "diskUsage",
-                                "type": "uint64"
-                            },
-                            {
-                                "internalType": "uint64",
-                                "name": "gpuCores",
-                                "type": "uint64"
-                            }
-                        ],
-                        "internalType": "struct SlotInfo",
-                        "name": "info",
-                        "type": "tuple"
-                    },
-                    {
-                        "components": [
-                            {
-                                "internalType": "string",
-                                "name": "data",
-                                "type": "string"
-                            }
-                        ],
-                        "internalType": "struct OptionInfo",
-                        "name": "option",
-                        "type": "tuple"
-                    },
-                    {
-                        "components": [
-                            {
-                                "internalType": "enum PriceType",
-                                "name": "priceType",
-                                "type": "uint8"
-                            },
-                            {
-                                "internalType": "uint256",
-                                "name": "price",
-                                "type": "uint256"
-                            },
-                            {
-                                "internalType": "uint64",
-                                "name": "minTimeMinutes",
-                                "type": "uint64"
-                            },
-                            {
-                                "internalType": "uint64",
-                                "name": "maxTimeMinutes",
-                                "type": "uint64"
-                            }
-                        ],
-                        "internalType": "struct SlotUsage",
-                        "name": "usage",
-                        "type": "tuple"
-                    }
-                ],
-                "internalType": "struct ValueOfferSlot",
-                "name": "",
-                "type": "tuple"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "teeOfferId",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint256",
-                "name": "slotId",
-                "type": "uint256"
-            }
-        ],
-        "name": "isTeeOfferSlotExists",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint256",
-                "name": "slotId",
-                "type": "uint256"
-            }
-        ],
-        "name": "isValueOfferSlotExists",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "enum ParamName",
-                "name": "name",
-                "type": "uint8"
-            }
-        ],
-        "name": "getConfigParam",
+        "name": "getItemIndex",
         "outputs": [
             {
                 "internalType": "uint256",
@@ -12160,374 +11328,7 @@ export const abi = [
     },
     {
         "inputs": [],
-        "name": "getProtocolIncomeDistribution",
-        "outputs": [
-            {
-                "components": [
-                    {
-                        "internalType": "address",
-                        "name": "recipient",
-                        "type": "address"
-                    },
-                    {
-                        "internalType": "uint16",
-                        "name": "amount",
-                        "type": "uint16"
-                    }
-                ],
-                "internalType": "struct ProtocolIncomeRecipient[]",
-                "name": "",
-                "type": "tuple[]"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "getProtocolIncomePercent",
-        "outputs": [
-            {
-                "internalType": "uint32",
-                "name": "",
-                "type": "uint32"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "getToken",
-        "outputs": [
-            {
-                "internalType": "contract ISuperproToken",
-                "name": "",
-                "type": "address"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "owner",
-        "outputs": [
-            {
-                "internalType": "address",
-                "name": "",
-                "type": "address"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "owner",
-                "type": "address"
-            },
-            {
-                "internalType": "address",
-                "name": "spender",
-                "type": "address"
-            }
-        ],
-        "name": "allowance",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "spender",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "amount",
-                "type": "uint256"
-            }
-        ],
-        "name": "approve",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
-            }
-        ],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "account",
-                "type": "address"
-            }
-        ],
-        "name": "balanceOf",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "account",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "amount",
-                "type": "uint256"
-            }
-        ],
-        "name": "burnFrom",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "to",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "amount",
-                "type": "uint256"
-            }
-        ],
-        "name": "transfer",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
-            }
-        ],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "from",
-                "type": "address"
-            },
-            {
-                "internalType": "address",
-                "name": "to",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "amount",
-                "type": "uint256"
-            }
-        ],
-        "name": "transferFrom",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
-            }
-        ],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
-            },
-            {
-                "internalType": "bytes32",
-                "name": "deviceId",
-                "type": "bytes32"
-            }
-        ],
-        "name": "banTeeOffer",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
-            },
-            {
-                "internalType": "bytes32",
-                "name": "deviceId",
-                "type": "bytes32"
-            }
-        ],
-        "name": "blockTeeOffer",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
-            }
-        ],
-        "name": "confisacateAllRewards",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
-            }
-        ],
-        "name": "getTeeOfferViolationRate",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
-            }
-        ],
-        "name": "getTeeVerifiedBenchmark",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
-            }
-        ],
-        "name": "incrTeeOfferViolationRate",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint256",
-                "name": "tcbId",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint256",
-                "name": "reward",
-                "type": "uint256"
-            }
-        ],
-        "name": "lockTcbReward",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
-            },
-            {
-                "internalType": "bytes32",
-                "name": "deviceId",
-                "type": "bytes32"
-            }
-        ],
-        "name": "setTeeDeviceId",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "offerId",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint256",
-                "name": "benchmark",
-                "type": "uint256"
-            }
-        ],
-        "name": "updateVerifiedTeeBenchmark",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "uint256",
-                "name": "optionId",
-                "type": "uint256"
-            }
-        ],
-        "name": "isOptionExists",
+        "name": "isEmpty",
         "outputs": [
             {
                 "internalType": "bool",
@@ -12539,93 +11340,14 @@ export const abi = [
         "type": "function"
     },
     {
-        "anonymous": false,
         "inputs": [
             {
-                "indexed": true,
-                "internalType": "address",
-                "name": "owner",
-                "type": "address"
-            },
-            {
-                "indexed": true,
-                "internalType": "address",
-                "name": "spender",
-                "type": "address"
-            },
-            {
-                "indexed": false,
                 "internalType": "uint256",
-                "name": "value",
+                "name": "item",
                 "type": "uint256"
             }
         ],
-        "name": "Approval",
-        "type": "event"
-    },
-    {
-        "anonymous": false,
-        "inputs": [
-            {
-                "indexed": true,
-                "internalType": "address",
-                "name": "from",
-                "type": "address"
-            },
-            {
-                "indexed": true,
-                "internalType": "address",
-                "name": "to",
-                "type": "address"
-            },
-            {
-                "indexed": false,
-                "internalType": "uint256",
-                "name": "value",
-                "type": "uint256"
-            }
-        ],
-        "name": "Transfer",
-        "type": "event"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "owner",
-                "type": "address"
-            },
-            {
-                "internalType": "address",
-                "name": "spender",
-                "type": "address"
-            }
-        ],
-        "name": "allowance",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "spender",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "amount",
-                "type": "uint256"
-            }
-        ],
-        "name": "approve",
+        "name": "isExists",
         "outputs": [
             {
                 "internalType": "bool",
@@ -12633,25 +11355,6 @@ export const abi = [
                 "type": "bool"
             }
         ],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "account",
-                "type": "address"
-            }
-        ],
-        "name": "balanceOf",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
         "stateMutability": "view",
         "type": "function"
     },
@@ -12659,183 +11362,12 @@ export const abi = [
         "inputs": [
             {
                 "internalType": "uint256",
-                "name": "amount",
+                "name": "item",
                 "type": "uint256"
             }
         ],
-        "name": "burn",
+        "name": "remove",
         "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "account",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "amount",
-                "type": "uint256"
-            }
-        ],
-        "name": "burnFrom",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "decimals",
-        "outputs": [
-            {
-                "internalType": "uint8",
-                "name": "",
-                "type": "uint8"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "spender",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "subtractedValue",
-                "type": "uint256"
-            }
-        ],
-        "name": "decreaseAllowance",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
-            }
-        ],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "spender",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "addedValue",
-                "type": "uint256"
-            }
-        ],
-        "name": "increaseAllowance",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
-            }
-        ],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "name",
-        "outputs": [
-            {
-                "internalType": "string",
-                "name": "",
-                "type": "string"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "symbol",
-        "outputs": [
-            {
-                "internalType": "string",
-                "name": "",
-                "type": "string"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "totalSupply",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "to",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "amount",
-                "type": "uint256"
-            }
-        ],
-        "name": "transfer",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
-            }
-        ],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "from",
-                "type": "address"
-            },
-            {
-                "internalType": "address",
-                "name": "to",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "amount",
-                "type": "uint256"
-            }
-        ],
-        "name": "transferFrom",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
-            }
-        ],
         "stateMutability": "nonpayable",
         "type": "function"
     }

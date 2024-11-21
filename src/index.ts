@@ -1,119 +1,141 @@
-import BlockchainConnector from './connectors/BlockchainConnector';
+export { default as BlockchainConnector } from './connectors/BlockchainConnector.js';
 
-export default BlockchainConnector;
-export * from './connectors/BlockchainConnector';
+export * from './connectors/BlockchainConnector.js';
 
-export { Config } from './connectors/BaseConnector';
+export { Config } from './connectors/BaseConnector.js';
 
-export { default as BlockchainEventsListener } from './connectors/BlockchainEventsListener';
+export { default as BlockchainEventsListener } from './connectors/BlockchainEventsListener.js';
 
-export { default as Crypto } from './crypto';
+export { default as Crypto } from './crypto/index.js';
+export * from './crypto/index.js';
 
-export { default as TIIGenerator } from './TIIGenerator';
-export * from './TIIGenerator';
+export { default as TIIGenerator } from './TIIGenerator.js';
+export * from './TIIGenerator.js';
 
-export { default as Consensus } from './staticModels/Consensus';
-export * from './staticModels/Consensus';
+export { default as RIGenerator } from './RIGenerator.js';
+export * from './TIIGenerator.js';
 
-export { default as Orders } from './staticModels/Orders';
-export * from './staticModels/Orders';
+export { default as Consensus } from './staticModels/Consensus.js';
+export * from './staticModels/Consensus.js';
 
-export { default as ActiveOrders } from './staticModels/ActiveOrders';
-export * from './staticModels/ActiveOrders';
+export { default as Orders } from './staticModels/Orders.js';
+export * from './staticModels/Orders.js';
 
-export { default as ActiveOffers } from './staticModels/ActiveOffers';
-export * from './staticModels/ActiveOffers';
+export { default as ActiveOrders } from './staticModels/ActiveOrders.js';
+export * from './staticModels/ActiveOrders.js';
 
-export { default as Offers } from './staticModels/Offers';
-export * from './staticModels/Offers';
+export { default as ActiveOffers } from './staticModels/ActiveOffers.js';
+export * from './staticModels/ActiveOffers.js';
 
-export { default as TeeOffers } from './staticModels/TeeOffers';
-export * from './staticModels/TeeOffers';
+export { default as Offers } from './staticModels/Offers.js';
+export * from './staticModels/Offers.js';
 
-export { default as ProviderRegistry } from './staticModels/ProviderRegistry';
-export * from './staticModels/ProviderRegistry';
+export { default as TeeOffers } from './staticModels/TeeOffers.js';
+export * from './staticModels/TeeOffers.js';
 
-export { default as SuperproToken } from './staticModels/SuperproToken';
-export * from './staticModels/SuperproToken';
+export { default as ProviderRegistry } from './staticModels/ProviderRegistry.js';
+export * from './staticModels/ProviderRegistry.js';
 
-export { default as Superpro } from './staticModels/Superpro';
-export * from './staticModels/Superpro';
+export { default as SuperproToken } from './staticModels/SuperproToken.js';
+export * from './staticModels/SuperproToken.js';
 
-export { default as Marks } from './staticModels/Marks';
-export * from './staticModels/Marks';
+export { default as Superpro } from './staticModels/Superpro.js';
+export * from './staticModels/Superpro.js';
 
-export { default as Deposits } from './staticModels/Deposits';
-export * from './staticModels/Deposits';
+export { default as Marks } from './staticModels/Marks.js';
+export * from './staticModels/Marks.js';
 
-export { default as Order } from './models/Order';
-export * from './models/Order';
+export { default as Deposits } from './staticModels/Deposits.js';
+export * from './staticModels/Deposits.js';
 
-export { default as Provider } from './models/Provider';
-export * from './models/Provider';
+export { default as LoaderSessions } from './staticModels/LoaderSessions.js';
+export * from './staticModels/LoaderSessions.js';
 
-export { default as TeeOffer } from './models/TeeOffer';
-export * from './models/TeeOffer';
+export { default as LoaderSecretsPublicKeys } from './staticModels/LoaderSecretsPublicKeys.js';
+export * from './staticModels/LoaderSecretsPublicKeys.js';
 
-export { default as Offer } from './models/Offer';
-export * from './models/Offer';
+export { default as OfferResources } from './staticModels/OfferResources.js';
+export * from './staticModels/OfferResources.js';
 
-export { default as TCB } from './models/TCB';
-export * from './models/TCB';
+export { default as OffersStorageAllocated } from './staticModels/OffersStorageAllocated.js';
+export * from './staticModels/OffersStorageAllocated.js';
 
-export * from './types/Offer';
-export * from './types/Marks';
-export * from './types/Order';
-export * from './types/TeeOfferInfo';
-export * from './types/HardwareInfo';
-export * from './types/SlotInfo';
-export * from './types/SlotUsage';
-export * from './types/OptionInfo';
-export * from './types/OrderUsage';
-export * from './types/TeeOfferInfo';
-export * from './types/TeeOfferOption';
-export * from './types/TeeOfferSlot';
-export * from './types/ValueOfferSlot';
-export * from './types/Provider';
-export * from './types/Superpro';
-export * from './types/Consensus';
-export * from './types/Origins';
-export * from './types/Web3';
+export { default as OffersStorageRequests } from './staticModels/OffersStorageRequests.js';
+export * from './staticModels/OffersStorageRequests.js';
 
-export * as ChunkedStorageProvider from './providers/storage/ChunksDownloadDecorator';
-export { default as StorjAdapter, StorjConfig } from './providers/storage/StorjAdapter';
+export { default as SecretRequests } from './staticModels/SecretRequests.js';
+export * from './staticModels/SecretRequests.js';
+
+export { default as Order } from './models/Order.js';
+export * from './models/Order.js';
+
+export { default as Provider } from './models/Provider.js';
+export * from './models/Provider.js';
+
+export { default as TeeOffer } from './models/TeeOffer.js';
+export * from './models/TeeOffer.js';
+
+export { default as Offer } from './models/Offer.js';
+export * from './models/Offer.js';
+
+export { default as TCB } from './models/TCB.js';
+export * from './models/TCB.js';
+
+export * from './types/index.js';
+
+export * as ChunkedStorageProvider from './providers/storage/ChunksDownloadDecorator.js';
+export { default as StorjAdapter, StorjConfig } from './providers/storage/StorjAdapter.js';
 export {
   default as StorageMetadataReader,
   StorageMetadataReaderConfig,
-} from './providers/storage/StorageMetadataReader';
-export { default as StorageKeyValueAdapter } from './providers/storage/StorageKeyValueAdapter';
+} from './providers/storage/StorageMetadataReader.js';
+export { default as StorageKeyValueAdapter } from './providers/storage/StorageKeyValueAdapter.js';
+export { IStorageKeyValueAdapter, IStorageAdapter } from './providers/storage/types.js';
 export {
   default as StorageAdapter,
   CacheEvents,
   StorageAdapterConfig,
-} from './providers/storage/StorageAdapter';
+} from './providers/storage/StorageAdapter.js';
 export {
   default as StorageContentWriter,
   StorageContentWriterConfig,
   ContentWriterType,
-} from './providers/storage/StorageContentWriter';
-export { default as StorageFileAccess } from './types/storage/StorageFileAccess';
-export { default as StorageObject } from './types/storage/StorageObject';
-export { default as StorageAccess } from './types/storage/StorageAccess';
+} from './providers/storage/StorageContentWriter.js';
+export { default as StorageFileAccess } from './types/storage/StorageFileAccess.js';
+export { default as StorageObject } from './types/storage/StorageObject.js';
+export { default as StorageAccess } from './types/storage/StorageAccess.js';
 
-export { default as getStorageProvider } from './providers/storage/getStorageProvider';
-export { default as IStorageProvider } from './providers/storage/IStorageProvider';
+export { default as getStorageProvider } from './providers/storage/getStorageProvider.js';
+export { default as IStorageProvider } from './providers/storage/IStorageProvider.js';
+export { parseStorageCredentials } from './providers/storage/parseStorageCredentials.js';
+export {
+  CredentialsPermissions,
+  StorjCredentialsManager,
+} from './providers/storage/StorjCredentialsManager.js';
 
-export * as helpers from './utils/helpers';
+export * from './utils/CryptoKeysTransformer.js';
+export * as helpers from './utils/helpers/index.js';
+export * as constants from './constants.js';
 
-export { Web3TransactionRevertedByEvmError } from './utils/TxManager';
+export { Web3TransactionRevertedByEvmError } from './utils/TxManager.js';
 
-import './polyfills';
+import './polyfills.js';
 
-export { TeeSgxParser } from './tee/QuoteParser';
-export { QuoteValidator } from './tee/QuoteValidator';
+export * from './tee/errors.js';
+export { QuoteType } from './tee/types.js';
+export { TeeSgxParser, TeeTdxParser, TeeParser } from './tee/QuoteParser.js';
+export { QuoteValidator } from './tee/QuoteValidator.js';
+export * from './tee/statuses.js';
+export { TeeBlockVerifier } from './tee/TeeBlockVerifier.js';
+export { TeeCertificateService } from './tee/TeeCertificateService.js';
 
-export { default as Analytics } from './analytics/Analytics';
-export { default as NodeEventProvider } from './analytics/eventProviders/NodeEventProvider';
-export { default as BrowserEventProvider } from './analytics/eventProviders/BrowserEventProvider';
-export { default as AxiosTransport } from './analytics/transports/AxiosTransport';
-export { default as FetchTransport } from './analytics/transports/FetchTransport';
+export * from './analytics/types.js';
+export { default as Analytics } from './analytics/Analytics.js';
+export { default as NodeEventProvider } from './analytics/eventProviders/NodeEventProvider.js';
+export { default as BrowserEventProvider } from './analytics/eventProviders/BrowserEventProvider.js';
+export { default as AxiosTransport } from './analytics/transports/AxiosTransport.js';
+export { default as FetchTransport } from './analytics/transports/FetchTransport.js';
+export * from './utils/cache/index.js';
+export * from './errors/index.js';
+export * from './utils/schema-validators/index.js';
+export * as ResourceLoaderUtils from './utils/resourceLoaders/index.js';
